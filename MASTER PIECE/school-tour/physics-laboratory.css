@@ -1,0 +1,210 @@
+.physics-room {
+  position: fixed;
+  inset: 0;
+  z-index: 130;
+  background: var(--orbit-canvas,#f6f8fc);
+  color: var(--orbit-ink,#17243a);
+  overflow: auto;
+  font-family: inherit;
+}
+.physics-room[hidden] {
+  display: none;
+}
+.physics-room header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--orbit-border,#dce4ef);
+  background: var(--orbit-surface,#fff);
+}
+.physics-room h1 {
+  font-size: 24px;
+  margin: 0;
+}
+.physics-room h2 {
+  font-size: 20px;
+  margin: 0 0 12px;
+}
+.physics-room p {
+  line-height: 1.8;
+  max-width: 65ch;
+}
+.physics-room button,
+.physics-room input {
+  font: inherit;
+}
+.physics-room button {
+  min-height: 44px;
+  padding: 10px 16px;
+  border: 1px solid var(--orbit-border,#dce4ef);
+  border-radius: 10px;
+  background: var(--orbit-surface,#fff);
+  color: inherit;
+  cursor: pointer;
+}
+.physics-room button:hover {
+  background: var(--orbit-soft,#eaf1ff);
+}
+.physics-room button:focus-visible,
+.physics-room input:focus-visible {
+  outline: 3px solid var(--orbit-action,#2563eb);
+  outline-offset: 3px;
+}
+.physics-room button:disabled {
+  opacity: .55;
+  cursor: default;
+}
+.physics-room button[aria-pressed="true"],
+.physics-room .physics-run {
+  background: var(--orbit-action,#2563eb);
+  color: var(--orbit-on-action,#fff);
+}
+.physics-room button.physics-run:hover {
+  background: var(--orbit-midnight,#142b4a);
+  color: var(--orbit-on-action,#fff);
+}
+.physics-layout {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) 340px;
+  min-height: calc(100dvh - 80px);
+}
+.physics-stage {
+  position: relative;
+  min-height: 480px;
+  overflow: hidden;
+  background: var(--orbit-midnight,#142b4a);
+}
+.physics-stage canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+}
+.physics-stage-note {
+  position: absolute;
+  inset: auto 20px 20px;
+  background: var(--orbit-surface,#fff);
+  color: var(--orbit-ink,#17243a);
+  padding: 10px 16px;
+  border-radius: 10px;
+  pointer-events: none;
+}
+.physics-panel {
+  padding: 24px;
+  background: var(--orbit-surface,#fff);
+}
+.physics-selection {
+  display: grid;
+  gap: 12px;
+  margin: 16px 0;
+}
+.physics-selection button {
+  text-align: start;
+}
+.physics-selection small {
+  display: block;
+  line-height: 1.6;
+  margin-top: 4px;
+}
+.physics-controls label {
+  display: block;
+  margin: 20px 0 8px;
+}
+.physics-controls input {
+  width: 100%;
+  accent-color: var(--orbit-action,#2563eb);
+  min-height: 32px;
+}
+.physics-controls output {
+  font-variant-numeric: tabular-nums;
+  direction: ltr;
+  display: inline-block;
+}
+.physics-measurement {
+  font-size: 28px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  display: block;
+  padding: 16px 0;
+  direction: ltr;
+  text-align: start;
+}
+.physics-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 20px 0;
+}
+.physics-status {
+  min-height: 2em;
+}
+.physics-room [hidden] {
+  display: none !important;
+}
+.physics-stage-fallback {
+  color: var(--orbit-surface,#fff);
+  padding: 32px;
+  max-width: 55ch;
+}
+.physics-equipment {
+  position: absolute;
+  inset: 16px auto auto 16px;
+  max-width: 250px;
+}
+.physics-equipment:empty {
+  display: none;
+}
+body[data-physics-open="true"] {
+  overflow: hidden;
+}
+body[data-physics-open="true"] > .tour-header,
+body[data-physics-open="true"] > .tour-navigator,
+body[data-physics-open="true"] > .tour-controls {
+  visibility: hidden;
+}
+@media (max-width:760px) {
+  .physics-layout {
+    grid-template-columns: 1fr;
+  }
+  .physics-stage {
+    min-height: 320px;
+    height: 40dvh;
+  }
+  .physics-panel {
+    padding: 20px;
+  }
+  .physics-room header {
+    padding: 12px;
+    align-items: flex-start;
+  }
+  .physics-room h1 {
+    font-size: 20px;
+  }
+  .physics-stage-note {
+    inset: auto 12px 12px;
+    font-size: 13px;
+  }
+  .physics-equipment {
+    max-width: 180px;
+    font-size: 13px;
+  }
+}
+@media (prefers-reduced-motion:no-preference) {
+  .physics-room button {
+    transition: background-color 160ms ease-out;
+  }
+  .physics-room {
+    animation: physics-enter 200ms cubic-bezier(.23,1,.32,1);
+  }
+}
+@keyframes physics-enter {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

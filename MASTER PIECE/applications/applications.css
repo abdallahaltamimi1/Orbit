@@ -1,0 +1,467 @@
+@import url('../shared/recruitment.css');
+#orbit-page {
+  --purple: var(--orbit-accent);
+  --bg: var(--orbit-canvas);
+  --text: var(--orbit-ink);
+  --panel: var(--orbit-surface);
+  --line: var(--orbit-border);
+  --muted: var(--orbit-muted);
+}
+#orbit-page .wrap {
+  max-width: 1240px;
+  padding: 32px;
+}
+#orbit-page h1 {
+  font-size: 32px;
+  letter-spacing: -.5px;
+}
+#orbit-page .application-tools {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin: 20px 0;
+}
+#orbit-page .application-tools > span,
+#orbit-page .application-kicker {
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: var(--purple);
+  font-weight: 600;
+}
+#orbit-page .applications-hero {
+  padding: 32px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: var(--soft);
+  margin-bottom: 24px;
+}
+#orbit-page .applications-hero h2 {
+  font-size: 30px;
+  margin: 0 0 12px;
+}
+#orbit-page .applications-hero p {
+  font-size: 14px;
+  color: var(--muted);
+  margin: 0 0 20px;
+}
+#orbit-page .applications-hero .btn {
+  font-size: 13px;
+}
+#orbit-page .role-banner {
+  background: none;
+  padding: 0;
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.9;
+}
+#orbit-page .application-metrics {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  padding: 24px;
+  border-radius: 16px;
+  margin: 24px 0;
+}
+#orbit-page .application-metrics > div {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-inline: 24px;
+  border-inline-end: 1px solid var(--line);
+}
+#orbit-page .application-metrics > div:last-child {
+  border: 0;
+}
+#orbit-page .application-metrics strong {
+  font-size: 27px;
+  color: var(--purple);
+}
+#orbit-page .application-metrics span {
+  font-size: 12px;
+  color: var(--muted);
+}
+#orbit-page .application-filters {
+  justify-content: space-between;
+  align-items: center;
+  margin: 30px 0 24px;
+}
+#orbit-page .application-filters h2 {
+  font-size: 23px;
+  margin: 0 0 8px;
+}
+#orbit-page #applications-count {
+  font-size: 12px;
+  color: var(--muted);
+}
+#orbit-page .application-filters label {
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted);
+  min-width: 200px;
+}
+#orbit-page .application-filters select {
+  display: block;
+  margin-top: 8px;
+  font-size: 14px;
+  min-height: 46px;
+}
+#orbit-page .application-list {
+  display: grid;
+  gap: 20px;
+}
+#orbit-page .application-card {
+  border-radius: 18px;
+  padding: 26px;
+  margin: 0;
+  animation: none;
+}
+#orbit-page .application-card header {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: start;
+}
+#orbit-page .application-card h3 {
+  font-size: 22px;
+  margin: 12px 0 16px;
+  overflow-wrap: anywhere;
+}
+#orbit-page .application-card .pill {
+  font-size: 12px;
+  white-space: nowrap;
+}
+#orbit-page .application-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--muted);
+}
+#orbit-page .application-details span {
+  background: var(--orbit-canvas);
+  border: 1px solid var(--line);
+  padding: 6px 10px;
+  border-radius: 7px;
+}
+#orbit-page .application-message {
+  margin: 22px 0;
+  padding: 18px;
+  background: var(--orbit-canvas);
+  border-radius: 12px;
+  border: 1px solid var(--line);
+}
+#orbit-page .application-message > span {
+  font-size: 11px;
+  color: var(--muted);
+}
+#orbit-page .application-message p {
+  font-size: 14px;
+  line-height: 1.9;
+  margin: 10px 0 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+#orbit-page .application-card footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  border-top: 1px solid var(--line);
+  padding-top: 20px;
+  margin-top: 24px;
+}
+#orbit-page .application-card footer .btn {
+  font-size: 13px;
+}
+#orbit-page .application-withdraw {
+  border: 0;
+  background: none;
+  color: var(--orbit-error);
+  font-size: 12px;
+  padding: 10px;
+}
+#orbit-page .applications-empty {
+  padding: 44px;
+  border: 1px dashed var(--line);
+  border-radius: 18px;
+  text-align: center;
+  animation: none;
+}
+#orbit-page .applications-empty > span {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 18px;
+  background: var(--soft);
+  color: var(--purple);
+  font-size: 34px;
+  margin: 0 auto 22px;
+}
+#orbit-page .applications-empty h3 {
+  font-size: 23px;
+  margin: 0 0 14px;
+}
+#orbit-page .applications-empty p {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.9;
+}
+#orbit-page .applications-empty .btn {
+  font-size: 13px;
+  margin-top: 16px;
+}
+@media (max-width:900px) {
+  #orbit-page .wrap {
+    padding: 28px 20px;
+  }
+}
+@media (max-width:540px) {
+  #orbit-page .wrap {
+    padding: 24px 16px;
+  }
+  #orbit-page h1 {
+    font-size: 27px;
+  }
+  #orbit-page .applications-hero {
+    padding: 24px;
+  }
+  #orbit-page .applications-hero h2 {
+    font-size: 25px;
+  }
+  #orbit-page .application-metrics {
+    padding: 20px 8px;
+  }
+  #orbit-page .application-metrics > div {
+    padding-inline: 10px;
+  }
+  #orbit-page .application-metrics strong {
+    font-size: 23px;
+  }
+  #orbit-page .application-metrics span {
+    font-size: 11px;
+  }
+  #orbit-page .application-card {
+    padding: 22px;
+  }
+  #orbit-page .application-card header {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  #orbit-page .application-card h3 {
+    font-size: 20px;
+  }
+  #orbit-page .application-filters {
+    align-items: stretch;
+  }
+  #orbit-page .application-filters label {
+    width: 100%;
+  }
+  #orbit-page .applications-empty {
+    padding: 30px 22px;
+  }
+  #orbit-page .application-tools > span {
+    font-size: 10px;
+    letter-spacing: 0;
+  }
+  #orbit-page .application-tools .btn {
+    font-size: 12px;
+  }
+}
+/* My Applications is the teacher's tracking workspace; discovery remains a real link. */
+@font-face {
+  font-family: ApplicationArabic;
+  src: url('../student-dashboard/assets/IBMPlexSansArabic-Regular.ttf');
+  font-display: swap;
+}
+@font-face {
+  font-family: ApplicationHeading;
+  src: url('../student-dashboard/assets/Alexandria.ttf');
+  font-display: swap;
+}
+@font-face {
+  font-family: ApplicationEnglish;
+  src: url('../student-dashboard/assets/Inter.ttf');
+  font-display: swap;
+}
+@font-face {
+  font-family: ApplicationEnglishHeading;
+  src: url('../student-dashboard/assets/PlusJakartaSans.ttf');
+  font-display: swap;
+}
+#orbit-page[data-orbit-page="applications"] {
+  --orbit-accent: #0d9488;
+  --orbit-action: #0d9488;
+  font-family: ApplicationArabic,sans-serif;
+}
+html[lang="en"] #orbit-page[data-orbit-page="applications"] {
+  font-family: ApplicationEnglish,sans-serif;
+}
+#orbit-page[data-orbit-page="applications"] :is(h1, h2, h3) {
+  font-family: ApplicationHeading,sans-serif;
+  letter-spacing: normal;
+}
+html[lang="en"] #orbit-page[data-orbit-page="applications"] :is(h1, h2, h3) {
+  font-family: ApplicationEnglishHeading,sans-serif;
+}
+#orbit-page[data-orbit-page="applications"] h1 {
+  font-size: 26px;
+  margin-bottom: 12px;
+}
+#orbit-page[data-orbit-page="applications"] .application-workspace-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  margin: 0 0 28px;
+}
+#orbit-page[data-orbit-page="applications"] .application-workspace-heading p {
+  font-size: 14px;
+  line-height: 1.9;
+  color: var(--orbit-muted);
+  margin: 0;
+  max-width: 60ch;
+}
+#orbit-page[data-orbit-page="applications"] .application-workspace-heading .btn {
+  flex-shrink: 0;
+  background: #0f766e;
+  color: #fff;
+  font-size: 14px;
+  min-height: 44px;
+}
+#orbit-page[data-orbit-page="applications"] .application-filters {
+  margin: 20px 0;
+  align-items: end;
+}
+#orbit-page[data-orbit-page="applications"] .application-filters h2 {
+  font-size: 18px;
+}
+#orbit-page[data-orbit-page="applications"] .application-list {
+  display: block;
+  border-top: 1px solid var(--orbit-border);
+}
+#orbit-page[data-orbit-page="applications"] .application-row {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) auto auto;
+  gap: 24px;
+  align-items: center;
+  padding: 24px 0;
+  border-bottom: 1px solid var(--orbit-border);
+  background: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+#orbit-page[data-orbit-page="applications"] .application-row h3 {
+  font-size: 16px;
+  line-height: 1.8;
+  margin: 0 0 4px;
+  overflow-wrap: anywhere;
+}
+#orbit-page[data-orbit-page="applications"] .application-row p {
+  font-size: 14px;
+  line-height: 1.8;
+  margin: 0 0 6px;
+  color: var(--orbit-muted);
+}
+#orbit-page[data-orbit-page="applications"] .application-row small {
+  font-size: 12px;
+  line-height: 1.8;
+  color: var(--orbit-muted);
+}
+#orbit-page[data-orbit-page="applications"] .application-row-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+#orbit-page[data-orbit-page="applications"] .application-row-actions .btn {
+  font-size: 13px;
+  min-height: 42px;
+}
+.application-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 30px;
+  padding: 4px 10px;
+  border: 1px solid var(--orbit-border);
+  border-radius: 7px;
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--orbit-ink);
+  background: var(--orbit-surface);
+  white-space: nowrap;
+}
+.application-status:is(.accepted, .shortlisted) {
+  color: #0f766e;
+  background: #ccfbf1;
+  border-color: #b9eadd;
+}
+.application-status:is(.pending, .review) {
+  color: var(--orbit-ink);
+  background: var(--orbit-canvas);
+}
+.application-status.rejected {
+  color: var(--orbit-error);
+}
+.application-status.withdrawn {
+  color: var(--orbit-muted);
+}
+.application-detail-dialog {
+  font-family: ApplicationArabic,ApplicationEnglish,sans-serif;
+}
+.application-detail-dialog h2 {
+  font-size: 23px;
+}
+.application-detail-dialog h3 {
+  font-size: 18px;
+  line-height: 1.7;
+}
+.application-detail-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin: 24px 0;
+}
+.application-detail-list dt {
+  font-size: 12px;
+  color: var(--orbit-muted);
+}
+.application-detail-list dd {
+  margin: 6px 0 0;
+  font-size: 14px;
+}
+.application-detail-message {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: 1.9;
+  font-size: 14px;
+  padding-block: 14px;
+  border-block: 1px solid var(--orbit-border);
+}
+#orbit-page[data-orbit-page="applications"] :is(button, a, select):focus-visible {
+  outline: 2px solid #14b8a6;
+  outline-offset: 3px;
+}
+@media (max-width:780px) {
+  #orbit-page[data-orbit-page="applications"] .application-row {
+    grid-template-columns: minmax(0,1fr) auto;
+    gap: 16px;
+  }
+  #orbit-page[data-orbit-page="applications"] .application-row-actions {
+    grid-column: 1/-1;
+  }
+  #orbit-page[data-orbit-page="applications"] .application-workspace-heading {
+    align-items: start;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .application-detail-list {
+    grid-template-columns: 1fr;
+  }
+  #orbit-page[data-orbit-page="applications"] .application-filters select {
+    font-size: 16px;
+  }
+}

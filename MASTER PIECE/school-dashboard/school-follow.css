@@ -1,0 +1,133 @@
+.school-follow {
+  margin-block: 24px 32px;
+  padding: 24px;
+  background: var(--orbit-surface);
+  border: 1px solid var(--orbit-border);
+  border-radius: 14px;
+  color: var(--orbit-ink);
+  min-width: 0;
+}
+.school-follow h2 {
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.6;
+}
+.school-follow header p,
+.school-follow-note {
+  color: var(--orbit-muted);
+  font-size: 14px;
+  line-height: 1.8;
+}
+.school-follow header p {
+  margin: 8px 0;
+}
+.school-follow-tools {
+  display: flex;
+  gap: 16px;
+  align-items: end;
+  flex-wrap: wrap;
+  margin-block: 24px 16px;
+}
+.school-follow-tools [role="group"] {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.school-follow-tools label {
+  display: grid;
+  gap: 8px;
+  font-size: 13px;
+  flex: 1;
+  min-width: min(100%,180px);
+}
+.school-follow-tools button,
+.school-follow-tools input,
+.school-follow-tools select {
+  min-height: 44px;
+  border: 1px solid var(--orbit-border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: var(--orbit-ink);
+  background: var(--orbit-surface);
+  font: inherit;
+  font-size: 16px;
+  box-sizing: border-box;
+  max-width: 100%;
+}
+.school-follow-tools button {
+  cursor: pointer;
+  font-size: 14px;
+}
+.school-follow-tools button[aria-pressed="true"] {
+  background: var(--orbit-action);
+  border-color: var(--orbit-action);
+  color: var(--orbit-on-action);
+}
+.school-follow-table {
+  overflow: auto;
+  max-width: 100%;
+}
+.school-follow table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  line-height: 1.7;
+}
+.school-follow caption {
+  text-align: start;
+  font-weight: 600;
+  padding: 12px 0;
+}
+.school-follow th,
+.school-follow td {
+  text-align: start;
+  padding: 14px 12px;
+  border-bottom: 1px solid var(--orbit-border);
+  vertical-align: top;
+  min-width: 100px;
+  font-variant-numeric: tabular-nums;
+}
+.school-follow thead th {
+  background: var(--orbit-canvas);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.school-follow th[scope="row"] {
+  min-width: 180px;
+  max-width: 260px;
+  overflow-wrap: anywhere;
+  font-weight: 600;
+}
+.school-follow small {
+  display: block;
+  color: var(--orbit-muted);
+  font-size: 12px;
+  font-weight: 400;
+  margin-top: 6px;
+  overflow-wrap: anywhere;
+}
+.school-follow a {
+  color: var(--orbit-ink);
+  text-underline-offset: 4px;
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+}
+.school-follow :focus-visible {
+  outline: 3px solid var(--orbit-focus);
+  outline-offset: 3px;
+}
+.school-follow-empty {
+  color: var(--orbit-muted);
+}
+@media (max-width:600px) {
+  .school-follow {
+    padding: 18px;
+  }
+  .school-follow-tools [role="group"] {
+    width: 100%;
+  }
+  .school-follow h2 {
+    font-size: 22px;
+  }
+}

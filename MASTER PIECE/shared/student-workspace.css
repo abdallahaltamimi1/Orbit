@@ -1,0 +1,772 @@
+/* Student-only density and hierarchy; uses existing services and portal navigation. */
+@font-face {
+  font-family: StudentWorkspaceArabic;
+  src: url('../student-dashboard/assets/IBMPlexSansArabic-Regular.ttf');
+  font-display: swap;
+}
+@font-face {
+  font-family: StudentWorkspaceHeading;
+  src: url('../student-dashboard/assets/Alexandria.ttf');
+  font-display: swap;
+}
+@font-face {
+  font-family: StudentWorkspaceEnglish;
+  src: url('../student-dashboard/assets/Inter.ttf');
+  font-display: swap;
+}
+@font-face {
+  font-family: StudentWorkspaceEnglishHeading;
+  src: url('../student-dashboard/assets/PlusJakartaSans.ttf');
+  font-display: swap;
+}
+body.student-workspace {
+  --student-space: 24px;
+  --orbit-accent: #0d9488;
+  --orbit-action: #0d9488;
+  --orbit-soft: #ccfbf1;
+}
+body.student-workspace #orbit-page {
+  font-family: StudentWorkspaceArabic,StudentWorkspaceEnglish,sans-serif;
+}
+html[lang="en"] body.student-workspace #orbit-page {
+  font-family: StudentWorkspaceEnglish,sans-serif;
+}
+body.student-workspace #orbit-page :is(h1, h2, h3) {
+  font-family: StudentWorkspaceHeading,sans-serif;
+  letter-spacing: normal;
+}
+html[lang="en"] body.student-workspace #orbit-page :is(h1, h2, h3) {
+  font-family: StudentWorkspaceEnglishHeading,sans-serif;
+}
+body.student-workspace #orbit-page :is(.wrap, .main) {
+  max-width: 1320px;
+  margin-inline: auto;
+  padding: 28px 32px 48px;
+  min-width: 0;
+}
+body.student-workspace #orbit-page :is(.wrap, .main) > h1 {
+  font-size: 26px;
+  line-height: 1.6;
+  margin: 12px 0 24px;
+}
+body.student-workspace #orbit-page :is(input, select, textarea, button) {
+  font-family: inherit;
+}
+body.student-workspace #orbit-page :is(input, select, textarea):focus-visible {
+  outline: 2px solid #14b8a6;
+  outline-offset: 2px;
+}
+body.student-workspace #orbit-page :is(a, button):focus-visible {
+  outline: 2px solid #0d9488;
+  outline-offset: 4px;
+}
+body.student-workspace #orbit-page :is(.panel, .card) {
+  min-width: 0;
+}
+body.student-workspace #orbit-page :is(h1, h2, h3, p, a, strong) {
+  overflow-wrap: anywhere;
+}
+body.student-workspace #orbit-page #main-content {
+  max-width: 1320px;
+  margin-inline: auto;
+  padding: 0 28px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+body.student-workspace #orbit-page #main-content > section,
+body.student-workspace #orbit-page #main-content > nav,
+body.student-workspace #orbit-page #main-content > details {
+  margin: 0;
+}
+body.student-workspace #orbit-page .futuristic-welcome {
+  min-height: 154px;
+  border-radius: 18px;
+  box-shadow: none;
+}
+body.student-workspace #orbit-page .orbit-welcome-copy {
+  width: 78%;
+  padding: 24px 28px;
+  margin: 0;
+  margin-inline-start: auto;
+}
+body.student-workspace #orbit-page .orbit-welcome-copy h1 {
+  font-size: 25px;
+  line-height: 1.6;
+  margin: 0 0 4px;
+}
+body.student-workspace #orbit-page .orbit-welcome-copy p {
+  font-size: 14px;
+  margin: 0;
+}
+body.student-workspace #orbit-page .orbit-welcome-copy :is(small, .button),
+body.student-workspace #orbit-page .orbit-hero-quote {
+  display: none;
+}
+body.student-workspace #orbit-page .orbit-mascot {
+  width: 19%;
+  height: 145px;
+  left: 16px;
+  bottom: 0;
+}
+body.student-workspace #orbit-page .orbit-hero-environment {
+  opacity: .35;
+}
+body.student-workspace #orbit-page .orbit-statistics {
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 0;
+  border-block: 1px solid var(--orbit-border);
+  border-radius: 0;
+  padding: 16px 0;
+  background: transparent;
+  box-shadow: none;
+}
+body.student-workspace #orbit-page .orbit-stat {
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 8px 20px;
+  min-height: 72px;
+  border-inline-end: 1px solid var(--orbit-border);
+  transform: none;
+}
+body.student-workspace #orbit-page .orbit-stat:last-child {
+  border-inline-end: 0;
+}
+body.student-workspace #orbit-page .orbit-stat > svg:first-child {
+  width: 38px;
+  height: 38px;
+  padding: 8px;
+  background: var(--orbit-soft);
+}
+body.student-workspace #orbit-page .orbit-stat strong {
+  font-size: 25px;
+}
+body.student-workspace #orbit-page .orbit-stat small {
+  font-size: 12px;
+  line-height: 1.7;
+}
+body.student-workspace #orbit-page .orbit-stat > svg:last-child {
+  display: none;
+}
+body.student-workspace #orbit-page #current-learning {
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: none;
+  border: 1px solid var(--orbit-border);
+}
+body.student-workspace #orbit-page .orbit-continue-body {
+  grid-template-columns: 190px minmax(0,1fr);
+  align-items: center;
+  gap: 24px;
+}
+body.student-workspace #orbit-page .orbit-lesson-thumbnail {
+  height: 150px;
+}
+body.student-workspace #orbit-page .orbit-continue-body h3 {
+  font-size: 20px;
+  margin: 0 0 8px;
+}
+body.student-workspace #orbit-page .orbit-continue-body .button {
+  width: auto;
+  display: inline-flex;
+  min-height: 44px;
+  padding-inline: 24px !important;
+}
+body.student-workspace #orbit-page .premium-section-head h2,
+body.student-workspace #orbit-page .student-explore > h2 {
+  font-size: 18px;
+  line-height: 1.6;
+  margin: 0;
+}
+body.student-workspace #orbit-page .student-upcoming {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 24px;
+}
+body.student-workspace #orbit-page .student-upcoming > .panel {
+  padding: 24px;
+  margin: 0;
+  border: 1px solid var(--orbit-border);
+  border-radius: 16px;
+  box-shadow: none;
+  background: var(--orbit-surface);
+}
+body.student-workspace #orbit-page .premium-next-card {
+  border: 0;
+  background: none;
+  padding: 0;
+  box-shadow: none;
+}
+body.student-workspace #orbit-page .student-task-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+body.student-workspace #orbit-page .student-task-list li + li {
+  border-top: 1px solid var(--orbit-border);
+}
+body.student-workspace #orbit-page .student-task-list a {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 20px;
+  padding: 14px 0;
+  color: var(--orbit-ink);
+  text-decoration: none;
+  font-size: 14px;
+}
+body.student-workspace #orbit-page .student-task-list small {
+  color: var(--orbit-muted);
+  font-size: 12px;
+}
+body.student-workspace #orbit-page #recent-activity {
+  padding: 0;
+  background: none;
+  border: 0;
+  box-shadow: none;
+}
+body.student-workspace #orbit-page .premium-recent-row {
+  padding: 13px 0;
+  border-bottom: 1px solid var(--orbit-border);
+  background: none;
+  border-radius: 0;
+}
+body.student-workspace #orbit-page .student-destination-list {
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 0 24px;
+  margin-top: 12px;
+}
+body.student-workspace #orbit-page .student-destination-list a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 54px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--orbit-border);
+  color: var(--orbit-accent);
+  text-decoration: none;
+  font-size: 14px;
+}
+body.student-workspace #orbit-page :is(.premium-extra, .student-explore-details) {
+  border: 0;
+  border-top: 1px solid var(--orbit-border);
+  border-radius: 0;
+  padding: 0;
+  background: none;
+  box-shadow: none;
+}
+body.student-workspace #orbit-page :is(.premium-extra, .student-explore-details) > summary {
+  padding: 18px 0;
+  min-height: 48px;
+  font-size: 14px;
+  cursor: pointer;
+  color: var(--orbit-ink);
+}
+body.student-workspace #orbit-page .student-explore-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+body.student-workspace #orbit-page .student-explore-grid > .panel {
+  padding: 0;
+  background: none;
+  border: 0;
+  box-shadow: none;
+}
+body.student-workspace #orbit-page .student-explore-grid .orbit-experiments {
+  grid-column: 1/-1;
+}
+body.student-workspace #orbit-page .orbit-subject-grid {
+  display: block;
+}
+body.student-workspace #orbit-page .orbit-subject-grid > a {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--orbit-border);
+  background: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+body.student-workspace #orbit-page .orbit-subject-grid > a > svg {
+  width: 26px;
+  height: 26px;
+}
+body.student-workspace #orbit-page .orbit-subject-grid .orbit-progress-track {
+  max-width: 100px;
+  margin-inline-start: auto;
+  flex: 1;
+}
+body.student-workspace #orbit-page .premium-expanded > .panel {
+  background: none;
+  box-shadow: none;
+  border: 0;
+  border-radius: 0;
+  border-bottom: 1px solid var(--orbit-border);
+  padding: 24px 0;
+}
+body.student-workspace #orbit-page .student-secondary-content {
+  display: none;
+}
+body.student-workspace[data-student-task] #main-content > * {
+  display: none !important;
+}
+body.student-workspace[data-student-task]
+  #main-content
+  > :is(.student-task-active, #student-task-heading) {
+  display: block !important;
+}
+body.student-workspace[data-student-task] #main-content > .student-task-active > summary {
+  display: none;
+}
+body.student-workspace #orbit-page #student-task-heading h1 {
+  font-size: 26px;
+  margin: 18px 0 0;
+}
+body.student-workspace #orbit-page #student-task-heading a {
+  color: var(--orbit-accent);
+  font-size: 13px;
+}
+body.student-workspace[data-student-task] #main-content > .student-task-active {
+  padding: 0;
+  border: 0;
+}
+/* Reduce competing page introductions, retain every filter and existing form. */
+body.student-workspace #orbit-page .learning-hero {
+  padding-block: 12px;
+  gap: 28px;
+  align-items: center;
+  margin-bottom: 28px;
+}
+body.student-workspace #orbit-page .learning-hero-copy > h2 {
+  font-size: 28px;
+  margin: 0 0 8px;
+}
+body.student-workspace #orbit-page .learning-hero-copy > .card {
+  padding: 0;
+  background: none;
+  border: 0;
+  box-shadow: none;
+  margin-top: 20px;
+}
+body.student-workspace #orbit-page .learning-scene {
+  max-height: 300px;
+}
+body.student-workspace #orbit-page .catalog-top {
+  display: none;
+}
+body.student-workspace #orbit-page #learning-start {
+  gap: 16px;
+}
+body.student-workspace #orbit-page .catalog-library {
+  margin-top: 28px;
+}
+body.student-workspace #orbit-page .discovery-hero {
+  padding: 26px;
+  min-height: 0;
+  margin-bottom: 28px;
+}
+body.student-workspace #orbit-page .discovery-hero h2 {
+  font-size: 28px;
+}
+body.student-workspace #orbit-page .lab-orbital {
+  max-height: 160px;
+  transform: scale(.72);
+}
+body.student-workspace #orbit-page :is(.channels-hero, .channel-hero) {
+  min-height: 160px;
+}
+body.student-workspace #orbit-page .hero {
+  padding: 24px;
+  min-height: 0;
+  margin-bottom: 24px;
+}
+body.student-workspace #orbit-page .hero h2 {
+  font-size: 24px;
+  margin: 0 0 8px;
+}
+body.student-workspace #orbit-page .profile-banner {
+  height: 140px;
+}
+body.student-workspace #orbit-page .profile-help {
+  box-shadow: none;
+  padding: 20px 24px;
+}
+body.student-workspace #orbit-page .settings-welcome {
+  min-height: 160px;
+  padding-block: 20px;
+}
+body.student-workspace #orbit-page .settings-mascot {
+  max-height: 170px;
+  width: auto;
+}
+body.student-workspace #orbit-page .student-achievement-list {
+  display: grid;
+  gap: 0;
+}
+body.student-workspace #orbit-page .student-achievement-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--orbit-border);
+}
+body.student-workspace #orbit-page .student-achievement-row > svg {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  color: var(--orbit-accent);
+}
+body.student-workspace #orbit-page .student-achievement-row > div {
+  flex: 1;
+  min-width: 0;
+}
+body.student-workspace #orbit-page .student-achievement-row h2 {
+  font-size: 17px;
+  margin: 0 0 6px;
+}
+body.student-workspace #orbit-page .student-achievement-row p {
+  font-size: 14px;
+  margin: 0 0 5px;
+  color: var(--orbit-muted);
+}
+body.student-workspace #orbit-page .student-achievement-row span {
+  font-size: 12px;
+  color: var(--orbit-accent);
+}
+@media (max-width:1000px) {
+  body.student-workspace #orbit-page .student-upcoming {
+    grid-template-columns: 1fr 1fr;
+  }
+  body.student-workspace #orbit-page .orbit-continue-body {
+    grid-template-columns: 140px minmax(0,1fr);
+  }
+  body.student-workspace #orbit-page .orbit-stat {
+    padding-inline: 12px;
+  }
+}
+@media (max-width:780px) {
+  body.student-workspace {
+    --student-space: 18px;
+  }
+  body.student-workspace #orbit-page :is(.wrap, .main) {
+    padding: 22px 16px 32px;
+  }
+  body.student-workspace #orbit-page #main-content {
+    padding: 0 16px 32px;
+    gap: 20px;
+  }
+  body.student-workspace #orbit-page .futuristic-welcome {
+    min-height: 130px;
+  }
+  body.student-workspace #orbit-page .orbit-welcome-copy {
+    padding: 20px 16px;
+    width: 78%;
+  }
+  body.student-workspace #orbit-page .orbit-welcome-copy h1 {
+    font-size: 20px;
+  }
+  body.student-workspace #orbit-page .orbit-mascot {
+    width: 24%;
+    left: 0;
+    height: 120px;
+  }
+  body.student-workspace #orbit-page .orbit-statistics {
+    gap: 0;
+    padding: 12px 0;
+  }
+  body.student-workspace #orbit-page .orbit-stat {
+    padding: 8px;
+    display: block;
+    min-width: 0;
+  }
+  body.student-workspace #orbit-page .orbit-stat > svg:first-child {
+    display: none;
+  }
+  body.student-workspace #orbit-page .orbit-stat strong {
+    font-size: 22px;
+  }
+  body.student-workspace #orbit-page .orbit-stat small {
+    font-size: 11px;
+  }
+  body.student-workspace #orbit-page .student-upcoming {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  body.student-workspace #orbit-page .student-upcoming > .panel,
+  body.student-workspace #orbit-page #current-learning {
+    padding: 18px;
+  }
+  body.student-workspace #orbit-page .orbit-continue-body {
+    grid-template-columns: 85px minmax(0,1fr);
+    gap: 14px;
+  }
+  body.student-workspace #orbit-page .orbit-lesson-thumbnail {
+    height: 120px;
+  }
+  body.student-workspace #orbit-page .orbit-continue-body h3 {
+    font-size: 16px;
+  }
+  body.student-workspace #orbit-page .orbit-continue-body .button {
+    width: 100%;
+    font-size: 12px !important;
+    padding-inline: 10px !important;
+  }
+  body.student-workspace #orbit-page .student-destination-list {
+    grid-template-columns: 1fr 1fr;
+    gap: 0 18px;
+  }
+  body.student-workspace #orbit-page .student-explore-grid {
+    grid-template-columns: 1fr;
+  }
+  body.student-workspace #orbit-page :is(.learning-hero-copy > h2, .discovery-hero h2) {
+    font-size: 24px;
+  }
+  body.student-workspace #orbit-page .learning-scene {
+    max-height: 200px;
+  }
+  body.student-workspace #orbit-page :is(input, select, textarea) {
+    font-size: 16px;
+  }
+  body.student-workspace #orbit-page .student-achievement-row {
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+  body.student-workspace #orbit-page .student-achievement-row > .btn {
+    margin-inline-start: 44px;
+  }
+  body.student-workspace #orbit-page .settings-mascot {
+    max-height: 120px;
+  }
+}
+@media (prefers-reduced-motion:reduce) {
+  body.student-workspace #orbit-page *,
+  body.student-workspace #orbit-page *::before,
+  body.student-workspace #orbit-page *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+body.student-workspace #orbit-page .student-achievement-row.is-pending > svg {
+  color: var(--orbit-muted);
+  opacity: .35;
+}
+body.student-workspace #orbit-page .student-achievement-row.is-pending > svg path {
+  d: path('M7 10V7a5 5 0 0 1 10 0v3M5 10h14v11H5Z');
+}
+body.student-workspace[data-student-task]
+  #orbit-page
+  :is(.assignment-heading h2, .meeting-section-head h2) {
+  font-size: 18px;
+}
+body.student-workspace #orbit-page :is(.assignment-card, .meeting-card) {
+  box-shadow: none;
+  border-radius: 14px;
+}
+body.student-workspace #orbit-page .assignment-content {
+  padding-block: 4px;
+}
+body.student-workspace #orbit-page .assignment-card h3 {
+  font-size: 17px;
+}
+/* Explore ORBIT: four discoveries and two compact shortcuts, scoped to this section. */
+body.student-workspace #orbit-page #student-explore .student-destination-list {
+  display: grid;
+  grid-template-columns: repeat(12,minmax(0,1fr));
+  gap: 12px;
+  margin: 16px 0 18px;
+}
+body.student-workspace #orbit-page #student-explore .student-discovery-tile {
+  grid-column: span 5;
+  display: grid;
+  grid-template-columns: 48px minmax(0,1fr) 20px;
+  align-items: center;
+  gap: 16px;
+  min-height: 116px;
+  padding: 22px;
+  border: 1px solid var(--orbit-border);
+  border-radius: 16px;
+  background: var(--orbit-surface);
+  color: var(--orbit-ink);
+  box-shadow: 0 3px 12px #10223804;
+  text-decoration: none;
+  transition:
+    transform 200ms cubic-bezier(.16,1,.3,1),border-color 200ms,background-color 200ms;
+}
+body.student-workspace
+  #orbit-page
+  #student-explore
+  :is(.discovery-lessons, .discovery-teacher-directory) {
+  grid-column: span 7;
+}
+body.student-workspace #orbit-page #student-explore .discovery-lessons {
+  background: linear-gradient(110deg,var(--orbit-surface),#e9faf5);
+}
+body.student-workspace #orbit-page #student-explore .student-tile-icon {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: #e4f7f2;
+  color: #0f766e;
+}
+body.student-workspace #orbit-page #student-explore .student-tile-icon svg {
+  width: 25px;
+  height: 25px;
+}
+body.student-workspace #orbit-page #student-explore .student-tile-copy {
+  min-width: 0;
+}
+body.student-workspace #orbit-page #student-explore .student-tile-copy strong {
+  display: block;
+  font:
+    600 15px/1.6 StudentWorkspaceHeading,sans-serif;
+  color: var(--orbit-ink);
+}
+html[lang="en"] body.student-workspace #orbit-page #student-explore .student-tile-copy strong {
+  font-family: StudentWorkspaceEnglishHeading,sans-serif;
+}
+body.student-workspace #orbit-page #student-explore .student-tile-copy small {
+  display: block;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--orbit-muted);
+  margin-top: 5px;
+}
+body.student-workspace #orbit-page #student-explore .student-tile-arrow {
+  width: 20px;
+  height: 20px;
+  color: #0d9488;
+  transition: translate 200ms cubic-bezier(.16,1,.3,1);
+}
+html[dir="rtl"] body.student-workspace #orbit-page #student-explore .student-tile-arrow {
+  transform: scaleX(-1);
+}
+body.student-workspace #orbit-page #student-explore .student-discovery-shortcut {
+  grid-column: span 6;
+  min-height: 76px;
+  padding: 16px 22px;
+  grid-template-columns: 36px minmax(0,1fr) 20px;
+  background: transparent;
+  box-shadow: none;
+}
+body.student-workspace #orbit-page #student-explore .student-discovery-shortcut .student-tile-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: transparent;
+}
+body.student-workspace
+  #orbit-page
+  #student-explore
+  .student-discovery-shortcut
+  .student-tile-icon
+  svg {
+  width: 23px;
+  height: 23px;
+}
+body.student-workspace #orbit-page #student-explore .student-discovery-tile:focus-visible {
+  outline: 3px solid #0d9488;
+  outline-offset: 3px;
+  border-color: #0d9488;
+}
+body.student-workspace #orbit-page #student-explore .student-discovery-tile:active {
+  transform: translateY(0);
+  background: var(--orbit-soft);
+}
+body.student-workspace[data-theme="dark"] #orbit-page #student-explore .discovery-lessons {
+  background: linear-gradient(110deg,var(--orbit-surface),#163b3c);
+}
+body.student-workspace[data-theme="dark"] #orbit-page #student-explore .student-tile-icon {
+  background: #173e3d;
+  color: #7de8d6;
+}
+body.student-workspace[data-theme="dark"] #orbit-page #student-explore .student-tile-arrow {
+  color: #5eead4;
+}
+body.student-workspace[data-theme="dark"]
+  #orbit-page
+  #student-explore
+  .student-discovery-shortcut
+  .student-tile-icon {
+  background: none;
+}
+@media (hover:hover) and (pointer:fine) {
+  body.student-workspace #orbit-page #student-explore .student-discovery-tile:hover {
+    transform: translateY(-3px);
+    border-color: #0d9488;
+    background-color: color-mix(in srgb,var(--orbit-surface),#14b8a6 5%);
+  }
+  body.student-workspace
+    #orbit-page
+    #student-explore
+    .student-discovery-tile:hover
+    .student-tile-arrow {
+    translate: 3px 0;
+  }
+  html[dir="rtl"]
+    body.student-workspace
+    #orbit-page
+    #student-explore
+    .student-discovery-tile:hover
+    .student-tile-arrow {
+    translate: -3px 0;
+  }
+}
+@media (max-width:1100px) {
+  body.student-workspace #orbit-page #student-explore .student-destination-list {
+    grid-template-columns: repeat(2,minmax(0,1fr));
+  }
+  body.student-workspace #orbit-page #student-explore .student-discovery-tile {
+    grid-column: auto;
+    padding: 18px;
+    gap: 12px;
+    grid-template-columns: 40px minmax(0,1fr) 18px;
+  }
+  body.student-workspace #orbit-page #student-explore .student-tile-icon {
+    width: 40px;
+    height: 40px;
+  }
+}
+@media (max-width:560px) {
+  body.student-workspace #orbit-page #student-explore .student-destination-list {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  body.student-workspace #orbit-page #student-explore .student-discovery-tile {
+    min-height: 94px;
+    padding: 16px;
+    grid-template-columns: 40px minmax(0,1fr) 18px;
+  }
+  body.student-workspace #orbit-page #student-explore .student-discovery-shortcut {
+    min-height: 76px;
+  }
+  body.student-workspace #orbit-page #student-explore .student-tile-copy strong {
+    font-size: 14px;
+  }
+  body.student-workspace #orbit-page #student-explore .student-tile-copy small {
+    font-size: 12px;
+  }
+}
+@media (prefers-reduced-motion:reduce) {
+  body.student-workspace #orbit-page #student-explore .student-discovery-tile,
+  body.student-workspace #orbit-page #student-explore .student-tile-arrow {
+    transition: none !important;
+    transform: none !important;
+    translate: none !important;
+  }
+}
+/* Keep directionality even when the movement itself is disabled. */
+@media (prefers-reduced-motion:reduce) {
+  html[dir="rtl"] body.student-workspace #orbit-page #student-explore .student-tile-arrow {
+    transform: scaleX(-1) !important;
+  }
+}

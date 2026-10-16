@@ -1,0 +1,80 @@
+#orbit-page .orbit-feature-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  transition:
+    transform .2s ease,box-shadow .2s ease,border-color .2s ease;
+}
+#orbit-page .orbit-feature-link:hover {
+  transform: translateY(-4px);
+  border-color: #9c7cff;
+  box-shadow: 0 14px 40px #7352c322;
+}
+#orbit-page .orbit-feature-link:focus-visible,
+#orbit-page .orbit-journey-stages button:focus-visible {
+  outline: 3px solid #8969ed;
+  outline-offset: 5px;
+}
+#orbit-page #features {
+  scroll-margin-top: 100px;
+}
+#orbit-page .orbit-journey-stages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 18px;
+}
+#orbit-page .orbit-journey-stages button {
+  border: 1px solid #b7a2ed70;
+  background: #ffffffc9;
+  border-radius: 18px;
+  padding: 8px 12px;
+  color: #5b4385;
+  font: inherit;
+  cursor: pointer;
+}
+#orbit-page .orbit-journey-stages [aria-current="step"] {
+  background: #8062d9;
+  color: white;
+}
+#orbit-page .orbit-home-mobile {
+  padding: 16px;
+  display: grid;
+  gap: 12px;
+  background: #ffffffee;
+  border-radius: 16px;
+  margin: 8px 16px;
+}
+#orbit-page .orbit-home-mobile[hidden] {
+  display: none;
+}
+#orbit-page .orbit-home-mobile a {
+  padding: 8px;
+  color: #514377;
+  text-decoration: none;
+}
+#orbit-page .u-focus.on {
+  pointer-events: auto;
+}
+@media (max-width:700px) {
+  #orbit-page .orbit-journey-stages {
+    gap: 6px;
+  }
+  #orbit-page .orbit-journey-stages button {
+    font-size: 11px;
+    padding: 6px 8px;
+  }
+}
+@media (prefers-reduced-motion:reduce) {
+  #orbit-page .orbit-feature-link {
+    transition: none;
+  }
+  #orbit-page .orbit-feature-link:hover {
+    transform: none;
+  }
+}
+#orbit-page #hero .u-back {
+  top: 100px;
+  left: clamp(18px,4vw,60px);
+}

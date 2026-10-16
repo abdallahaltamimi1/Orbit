@@ -1,0 +1,74 @@
+.presentation-bar {
+  position: fixed;
+  bottom: 16px;
+  inset-inline-end: 16px;
+  z-index: 1200;
+  max-width: min(380px,calc(100vw - 32px));
+  background: var(--orbit-surface,#fff);
+  color: var(--orbit-ink,#17243a);
+  border: 1px solid var(--orbit-border,#dce4ef);
+  border-radius: 12px;
+  font:
+    14px/1.8 'Segoe UI',Tahoma,Arial,sans-serif;
+  box-shadow: 0 8px 24px rgb(20 43 74 / .12);
+}
+.presentation-bar summary {
+  cursor: pointer;
+  min-height: 44px;
+  padding: 10px 16px;
+  font-weight: 600;
+}
+.presentation-controls {
+  padding: 0 16px 16px;
+  max-height: 65dvh;
+  overflow: auto;
+}
+.presentation-controls p {
+  font-size: 13px;
+  margin: 8px 0;
+  overflow-wrap: anywhere;
+}
+.presentation-controls label {
+  display: grid;
+  gap: 8px;
+}
+.presentation-controls select,
+.presentation-controls button {
+  min-height: 44px;
+  width: 100%;
+  font: inherit;
+  border: 1px solid var(--orbit-border,#dce4ef);
+  border-radius: 10px;
+  padding: 10px;
+  background: var(--orbit-surface,#fff);
+  color: var(--orbit-ink,#17243a);
+}
+.presentation-controls button {
+  background: var(--orbit-action,#2563eb);
+  color: var(--orbit-on-action,#fff);
+  cursor: pointer;
+}
+.presentation-controls button:disabled,
+.presentation-controls select:disabled {
+  opacity: .6;
+}
+.presentation-links {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 12px 0;
+}
+.presentation-links a {
+  color: var(--orbit-ink,#17243a);
+  text-underline-offset: 4px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+.presentation-bar :focus-visible {
+  outline: 3px solid var(--orbit-focus,#2563eb);
+  outline-offset: 3px;
+}
+body.presentation-active {
+  padding-bottom: 88px;
+}

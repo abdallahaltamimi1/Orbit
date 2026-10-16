@@ -1,0 +1,552 @@
+@import url('../shared/experience.css');
+#orbit-page .setup-grid {
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 0 20px;
+}
+#orbit-page .setup-grid .wide {
+  grid-column: 1/-1;
+}
+#orbit-page .planner-split {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) 270px;
+  gap: 22px;
+}
+#orbit-page .plans-list {
+  display: grid;
+  gap: 14px;
+}
+#orbit-page .plan-item {
+  border: 1px solid var(--line);
+  padding: 16px;
+  border-radius: 14px;
+  background: var(--panel);
+}
+#orbit-page .plan-item strong {
+  display: block;
+  margin-bottom: 9px;
+}
+#orbit-page .plan-item button {
+  font-size: 12px;
+}
+#orbit-page .status-note {
+  border: 1px dashed var(--orbit-accent);
+  background: var(--soft);
+  padding: 20px;
+  border-radius: 16px;
+  line-height: 1.9;
+}
+#orbit-page .table-scroll {
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+#orbit-page .plan-table {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 1050px;
+  font-size: 12px;
+}
+#orbit-page .plan-table th,
+#orbit-page .plan-table td {
+  border: 1px solid var(--line);
+  padding: 10px;
+  vertical-align: top;
+}
+#orbit-page .plan-table th {
+  background: var(--soft);
+}
+#orbit-page .plan-table textarea {
+  font-size: 12px;
+  min-height: 130px;
+  resize: vertical;
+  min-width: 105px;
+}
+#orbit-page .plan-table input {
+  padding: 7px;
+  min-width: 60px;
+}
+#orbit-page .plan-table .procedures {
+  min-width: 175px;
+}
+#orbit-page .plan-heading {
+  text-align: center;
+}
+#orbit-page .plan-metadata {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 10px;
+  border: 1px solid var(--line);
+  padding: 18px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  font-size: 13px;
+}
+#orbit-page .reflect-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+#orbit-page .reflect-grid textarea {
+  min-height: 110px;
+}
+#orbit-page .timing {
+  color: var(--purple);
+  font-weight: 700;
+}
+#orbit-page .error {
+  color: #be3653;
+}
+#orbit-page #print-area {
+  display: none;
+}
+#orbit-page .worksheet {
+  min-height: 180px;
+}
+#orbit-page .follow-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+#orbit-page .follow-table td,
+#orbit-page .follow-table th {
+  border: 1px solid var(--line);
+  padding: 8px;
+}
+#orbit-page .follow-table input {
+  min-width: 110px;
+}
+#orbit-page .ai-steps {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+#orbit-page .ai-steps span {
+  background: var(--soft);
+  color: var(--purple);
+  padding: 8px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+}
+#orbit-page .plan-paper {
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  background: var(--panel);
+}
+@media (max-width:900px) {
+  #orbit-page .planner-split {
+    grid-template-columns: 1fr;
+  }
+  #orbit-page .setup-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width:550px) {
+  #orbit-page .setup-grid,
+  #orbit-page .reflect-grid,
+  #orbit-page .plan-metadata {
+    grid-template-columns: 1fr;
+  }
+  #orbit-page .wrap {
+    padding: 20px 12px;
+  }
+  #orbit-page .plan-paper {
+    padding: 12px;
+  }
+}
+@media print {
+  @page {
+    size: A4 landscape;
+    margin: 12mm;
+  }
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  #orbit-page body > * {
+    display: none !important;
+  }
+  #orbit-page #print-area {
+    display: block !important;
+  }
+  #orbit-page #print-area .plan-paper {
+    padding: 0;
+    border: 0;
+  }
+  #orbit-page #print-area .plan-table {
+    min-width: 0;
+    table-layout: fixed;
+    width: 100%;
+    font-size: 8pt;
+  }
+  #orbit-page #print-area th,
+  #orbit-page #print-area td {
+    border: 1px solid #222;
+    padding: 5px;
+    overflow-wrap: anywhere;
+  }
+  #orbit-page #print-area th {
+    background: #eee;
+  }
+  #orbit-page #print-area .print-value {
+    white-space: pre-wrap;
+    min-height: 24px;
+    line-height: 1.6;
+  }
+  #orbit-page #print-area .plan-metadata {
+    grid-template-columns: repeat(3,1fr);
+    font-size: 9pt;
+  }
+  #orbit-page #print-area .reflect-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  #orbit-page #print-area .table-scroll {
+    overflow: visible;
+    border: 0;
+  }
+  #orbit-page #print-area .plan-heading {
+    font-size: 15pt;
+  }
+  #orbit-page #print-area .follow-table {
+    table-layout: fixed;
+    font-size: 8pt;
+  }
+  #orbit-page #print-area h2 {
+    font-size: 12pt;
+  }
+  #orbit-page #print-area thead {
+    display: table-header-group;
+  }
+  #orbit-page #print-area tr {
+    break-inside: avoid;
+  }
+  #orbit-page #print-area .plan-paper {
+    break-after: page;
+  }
+  #orbit-page #print-area a {
+    color: black;
+  }
+  #orbit-page #print-area .screen-only {
+    display: none !important;
+  }
+}
+#orbit-page #plan-form,
+#orbit-page .plan-paper,
+#orbit-page .reflect-grid > *,
+#orbit-page .planner-split > * {
+  min-width: 0;
+}
+#orbit-page .table-scroll {
+  max-width: 100%;
+  width: 100%;
+}
+#orbit-page .plan-metadata span {
+  overflow-wrap: anywhere;
+}
+@media print {
+  #orbit-page #print-area .print-answer-page {
+    break-before: page;
+  }
+  #orbit-page #print-area .plan-metadata {
+    border-color: #333;
+    border-radius: 0;
+  }
+}
+
+#orbit-page {
+  --purple: var(--orbit-accent);
+  --bg: var(--orbit-canvas);
+  --text: var(--orbit-ink);
+  --panel: var(--orbit-surface);
+  --line: var(--orbit-border);
+  --muted: var(--orbit-muted);
+}
+#orbit-page .wrap {
+  max-width: 1300px;
+  padding: 32px;
+}
+#orbit-page h1 {
+  font-size: 32px;
+  letter-spacing: -.5px;
+}
+#orbit-page .planner-tools {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin: 20px 0;
+}
+#orbit-page .planner-kicker {
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: var(--purple);
+  font-weight: 600;
+}
+#orbit-page .planner-hero {
+  background: var(--soft);
+  border: 1px solid var(--line);
+  color: var(--text);
+  padding: 32px;
+  border-radius: 20px;
+  margin: 24px 0 30px;
+}
+#orbit-page .planner-hero:after {
+  display: none;
+}
+#orbit-page .planner-hero h2 {
+  font-size: 30px;
+  margin: 0 0 12px;
+}
+#orbit-page .planner-hero p {
+  font-size: 14px;
+  color: var(--muted);
+  max-width: 740px;
+  margin-bottom: 24px;
+}
+#orbit-page .ai-steps {
+  gap: 20px;
+}
+#orbit-page .ai-steps span {
+  border-radius: 8px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  font-size: 12px;
+  padding: 8px 16px;
+}
+#orbit-page .planner-split {
+  grid-template-columns: minmax(0,1fr) 280px;
+  gap: 24px;
+}
+#orbit-page .planner-setup {
+  padding: 30px;
+  border-radius: 18px;
+  animation: none;
+}
+#orbit-page .planner-form-heading h2 {
+  font-size: 24px;
+  margin: 0 0 12px;
+}
+#orbit-page .planner-form-heading p {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.8;
+  margin-bottom: 24px;
+}
+#orbit-page .setup-grid {
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 8px 24px;
+}
+#orbit-page .setup-grid label {
+  font-size: 12px;
+  color: var(--muted);
+}
+#orbit-page .setup-grid input,
+#orbit-page .setup-grid select,
+#orbit-page .setup-grid textarea {
+  display: block;
+  margin-top: 8px;
+  font-size: 14px;
+  min-height: 46px;
+  color: var(--text);
+}
+#orbit-page .setup-grid label:has(textarea) {
+  grid-column: 1/-1;
+}
+#orbit-page .setup-section-title {
+  grid-column: 1/-1;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  font-size: 18px;
+  margin: 16px 0;
+  padding-top: 22px;
+  border-top: 1px solid var(--line);
+}
+#orbit-page .setup-section-title span {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  background: var(--soft);
+  border-radius: 8px;
+  color: var(--purple);
+  font-size: 12px;
+}
+#orbit-page .status-note {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 18px;
+  font-size: 12px;
+  margin: 24px 0;
+  color: var(--muted);
+}
+#orbit-page .status-note b {
+  color: var(--purple);
+  font-size: 13px;
+}
+#orbit-page .planner-sidebar {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 24px;
+}
+#orbit-page .planner-sidebar h2 {
+  font-size: 21px;
+  margin: 14px 0 8px;
+}
+#orbit-page .planner-sidebar-heading p {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 0 0 22px;
+}
+#orbit-page .planner-empty {
+  padding: 26px 0;
+  text-align: center;
+  border-top: 1px solid var(--line);
+}
+#orbit-page .planner-empty > span {
+  font-size: 45px;
+  color: var(--purple);
+}
+#orbit-page .planner-empty h3 {
+  font-size: 17px;
+  margin: 20px 0 12px;
+}
+#orbit-page .planner-empty p {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.9;
+}
+#orbit-page .plan-item {
+  padding: 18px;
+  border-radius: 12px;
+}
+#orbit-page .plan-item strong {
+  font-size: 15px;
+  overflow-wrap: anywhere;
+}
+#orbit-page .plan-item small {
+  color: var(--muted);
+  font-size: 11px;
+}
+#orbit-page .plan-item p {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 0;
+}
+#orbit-page .plan-item button {
+  font-size: 11px;
+  padding: 8px 10px;
+  margin: 0;
+}
+#orbit-page .toolbar {
+  padding: 18px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+#orbit-page .toolbar .btn {
+  font-size: 13px;
+}
+#orbit-page #save-status:empty {
+  display: none;
+}
+#orbit-page #save-status:not(:empty) {
+  padding: 14px;
+  background: var(--soft);
+  border-radius: 10px;
+  font-size: 13px;
+  color: var(--purple);
+}
+#orbit-page .plan-paper {
+  padding: 28px;
+  border-radius: 18px;
+}
+#orbit-page .plan-heading {
+  font-size: 26px;
+  margin: 12px 0 24px;
+}
+#orbit-page .reflect-grid h2 {
+  font-size: 20px;
+  line-height: 1.6;
+}
+#orbit-page #plan-form > .card {
+  border-radius: 18px;
+  margin-top: 24px;
+  animation: none;
+}
+#orbit-page button:disabled {
+  opacity: .55;
+  cursor: default;
+}
+@media (max-width:1050px) {
+  #orbit-page .wrap {
+    padding: 26px 20px;
+  }
+  #orbit-page .planner-split {
+    grid-template-columns: minmax(0,1fr) 240px;
+  }
+  #orbit-page .planner-setup {
+    padding: 24px;
+  }
+}
+@media (max-width:900px) {
+  #orbit-page .planner-split {
+    grid-template-columns: 1fr;
+  }
+  #orbit-page .plans-list {
+    grid-template-columns: repeat(2,minmax(0,1fr));
+  }
+  #orbit-page .planner-empty {
+    grid-column: 1/-1;
+  }
+}
+@media (max-width:540px) {
+  #orbit-page .wrap {
+    padding: 24px 16px;
+  }
+  #orbit-page h1 {
+    font-size: 27px;
+  }
+  #orbit-page .planner-hero {
+    padding: 24px;
+  }
+  #orbit-page .planner-hero h2 {
+    font-size: 25px;
+  }
+  #orbit-page .ai-steps {
+    gap: 8px;
+  }
+  #orbit-page .ai-steps span {
+    padding: 7px 10px;
+    font-size: 11px;
+  }
+  #orbit-page .setup-grid,
+  #orbit-page .plans-list {
+    grid-template-columns: 1fr;
+  }
+  #orbit-page .planner-setup {
+    padding: 22px;
+  }
+  #orbit-page .planner-tools .btn {
+    font-size: 12px;
+  }
+  #orbit-page .planner-kicker {
+    font-size: 10px;
+    letter-spacing: 0;
+  }
+  #orbit-page .plan-paper {
+    padding: 18px;
+  }
+}
+@media print {
+  #orbit-page .toolbar,
+  #orbit-page .planner-tools {
+    display: none !important;
+  }
+  #orbit-page #print-area .plan-paper {
+    padding: 0;
+  }
+}

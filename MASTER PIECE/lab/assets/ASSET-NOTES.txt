@@ -1,0 +1,7 @@
+ORBIT Car Lab image asset
+Saved project asset: lab/assets/realistic-car.png
+Generation mode: built-in image_gen tool, transparent_background=true.
+RGBA PNG with actual transparency. The original generated file is preserved. No raster edits were made; animated wheel details are composited by CSS at runtime.
+
+Final generation prompt:
+Use case: product-mockup / scientific-educational. Asset type: transparent vehicle sprite for an interactive high-school car physics experiment. Create a single photorealistic silver-white contemporary compact hatchback in an EXACT pure side profile, facing RIGHT. Entire car visible bumper to bumper, wheels round and level on a horizontal ground plane, no perspective foreshortening, realistic black tires and metallic five-spoke rims, subtle realistic daylight reflections, dark glass, restrained fine automotive detailing. Center the car in a wide composition with tight useful framing and modest transparent padding. Genuine transparent alpha background, including the space under the chassis and around the wheels. No road, no ground plane, no cast shadow, no environment, no people, no letters, no logos, no watermark. Premium real automotive product photography, never cartoon, illustration, toy or stylized geometry. This sprite will rotate with an inclined road and translate along it in a browser physics simulation.

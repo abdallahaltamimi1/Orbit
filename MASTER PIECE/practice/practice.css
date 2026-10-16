@@ -1,0 +1,322 @@
+@import url('../shared/experience.css');
+#orbit-page {
+  --purple: var(--orbit-accent);
+  --bg: var(--orbit-canvas);
+  --text: var(--orbit-ink);
+  --panel: var(--orbit-surface);
+  --line: var(--orbit-border);
+  --muted: var(--orbit-muted);
+}
+#orbit-page .wrap {
+  max-width: 1280px;
+  padding: 32px;
+}
+#orbit-page h1 {
+  font-size: 32px;
+  letter-spacing: -.6px;
+}
+#orbit-page .practice-tools {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+#orbit-page .practice-back {
+  font-size: 14px;
+  color: var(--muted);
+}
+#orbit-page .practice-intro {
+  background: var(--soft);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 30px 34px;
+  margin-bottom: 28px;
+}
+#orbit-page .practice-kicker {
+  color: var(--purple);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+#orbit-page .practice-intro h2 {
+  font-size: 30px;
+  line-height: 1.5;
+  margin: 14px 0 8px;
+}
+#orbit-page .practice-intro > p {
+  font-size: 15px;
+  margin: 0;
+  color: var(--muted);
+}
+#orbit-page .practice-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+#orbit-page .practice-meta span {
+  font-size: 12px;
+  padding: 5px 12px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+#orbit-page .practice-layout {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) 300px;
+  gap: 24px;
+  align-items: start;
+}
+#orbit-page .card {
+  padding: 26px;
+  border-radius: 18px;
+  animation: none;
+  box-shadow: 0 6px 20px color-mix(in srgb,var(--orbit-space) 1.18%,transparent);
+}
+#orbit-page .question-card {
+  margin-bottom: 22px;
+  scroll-margin-top: 24px;
+}
+#orbit-page .question-card header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 20px;
+}
+#orbit-page .question-number {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: var(--soft);
+  color: var(--purple);
+  font-size: 15px;
+  font-weight: 700;
+}
+#orbit-page .question-card h2 {
+  font-size: 17px;
+  margin: 0;
+}
+#orbit-page .question-state {
+  margin-inline-start: auto;
+  font-size: 12px;
+  color: var(--purple);
+}
+#orbit-page .question-text {
+  font-size: 18px;
+  line-height: 2;
+  margin: 24px 0;
+}
+#orbit-page .question-card form {
+  display: flex;
+  gap: 16px;
+  align-items: end;
+}
+#orbit-page .question-card label {
+  flex: 1;
+  font-size: 12px;
+  color: var(--muted);
+  margin: 0;
+}
+#orbit-page .question-card input {
+  display: block;
+  margin-top: 8px;
+  min-height: 48px;
+  font-size: 16px;
+}
+#orbit-page .question-card form .btn {
+  margin: 0;
+  min-height: 48px;
+  font-size: 13px;
+  white-space: nowrap;
+}
+#orbit-page .question-feedback:empty {
+  display: none;
+}
+#orbit-page .question-feedback {
+  margin-top: 22px;
+  padding: 18px;
+  background: var(--soft);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  font-size: 14px;
+}
+#orbit-page .question-feedback p {
+  margin: 0 0 8px;
+}
+#orbit-page .question-feedback[data-state="correct"] {
+  border-color: var(--purple);
+}
+#orbit-page .question-feedback[data-state="incorrect"] > p:first-child {
+  color: var(--orbit-error);
+}
+#orbit-page .question-feedback .solution {
+  padding: 0;
+  background: none;
+}
+#orbit-page .solution h3 {
+  font-size: 15px;
+  margin: 0 0 12px;
+}
+#orbit-page .solution-formula {
+  font-size: 21px;
+  overflow-wrap: anywhere;
+}
+#orbit-page .practice-progress h2 {
+  font-size: 22px;
+  margin: 14px 0;
+}
+#orbit-page #practice-count {
+  display: block;
+  font-size: 16px;
+  color: var(--purple);
+  margin: 20px 0 12px;
+}
+#orbit-page .practice-progress > p {
+  font-size: 12px;
+  color: var(--muted);
+}
+#orbit-page progress {
+  display: block;
+  width: 100%;
+  height: 6px;
+  border: 0;
+  border-radius: 10px;
+  accent-color: var(--purple);
+  overflow: hidden;
+}
+#orbit-page progress::-webkit-progress-bar {
+  background: var(--soft);
+}
+#orbit-page progress::-webkit-progress-value {
+  background: var(--purple);
+  border-radius: 10px;
+}
+#orbit-page .practice-progress nav {
+  display: grid;
+  margin: 20px 0;
+}
+#orbit-page .practice-progress nav a {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 13px;
+}
+#orbit-page .practice-progress nav span {
+  font-size: 12px;
+  color: var(--muted);
+}
+#orbit-page .practice-progress nav b {
+  margin-inline-start: auto;
+  color: var(--purple);
+}
+#orbit-page .practice-progress .btn {
+  display: block;
+  text-align: center;
+  font-size: 13px;
+}
+#orbit-page .practice-tip h3 {
+  font-size: 17px;
+  margin: 14px 0 8px;
+}
+#orbit-page .practice-tip p {
+  font-size: 13px;
+  color: var(--muted);
+}
+#orbit-page .practice-formula {
+  text-align: center;
+  background: var(--soft);
+  color: var(--purple);
+  padding: 14px;
+  border-radius: 10px;
+  font-size: 23px;
+}
+#orbit-page .ai-box {
+  border-style: solid;
+  padding: 24px;
+}
+#orbit-page .ai-box h2 {
+  font-size: 17px;
+}
+#orbit-page .ai-box p,
+#orbit-page .ai-box label {
+  font-size: 12px;
+  color: var(--muted);
+}
+#orbit-page .ai-box .btn {
+  width: 100%;
+  font-size: 12px;
+  opacity: .65;
+  cursor: default;
+}
+#orbit-page .preview-img {
+  width: 100%;
+}
+@media (max-width:1000px) {
+  #orbit-page .wrap {
+    padding: 28px 20px;
+  }
+  #orbit-page .practice-layout {
+    grid-template-columns: minmax(0,1fr) 260px;
+  }
+  #orbit-page .question-card form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  #orbit-page .question-card form .btn {
+    align-self: start;
+  }
+}
+@media (max-width:800px) {
+  #orbit-page .practice-layout {
+    grid-template-columns: 1fr;
+  }
+  #orbit-page .practice-sidebar {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+  #orbit-page .practice-sidebar .card {
+    margin: 0;
+  }
+  #orbit-page .practice-sidebar .ai-box {
+    grid-column: 1/-1;
+  }
+}
+@media (max-width:540px) {
+  #orbit-page .wrap {
+    padding: 24px 16px;
+  }
+  #orbit-page h1 {
+    font-size: 26px;
+  }
+  #orbit-page .practice-intro {
+    padding: 24px;
+  }
+  #orbit-page .practice-intro h2 {
+    font-size: 25px;
+  }
+  #orbit-page .practice-sidebar {
+    grid-template-columns: 1fr;
+  }
+  #orbit-page .card {
+    padding: 22px;
+  }
+  #orbit-page .question-text {
+    font-size: 16px;
+  }
+  #orbit-page .question-card header {
+    gap: 10px;
+  }
+  #orbit-page .question-card h2 {
+    font-size: 16px;
+  }
+  #orbit-page .practice-tools .btn {
+    font-size: 12px;
+  }
+}

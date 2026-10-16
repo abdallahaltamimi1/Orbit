@@ -1,0 +1,199 @@
+@import url("./typography-refinement.css");
+#orbit-language-button {
+  position: fixed;
+  top: 18px;
+  inset-inline-end: 24px;
+  z-index: 90;
+  border: 1px solid var(--orbit-border,var(--orbit-soft));
+  border-radius: 10px;
+  background: var(--orbit-surface,#fff);
+  color: var(--orbit-accent,var(--orbit-accent));
+  padding: 9px 14px;
+  font: 600 12px var(--orbit-font,'Segoe UI',sans-serif);
+  cursor: pointer;
+  box-shadow: 0 3px 10px color-mix(in srgb,var(--orbit-space) 3.14%,transparent);
+}
+#orbit-language-button:focus-visible {
+  outline: 3px solid var(--orbit-focus,var(--orbit-accent));
+  outline-offset: 3px;
+}
+[data-obsolete-language="true"] {
+  display: none !important;
+}
+#orbit-page .bar nav {
+  padding-inline-end: 100px;
+}
+@media (max-width:780px) {
+  #orbit-language-button {
+    top: 12px;
+    inset-inline-end: 65px;
+    padding: 8px 12px;
+  }
+  #orbit-page .bar nav {
+    padding-inline-end: 0;
+  }
+}
+/* Shared finishing pass for the remaining product pages. */
+#orbit-page:is(
+  [data-orbit-page="quiz"],
+  [data-orbit-page="result"],
+  [data-orbit-page="achievements"],
+  [data-orbit-page="exchange"],
+  [data-orbit-page="class-details"],
+  [data-orbit-page="school-dashboard"],
+  [data-orbit-page="teacher-studio"],
+  [data-orbit-page="student-profile"]
+) {
+  --purple: var(--orbit-accent);
+  --text: var(--orbit-ink);
+  --muted: var(--orbit-muted);
+  --panel: var(--orbit-surface);
+  --line: var(--orbit-border);
+}
+#orbit-page:is(
+    [data-orbit-page="quiz"],
+    [data-orbit-page="result"],
+    [data-orbit-page="achievements"],
+    [data-orbit-page="exchange"],
+    [data-orbit-page="class-details"],
+    [data-orbit-page="school-dashboard"],
+    [data-orbit-page="teacher-studio"],
+    [data-orbit-page="student-profile"]
+  )
+  .card {
+  border-radius: 18px;
+  box-shadow: 0 6px 20px color-mix(in srgb,var(--orbit-space) 1.57%,transparent);
+}
+#orbit-page:is(
+    [data-orbit-page="quiz"],
+    [data-orbit-page="result"],
+    [data-orbit-page="achievements"],
+    [data-orbit-page="exchange"],
+    [data-orbit-page="class-details"],
+    [data-orbit-page="school-dashboard"],
+    [data-orbit-page="teacher-studio"],
+    [data-orbit-page="student-profile"]
+  )
+  :is(.content, .wrap) {
+  max-width: 1280px;
+  margin-inline: auto;
+  min-width: 0;
+}
+#orbit-page:is(
+    [data-orbit-page="quiz"],
+    [data-orbit-page="result"],
+    [data-orbit-page="achievements"],
+    [data-orbit-page="exchange"],
+    [data-orbit-page="class-details"]
+  )
+  :is(.hero, .studio-intro) {
+  background: var(--soft,var(--orbit-soft));
+  color: var(--orbit-ink);
+  border: 1px solid var(--orbit-border);
+  border-radius: 20px;
+}
+#orbit-page:is(
+    [data-orbit-page="quiz"],
+    [data-orbit-page="result"],
+    [data-orbit-page="achievements"],
+    [data-orbit-page="exchange"],
+    [data-orbit-page="class-details"]
+  )
+  .hero:after {
+  display: none;
+}
+#orbit-page:is(
+    [data-orbit-page="quiz"],
+    [data-orbit-page="result"],
+    [data-orbit-page="achievements"],
+    [data-orbit-page="exchange"],
+    [data-orbit-page="class-details"]
+  )
+  .top-right
+  > .pill.gold {
+  display: none;
+}
+#orbit-page .orbit-form input,
+#orbit-page .orbit-form select,
+#orbit-page .orbit-form textarea {
+  max-width: 100%;
+}
+@media (max-width:540px) {
+  #orbit-page:is(
+      [data-orbit-page="quiz"],
+      [data-orbit-page="result"],
+      [data-orbit-page="achievements"],
+      [data-orbit-page="exchange"],
+      [data-orbit-page="class-details"]
+    )
+    .hero {
+    padding: 24px;
+  }
+  #orbit-page .notification-actions,
+  #orbit-page .application-card footer {
+    min-width: 0;
+  }
+}
+@media print {
+  #orbit-language-button {
+    display: none;
+  }
+}
+/* Shared presentation of remaining account and school forms. */
+#orbit-page:is(
+    [data-orbit-page="registration"],
+    [data-orbit-page="school-registration"],
+    [data-orbit-page="school-dashboard"],
+    [data-orbit-page="admin"]
+  )
+  .card {
+  border-radius: 18px;
+  border-color: var(--orbit-border);
+  box-shadow: 0 6px 20px color-mix(in srgb,var(--orbit-space) 1.57%,transparent);
+}
+#orbit-page:is([data-orbit-page="registration"], [data-orbit-page="school-registration"])
+  :is(.register-card, .onboarding-story) {
+  border-radius: 20px;
+}
+#orbit-page:is(
+    [data-orbit-page="school-dashboard"],
+    [data-orbit-page="teacher-studio"],
+    [data-orbit-page="student-profile"]
+  )
+  .hero {
+  background: var(--soft,var(--orbit-soft));
+  color: var(--orbit-ink);
+  border: 1px solid var(--orbit-border);
+  border-radius: 20px;
+}
+#orbit-page:is(
+    [data-orbit-page="school-dashboard"],
+    [data-orbit-page="teacher-studio"],
+    [data-orbit-page="student-profile"]
+  )
+  .hero:after {
+  display: none;
+}
+#orbit-page:is(
+    [data-orbit-page="school-dashboard"],
+    [data-orbit-page="school-registration"],
+    [data-orbit-page="registration"]
+  )
+  :is(input, select, textarea) {
+  accent-color: var(--orbit-accent);
+}
+#orbit-page:is([data-orbit-page="about"], [data-orbit-page="student-profile"]) p {
+  line-height: 1.9;
+}
+#orbit-page :is(.card, .register-card, .review-grid > *, .form-grid > *) {
+  min-width: 0;
+}
+#orbit-page :is(.card, .post, .plan-item, .application-card) :is(h2, h3) {
+  overflow-wrap: anywhere;
+}
+#orbit-language-button {
+  min-width: 68px;
+}
+body:has(#admin-app) #orbit-language-button {
+  inset-inline-end: 100px;
+}

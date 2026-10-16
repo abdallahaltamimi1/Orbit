@@ -1,0 +1,4 @@
+node_modules/
+.orbit-backup/
+playwright-report/
+test-results/

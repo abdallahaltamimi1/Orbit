@@ -1,0 +1,529 @@
+body[data-orbit-role="student"] {
+  --orbit-role-accent: var(--orbit-turquoise);
+  --orbit-role-soft: #e2f7f3;
+}
+body[data-orbit-role="teacher"] {
+  --orbit-accent: #08786f;
+  --orbit-action: #08786f;
+  --orbit-focus: #08786f;
+  --orbit-soft: #e4f4f1;
+  --orbit-role-accent: var(--orbit-teal);
+  --orbit-role-soft: #e4f4f1;
+}
+body[data-orbit-role="school"] {
+  --orbit-accent: var(--orbit-indigo);
+  --orbit-action: var(--orbit-indigo);
+  --orbit-focus: var(--orbit-indigo);
+  --orbit-soft: #edf0fc;
+  --orbit-role-accent: var(--orbit-indigo);
+  --orbit-role-soft: #edf0fc;
+}
+body[data-theme="dark"][data-orbit-role="teacher"] {
+  --orbit-accent: #7cdecf;
+  --orbit-focus: #7cdecf;
+  --orbit-soft: #173d41;
+  --orbit-role-soft: #173d41;
+}
+body[data-theme="dark"][data-orbit-role="school"] {
+  --orbit-accent: #b8c5ff;
+  --orbit-focus: #b8c5ff;
+  --orbit-soft: #283955;
+  --orbit-role-soft: #283955;
+}
+body[data-theme="dark"][data-orbit-role="student"] {
+  --orbit-role-soft: #123b3b;
+}
+#orbit-page[data-orbit-page]:not([data-orbit-page="hompage"]) {
+  --purple: var(--orbit-accent);
+  --purple-deep: var(--orbit-action);
+  --blue: var(--orbit-accent);
+  --bg: var(--orbit-canvas);
+  --panel: var(--orbit-surface);
+  --text: var(--orbit-ink);
+  --muted: var(--orbit-muted);
+  --line: var(--orbit-border);
+  --soft: var(--orbit-soft);
+  --side: var(--orbit-surface);
+  --error: var(--orbit-error);
+}
+#orbit-page[data-orbit-page] :is(.btn:not(.soft):not(.danger), .button.primary, .login-button) {
+  background: var(--orbit-action);
+  color: var(--orbit-on-action);
+}
+#orbit-page[data-orbit-page] .btn.soft {
+  background: var(--orbit-soft);
+  color: var(--orbit-accent);
+}
+#orbit-page[data-orbit-page] :is(input, textarea, select) {
+  border-color: var(--orbit-border);
+  background-color: var(--orbit-surface);
+  color: var(--orbit-ink);
+}
+#orbit-page[data-orbit-page] :is(button, a) {
+  -webkit-tap-highlight-color: transparent;
+}
+#orbit-page[data-orbit-page] :is(button, input, select, textarea):focus-visible {
+  outline: 2px solid var(--orbit-focus);
+  outline-offset: 3px;
+}
+#orbit-page[data-orbit-page="student-dashboard"] .welcome-orbit {
+  background: var(--orbit-midnight);
+  border-radius: 24px;
+  color: #fff;
+  box-shadow: 0 20px 48px #142b4a18;
+}
+#orbit-page[data-orbit-page="student-dashboard"] .hero-text h2 {
+  color: #fff;
+  font-size: clamp(30px,3.6vw,46px);
+}
+#orbit-page[data-orbit-page="student-dashboard"] .hero-text > p {
+  color: #d4e3f7;
+  font-size: 15px;
+}
+#orbit-page[data-orbit-page="student-dashboard"] .hero-text .orbital-button {
+  background: var(--orbit-yellow);
+  color: var(--orbit-midnight);
+  box-shadow: none;
+}
+#orbit-page[data-orbit-page="student-dashboard"] .hero-foot {
+  color: var(--orbit-muted);
+}
+#orbit-page[data-orbit-page="student-dashboard"] .hero-status {
+  color: var(--orbit-midnight);
+  background: var(--orbit-yellow);
+}
+body[data-orbit-role="student"]
+  #orbit-page[data-orbit-page="student-dashboard"]
+  .hero-text
+  .button.primary {
+  background: var(--orbit-yellow);
+  color: var(--orbit-midnight);
+}
+body[data-orbit-role="student"] #orbit-page[data-orbit-page="student-dashboard"] .radial-value {
+  stroke: var(--ring-color);
+}
+#orbit-page[data-orbit-page="student-dashboard"] .mission-track {
+  background: var(--orbit-surface);
+}
+#orbit-page[data-orbit-page="student-dashboard"] .quick-destination {
+  border-radius: 18px;
+  background: var(--orbit-soft);
+  color: var(--orbit-midnight);
+  min-height: 100px;
+}
+#orbit-page[data-orbit-page="student-dashboard"] .quick-destination:nth-child(2) {
+  background: #ddf7ef;
+}
+#orbit-page[data-orbit-page="student-dashboard"] .quick-destination:nth-child(3) {
+  background: #fff3d4;
+}
+#orbit-page[data-orbit-page="student-dashboard"] .quick-destination:nth-child(4) {
+  background: #ffebe8;
+}
+#orbit-page[data-orbit-page="student-dashboard"] .quick-destination:nth-child(5) {
+  background: #e7eeff;
+}
+#orbit-page[data-orbit-page="student-dashboard"] .continue-panel {
+  background: var(--orbit-soft);
+  border-radius: 22px;
+}
+#orbit-page[data-orbit-page="student-dashboard"] .milestone.unlocked .milestone-planet {
+  background: var(--orbit-role-soft);
+  color: var(--orbit-accent);
+  border-color: var(--orbit-border);
+}
+#orbit-page[data-orbit-page="student-dashboard"] .orbit-discovery-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--orbit-accent);
+  margin-top: 18px;
+}
+#orbit-page[data-orbit-page="teacher-dashboard"] .studio-banner {
+  background: var(--orbit-role-soft);
+  border: 0;
+  border-radius: 20px;
+  padding: 32px;
+}
+#orbit-page[data-orbit-page="teacher-dashboard"] .studio-banner h2 {
+  max-width: 22ch;
+}
+#orbit-page[data-orbit-page="teacher-dashboard"] .workspace-grid {
+  gap: 24px;
+}
+#orbit-page[data-orbit-page="teacher-dashboard"] .metrics > div {
+  border-radius: 14px;
+  background: var(--orbit-surface);
+}
+#orbit-page[data-orbit-page="teacher-dashboard"] .metrics > div:first-child {
+  background: var(--orbit-role-soft);
+}
+#orbit-page[data-orbit-page="school-dashboard"] .hero {
+  background: var(--orbit-role-soft);
+  border: 0;
+  padding: 32px;
+  border-radius: 18px;
+}
+#orbit-page[data-orbit-page="school-dashboard"] :is(.card, .job-card) {
+  border-radius: 14px;
+}
+#orbit-page[data-orbit-page="teacher-profile"] .profile-cover {
+  background: var(--orbit-midnight);
+  color: #fff;
+  border-radius: 20px;
+}
+#orbit-page[data-orbit-page="teacher-profile"] .profile-cover :is(h1, h2, p, small) {
+  color: #fff;
+}
+#orbit-page[data-orbit-page="teacher-profile"] .profile-avatar {
+  background: var(--orbit-role-soft);
+  color: var(--orbit-accent);
+  border-radius: 20px;
+}
+#orbit-page[data-orbit-page="account-profile"] .profile-overview {
+  background: var(--orbit-role-soft,var(--orbit-soft));
+  border: 0;
+  padding: 28px;
+  border-radius: 20px;
+}
+#orbit-page[data-orbit-page="account-profile"] .profile-editor {
+  border: 0;
+  background: var(--orbit-surface);
+  padding: 32px;
+  border-radius: 20px;
+}
+#orbit-page[data-orbit-page="account-profile"] .profile-portrait {
+  border-radius: 24px;
+  background: var(--orbit-surface);
+  color: var(--orbit-accent);
+}
+#orbit-page[data-orbit-page="account-profile"] .profile-data > div {
+  padding: 18px 0;
+  border-bottom: 1px solid var(--orbit-border);
+}
+#orbit-page[data-orbit-page="account-profile"] .student-profile-learning {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--orbit-border);
+}
+#orbit-page
+  :is(.profile-avatar, .teacher-avatar, .profile-portrait, .student-avatar, .mini-avatar)
+  img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+  display: block;
+}
+#orbit-page[data-orbit-page="settings"] .settings-layout {
+  grid-template-columns: minmax(0,1fr) 300px;
+  gap: 28px;
+}
+#orbit-page[data-orbit-page="settings"] .settings-intro {
+  padding: 0;
+  background: none;
+  border: 0;
+  margin-bottom: 32px;
+}
+#orbit-page[data-orbit-page="settings"] .settings-panel {
+  padding: 32px;
+  border: 0;
+  border-radius: 20px;
+}
+#orbit-page[data-orbit-page="settings"] #settings-form fieldset {
+  padding-block: 0 26px;
+  margin-bottom: 26px;
+}
+#orbit-page[data-orbit-page="settings"] #settings-form legend span {
+  display: none;
+}
+#orbit-page[data-orbit-page="settings"] #settings-form legend {
+  font-size: 23px;
+}
+#orbit-page[data-orbit-page="settings"] .settings-preview {
+  background: var(--orbit-role-soft,var(--orbit-soft));
+  border: 0;
+}
+#orbit-page[data-orbit-page="settings"] .settings-preview-stage {
+  border-color: var(--orbit-border);
+}
+#orbit-page[data-orbit-page="settings"] .preview-orbit {
+  animation: none;
+}
+#orbit-page:is([data-orbit-page="login"], [data-orbit-page="school-login"]) .login-area {
+  background: var(--orbit-canvas);
+  padding-block: 56px;
+}
+#orbit-page:is([data-orbit-page="login"], [data-orbit-page="school-login"]) .login-heading h2 {
+  font-weight: 700;
+}
+#orbit-page:is([data-orbit-page="login"], [data-orbit-page="school-login"]) .input-box {
+  height: 56px;
+  border-radius: 12px;
+  border-color: var(--orbit-border);
+}
+#orbit-page:is([data-orbit-page="login"], [data-orbit-page="school-login"]) .password-toggle {
+  position: absolute;
+  inset-inline-end: 4px;
+  left: auto;
+  right: auto;
+  top: 50%;
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--orbit-muted);
+  padding: 10px;
+}
+html[dir="rtl"]
+  #orbit-page:is([data-orbit-page="login"], [data-orbit-page="school-login"])
+  .password-toggle {
+  left: 4px;
+  right: auto;
+}
+html[dir="ltr"]
+  #orbit-page:is([data-orbit-page="login"], [data-orbit-page="school-login"])
+  .password-toggle {
+  right: 4px;
+  left: auto;
+}
+#orbit-page:is([data-orbit-page="login"], [data-orbit-page="school-login"]) #password {
+  padding-inline: 16px 54px;
+}
+#orbit-page .password-toggle svg,
+#orbit-page .orbit-password-toggle svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+#orbit-page .orbit-password-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  border: 0;
+  background: var(--orbit-soft);
+  color: var(--orbit-accent);
+  border-radius: 8px;
+  padding: 10px;
+}
+@media (hover:hover) and (pointer:fine) {
+  #orbit-page .password-toggle:hover {
+    background: var(--orbit-soft);
+    color: var(--orbit-accent);
+  }
+}
+@media (max-width:900px) {
+  #orbit-page[data-orbit-page="settings"] .settings-layout {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width:540px) {
+  #orbit-page[data-orbit-page] :is(.profile-editor, .profile-overview, .settings-panel) {
+    padding: 22px;
+  }
+  #orbit-page[data-orbit-page="student-dashboard"] .hero-text > p {
+    font-size: 14px;
+  }
+  #orbit-page[data-orbit-page="student-dashboard"] .welcome-orbit {
+    border-radius: 20px;
+  }
+}
+
+/* Reviewed component corrections: semantic text, stable controls and mobile identity. */
+#orbit-page[data-orbit-page]:not([data-orbit-page="hompage"]) {
+  color: var(--orbit-ink);
+}
+body[data-theme="dark"]
+  #orbit-page[data-orbit-page]:not([data-orbit-page="hompage"])
+  :is(h1, h2, h3, .notification-label) {
+  color: var(--orbit-ink);
+}
+#orbit-page[data-orbit-page="teacher-profile"] .profile-cover {
+  background: var(--orbit-midnight);
+  color: #fff;
+}
+#orbit-page[data-orbit-page="teacher-profile"] .profile-cover :is(h1, h2, p, small) {
+  color: #fff;
+}
+body[data-theme="dark"] #orbit-page[data-orbit-page="registration"] .onboarding-story :is(h2, p) {
+  color: #fff;
+}
+body[data-theme="dark"] #orbit-page[data-orbit-page="student-dashboard"] .hero-text h2 {
+  color: #fff;
+}
+#orbit-page #passwordBox .password-toggle {
+  position: static;
+  inset: auto;
+  top: auto;
+  left: auto;
+  right: auto;
+  transform: none;
+  align-self: center;
+  flex: 0 0 44px;
+  margin: 0;
+}
+#orbit-page #passwordBox input {
+  margin: 0;
+  flex: 1;
+  width: 0;
+  min-width: 0;
+  height: 100%;
+  padding-inline: 16px;
+}
+#orbit-page .orbit-password-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-top: 8px;
+  border: 1px solid var(--orbit-border);
+  border-radius: 10px;
+  background: var(--orbit-surface);
+}
+#orbit-page .orbit-form .orbit-password-field input {
+  border: 0;
+  margin: 0;
+  flex: 1;
+  width: 0;
+  min-width: 0;
+  box-shadow: none;
+  padding-inline: 14px;
+  background: transparent;
+}
+#orbit-page .orbit-form .orbit-password-field .orbit-password-toggle {
+  position: static;
+  display: grid;
+  place-items: center;
+  flex: 0 0 44px;
+  min-width: 44px;
+  height: 44px;
+  margin: 0;
+  padding: 10px;
+  background: transparent;
+}
+#orbit-page .orbit-password-field:focus-within {
+  outline: 2px solid var(--orbit-focus);
+  outline-offset: 2px;
+}
+#orbit-page .demo-user svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+#orbit-page[data-orbit-page="teacher-profile"] .profile-cover > span:first-child svg {
+  width: 76px;
+  height: 76px;
+  color: #d4e3f7;
+}
+#orbit-page[data-orbit-page="teacher-profile"] .portfolio-empty > span svg {
+  width: 48px;
+  height: 48px;
+}
+#orbit-page[data-orbit-page="teacher-profile"] .professional-kicker,
+#orbit-page[data-orbit-page="teacher-dashboard"] .studio-banner > div > span,
+#orbit-page[data-orbit-page="settings"] .settings-intro > span,
+#orbit-page[data-orbit-page="settings"] .settings-kicker,
+#orbit-page[data-orbit-page="registration"] .mission-label {
+  display: none;
+}
+@media (max-width:760px) {
+  #orbit-page[data-orbit-page="teacher-profile"] .profile-detail {
+    display: grid;
+    grid-template-columns: 72px minmax(0,1fr);
+    align-items: start;
+    gap: 16px;
+    padding: 22px;
+  }
+  #orbit-page[data-orbit-page="teacher-profile"] .profile-detail .profile-avatar {
+    width: 72px;
+    height: 72px;
+  }
+  #orbit-page[data-orbit-page="teacher-profile"] .profile-identity {
+    width: auto;
+    min-width: 0;
+    grid-column: 2;
+  }
+  #orbit-page[data-orbit-page="teacher-profile"] .profile-edit {
+    grid-column: 1/-1;
+    justify-self: start;
+    margin: 0;
+    max-width: 100%;
+    white-space: normal;
+  }
+  #orbit-page[data-orbit-page="teacher-profile"] .profile-detail h2 {
+    font-size: 24px;
+    line-height: 1.5;
+    word-break: normal;
+    overflow-wrap: anywhere;
+  }
+  #orbit-page[data-orbit-page="registration"] .onboarding-story {
+    display: grid;
+    grid-template-columns: 88px minmax(0,1fr);
+    gap: 12px;
+    align-items: center;
+    padding: 16px;
+  }
+  #orbit-page[data-orbit-page="registration"] .cosmic-space {
+    height: 104px;
+    width: 88px;
+    margin: 0;
+  }
+  #orbit-page[data-orbit-page="registration"] .mission-copy h2 {
+    font-size: 20px;
+    line-height: 1.45;
+    margin: 0;
+  }
+  #orbit-page[data-orbit-page="registration"] .mission-indicator {
+    font-size: 12px;
+    padding-top: 8px;
+    margin-top: 8px;
+  }
+}
+
+#orbit-page[data-orbit-page] .orbit-form :is(button[type="submit"], .orbit-next) {
+  background: var(--orbit-action);
+  color: var(--orbit-on-action);
+}
+
+/* A password wrapper owns the field outline, including its eye target. */
+#orbit-page
+  .orbit-form
+  .orbit-password-field
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]) {
+  border: 0;
+  margin: 0;
+  border-radius: 10px;
+  background: transparent;
+  box-shadow: none;
+  outline: 0;
+  padding-inline: 14px;
+}
+#orbit-page .orbit-password-field:has(input[aria-invalid="true"]) {
+  border-color: var(--orbit-error);
+}
+#orbit-page:is([data-orbit-page="login"], [data-orbit-page="school-login"]) .demo-user {
+  background: var(--orbit-surface);
+  color: var(--orbit-muted);
+  border-color: var(--orbit-border);
+}
+
+#orbit-page
+  .orbit-form
+  .input-box
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]) {
+  border: 0;
+  margin: 0;
+  background: transparent;
+  box-shadow: none;
+}

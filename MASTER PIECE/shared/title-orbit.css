@@ -1,0 +1,52 @@
+.orbit-title-fx {
+  position: fixed;
+  left: 0;
+  top: 0;
+  pointer-events: none !important;
+  z-index: 1000;
+  perspective: 520px;
+  opacity: 0;
+  contain: layout style;
+  visibility: hidden;
+}
+.orbit-title-fx-plane {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transform-origin: 50% 50%;
+  will-change: transform;
+}
+.orbit-title-fx-ring {
+  position: absolute;
+  inset: 0;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  opacity: .38;
+  box-sizing: border-box;
+}
+.orbit-title-fx-satellite {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 5px;
+  height: 5px;
+  margin: -2.5px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 7px currentColor;
+  will-change: transform;
+  opacity: .85;
+}
+@media (prefers-reduced-motion:reduce) {
+  .orbit-title-fx {
+    display: none !important;
+  }
+}
+body[data-mood="calm"] .orbit-title-fx {
+  display: none !important;
+}
+@media print {
+  .orbit-title-fx {
+    display: none !important;
+  }
+}

@@ -1,0 +1,290 @@
+/* ORBIT shared product system. Homepage and its hero remain frozen. */
+@font-face {
+  font-family: OrbitAuditArabic;
+  src: url('../student-dashboard/assets/IBMPlexSansArabic-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: OrbitAuditArabic;
+  src: url('../student-dashboard/assets/IBMPlexSansArabic-SemiBold.ttf') format('truetype');
+  font-weight: 600 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: OrbitAuditHeading;
+  src: url('../student-dashboard/assets/Alexandria.ttf') format('truetype');
+  font-weight: 100 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: OrbitAuditEnglish;
+  src: url('../student-dashboard/assets/Inter.ttf') format('truetype');
+  font-weight: 100 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: OrbitAuditEnglishHeading;
+  src: url('../student-dashboard/assets/PlusJakartaSans.ttf') format('truetype');
+  font-weight: 200 800;
+  font-display: swap;
+}
+body:has(#orbit-page[data-orbit-page]:not([data-orbit-page="hompage"])) {
+  --orbit-font: OrbitAuditArabic,sans-serif !important;
+  --orbit-font-heading: OrbitAuditHeading,sans-serif !important;
+  --orbit-type-body: 16px;
+  --orbit-type-label: 15px;
+  --orbit-type-control: 15px;
+  --orbit-type-nav: 15px;
+  --orbit-line: 1.75;
+  --orbit-accent: #0d9488 !important;
+  --orbit-action: #0f766e !important;
+  --orbit-on-action: #fff !important;
+  --orbit-focus: #0f766e !important;
+  --orbit-soft: #e6f7f4 !important;
+  --orbit-ink: #102238 !important;
+  --orbit-muted: #526779 !important;
+  --orbit-border: #dce8eb !important;
+  --orbit-surface: #fff !important;
+  --orbit-canvas: #f5fafb !important;
+  --orbit-success: #087965;
+  --orbit-warning: #895500;
+  --orbit-error: #b4233b;
+  --orbit-disabled: #64748b;
+  --orbit-elevated: #fff;
+  --orbit-radius: 14px;
+  --orbit-control-radius: 10px;
+  --orbit-space-unit: 8px;
+  --orbit-transition: 180ms ease-out;
+  font-family: var(--orbit-font);
+  font-size: 16px;
+  line-height: 1.75;
+}
+html[lang="en"] body:has(#orbit-page[data-orbit-page]:not([data-orbit-page="hompage"])) {
+  --orbit-font: OrbitAuditEnglish,sans-serif !important;
+  --orbit-font-heading: OrbitAuditEnglishHeading,sans-serif !important;
+}
+body[data-theme="dark"]:has(#orbit-page[data-orbit-page]:not([data-orbit-page="hompage"])) {
+  --orbit-accent: #6ee7d4 !important;
+  --orbit-action: #0f766e !important;
+  --orbit-focus: #6ee7d4 !important;
+  --orbit-soft: #163b3c !important;
+  --orbit-ink: #edf6f8 !important;
+  --orbit-muted: #b0c5ce !important;
+  --orbit-border: #33505b !important;
+  --orbit-surface: #142b35 !important;
+  --orbit-canvas: #0c1d26 !important;
+  --orbit-elevated: #1b3540;
+  --orbit-error: #ffacb5;
+  --orbit-success: #6ee7d4;
+  --orbit-warning: #f9d282;
+}
+body #orbit-page[data-orbit-page]:not([data-orbit-page="hompage"]) {
+  --orbit-font: inherit;
+  --purple: var(--orbit-accent);
+  font-family: var(--orbit-font,OrbitAuditArabic,sans-serif);
+  font-size: 16px;
+  line-height: 1.75;
+  --text: var(--orbit-ink);
+  --muted: var(--orbit-muted);
+  --line: var(--orbit-border);
+  --panel: var(--orbit-surface);
+  --bg: var(--orbit-canvas);
+}
+/* Specificity resolves legacy role tokens without a second color system. */
+body[data-orbit-role] #orbit-page[data-orbit-page]:not([data-orbit-page="hompage"]) {
+  --orbit-font: OrbitAuditArabic,sans-serif !important;
+  --orbit-font-heading: OrbitAuditHeading,sans-serif !important;
+  --orbit-accent: #0d9488 !important;
+  --orbit-action: #0f766e !important;
+  --orbit-focus: #0f766e !important;
+  --orbit-soft: #e6f7f4 !important;
+}
+html[lang="en"]
+  body[data-orbit-role]
+  #orbit-page[data-orbit-page]:not([data-orbit-page="hompage"]) {
+  --orbit-font: OrbitAuditEnglish,sans-serif !important;
+  --orbit-font-heading: OrbitAuditEnglishHeading,sans-serif !important;
+}
+body[data-theme="dark"][data-orbit-role]
+  #orbit-page[data-orbit-page]:not([data-orbit-page="hompage"]) {
+  --orbit-accent: #6ee7d4 !important;
+  --orbit-action: #0f766e !important;
+  --orbit-focus: #6ee7d4 !important;
+  --orbit-soft: #163b3c !important;
+}
+#orbit-page[data-orbit-page]:not([data-orbit-page="hompage"]) :is(h1, h2, h3) {
+  font-family: var(--orbit-font-heading);
+  line-height: 1.5;
+  overflow-wrap: break-word;
+}
+#orbit-page[data-orbit-page]:not([data-orbit-page="hompage"]) h1 {
+  font-size: 30px;
+}
+#orbit-page[data-orbit-page]:not([data-orbit-page="hompage"]) h2 {
+  font-size: 22px;
+}
+#orbit-page[data-orbit-page]:not([data-orbit-page="hompage"]) h3 {
+  font-size: 18px;
+}
+#orbit-page[data-orbit-page]:not([data-orbit-page="hompage"]) :is(p, li) {
+  line-height: 1.8;
+}
+#orbit-page[data-orbit-page]:not([data-orbit-page="hompage"])
+  :is(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), select, textarea) {
+  font-family: var(--orbit-font);
+  font-size: 16px !important;
+  line-height: 1.5;
+  max-width: 100%;
+  caret-color: var(--orbit-accent);
+}
+#orbit-page[data-orbit-page]:not([data-orbit-page="hompage"]) :is(.btn, .button, label) {
+  font-size: 15px;
+  line-height: 1.6;
+}
+#orbit-page[data-orbit-page]:not([data-orbit-page="hompage"])
+  :is(small, .recruit-hint, .helper-text, .input-message) {
+  font-size: 13px;
+  line-height: 1.65;
+}
+#orbit-page[data-orbit-page]:not([data-orbit-page="hompage"]) :is(td, th) {
+  font-size: 14px;
+  line-height: 1.65;
+}
+#orbit-page[data-orbit-page]:not([data-orbit-page="hompage"]) :is(.btn, .button) {
+  min-height: 44px;
+}
+#orbit-page[data-orbit-page]:not([data-orbit-page="hompage"])
+  :is(a, button, input, select, textarea):focus-visible {
+  outline: 3px solid var(--orbit-focus);
+  outline-offset: 3px;
+}
+#orbit-page[data-orbit-page]:not([data-orbit-page="hompage"]) ::placeholder {
+  color: var(--orbit-muted);
+  opacity: 1;
+}
+#orbit-page[data-orbit-page]:not([data-orbit-page="hompage"]) ::selection {
+  background: #ccfbf1;
+  color: #102238;
+}
+#orbit-page[data-orbit-page]:not([data-orbit-page="hompage"]) dialog {
+  max-inline-size: min(680px,calc(100vw - 32px));
+  max-block-size: calc(100dvh - 32px);
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+body:has(#orbit-page:not([data-orbit-page="hompage"])) #orbit-rail.orbit-rail .orbit-nav-link {
+  font-size: 15px !important;
+  min-height: 44px;
+  line-height: 1.65;
+}
+body:has(#orbit-page:not([data-orbit-page="hompage"]))
+  #orbit-rail.orbit-rail
+  .orbit-identity
+  strong {
+  font-size: 14px;
+}
+body:has(#orbit-page:not([data-orbit-page="hompage"]))
+  #orbit-rail.orbit-rail
+  .orbit-identity
+  small {
+  font-size: 13px;
+}
+body:has(#orbit-page:not([data-orbit-page="hompage"])) #orbit-rail.orbit-rail #orbit-logout {
+  font-size: 15px;
+}
+body:has(#orbit-page:not([data-orbit-page="hompage"])) #orbit-language-button {
+  font-size: 14px;
+}
+@media (max-width:600px) {
+  #orbit-page[data-orbit-page]:not([data-orbit-page="hompage"]) h1 {
+    font-size: 26px;
+  }
+  #orbit-page[data-orbit-page]:not([data-orbit-page="hompage"]) h2 {
+    font-size: 20px;
+  }
+}
+/* Content is readable at task distance; compact metadata keeps its own tier. */
+#orbit-page[data-orbit-page]:not([data-orbit-page="hompage"]) p {
+  font-size: 16px !important;
+}
+#orbit-page[data-orbit-page]:not([data-orbit-page="hompage"])
+  :is(
+    small,
+    .recruit-hint,
+    .helper-text,
+    .input-message,
+    .orbit-progress-note,
+    .radial-item p,
+    .milestone small,
+    .premium-notification p,
+    .orbit-nav-heading
+  ) {
+  font-size: 14px !important;
+}
+#orbit-page[data-orbit-page]:not([data-orbit-page="hompage"])
+  :is(.premium-section-head > a, .card-title > a, .link) {
+  font-size: 14px !important;
+}
+#orbit-page[data-orbit-page]:not([data-orbit-page="hompage"])
+  :is(.assignment-description, .assignment-feedback p) {
+  font-size: 15px !important;
+}
+@media (max-width:600px) {
+  body[data-orbit-role="student"].student-workspace #orbit-page .orbit-welcome-copy {
+    width: calc(100% - 74px);
+    padding: 22px 14px;
+    margin-inline-start: auto;
+  }
+  body[data-orbit-role="student"].student-workspace #orbit-page .orbit-mascot {
+    width: 70px;
+    inset-inline-start: 6px;
+    inset-inline-end: auto;
+    left: auto;
+    right: auto;
+  }
+  body[data-orbit-role="student"].student-workspace #orbit-page .orbit-welcome-copy h1 {
+    font-size: 21px;
+    line-height: 1.6;
+  }
+  body[data-orbit-role="student"].student-workspace #orbit-page .orbit-welcome-copy p {
+    font-size: 14px !important;
+  }
+}
+@media (max-width:600px) {
+  body[data-orbit-role="student"].student-workspace #orbit-page .orbit-welcome-copy {
+    margin-inline-start: 0;
+    margin-inline-end: auto;
+  }
+  body[data-orbit-role="student"].student-workspace #orbit-page .orbit-mascot {
+    inset-inline-start: auto;
+    inset-inline-end: 6px;
+  }
+}
+/* Dark teal is the text/action contrast tier; primary teal remains the brand accent. */
+body:has(#orbit-page[data-orbit-page]:not([data-orbit-page="hompage"]))
+  #orbit-page
+  :is(.btn.soft, .hub-link, .link) {
+  color: #0f766e;
+}
+body:has(#orbit-page[data-orbit-page]:not([data-orbit-page="hompage"]))
+  #orbit-rail.orbit-rail
+  .orbit-nav-link.is-current {
+  color: #0f766e;
+}
+body[data-theme="dark"]:has(#orbit-page[data-orbit-page]:not([data-orbit-page="hompage"]))
+  #orbit-page
+  :is(.btn.soft, .hub-link, .link),
+body[data-theme="dark"]:has(#orbit-page[data-orbit-page]:not([data-orbit-page="hompage"]))
+  #orbit-rail.orbit-rail
+  .orbit-nav-link.is-current {
+  color: #6ee7d4;
+}
+body.recruitment-hub[data-orbit-role="school"] #app main .btn:not(.soft) {
+  background: #0f766e !important;
+}
+@media (max-width:600px) {
+  body[data-orbit-role="student"].student-workspace #orbit-page .orbit-mascot {
+    width: 64px;
+  }
+}

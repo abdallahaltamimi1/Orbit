@@ -1,0 +1,235 @@
+/* Typography only. Existing colors, layouts and motion remain owned by their stylesheets. */
+body {
+  --orbit-type-title: 30px;
+  --orbit-type-section: 22px;
+  --orbit-type-card: 18px;
+  --orbit-type-secondary: 14px;
+  --orbit-type-meta: 13px;
+}
+html[lang="ar"] body {
+  --orbit-font: OrbitAuditArabic,'Segoe UI',Tahoma,sans-serif;
+  --orbit-font-heading: OrbitAuditHeading,'Segoe UI',Tahoma,sans-serif;
+}
+html[lang="en"] body {
+  --orbit-font: OrbitAuditEnglish,Arial,sans-serif;
+  --orbit-font-heading: OrbitAuditEnglishHeading,Arial,sans-serif;
+}
+/* The same locally bundled faces are already used in the product. */
+body #orbit-page[data-orbit-page]:not([data-orbit-page="hompage"]) {
+  font-family: var(--orbit-font) !important;
+  font-size: 16px;
+  line-height: 1.75;
+}
+body #orbit-page[data-orbit-page]:not([data-orbit-page="hompage"]) :is(h1, h2, h3, h4) {
+  font-family: var(--orbit-font-heading) !important;
+  overflow-wrap: break-word;
+}
+html[lang="ar"]
+  body
+  #orbit-page[data-orbit-page]:not([data-orbit-page="hompage"])
+  :is(h1, h2, h3, h4) {
+  letter-spacing: normal;
+  line-height: 1.6;
+}
+body
+  #orbit-page[data-orbit-page]:not([data-orbit-page="hompage"])
+  :is(.btn, .button, label, .orbit-role-picker button, .demo-user) {
+  font-size: 15px !important;
+  line-height: 1.6;
+}
+body
+  #orbit-page[data-orbit-page]:not([data-orbit-page="hompage"])
+  :is(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), select, textarea) {
+  font-size: 16px !important;
+  line-height: 1.5;
+}
+body #orbit-page[data-orbit-page]:not([data-orbit-page="hompage"]) :is(td, th) {
+  font-size: 15px;
+  line-height: 1.65;
+}
+body
+  #orbit-page[data-orbit-page]:not([data-orbit-page="hompage"])
+  :is(.helper-text, .input-message, .recruit-hint) {
+  font-size: 14px !important;
+  line-height: 1.75;
+}
+body.orbit-shell-mounted #orbit-rail.orbit-rail .orbit-nav-link {
+  font-size: 15px !important;
+  line-height: 1.65;
+}
+body.orbit-shell-mounted #orbit-rail.orbit-rail .orbit-identity strong {
+  font-size: 15px;
+}
+body.orbit-shell-mounted #orbit-rail.orbit-rail :is(.orbit-identity small, .orbit-nav-heading) {
+  font-size: 13px;
+}
+body.orbit-shell-mounted #orbit-rail.orbit-rail #orbit-logout {
+  font-size: 15px !important;
+  line-height: 1.65;
+}
+body #orbit-language-button {
+  font-size: 15px;
+}
+/* Readable supporting copy; numerical KPIs and diagram labels retain their scale. */
+body
+  #orbit-page[data-orbit-page]:not([data-orbit-page="hompage"])
+  :is(.text-link, .student-search-result, .header-actions > button) {
+  font-size: 14px !important;
+}
+body #orbit-page[data-orbit-page="student-dashboard"] :is(.orbit-welcome-copy p, .orbit-subtitle) {
+  font-size: 16px !important;
+  line-height: 1.8;
+}
+body
+  #orbit-page[data-orbit-page="teacher-dashboard"]
+  :is(.teacher-id strong, .student-preview, .preferences button, .topbar) {
+  font-size: 15px;
+}
+body
+  #orbit-page[data-orbit-page="teacher-dashboard"]
+  :is(.teacher-id small, .nav-label, .topbar small, .hero-pill) {
+  font-size: 13px;
+}
+body #orbit-page[data-orbit-page="school-dashboard"] .role-banner {
+  font-size: 14px;
+}
+/* Authentication: preserve split screen, scenic headline scale and role behavior. */
+body
+  #orbit-page[data-orbit-page="login"]
+  :is(
+    .login-heading p,
+    .login-small-title,
+    .visual-footer,
+    .login-container > .orbit-top-back,
+    .remember,
+    .forgot-password
+  ) {
+  font-size: 14px !important;
+  line-height: 1.75;
+}
+body #orbit-page[data-orbit-page="login"] .login-heading h2 {
+  font-size: 28px;
+}
+body #orbit-page[data-orbit-page="login"] :is(.demo-user span, .demo-user strong) {
+  font-size: 14px !important;
+}
+body #orbit-page[data-orbit-page="registration"] .education-caption {
+  font-size: 13px !important;
+  line-height: 1.75 !important;
+}
+body #orbit-page[data-orbit-page="registration"] .orbit-password-toggle {
+  font-size: 14px !important;
+}
+/* Public landing: intentionally exclude the hero and all animated satellite labels. */
+body
+  #orbit-page[data-orbit-page="hompage"]
+  :is(.orbit-project-overview, .m-nav, #orbit-site-footer) {
+  font-family: var(--orbit-font);
+}
+body #orbit-page[data-orbit-page="hompage"] :is(.orbit-project-overview, .m-footer) :is(h2, h3) {
+  font-family: var(--orbit-font-heading);
+}
+body
+  #orbit-page[data-orbit-page="hompage"]
+  :is(.overview-card p, .orbit-project-overview header p) {
+  font-size: 16px;
+  line-height: 1.85;
+}
+body #orbit-page[data-orbit-page="hompage"] .m-nav__links a {
+  font-size: 15px;
+}
+body #orbit-page #orbit-site-footer .orbit-footer-bottom {
+  font-size: 14px;
+}
+body #orbit-page #orbit-site-footer .orbit-footer-logo small {
+  font-size: 12px;
+}
+/* Admin uses a separate shell and was missing the shared language/font pairing. */
+body:has(#admin-app) {
+  font-family: var(--orbit-font);
+  font-size: 16px;
+  line-height: 1.75;
+}
+body :is(#admin-app, .admin-dialog) :is(h1, h2, h3) {
+  font-family: var(--orbit-font-heading);
+  overflow-wrap: break-word;
+}
+html[lang="ar"] body :is(#admin-app, .admin-dialog) :is(h1, h2, h3) {
+  letter-spacing: normal;
+  line-height: 1.6;
+}
+body #admin-app h1 {
+  font-size: 30px;
+}
+body #admin-app h2 {
+  font-size: 22px;
+}
+body #admin-app :is(.nav-link, .button, .text-link, .breadcrumbs, .topbar-actions) {
+  font-size: 15px;
+  line-height: 1.65;
+}
+body
+  #admin-app
+  :is(
+    .nav-group,
+    .workspace-label,
+    .admin-role,
+    .eyebrow,
+    .local-notice,
+    .admin-brand small,
+    .sidebar-foot,
+    .cell-sub,
+    small,
+    .activity-list time,
+    .admin-footer
+  ) {
+  font-size: 13px;
+  line-height: 1.7;
+}
+body
+  #admin-app
+  :is(.page-heading p, .panel p, .empty-state, .notification-row, .attention-row, td, th) {
+  font-size: 15px;
+  line-height: 1.75;
+}
+body :is(#admin-app, .admin-dialog, .access-card) :is(input, select, textarea) {
+  font-size: 16px;
+  line-height: 1.5;
+}
+body .admin-dialog {
+  font-family: var(--orbit-font);
+  font-size: 16px;
+  line-height: 1.75;
+}
+body .admin-dialog :is(label, .button) {
+  font-size: 15px;
+}
+body .admin-dialog :is(small, .error, .cell-sub) {
+  font-size: 14px;
+}
+body #admin-app .access-card :is(label, .button) {
+  font-size: 15px;
+  line-height: 1.65;
+}
+body #admin-app .access-card p {
+  font-size: 16px;
+  line-height: 1.8;
+}
+body #admin-app .access-card :is(.access-home, small) {
+  font-size: 14px;
+}
+@media (max-width:600px) {
+  body #orbit-page[data-orbit-page="student-dashboard"] .orbit-welcome-copy h1 {
+    font-size: 24px;
+    line-height: 1.6;
+  }
+  body #orbit-page[data-orbit-page="login"] .login-heading h2 {
+    font-size: 26px;
+  }
+  body #admin-app h1 {
+    font-size: 28px;
+  }
+  body #admin-app h2 {
+    font-size: 20px;
+  }
+}

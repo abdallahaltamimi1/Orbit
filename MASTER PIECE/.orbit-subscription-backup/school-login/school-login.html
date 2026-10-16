@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><link rel="stylesheet" href="../shared/tokens.css"><link rel="stylesheet" href="../shared/title-orbit.css"><script src="../shared/title-orbit.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | ORBIT</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="school-login.css">
+<script src="../shared/config.js"></script><script src="../shared/recruitment-service.js"></script><script src="../shared/profiles.js"></script><script src="../shared/auth.js"></script><link rel="stylesheet" href="../shared/auth.css"><script src="../shared/google-auth.js" defer></script><link rel="stylesheet" href="../shared/forms.css"><script src="../shared/forms.js" defer></script></head>
+<body><div id="orbit-page" class="orbit-content" data-orbit-page="school-login">
+<main class="login-page">
+  <section class="login-visual">
+    <div class="stars"></div>
+    <div class="planet planet-one"></div><div class="planet planet-two"></div>
+    <a href="../hompage/hompage.html" class="login-logo">
+      <span class="logo-icon"><svg viewBox="0 0 32 32" fill="none"><path class="logo-ring" d="M26.89 14.47A11 11 0 1 1 21.16 6.29"/><path class="logo-trail" d="M10.3 21.6Q16.5 15.5 28 6.5"/><circle class="logo-dot" cx="24.5" cy="9.3" r="2.3"/></svg></span>
+      <span>ORBIT</span>
+    </a>
+    <div class="visual-content">
+      <span class="visual-badge">✦ Continue your journey</span>
+      <h1>Your next <span>discovery</span> is waiting.</h1>
+      <p>Return to your learning universe and continue exploring, teaching and growing.</p>
+      <div class="learning-orbit"><div class="orbit-ring"><span class="orbit-dot"></span><div class="orbit-center">✦</div></div></div>
+    </div>
+    <p class="visual-footer">Learn. Teach. Discover.</p>
+  </section>
+
+  <section class="login-area">
+    <div class="login-container">
+      <a href="../hompage/hompage.html" class="mobile-logo">ORBIT</a>
+      <div class="login-heading"><span class="login-small-title">Welcome back</span><h2>Log in to your account</h2><p>Continue where you left off.</p></div>
+      <form class="login-form" id="loginForm" novalidate>
+        <div class="form-group">
+          <label for="email">Email address</label>
+          <div class="input-box" id="emailBox"><input type="email" id="email" placeholder="name@example.com" autocomplete="email"><span class="input-status" id="emailStatus"></span></div>
+          <small class="input-message" id="emailMessage"></small>
+        </div>
+        <div class="form-group">
+          <div class="password-label"><label for="password">Password</label><span title="Password recovery is not connected in this local prototype">Forgot password?</span></div>
+          <div class="input-box" id="passwordBox">
+            <input type="password" id="password" placeholder="Enter your password" autocomplete="current-password">
+            <div class="password-planets" id="passwordPlanets" aria-hidden="true"><span></span><span></span><span></span></div>
+            <button type="button" class="password-toggle" id="passwordToggle" aria-label="Show password">◉</button>
+          </div>
+          <small class="input-message" id="passwordMessage"></small>
+        </div>
+        <div class="login-options"><label class="remember"><input type="checkbox" id="rememberMe"><span>Remember me</span></label></div>
+        <button type="submit" class="login-button" id="loginButton"><span class="button-text">Log in</span><span class="button-loader"></span><span class="button-success">✓</span></button>
+        <div class="login-message" id="loginMessage" aria-live="polite"></div>
+      </form>
+      <p class="signup-text">New to ORBIT? <span>Account registration is coming soon. <a href="../school-registration/school-registration.html">Register a school</a></span></p>
+      <div class="demo-section"><span class="demo-title">Demo accounts</span><div class="demo-users">
+        <button type="button" class="demo-user" data-user="student"><span>🎓</span>Student</button>
+        <button type="button" class="demo-user" data-user="teacher"><span>👨‍🏫</span>Teacher</button>
+        <button type="button" class="demo-user" data-user="school"><span>🏫</span>School</button>
+      </div></div>
+    </div>
+  </section>
+</main>
+
+<div class="login-animation" id="loginAnimation" aria-hidden="true">
+  <div class="animation-scene">
+    <div class="animation-stars"><span></span><span></span><span></span><span></span><span></span></div>
+    <div class="login-orbit"><div class="login-planet"></div><div class="orbit-core"><span>✦</span></div></div>
+    <div class="animation-result"><div class="animation-icon" id="animationIcon"></div><h3 id="animationTitle"></h3><p id="animationText"></p></div>
+  </div>
+</div>
+<script src="school-login.js"></script>
+</div></body>
+</html>

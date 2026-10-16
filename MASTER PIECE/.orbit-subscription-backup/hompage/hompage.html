@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><link rel="stylesheet" href="../shared/tokens.css"><link rel="stylesheet" href="../shared/title-orbit.css"><script src="../shared/title-orbit.js"></script>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>The Learning Orbit</title>
+
+    <meta
+        name="description"
+        content="A learning platform connecting teachers, students and schools."
+    >
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="hompage.css">
+
+    <!-- Hero CSS -->
+    
+<script src="../shared/config.js"></script><script src="../shared/recruitment-service.js"></script><script src="../shared/profiles.js"></script><script src="../shared/auth.js"></script><link rel="stylesheet" href="../shared/forms.css"><script src="../shared/forms.js" defer></script></head>
+
+<body><div id="orbit-page" class="orbit-content" data-orbit-page="hompage">
+
+<!-- =========================================================
+     NAVBAR
+========================================================= -->
+
+<header class="m-nav" id="siteNav">
+
+    <div class="m-container m-nav__inner">
+
+        <!-- Logo -->
+        <a
+            class="m-nav__brand m-logo"
+            href="#top"
+            aria-label="The Learning Orbit home"
+        >
+
+            <span
+                class="m-nav__mark m-logo__mark"
+                aria-hidden="true"
+            >
+                <!-- Orbit Logo -->
+                <svg
+                    viewBox="0 0 32 32"
+                    fill="none"
+                >
+                    <path
+                        class="m-logo__ring"
+                        d="M26.89 14.47A11 11 0 1 1 21.16 6.29"
+                    />
+
+                    <path
+                        class="m-logo__trail"
+                        d="M10.3 21.6Q16.5 15.5 28 6.5"
+                    />
+
+                    <circle
+                        class="m-logo__dot"
+                        cx="24.5"
+                        cy="9.3"
+                        r="2.3"
+                    />
+                </svg>
+            </span>
+
+            <span class="m-logo__word">
+                ORBIT
+            </span>
+
+        </a>
+
+
+        <!-- Desktop navigation -->
+        <nav
+            class="m-nav__links"
+            aria-label="Primary navigation"
+        >
+            <a href="#top" class="is-active">Home</a>
+            <a href="#features">Features</a>
+            <a href="#services">Services</a>
+            <a href="#faq">FAQ</a>
+            <a href="#contact">Contact</a>
+        </nav>
+
+
+        <!-- Actions -->
+        <div class="m-nav__actions">
+
+            <a
+                class="m-nav__login"
+                href="../login/login.html"
+            >
+                Log in
+            </a>
+
+            <a
+                class="m-btn m-btn--primary m-nav__cta"
+                href="../login/login.html"
+            >
+                Get started
+            </a>
+
+            <button
+                class="m-nav__burger"
+                id="navBurger"
+                aria-expanded="false"
+                aria-controls="navPanel"
+                aria-label="Open menu"
+            >
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- Mobile menu -->
+   
+
+</header>
+
+
+<main id="top">
+
+<!-- =========================================================
+     HERO SECTION
+     
+     IMPORTANT:
+     هذا المكان مخصص للـ Hero فقط.
+     
+     لا تضع أي CSS أو HTML خاص بالـ Features
+     أو Services أو Footer داخل Hero.
+========================================================= -->
+
+<section
+    id="hero"
+    class="hero"
+>
+
+
+        <canvas id="sky"></canvas>
+
+        <div class="u-vig"></div>
+        <div class="u-scrim"></div>
+
+
+        <!-- Back button -->
+
+        <button class="u-back" id="back">
+
+            <svg viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.3"
+                stroke-linecap="round"
+                stroke-linejoin="round">
+
+                <path d="M19 12H5"></path>
+                <path d="M11 18l-6-6 6-6"></path>
+
+            </svg>
+
+            Back to the universe
+
+        </button>
+
+
+        <!-- Main shell -->
+
+        <div class="u-shell">
+
+            <!-- Main hero content -->
+
+            <div class="u-panel" id="panel">
+
+                <span class="u-tag">
+
+                    <i></i>
+
+                    The learning journey
+
+                </span>
+
+
+                <h1 class="u-h1">
+
+                    Every question
+                    <br>
+
+                    opens a <em>new world.</em>
+
+                </h1>
+
+
+                <p class="u-lede">
+
+                    One learning universe for students, teachers,
+                    and schools. Explore ideas, build skills,
+                    and discover what comes next.
+
+                </p>
+
+
+                <div class="u-cta">
+
+                    <button class="u-btn u-primary">
+                        Start exploring
+                    </button>
+
+                    <button class="u-btn u-second">
+                        Explore the journey
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Focus mode -->
+
+        <div class="u-focus" id="focus">
+
+            <div class="u-inner">
+
+                <div class="u-qbig">
+
+                    <span class="u-qstep" id="q-step">
+                        Stage 1 of 5
+                    </span>
+
+
+                    <h2 id="q-title">
+                        WHY?
+                    </h2>
+
+
+                    <p id="q-text"></p>
+
+
+                    <div class="u-qmoon" id="q-moon"></div>
+
+
+                    <div class="u-row" id="q-row">
+
+                        <button class="u-btn u-primary" id="q-enter">
+                            Enter this stage
+                        </button>
+
+                        <button class="u-btn u-second" id="q-next">
+                            Next question
+                        </button>
+
+                    </div>
+
+
+                    <div class="u-roles" id="q-roles">
+
+                        <span class="u-ask">
+                            Who is travelling?
+                        </span>
+
+
+                        <button class="u-role">
+                            I am a student
+                        </button>
+
+
+                        <button class="u-role">
+                            I teach
+                        </button>
+
+
+                        <button class="u-role">
+                            I am a school
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Scroll cue -->
+
+        <div class="u-cue" id="cue">
+
+            Scroll
+
+            <span></span>
+
+        </div>
+
+</section>
+
+
+<!-- =========================================================
+     HERO → MAIN TRANSITION
+========================================================= -->
+
+<div
+    class="m-transition"
+    aria-hidden="true"
+></div>
+
+
+<!-- =========================================================
+     FEATURES
+========================================================= -->
+
+<section
+    class="m-section m-features"
+    id="features"
+>
+
+    <div class="m-container">
+
+        <header
+            class="m-head m-head--center"
+            data-reveal
+        >
+            <span class="m-badge">
+                Features
+            </span>
+
+            <h2>
+                Everything your class needs
+            </h2>
+
+            <p>
+                One connected space for teaching,
+                learning and collaboration.
+            </p>
+        </header>
+
+
+        <div class="m-grid-3">
+
+            <article
+                class="m-card"
+                data-reveal
+            >
+
+                <span class="m-card__corner">
+                    ↗
+                </span>
+
+                <span class="m-icon">
+                    📚
+                </span>
+
+                <h3>
+                    Lesson prep
+                </h3>
+
+                <p>
+                    Prepare lessons, worksheets,
+                    questions and learning materials.
+                </p>
+
+                <a
+                    class="m-link"
+                    href="#"
+                >
+                    Prepare a lesson →
+                </a>
+
+            </article>
+
+
+            <article
+                class="m-card m-card--lead"
+                data-reveal
+            >
+
+                <span class="m-card__corner">
+                    ↗
+                </span>
+
+                <span class="m-icon">
+                    💬
+                </span>
+
+                <h3>
+                    Class channel
+                </h3>
+
+                <p>
+                    Homework, videos, notes and
+                    results in one place.
+                </p>
+
+                <a
+                    class="m-link"
+                    href="#"
+                >
+                    See how it works →
+                </a>
+
+            </article>
+
+
+            <article
+                class="m-card"
+                data-reveal
+            >
+
+                <span class="m-card__corner">
+                    ↗
+                </span>
+
+                <span class="m-icon">
+                    🧪
+                </span>
+
+                <h3>
+                    Interactive labs
+                </h3>
+
+                <p>
+                    Let students explore concepts
+                    through interactive experiments.
+                </p>
+
+                <a
+                    class="m-link"
+                    href="#"
+                >
+                    Open the lab →
+                </a>
+
+            </article>
+
+
+            <article
+                class="m-card"
+                data-reveal
+            >
+
+                <span class="m-icon">
+                    📊
+                </span>
+
+                <h3>
+                    Learning levels
+                </h3>
+
+                <p>
+                    Content adapted for different
+                    learning levels.
+                </p>
+
+            </article>
+
+
+            <article
+                class="m-card"
+                data-reveal
+            >
+
+                <span class="m-icon">
+                    🔄
+                </span>
+
+                <h3>
+                    Books & tools
+                </h3>
+
+                <p>
+                    Exchange educational books
+                    and learning tools.
+                </p>
+
+            </article>
+
+
+            <article
+                class="m-card"
+                data-reveal
+            >
+
+                <span class="m-icon">
+                    ✦
+                </span>
+
+                <h3>
+                    AI assistant
+                </h3>
+
+                <p>
+                    Support teachers and students
+                    throughout the learning journey.
+                </p>
+
+            </article>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     SERVICES
+========================================================= -->
+
+<section
+    class="m-section m-services"
+    id="services"
+>
+
+    <div class="m-container">
+
+        <header
+            class="m-head m-head--center"
+            data-reveal
+        >
+
+            <span class="m-badge">
+                Our services
+            </span>
+
+            <h2>
+                Built around the learning journey
+            </h2>
+
+            <p>
+                Everything connects through one
+                learning orbit.
+            </p>
+
+        </header>
+
+
+        <div class="m-services__body">
+
+            <!-- Orbit visualization -->
+
+            <div
+                class="m-orbit"
+                id="orbit"
+                data-reveal
+            >
+
+                <svg viewBox="0 0 260 260">
+
+                    <circle
+                        class="m-orbit__star"
+                        cx="34"
+                        cy="44"
+                        r="1.4"
+                    />
+
+                    <circle
+                        class="m-orbit__star"
+                        cx="224"
+                        cy="62"
+                        r="1.1"
+                    />
+
+                    <circle
+                        class="m-orbit__star"
+                        cx="46"
+                        cy="214"
+                        r="1.2"
+                    />
+
+                    <circle
+                        class="m-orbit__star"
+                        cx="212"
+                        cy="206"
+                        r="1.5"
+                    />
+
+
+                    <circle
+                        class="m-orbit__ring"
+                        cx="130"
+                        cy="130"
+                        r="108"
+                    />
+
+                    <circle
+                        class="m-orbit__ring m-orbit__ring--node"
+                        cx="130"
+                        cy="130"
+                        r="86"
+                    />
+
+                    <circle
+                        class="m-orbit__ring"
+                        cx="130"
+                        cy="130"
+                        r="48"
+                    />
+
+
+                    <g
+                        class="m-orbit__spin"
+                        id="orbitSpin"
+                    >
+
+                        <g
+                            class="m-orbit__node"
+                            data-node="school"
+                        >
+                            <circle
+                                class="m-orbit__halo"
+                                cx="130"
+                                cy="44"
+                                r="13"
+                            />
+
+                            <circle
+                                class="m-orbit__dot"
+                                cx="130"
+                                cy="44"
+                                r="5.2"
+                            />
+                        </g>
+
+
+                        <g
+                            class="m-orbit__node"
+                            data-node="offline"
+                        >
+                            <circle
+                                class="m-orbit__halo"
+                                cx="216"
+                                cy="130"
+                                r="13"
+                            />
+
+                            <circle
+                                class="m-orbit__dot"
+                                cx="216"
+                                cy="130"
+                                r="5.2"
+                            />
+                        </g>
+
+
+                        <g
+                            class="m-orbit__node"
+                            data-node="reports"
+                        >
+                            <circle
+                                class="m-orbit__halo"
+                                cx="130"
+                                cy="216"
+                                r="13"
+                            />
+
+                            <circle
+                                class="m-orbit__dot"
+                                cx="130"
+                                cy="216"
+                                r="5.2"
+                            />
+                        </g>
+
+
+                        <g
+                            class="m-orbit__node"
+                            data-node="curriculum"
+                        >
+                            <circle
+                                class="m-orbit__halo"
+                                cx="44"
+                                cy="130"
+                                r="13"
+                            />
+
+                            <circle
+                                class="m-orbit__dot"
+                                cx="44"
+                                cy="130"
+                                r="5.2"
+                            />
+                        </g>
+
+                    </g>
+
+
+                    <rect
+                        x="112"
+                        y="112"
+                        width="36"
+                        height="36"
+                        rx="11"
+                        class="m-orbit__core"
+                    />
+
+                </svg>
+
+
+                <span
+                    class="m-orbit__label"
+                    id="orbitLabel"
+                ></span>
+
+            </div>
+
+
+            <!-- Service cards -->
+
+            <div class="m-grid-2">
+
+                <article
+                    class="m-card m-card--sm"
+                    data-service="school"
+                    data-reveal
+                >
+                    <span class="m-icon">🏫</span>
+
+                    <h3>
+                        School plans
+                    </h3>
+
+                    <p>
+                        One connected platform
+                        for your whole school.
+                    </p>
+                </article>
+
+
+                <article
+                    class="m-card m-card--sm"
+                    data-service="offline"
+                    data-reveal
+                >
+                    <span class="m-icon">☁</span>
+
+                    <h3>
+                        Offline learning
+                    </h3>
+
+                    <p>
+                        Keep lessons available
+                        even without internet.
+                    </p>
+                </article>
+
+
+                <article
+                    class="m-card m-card--sm"
+                    data-service="reports"
+                    data-reveal
+                >
+                    <span class="m-icon">📈</span>
+
+                    <h3>
+                        Progress reports
+                    </h3>
+
+                    <p>
+                        Understand student progress
+                        clearly.
+                    </p>
+                </article>
+
+
+                <article
+                    class="m-card m-card--sm"
+                    data-service="curriculum"
+                    data-reveal
+                >
+                    <span class="m-icon">◉</span>
+
+                    <h3>
+                        Local curriculum
+                    </h3>
+
+                    <p>
+                        Learning content adapted
+                        to your curriculum.
+                    </p>
+                </article>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     FAQ
+========================================================= -->
+
+<section
+    class="m-section m-faq"
+    id="faq"
+>
+
+    <div class="m-container">
+
+        <header
+            class="m-head"
+            data-reveal
+        >
+
+            <span class="m-badge">
+                FAQ
+            </span>
+
+            <h2>
+                Questions people ask
+            </h2>
+
+            <p>
+                Everything you need to know before
+                joining the orbit.
+            </p>
+
+        </header>
+
+
+        <div class="m-faq__body">
+
+            <div
+                class="m-faq__list"
+                id="faqList"
+            >
+
+                <div
+                    class="m-faq__item is-open"
+                    data-reveal
+                >
+
+                    <button class="m-faq__q">
+
+                        Do I need an account
+                        to look around?
+
+                        <span class="m-faq__sign"></span>
+
+                    </button>
+
+                    <div class="m-faq__a">
+
+                        <div class="m-faq__a-inner">
+
+                            <p>
+                                You can explore the platform
+                                before creating an account.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="m-faq__item"
+                    data-reveal
+                >
+
+                    <button class="m-faq__q">
+
+                        How do students
+                        join a class?
+
+                        <span class="m-faq__sign"></span>
+
+                    </button>
+
+                    <div class="m-faq__a">
+
+                        <div class="m-faq__a-inner">
+
+                            <p>
+                                Students join through
+                                a class channel.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="m-faq__item"
+                    data-reveal
+                >
+
+                    <button class="m-faq__q">
+
+                        Does it work
+                        without internet?
+
+                        <span class="m-faq__sign"></span>
+
+                    </button>
+
+                    <div class="m-faq__a">
+
+                        <div class="m-faq__a-inner">
+
+                            <p>
+                                Selected learning materials
+                                can remain available offline.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <aside
+                class="m-ask"
+                id="contact"
+                data-reveal
+            >
+
+                <span class="m-icon">
+                    ?
+                </span>
+
+                <h3>
+                    Still have a question?
+                </h3>
+
+                <p>
+                    Our team is here to help.
+                </p>
+
+                <a
+                    class="m-btn m-btn--blue"
+                    href="#contact"
+                >
+                    Talk to us
+                </a>
+
+            </aside>
+
+        </div>
+
+    </div>
+
+</section>
+
+</main>
+
+
+<!-- =========================================================
+     FOOTER
+========================================================= -->
+
+<footer class="m-footer">
+
+    <div class="m-container">
+
+        <div class="m-footer__top">
+
+
+            <div>
+
+                <div class="m-footer__brand m-logo">
+
+                    <span class="m-nav__mark m-logo__mark">
+
+                        <svg
+                            viewBox="0 0 32 32"
+                            fill="none"
+                        >
+
+                            <path
+                                class="m-logo__ring"
+                                d="M26.89 14.47A11 11 0 1 1 21.16 6.29"
+                            />
+
+                            <path
+                                class="m-logo__trail"
+                                d="M10.3 21.6Q16.5 15.5 28 6.5"
+                            />
+
+                            <circle
+                                class="m-logo__dot"
+                                cx="24.5"
+                                cy="9.3"
+                                r="2.3"
+                            />
+
+                        </svg>
+
+                    </span>
+
+                    <span class="m-logo__word">
+                        ORBIT
+                    </span>
+
+                </div>
+
+
+                <p class="m-footer__tag">
+                    One place to teach, learn
+                    and stay connected.
+                </p>
+
+            </div>
+
+
+            <div>
+
+                <h4>
+                    Platform
+                </h4>
+
+                <ul>
+
+                    <li>
+                        <a href="#features">
+                            Features
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#services">
+                            Services
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#faq">
+                            FAQ
+                        </a>
+                    </li>
+
+                </ul>
+
+            </div>
+
+
+            <div>
+
+                <h4>
+                    Learning
+                </h4>
+
+                <ul>
+
+                    <li>
+                        <a href="#students">
+                            Students
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#teachers">
+                            Teachers
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#schools">
+                            Schools
+                        </a>
+                    </li>
+
+                </ul>
+
+            </div>
+
+
+            <div>
+
+                <h4>
+                    Company
+                </h4>
+
+                <ul>
+
+                    <li>
+                        <a href="#about">
+                            About
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#contact">
+                            Contact
+                        </a>
+                    </li>
+
+                </ul>
+
+            </div>
+
+        </div>
+
+
+        <div class="m-footer__bottom">
+
+            <span>
+                © 2026 The Learning Orbit
+            </span>
+
+            <span>
+                Built for teachers and learners.
+            </span>
+
+        </div>
+
+    </div>
+
+</footer>
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
+
+
+   
+
+    <!-- three.js, required by the hero engine -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+<!-- Hero engine -->
+<script src="hompage.js"></script>
+
+
+</div></body>
+</html>

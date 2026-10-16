@@ -1,0 +1,27 @@
+@import url('../shared/experience.css');
+#orbit-page .book-photo {
+  width: 100%;
+  max-width: 360px;
+  height: 210px;
+  object-fit: contain;
+  border-radius: 15px;
+  background: var(--orbit-soft);
+}
+#orbit-page .owner-photo {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+#orbit-page dialog {
+  max-height: 85vh;
+  overflow: auto;
+}
+#orbit-page label:has(input[type="checkbox"]) {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+#orbit-page input[type="checkbox"] {
+  width: auto;
+}

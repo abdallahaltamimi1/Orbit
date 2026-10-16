@@ -1,0 +1,991 @@
+@font-face {
+  font-family: ChannelArabic;
+  src: url('../student-dashboard/assets/IBMPlexSansArabic-Regular.ttf');
+}
+@font-face {
+  font-family: ChannelArabic;
+  src: url('../student-dashboard/assets/IBMPlexSansArabic-SemiBold.ttf');
+  font-weight: 600;
+}
+@font-face {
+  font-family: ChannelHeading;
+  src: url('../student-dashboard/assets/Alexandria.ttf');
+}
+@font-face {
+  font-family: ChannelEnglish;
+  src: url('../student-dashboard/assets/Inter.ttf');
+}
+body:is(.student-channels, .teacher-channels) {
+  --orbit-accent: #0d9488;
+  --orbit-focus: #14b8a6;
+  --orbit-ink: #102238;
+  --orbit-muted: #52677c;
+  --orbit-surface: #fff;
+  --orbit-border: #e2ecef;
+  background: #f6fafb;
+  color: var(--orbit-ink);
+  font-family: ChannelArabic,ChannelEnglish,sans-serif;
+}
+body:is(.student-channels, .teacher-channels)[data-theme="dark"] {
+  --orbit-ink: #e7f3f5;
+  --orbit-muted: #aac1cc;
+  --orbit-surface: #142c3d;
+  --orbit-border: #2e4857;
+  background: #0b1c2b;
+}
+body:is(.student-channels, .teacher-channels) #orbit-page .wrap {
+  max-width: 1380px;
+  padding: 24px 32px 48px;
+}
+body:is(.student-channels, .teacher-channels) #orbit-page .eyebrow {
+  display: none;
+}
+body:is(.student-channels, .teacher-channels) #orbit-page h1 {
+  font-family: ChannelHeading,ChannelEnglish,sans-serif;
+  font-size: 30px;
+  line-height: 1.6;
+  margin: 0 0 4px;
+  color: var(--orbit-ink);
+}
+body:is(.student-channels, .teacher-channels) #orbit-page .directory-heading {
+  margin-bottom: 20px;
+  gap: 16px;
+}
+body:is(.student-channels, .teacher-channels) #orbit-page .directory-heading p {
+  font-size: 15px;
+}
+body:is(.student-channels, .teacher-channels) #orbit-page .btn {
+  background: #0d9488;
+  color: #fff;
+  border: 0;
+  border-radius: 12px;
+  min-height: 44px;
+  font-family: inherit;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition:
+    transform .2s,background .2s;
+  box-shadow: none;
+}
+body:is(.student-channels, .teacher-channels) #orbit-page .btn:hover {
+  background: #0f766e;
+}
+body:is(.student-channels, .teacher-channels) #orbit-page .btn:active {
+  transform: scale(.98);
+}
+body:is(.student-channels, .teacher-channels) :focus-visible {
+  outline: 3px solid #0d9488;
+  outline-offset: 4px;
+}
+body:is(.student-channels, .teacher-channels) ::selection {
+  background: #ccfbf1;
+  color: #102238;
+}
+body:is(.student-channels, .teacher-channels) #orbit-page .directory-banner {
+  min-height: 188px;
+  padding: 25px 38px;
+  background: linear-gradient(110deg,#e1f6f3,#c9edf0);
+  color: #14485b;
+  border-radius: 22px;
+  position: relative;
+  overflow: visible;
+  isolation: isolate;
+}
+body:is(.student-channels, .teacher-channels) #orbit-page .directory-banner h2 {
+  font-family: ChannelHeading,sans-serif;
+  font-size: 27px;
+  color: #12566a;
+  margin: 8px 0 12px;
+}
+body:is(.student-channels, .teacher-channels) #orbit-page .directory-banner p {
+  color: #24556b;
+  opacity: 1;
+  font-size: 16px;
+  max-width: 530px;
+}
+body:is(.student-channels, .teacher-channels) #orbit-page .directory-banner > div > span {
+  color: #24556b;
+  opacity: 1;
+  letter-spacing: 0;
+  font-size: 13px;
+}
+body:is(.student-channels, .teacher-channels) #orbit-page .directory-orbit {
+  width: 260px;
+  height: 160px;
+  position: relative;
+}
+body:is(.student-channels, .teacher-channels) #orbit-page .directory-orbit img {
+  position: absolute;
+  width: 240px;
+  height: 240px;
+  object-fit: contain;
+  bottom: -32px;
+  filter: drop-shadow(0 12px 10px #17485b1a);
+}
+body:is(.student-channels, .teacher-channels) #orbit-page .channel-library {
+  margin-top: 26px;
+}
+body:is(.student-channels, .teacher-channels) #orbit-page .directory-tools {
+  gap: 20px;
+  padding-bottom: 18px;
+}
+body:is(.student-channels, .teacher-channels) #orbit-page .directory-tabs {
+  background: #e4eff1;
+  border-radius: 15px;
+  flex-shrink: 0;
+  padding: 4px;
+}
+body:is(.student-channels, .teacher-channels) #orbit-page .directory-tabs button {
+  font:
+    600 15px ChannelArabic,ChannelEnglish,sans-serif;
+  min-width: 108px;
+  min-height: 44px;
+  border-radius: 12px;
+  color: #52677c;
+}
+body:is(.student-channels, .teacher-channels)
+  #orbit-page
+  .directory-tabs
+  button[aria-pressed="true"] {
+  background: #0d9488;
+  color: white;
+  box-shadow: 0 3px 7px #0f766e15;
+}
+body:is(.student-channels, .teacher-channels) #orbit-page .directory-search {
+  flex: 1;
+  border-radius: 15px;
+  padding-inline: 18px;
+  border-color: var(--orbit-border);
+}
+body:is(.student-channels, .teacher-channels) #orbit-page .directory-search input {
+  font:
+    15px ChannelArabic,ChannelEnglish,sans-serif;
+  color: var(--orbit-ink);
+  min-height: 48px;
+}
+body:is(.student-channels, .teacher-channels) #orbit-page input::placeholder {
+  color: var(--orbit-muted);
+  opacity: 1;
+}
+body:is(.student-channels, .teacher-channels) #orbit-page .directory-caption {
+  margin: 18px 0;
+  font-size: 14px;
+}
+body:is(.student-channels, .teacher-channels) #channel-results {
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 22px;
+}
+body:is(.student-channels, .teacher-channels) #orbit-page .channel-card {
+  border: 0;
+  border-radius: 20px;
+  box-shadow: 0 4px 18px #0f172a09;
+  transition:
+    transform .22s,box-shadow .22s;
+  min-width: 0;
+}
+body:is(.student-channels, .teacher-channels) #orbit-page .channel-cover {
+  height: auto;
+  aspect-ratio: 1.95;
+  background: #d9eeec;
+}
+body:is(.student-channels, .teacher-channels) #orbit-page .channel-cover .tag {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  font-size: 12px;
+  background: #ffffffed;
+  color: #17394d;
+  border-radius: 9px;
+  padding: 5px 9px;
+  top: 12px;
+  inset-inline-start: 12px;
+}
+body:is(.student-channels, .teacher-channels) .cover-subject {
+  position: absolute;
+  bottom: 10px;
+  inset-inline-end: 12px;
+  background: #fff;
+  color: #0f766e;
+  padding: 3px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+}
+body:is(.student-channels, .teacher-channels) #orbit-page .channel-card-body {
+  padding: 19px 18px 17px;
+}
+body:is(.student-channels, .teacher-channels) #orbit-page .channel-card h2 {
+  font-size: 18px;
+  line-height: 1.7;
+  margin: 0 0 8px;
+  font-weight: 600;
+}
+body:is(.student-channels, .teacher-channels) #orbit-page .channel-description {
+  font-size: 14px;
+  line-height: 1.7;
+  margin: 0 0 18px;
+}
+body:is(.student-channels, .teacher-channels) .channel-people {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: auto;
+  margin-bottom: 17px;
+  font-size: 12px;
+  color: var(--orbit-muted);
+  flex-wrap: wrap;
+}
+body:is(.student-channels, .teacher-channels) #orbit-page .channel-teacher,
+body:is(.student-channels, .teacher-channels) .channel-people > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  overflow-wrap: anywhere;
+}
+body:is(.student-channels, .teacher-channels) .channel-people svg {
+  flex-shrink: 0;
+}
+body:is(.student-channels, .teacher-channels) .channel-enter {
+  width: 100%;
+  font-size: 14px;
+  text-decoration: none;
+}
+html[dir="rtl"] body:is(.student-channels, .teacher-channels) .channel-enter svg {
+  transform: scaleX(-1);
+}
+body:is(.student-channels, .teacher-channels) #orbit-page .channel-empty {
+  padding: 50px 24px;
+  background: var(--orbit-surface);
+  border-color: var(--orbit-border);
+}
+body:is(.student-channels, .teacher-channels) .channel-join-dialog {
+  font-family: ChannelArabic,ChannelEnglish,sans-serif;
+  background: var(--orbit-surface);
+  color: var(--orbit-ink);
+  border: 1px solid var(--orbit-border);
+  border-radius: 22px;
+  padding: 30px;
+  width: min(450px,calc(100vw - 32px));
+  box-shadow: 0 24px 65px #03152133;
+}
+body:is(.student-channels, .teacher-channels) .channel-join-dialog h2 {
+  font-size: 23px;
+  margin-block: 8px 12px;
+}
+body:is(.student-channels, .teacher-channels) .channel-join-dialog p {
+  color: var(--orbit-muted);
+  line-height: 1.8;
+}
+body:is(.student-channels, .teacher-channels) #invitation-code {
+  width: 100%;
+  font-size: 22px;
+  letter-spacing: 3px;
+  text-align: center;
+  background: var(--orbit-surface);
+  color: var(--orbit-ink);
+  border: 1px solid var(--orbit-border);
+  border-radius: 12px;
+  padding: 15px;
+  box-sizing: border-box;
+}
+body:is(.student-channels, .teacher-channels) .channel-join-dialog .btn {
+  width: 100%;
+  background: #0f766e;
+  color: white;
+  min-height: 46px;
+  border: 0;
+  border-radius: 12px;
+  font:
+    600 16px ChannelArabic,sans-serif;
+}
+body:is(.student-channels, .teacher-channels) .channel-join-dialog .btn:disabled {
+  opacity: .6;
+  cursor: wait;
+}
+body:is(.student-channels, .teacher-channels) .channel-join-dialog .error {
+  min-height: 28px;
+  color: #b42336;
+  font-size: 14px;
+}
+body:is(.student-channels, .teacher-channels) .channel-join-dialog .join-success {
+  color: #0f766e;
+}
+body:is(.student-channels, .teacher-channels)[data-theme="dark"] .channel-join-dialog .error {
+  color: #ffb3bf;
+}
+body:is(.student-channels, .teacher-channels)[data-theme="dark"]
+  .channel-join-dialog
+  .join-success {
+  color: #6ee7b7;
+}
+@media (hover:hover) {
+  body:is(.student-channels, .teacher-channels) #orbit-page .channel-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 32px #0f172a17;
+  }
+}
+@media (max-width:1150px) {
+  body:is(.student-channels, .teacher-channels) #channel-results {
+    grid-template-columns: repeat(2,minmax(0,1fr));
+  }
+  body:is(.student-channels, .teacher-channels) #orbit-page .directory-heading {
+    flex-direction: row;
+  }
+  body:is(.student-channels, .teacher-channels) #orbit-page .directory-tools {
+    flex-direction: row;
+  }
+  body:is(.student-channels, .teacher-channels) #orbit-page .directory-orbit {
+    width: 190px;
+  }
+  body:is(.student-channels, .teacher-channels) #orbit-page .directory-orbit img {
+    width: 210px;
+    height: 210px;
+  }
+}
+@media (max-width:650px) {
+  body:is(.student-channels, .teacher-channels) #orbit-page .wrap {
+    padding: 22px 16px 36px;
+  }
+  body:is(.student-channels, .teacher-channels) #orbit-page h1 {
+    font-size: 25px;
+  }
+  body:is(.student-channels, .teacher-channels) #orbit-page .directory-heading {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  body:is(.student-channels, .teacher-channels) #orbit-page .directory-actions {
+    justify-content: flex-start;
+  }
+  body:is(.student-channels, .teacher-channels) #orbit-page .directory-banner {
+    padding: 22px;
+    min-height: 180px;
+    gap: 0;
+    overflow: hidden;
+  }
+  body:is(.student-channels, .teacher-channels) #orbit-page .directory-banner > div:first-child {
+    position: relative;
+    z-index: 1;
+    width: 72%;
+  }
+  body:is(.student-channels, .teacher-channels) #orbit-page .directory-banner h2 {
+    font-size: 21px;
+    line-height: 1.7;
+  }
+  body:is(.student-channels, .teacher-channels) #orbit-page .directory-banner p {
+    font-size: 14px;
+  }
+  body:is(.student-channels, .teacher-channels) #orbit-page .directory-orbit {
+    display: block;
+    width: 85px;
+    flex-shrink: 0;
+    height: 160px;
+  }
+  body:is(.student-channels, .teacher-channels) #orbit-page .directory-orbit img {
+    width: 150px;
+    height: 180px;
+    inset-inline-start: -20px;
+    bottom: -20px;
+  }
+  body:is(.student-channels, .teacher-channels) #orbit-page .directory-tools {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  body:is(.student-channels, .teacher-channels) #orbit-page .directory-tabs {
+    display: flex;
+  }
+  body:is(.student-channels, .teacher-channels) #orbit-page .directory-tabs button {
+    flex: 1;
+  }
+  body:is(.student-channels, .teacher-channels) #channel-results {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+  body:is(.student-channels, .teacher-channels) #orbit-page .directory-caption {
+    font-size: 12px;
+  }
+  body:is(.student-channels, .teacher-channels) #orbit-page .directory-search input {
+    font-size: 16px;
+  }
+}
+@media (prefers-reduced-motion:reduce) {
+  body:is(.student-channels, .teacher-channels) #orbit-page *,
+  body:is(.student-channels, .teacher-channels) .channel-join-dialog {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+body:is(.student-channels, .teacher-channels) #orbit-page[data-orbit-page="channels"] {
+  font-family: ChannelArabic,ChannelEnglish,sans-serif;
+  --orbit-action: #0d9488;
+  --orbit-on-action: #fff;
+  --orbit-soft: #e2f5f1;
+}
+body:is(.student-channels, .teacher-channels)
+  #orbit-page[data-orbit-page="channels"]
+  :is(p, a, button, input, span) {
+  font-family: ChannelArabic,ChannelEnglish,sans-serif;
+}
+body:is(.student-channels, .teacher-channels)
+  #orbit-page[data-orbit-page="channels"]
+  .directory-orbit {
+  display: grid !important;
+}
+body:is(.student-channels, .teacher-channels)
+  #orbit-page[data-orbit-page="channels"]
+  .channel-cover
+  .cover-subject {
+  font-size: 12px;
+  opacity: 1;
+  color: #0f766e;
+}
+body:is(.student-channels, .teacher-channels)
+  #orbit-page[data-orbit-page="channels"]
+  .btn:not(.soft):not(.danger) {
+  background: #0d9488;
+  color: #fff;
+}
+body:is(.student-channels, .teacher-channels)
+  #orbit-page[data-orbit-page="channels"]
+  .btn:not(.soft):not(.danger):hover {
+  background: #0f766e;
+}
+body:is(.student-channels, .teacher-channels)
+  #orbit-page[data-orbit-page="channels"]
+  .directory-orbit
+  img {
+  animation: channel-welcome .65s cubic-bezier(.16,1,.3,1) both;
+}
+@keyframes channel-welcome {
+  from {
+    opacity: 0;
+    transform: translateY(12px) rotate(-4deg);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion:reduce) {
+  body:is(.student-channels, .teacher-channels)
+    #orbit-page[data-orbit-page="channels"]
+    .directory-orbit
+    img {
+    animation: none;
+  }
+}
+/* Student channels refinement; teacher workflows retain their current presentation. */
+@font-face {
+  font-family: ChannelEnglishHeading;
+  src: url('../student-dashboard/assets/PlusJakartaSans.ttf');
+  font-display: swap;
+}
+body:is(.student-channels, .teacher-channels) #orbit-page[data-orbit-page="channels"] {
+  --orbit-ink: #102238;
+  --orbit-muted: #52677c;
+  --orbit-surface: #fff;
+  --orbit-border: #dce8eb;
+  font-family: ChannelArabic,ChannelEnglish,sans-serif;
+}
+body:is(.student-channels, .teacher-channels)[data-theme="dark"]
+  #orbit-page[data-orbit-page="channels"] {
+  --orbit-ink: #e7f3f5;
+  --orbit-muted: #aac1cc;
+  --orbit-surface: #142c3d;
+  --orbit-border: #2e4857;
+}
+body:is(.student-channels, .teacher-channels) #orbit-page[data-orbit-page="channels"] .wrap {
+  max-width: 1320px;
+  padding: 24px 28px 40px;
+}
+body:is(.student-channels, .teacher-channels) #orbit-page[data-orbit-page="channels"] :is(h1, h2) {
+  font-family: ChannelHeading,sans-serif;
+  font-weight: 600;
+  letter-spacing: normal;
+}
+body:is(.student-channels, .teacher-channels) #orbit-page[data-orbit-page="channels"] h1 {
+  font-size: 26px;
+  line-height: 1.6;
+  margin: 0 0 8px;
+}
+html[lang="en"]
+  body:is(.student-channels, .teacher-channels)
+  #orbit-page[data-orbit-page="channels"]
+  :is(h1, h2) {
+  font-family: ChannelEnglishHeading,sans-serif;
+}
+html[lang="en"]
+  body:is(.student-channels, .teacher-channels)
+  #orbit-page[data-orbit-page="channels"]
+  :is(p, a, button, input, span) {
+  font-family: ChannelEnglish,sans-serif;
+}
+body:is(.student-channels, .teacher-channels)
+  #orbit-page[data-orbit-page="channels"]
+  .directory-heading {
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+body:is(.student-channels, .teacher-channels)
+  #orbit-page[data-orbit-page="channels"]
+  .directory-heading
+  p {
+  font-size: 14px;
+  line-height: 1.85;
+  max-width: 60ch;
+  color: var(--orbit-muted);
+}
+body:is(.student-channels, .teacher-channels)
+  #orbit-page[data-orbit-page="channels"]
+  .directory-banner {
+  min-height: 132px;
+  padding: 24px 28px;
+  gap: 28px;
+  background: #103d42;
+  color: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: none;
+}
+body:is(.student-channels, .teacher-channels)
+  #orbit-page[data-orbit-page="channels"]
+  .directory-banner
+  > div:first-child {
+  width: auto;
+  max-width: 68ch;
+}
+body:is(.student-channels, .teacher-channels)
+  #orbit-page[data-orbit-page="channels"]
+  .directory-banner
+  h2 {
+  font-size: 23px;
+  line-height: 1.6;
+  color: #fff;
+  margin: 0 0 8px;
+}
+body:is(.student-channels, .teacher-channels)
+  #orbit-page[data-orbit-page="channels"]
+  .directory-banner
+  p {
+  font-size: 14px;
+  line-height: 1.8;
+  color: #ccfbf1;
+  max-width: none;
+}
+body:is(.student-channels, .teacher-channels)
+  #orbit-page[data-orbit-page="channels"]
+  .directory-banner
+  > div
+  > span {
+  display: none;
+}
+body:is(.student-channels, .teacher-channels)
+  #orbit-page[data-orbit-page="channels"]
+  .directory-orbit {
+  display: grid !important;
+  width: 100px;
+  height: 80px;
+  flex-shrink: 0;
+  color: #5eead4;
+}
+body:is(.student-channels, .teacher-channels)
+  #orbit-page[data-orbit-page="channels"]
+  .channel-banner-book {
+  width: 90px;
+  height: 72px;
+  opacity: .85;
+}
+body:is(.student-channels, .teacher-channels)
+  #orbit-page[data-orbit-page="channels"]
+  .channel-library {
+  margin-top: 24px;
+}
+body:is(.student-channels, .teacher-channels)
+  #orbit-page[data-orbit-page="channels"]
+  .directory-tools {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 0 16px;
+  border-bottom: 1px solid var(--orbit-border);
+}
+body:is(.student-channels, .teacher-channels)
+  #orbit-page[data-orbit-page="channels"]
+  .directory-tabs {
+  display: flex;
+  background: var(--orbit-surface);
+  border: 1px solid var(--orbit-border);
+  border-radius: 11px;
+  padding: 3px;
+}
+body:is(.student-channels, .teacher-channels)
+  #orbit-page[data-orbit-page="channels"]
+  .directory-tabs
+  button {
+  font-size: 14px;
+  min-height: 42px;
+  min-width: 100px;
+  border-radius: 8px;
+  padding: 8px 16px;
+  color: var(--orbit-muted);
+  background: transparent;
+  transition:
+    background-color .2s,color .2s;
+}
+body:is(.student-channels, .teacher-channels)
+  #orbit-page[data-orbit-page="channels"]
+  .directory-tabs
+  button[aria-pressed="true"] {
+  background: #0f766e;
+  color: white;
+  box-shadow: none;
+}
+body:is(.student-channels, .teacher-channels)
+  #orbit-page[data-orbit-page="channels"]
+  .directory-search {
+  min-width: 0;
+  min-height: 48px;
+  padding: 0 14px;
+  gap: 10px;
+  border-radius: 11px;
+  background: var(--orbit-surface);
+  color: var(--orbit-muted);
+  border: 1px solid var(--orbit-border);
+}
+body:is(.student-channels, .teacher-channels)
+  #orbit-page[data-orbit-page="channels"]
+  .directory-search
+  svg {
+  flex-shrink: 0;
+}
+body:is(.student-channels, .teacher-channels)
+  #orbit-page[data-orbit-page="channels"]
+  .directory-search:focus-within {
+  border-color: #0d9488;
+  outline: 2px solid #14b8a633;
+  outline-offset: 2px;
+}
+body:is(.student-channels, .teacher-channels)
+  #orbit-page[data-orbit-page="channels"]
+  .directory-search
+  input {
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 46px;
+  box-shadow: none;
+  outline: none;
+}
+body:is(.student-channels, .teacher-channels)
+  #orbit-page[data-orbit-page="channels"]
+  .directory-caption {
+  font-size: 13px;
+  margin: 16px 0;
+}
+body:is(.student-channels, .teacher-channels)
+  #orbit-page[data-orbit-page="channels"]
+  #channel-results {
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 20px;
+  align-items: stretch;
+}
+body:is(.student-channels, .teacher-channels)
+  #orbit-page[data-orbit-page="channels"]
+  .channel-card {
+  border: 1px solid var(--orbit-border);
+  border-radius: 15px;
+  box-shadow: none;
+  transition:
+    transform .2s,border-color .2s;
+}
+body:is(.student-channels, .teacher-channels)
+  #orbit-page[data-orbit-page="channels"]
+  .channel-cover {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16/9;
+  height: auto;
+  background: linear-gradient(125deg,#d9f3ed,#eaf4f5);
+  overflow: hidden;
+  flex: none;
+}
+body:is(.student-channels, .teacher-channels)
+  #orbit-page[data-orbit-page="channels"]
+  .channel-cover
+  > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .3s;
+}
+body:is(.student-channels, .teacher-channels)
+  #orbit-page[data-orbit-page="channels"]
+  .channel-cover
+  > img:not([src]),
+body:is(.student-channels, .teacher-channels)
+  #orbit-page[data-orbit-page="channels"]
+  .channel-cover
+  > img[hidden] {
+  display: none;
+}
+body:is(.student-channels, .teacher-channels)
+  #orbit-page[data-orbit-page="channels"]
+  .channel-cover-fallback {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #0f766e;
+}
+body:is(.student-channels, .teacher-channels)
+  #orbit-page[data-orbit-page="channels"]
+  .channel-cover-fallback
+  > svg {
+  width: 44px;
+  height: 44px;
+  padding: 16px;
+  box-sizing: content-box;
+  background: #ffffff7a;
+  border-radius: 20px;
+}
+body:is(.student-channels, .teacher-channels)
+  #orbit-page[data-orbit-page="channels"]
+  .channel-cover
+  .tag {
+  font-size: 12px;
+  line-height: 1.5;
+  background: #fffffff2;
+  color: #17394d;
+  padding: 6px 9px;
+  top: 10px;
+  inset-inline-start: 10px;
+  max-width: calc(100% - 20px);
+  border: 1px solid #d9e8e9;
+  gap: 5px;
+}
+body:is(.student-channels, .teacher-channels)
+  #orbit-page[data-orbit-page="channels"]
+  .cover-subject {
+  background: #fff;
+  color: #0f766e;
+  font-size: 12px;
+  padding: 4px 9px;
+  bottom: 10px;
+  inset-inline-end: 10px;
+}
+body:is(.student-channels, .teacher-channels)
+  #orbit-page[data-orbit-page="channels"]
+  .channel-card-body {
+  padding: 18px;
+  gap: 0;
+}
+body:is(.student-channels, .teacher-channels)
+  #orbit-page[data-orbit-page="channels"]
+  .channel-card
+  h2 {
+  font-size: 16px;
+  line-height: 1.8;
+  margin: 0 0 8px;
+  color: var(--orbit-ink);
+}
+body:is(.student-channels, .teacher-channels)
+  #orbit-page[data-orbit-page="channels"]
+  .channel-description {
+  font-size: 14px;
+  line-height: 1.9;
+  color: var(--orbit-muted);
+  margin: 0 0 18px;
+  display: block;
+  overflow: visible;
+  -webkit-line-clamp: unset;
+}
+body:is(.student-channels, .teacher-channels)
+  #orbit-page[data-orbit-page="channels"]
+  .channel-people {
+  font-size: 12px;
+  line-height: 1.8;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+body:is(.student-channels, .teacher-channels)
+  #orbit-page[data-orbit-page="channels"]
+  .channel-enter {
+  min-height: 44px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 10px;
+}
+body:is(.student-channels, .teacher-channels)
+  #orbit-page[data-orbit-page="channels"]
+  .channel-empty {
+  grid-column: 1/-1;
+  padding: 32px 24px;
+  border: 1px dashed var(--orbit-border);
+  border-radius: 14px;
+  box-shadow: none;
+}
+body:is(.student-channels, .teacher-channels)
+  #orbit-page[data-orbit-page="channels"]
+  .channel-empty
+  > span {
+  display: none;
+}
+body:is(.student-channels, .teacher-channels)
+  #orbit-page[data-orbit-page="channels"]
+  .channel-empty
+  h2 {
+  font-size: 19px;
+}
+body:is(.student-channels, .teacher-channels)
+  #orbit-page[data-orbit-page="channels"]
+  .channel-empty
+  p {
+  font-size: 14px;
+  line-height: 1.8;
+}
+body:is(.student-channels, .teacher-channels)[data-theme="dark"]
+  #orbit-page[data-orbit-page="channels"]
+  .channel-cover {
+  background: linear-gradient(125deg,#184b49,#1c3545);
+}
+body:is(.student-channels, .teacher-channels)[data-theme="dark"]
+  #orbit-page[data-orbit-page="channels"]
+  .channel-cover-fallback {
+  color: #8aead8;
+}
+body:is(.student-channels, .teacher-channels)[data-theme="dark"]
+  #orbit-page[data-orbit-page="channels"]
+  .channel-cover-fallback
+  > svg {
+  background: #ffffff08;
+}
+@media (hover:hover) and (pointer:fine) {
+  body:is(.student-channels, .teacher-channels)
+    #orbit-page[data-orbit-page="channels"]
+    .channel-card:hover {
+    transform: translateY(-3px);
+    border-color: #0d9488;
+    box-shadow: none;
+  }
+  body:is(.student-channels, .teacher-channels)
+    #orbit-page[data-orbit-page="channels"]
+    .channel-card:hover
+    .channel-cover
+    > img {
+    transform: scale(1.025);
+  }
+}
+@media (max-width:1150px) {
+  body:is(.student-channels, .teacher-channels)
+    #orbit-page[data-orbit-page="channels"]
+    #channel-results {
+    grid-template-columns: repeat(2,minmax(0,1fr));
+  }
+}
+@media (max-width:650px) {
+  body:is(.student-channels, .teacher-channels) #orbit-page[data-orbit-page="channels"] .wrap {
+    padding: 22px 16px 32px;
+  }
+  body:is(.student-channels, .teacher-channels) #orbit-page[data-orbit-page="channels"] h1 {
+    font-size: 24px;
+  }
+  body:is(.student-channels, .teacher-channels)
+    #orbit-page[data-orbit-page="channels"]
+    .directory-heading {
+    align-items: stretch;
+    gap: 12px;
+  }
+  body:is(.student-channels, .teacher-channels)
+    #orbit-page[data-orbit-page="channels"]
+    .directory-banner {
+    padding: 22px;
+    min-height: 0;
+    gap: 14px;
+  }
+  body:is(.student-channels, .teacher-channels)
+    #orbit-page[data-orbit-page="channels"]
+    .directory-banner
+    h2 {
+    font-size: 20px;
+  }
+  body:is(.student-channels, .teacher-channels)
+    #orbit-page[data-orbit-page="channels"]
+    .directory-orbit {
+    display: none !important;
+  }
+  body:is(.student-channels, .teacher-channels)
+    #orbit-page[data-orbit-page="channels"]
+    .directory-tools {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  body:is(.student-channels, .teacher-channels)
+    #orbit-page[data-orbit-page="channels"]
+    .directory-search
+    input {
+    font-size: 16px;
+  }
+  body:is(.student-channels, .teacher-channels)
+    #orbit-page[data-orbit-page="channels"]
+    #channel-results {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+@media (prefers-reduced-motion:reduce) {
+  body:is(.student-channels, .teacher-channels)
+    #orbit-page[data-orbit-page="channels"]
+    .channel-card,
+  body:is(.student-channels, .teacher-channels)
+    #orbit-page[data-orbit-page="channels"]
+    .channel-cover
+    > img {
+    transform: none !important;
+    transition: none !important;
+  }
+}
+@font-face {
+  font-family: ChannelArabic;
+  src: url('../student-dashboard/assets/IBMPlexSansArabic-Regular.ttf');
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: ChannelArabic;
+  src: url('../student-dashboard/assets/IBMPlexSansArabic-SemiBold.ttf');
+  font-weight: 600;
+  font-display: swap;
+}
+@font-face {
+  font-family: ChannelHeading;
+  src: url('../student-dashboard/assets/Alexandria.ttf');
+  font-weight: 100 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: ChannelEnglish;
+  src: url('../student-dashboard/assets/Inter.ttf');
+  font-weight: 100 900;
+  font-display: swap;
+}
+body:is(.student-channels, .teacher-channels)
+  #orbit-page[data-orbit-page="channels"]
+  .directory-banner::before,
+body:is(.student-channels, .teacher-channels)
+  #orbit-page[data-orbit-page="channels"]
+  .directory-banner::after {
+  display: none !important;
+}
+body:is(.student-channels, .teacher-channels)
+  #orbit-page[data-orbit-page="channels"]
+  .channel-cover-fallback {
+  opacity: 1;
+}

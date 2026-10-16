@@ -1,0 +1,471 @@
+/* Student layout refinement. Existing brand variables are the only color source. */
+#orbit-page .student-welcome {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) minmax(0,1.1fr);
+  align-items: center;
+  background: var(--orbit-midnight);
+  color: var(--orbit-on-action);
+  border-radius: 24px;
+  overflow: hidden;
+  margin-block: 8px 28px;
+  min-height: 330px;
+}
+#orbit-page .student-welcome-copy {
+  padding: 36px;
+  min-width: 0;
+}
+#orbit-page .student-welcome h1 {
+  font-size: clamp(28px,3vw,42px);
+  line-height: 1.55;
+  color: var(--orbit-on-action);
+  margin: 0 0 16px;
+  overflow-wrap: anywhere;
+}
+#orbit-page .student-welcome p {
+  color: var(--orbit-on-action);
+  line-height: 1.85;
+  margin: 0 0 24px;
+  max-width: 48ch;
+}
+#orbit-page .student-welcome small {
+  display: block;
+  font-size: 13px;
+  line-height: 1.8;
+  margin-top: 16px;
+  color: var(--orbit-on-action);
+}
+#orbit-page .student-welcome .student-tour-cta {
+  background: var(--orbit-yellow);
+  color: var(--orbit-midnight);
+  min-height: 48px;
+  box-shadow: none;
+}
+#orbit-page .student-campus-visual {
+  position: relative;
+  display: block;
+  height: 100%;
+  min-height: 330px;
+  overflow: hidden;
+}
+#orbit-page .student-campus-visual img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+#orbit-page .student-campus-visual span {
+  position: absolute;
+  bottom: 20px;
+  inset-inline-end: 20px;
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: var(--orbit-surface);
+  color: var(--orbit-ink);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+#orbit-page .student-discovery {
+  margin-block: 28px 24px;
+}
+#orbit-page .student-discovery h2 {
+  font-size: 26px;
+  line-height: 1.6;
+  margin: 0 0 16px;
+}
+#orbit-page #student-search-form {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 12px;
+  background: var(--orbit-surface);
+  border: 1px solid var(--orbit-border);
+  border-radius: 16px;
+}
+#orbit-page .student-search-field {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: min(100%,260px);
+  margin: 0;
+}
+#orbit-page #student-search {
+  font: inherit;
+  font-size: 16px;
+  width: 100%;
+  min-width: 0;
+  min-height: 48px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--orbit-surface);
+  color: var(--orbit-ink);
+  padding: 10px;
+  caret-color: var(--orbit-action);
+}
+#orbit-page .student-search-category {
+  margin: 0;
+}
+#orbit-page #student-search-category {
+  min-height: 48px;
+  max-width: 100%;
+  font: inherit;
+  font-size: 15px;
+  padding: 10px 12px;
+  border: 1px solid var(--orbit-border);
+  border-radius: 10px;
+}
+#orbit-page #student-search-form button {
+  min-height: 48px;
+}
+#orbit-page #student-search-status {
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--orbit-muted);
+  margin: 12px 4px;
+}
+#orbit-page .student-search-result {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) auto;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  background: var(--orbit-surface);
+  border-bottom: 1px solid var(--orbit-border);
+  color: var(--orbit-ink);
+  text-decoration: none;
+  min-height: 72px;
+}
+#orbit-page .student-search-result:first-child {
+  border-radius: 14px 14px 0 0;
+}
+#orbit-page .student-search-result:last-child {
+  border-radius: 0 0 14px 14px;
+}
+#orbit-page .student-search-result strong {
+  display: block;
+  overflow-wrap: anywhere;
+  line-height: 1.8;
+}
+#orbit-page .student-search-result small {
+  display: block;
+  color: var(--orbit-muted);
+  font-size: 13px;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+#orbit-page .student-search-empty {
+  padding: 24px;
+  background: var(--orbit-surface);
+  border: 1px solid var(--orbit-border);
+  border-radius: 14px;
+  line-height: 1.8;
+}
+#orbit-page .student-learning-shortcuts {
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 12px;
+  margin-block: 24px 32px;
+}
+#orbit-page .student-learning-shortcuts a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--orbit-surface);
+  color: var(--orbit-ink);
+  border: 1px solid var(--orbit-border);
+  padding: 18px;
+  border-radius: 14px;
+  min-height: 80px;
+  font-size: 15px;
+  text-decoration: none;
+}
+#orbit-page .student-learning-shortcuts a > svg:first-child {
+  color: var(--orbit-accent);
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+}
+#orbit-page .student-learning-shortcuts .arrow {
+  margin-inline-start: auto;
+  width: 18px;
+  flex-shrink: 0;
+}
+#orbit-page .student-learning-shortcuts span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+#orbit-page #student-saved-learning {
+  margin-block: 28px;
+}
+#orbit-page #student-saved-learning h2 {
+  font-size: 24px;
+  margin: 0 0 12px;
+}
+#orbit-page .student-learning-records {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  line-height: 1.8;
+  color: var(--orbit-muted);
+}
+#orbit-page .student-learning-records strong {
+  color: var(--orbit-ink);
+  font-variant-numeric: tabular-nums;
+}
+#orbit-page .student-account-menu {
+  position: relative;
+  color: var(--orbit-ink);
+}
+#orbit-page .student-account-menu summary {
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  list-style: none;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--orbit-border);
+  border-radius: 10px;
+  background: var(--orbit-surface);
+}
+#orbit-page .student-account-menu summary::-webkit-details-marker {
+  display: none;
+}
+#orbit-page .student-account-menu > div {
+  position: absolute;
+  inset-inline-end: 0;
+  top: calc(100% + 12px);
+  width: 260px;
+  max-width: calc(100vw - 32px);
+  padding: 16px;
+  background: var(--orbit-surface);
+  border: 1px solid var(--orbit-border);
+  border-radius: 14px;
+  z-index: 30;
+}
+#orbit-page .student-account-menu strong {
+  display: block;
+  overflow-wrap: anywhere;
+  margin-bottom: 8px;
+}
+#orbit-page .student-account-menu a,
+#orbit-page .student-account-menu [data-student-logout] {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 8px 0;
+  width: 100%;
+  color: var(--orbit-ink);
+  text-decoration: none;
+  font: inherit;
+  border: 0;
+  background: transparent;
+  text-align: start;
+}
+#orbit-page .student-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+#orbit-page .student-discovery [hidden] {
+  display: none !important;
+}
+#orbit-page
+  :is(.student-discovery, .student-welcome, .student-learning-shortcuts, .student-account-menu)
+  :focus-visible {
+  outline: 3px solid var(--orbit-focus);
+  outline-offset: 3px;
+}
+#orbit-page .topbar .header-actions {
+  flex-wrap: wrap;
+  gap: 12px;
+}
+#orbit-page .topbar .header-actions :is(button, .top-avatar) {
+  min-width: 44px;
+  min-height: 44px;
+}
+#orbit-page .welcome-orbit,
+#orbit-page .solar-system {
+  display: none;
+}
+#orbit-page .student-welcome ~ .school-tour-entry {
+  min-height: 220px;
+}
+#orbit-page .section-motion {
+  opacity: 1 !important;
+  animation: none !important;
+}
+@media (hover:hover) and (pointer:fine) {
+  #orbit-page .student-learning-shortcuts a:hover,
+  #orbit-page .student-search-result:hover {
+    background: var(--orbit-soft);
+  }
+  #orbit-page .student-campus-visual:hover span {
+    transform: translateY(-3px);
+    transition: transform 180ms cubic-bezier(.23,1,.32,1);
+  }
+}
+@media (max-width:900px) {
+  #orbit-page .student-welcome {
+    grid-template-columns: 1fr 1fr;
+  }
+  #orbit-page .student-welcome-copy {
+    padding: 24px;
+  }
+  #orbit-page .student-learning-shortcuts {
+    grid-template-columns: repeat(2,minmax(0,1fr));
+  }
+}
+@media (max-width:620px) {
+  #orbit-page .student-welcome {
+    grid-template-columns: 1fr;
+    min-height: 0;
+    border-radius: 20px;
+  }
+  #orbit-page .student-campus-visual {
+    min-height: 0;
+    height: 210px;
+    grid-row: 1;
+  }
+  #orbit-page .student-welcome-copy {
+    padding: 24px;
+  }
+  #orbit-page .student-welcome h1 {
+    font-size: 28px;
+  }
+  #orbit-page .student-welcome p {
+    font-size: 15px;
+  }
+  #orbit-page .student-discovery h2 {
+    font-size: 23px;
+  }
+  #orbit-page .student-search-field {
+    flex-basis: 100%;
+  }
+  #orbit-page .student-search-category {
+    flex: 1;
+    min-width: 0;
+  }
+  #orbit-page #student-search-category {
+    width: 100%;
+  }
+  #orbit-page .student-learning-shortcuts a {
+    padding: 14px;
+    font-size: 14px;
+    min-height: 84px;
+  }
+  #orbit-page .student-learning-shortcuts .arrow {
+    display: none;
+  }
+  #orbit-page .node-subject,
+  #orbit-page .node-meta,
+  #orbit-page .timeline-row small,
+  #orbit-page .milestone small {
+    font-size: 12px !important;
+    line-height: 1.8;
+  }
+  #orbit-page .welcome p,
+  #orbit-page .course-label {
+    font-size: 13px;
+  }
+  #orbit-page .student-account-menu > div {
+    inset-inline-end: -20px;
+  }
+}
+@media (prefers-reduced-motion:reduce) {
+  #orbit-page .student-campus-visual span {
+    transform: none !important;
+    transition: none !important;
+  }
+}
+body[data-orbit-role="student"] #orbit-language-button {
+  position: static;
+  inset: auto;
+  min-height: 44px;
+  font-size: 14px;
+  box-shadow: none;
+}
+#orbit-page[data-orbit-page="student-dashboard"] .student-welcome .button.student-tour-cta {
+  background: var(--orbit-yellow);
+  color: var(--orbit-midnight);
+}
+#orbit-page #student-search-form .student-search-field {
+  display: flex;
+  grid-template-columns: none;
+}
+#orbit-page #student-search-form {
+  max-width: none;
+}
+#orbit-page #student-search-form input {
+  margin: 0;
+}
+#orbit-page .current .node-orbit,
+#orbit-page .milestone-orbit {
+  animation: none !important;
+}
+@media (max-width:780px) {
+  #orbit-page .topbar {
+    padding-inline-start: 76px;
+    padding-inline-end: 20px;
+  }
+}
+#orbit-page .school-tour-entry.student-tour-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 24px;
+  min-height: 0;
+  background: var(--orbit-soft);
+  border: 1px solid var(--orbit-border);
+  box-shadow: none;
+}
+#orbit-page .student-tour-strip .school-tour-copy {
+  padding: 0;
+  flex: 1;
+  min-width: 0;
+}
+#orbit-page .student-tour-strip h2 {
+  font-size: 22px;
+}
+#orbit-page .student-tour-strip p {
+  margin-bottom: 0;
+  font-size: 14px;
+}
+#orbit-page .student-tour-destinations {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 10px;
+}
+#orbit-page .student-tour-destinations a {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  min-height: 48px;
+  padding: 10px 12px;
+  background: var(--orbit-surface);
+  color: var(--orbit-ink);
+  border: 1px solid var(--orbit-border);
+  border-radius: 10px;
+  text-decoration: none;
+}
+#orbit-page .student-tour-destinations svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+@media (max-width:760px) {
+  #orbit-page .school-tour-entry.student-tour-strip {
+    display: block;
+  }
+  #orbit-page .student-tour-destinations {
+    margin-top: 20px;
+  }
+}

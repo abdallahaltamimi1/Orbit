@@ -1,0 +1,1039 @@
+@import url('../shared/experience.css');
+#orbit-page[data-orbit-page="channel"] .wrap {
+  max-width: 1300px;
+  padding-top: 26px;
+}
+#orbit-page[data-orbit-page="channel"] h1 {
+  font-size: 32px;
+  margin-bottom: 8px;
+  overflow-wrap: anywhere;
+}
+#orbit-page .channel-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 0 18px;
+  font-size: 13px;
+}
+#orbit-page .channel-top a {
+  color: var(--orbit-muted);
+}
+#orbit-page .channel-summary {
+  background: var(--orbit-surface);
+  border: 1px solid var(--orbit-border);
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  gap: 22px;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+}
+#orbit-page .channel-summary > div:first-of-type {
+  flex: 1;
+  min-width: 0;
+}
+#orbit-page .channel-badge {
+  font-size: 12px;
+  color: var(--orbit-accent);
+  background: var(--orbit-canvas);
+  padding: 6px 10px;
+  border-radius: 6px;
+  display: inline-block;
+}
+#orbit-page .summary-description {
+  color: var(--orbit-muted);
+  margin: 12px 0;
+  overflow-wrap: anywhere;
+}
+#orbit-page .teacher-link {
+  font-size: 13px;
+  color: var(--orbit-ink);
+}
+#orbit-page .summary-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex-shrink: 0;
+}
+#orbit-page .channel-cover-image {
+  width: 105px;
+  height: 105px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+#orbit-page #channel-status {
+  margin: 12px 0;
+  min-height: 24px;
+  color: var(--orbit-accent);
+  font-size: 14px;
+}
+#orbit-page #channel-status.is-error {
+  color: var(--orbit-error);
+}
+#orbit-page .channel-tabs {
+  display: flex;
+  gap: 22px;
+  border-bottom: 1px solid var(--orbit-border);
+  margin-bottom: 26px;
+  overflow-x: auto;
+}
+#orbit-page .channel-tabs button {
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: none;
+  color: var(--orbit-muted);
+  padding: 14px 2px;
+  white-space: nowrap;
+  cursor: pointer;
+  font-size: 14px;
+}
+#orbit-page .channel-tabs button[aria-current="page"] {
+  border-bottom-color: var(--orbit-accent);
+  color: var(--orbit-accent);
+}
+#orbit-page .channel-layout {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) 270px;
+  gap: 24px;
+  align-items: start;
+}
+#orbit-page .channel-main {
+  min-width: 0;
+}
+#orbit-page .classroom-panel,
+#orbit-page .content-panel,
+#orbit-page .members-panel,
+#orbit-page .channel-aside section {
+  border: 1px solid var(--orbit-border);
+  border-radius: 16px;
+  padding: 24px;
+  background: var(--orbit-surface);
+  margin-bottom: 20px;
+}
+#orbit-page .classroom-panel {
+  background: var(--orbit-space);
+  color: #fff;
+  border-color: var(--orbit-accent);
+}
+#orbit-page .classroom-panel .muted {
+  color: var(--orbit-border);
+  font-size: 12px;
+}
+#orbit-page .panel-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  align-items: center;
+}
+#orbit-page .panel-heading h2 {
+  font-size: 20px;
+  line-height: 1.4;
+  margin: 8px 0;
+}
+#orbit-page .section-kicker {
+  font-size: 10px;
+  letter-spacing: 1.2px;
+  color: var(--orbit-muted);
+}
+#orbit-page .classroom-panel .section-kicker {
+  color: var(--orbit-accent);
+}
+#orbit-page .room-count {
+  font-size: 12px;
+  white-space: nowrap;
+  background: #ffffff0c;
+  border: 1px solid #ffffff20;
+  padding: 7px 11px;
+  border-radius: 8px;
+}
+#orbit-page .orbit-room {
+  position: relative;
+  height: 430px;
+  direction: ltr;
+  margin-top: 12px;
+}
+#orbit-page .room-ring {
+  position: absolute;
+  inset: 13% 12%;
+  border-radius: 50%;
+  border: 1px dashed color-mix(in srgb,var(--orbit-accent) 30.98%,transparent);
+}
+#orbit-page .room-ring:after {
+  content: '';
+  position: absolute;
+  inset: 16%;
+  border: 1px solid color-mix(in srgb,var(--orbit-accent) 13.33%,transparent);
+  border-radius: 50%;
+}
+#orbit-page .teacher-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-50%);
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+  max-width: 160px;
+}
+#orbit-page .teacher-center > span {
+  font-size: 54px;
+  line-height: 1.2;
+  color: var(--orbit-accent);
+}
+#orbit-page .teacher-center strong {
+  font-size: 14px;
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#orbit-page .teacher-center small {
+  font-size: 11px;
+  color: var(--orbit-border);
+}
+#orbit-page .class-seat {
+  position: absolute;
+  left: var(--seat-x);
+  top: var(--seat-y);
+  transform: translate(-50%,-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 92px;
+  gap: 3px;
+}
+#orbit-page .seat-marker {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+  line-height: 1;
+  background: var(--orbit-accent);
+  border: 1px solid var(--orbit-accent);
+  color: white;
+}
+#orbit-page .class-seat strong {
+  font-size: 11px;
+  max-width: 90px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#orbit-page .class-seat small {
+  font-size: 9px;
+  color: var(--orbit-border);
+}
+#orbit-page .class-seat.vacant .seat-marker {
+  background: #ffffff05;
+  color: var(--orbit-accent);
+  border: 1px dashed color-mix(in srgb,var(--orbit-accent) 50.2%,transparent);
+  font-size: 19px;
+}
+#orbit-page .class-seat.vacant strong {
+  color: var(--orbit-border);
+  font-weight: 400;
+}
+#orbit-page .room-legend {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  align-items: center;
+  border-top: 1px solid #ffffff16;
+  padding-top: 16px;
+  font-size: 11px;
+  color: var(--orbit-border);
+}
+#orbit-page .room-legend .text-button {
+  margin-inline-start: auto;
+  color: var(--orbit-soft);
+}
+#orbit-page .text-button {
+  border: 0;
+  padding: 6px 0;
+  background: none;
+  color: var(--orbit-accent);
+  cursor: pointer;
+  font-size: 12px;
+}
+#orbit-page .content-empty {
+  text-align: center;
+  padding: 32px 16px;
+  color: var(--orbit-muted);
+  font-size: 13px;
+}
+#orbit-page .content-empty > span {
+  font-size: 36px;
+  color: var(--orbit-accent);
+}
+#orbit-page .content-empty h3 {
+  color: var(--orbit-ink);
+  font-size: 17px;
+}
+#orbit-page .channel-aside h3 {
+  font-size: 18px;
+  margin: 10px 0;
+}
+#orbit-page .channel-aside p {
+  font-size: 13px;
+  color: var(--orbit-muted);
+  overflow-wrap: anywhere;
+}
+#orbit-page .channel-aside dl {
+  margin: 20px 0 0;
+  font-size: 12px;
+}
+#orbit-page .channel-aside dl div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  border-top: 1px solid var(--orbit-border);
+  padding: 12px 0;
+}
+#orbit-page .channel-aside dt {
+  color: var(--orbit-muted);
+}
+#orbit-page .channel-aside dd {
+  margin: 0;
+}
+#orbit-page .invitation-code {
+  display: block;
+  overflow-wrap: anywhere;
+  font-size: 15px;
+  letter-spacing: 1px;
+  background: var(--orbit-canvas);
+  padding: 12px;
+  border: 1px dashed var(--orbit-border);
+  border-radius: 8px;
+  margin: 16px 0;
+}
+#orbit-page .invite-panel button {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+}
+#orbit-page .member-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-top: 1px solid var(--orbit-border);
+  padding: 16px 0;
+}
+#orbit-page .member-row > div {
+  flex: 1;
+  min-width: 0;
+}
+#orbit-page .member-row strong {
+  display: block;
+  overflow-wrap: anywhere;
+  font-size: 14px;
+}
+#orbit-page .member-row small {
+  display: block;
+  color: var(--orbit-muted);
+  font-size: 11px;
+}
+#orbit-page .member-initial {
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: var(--orbit-canvas);
+  color: var(--orbit-accent);
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+}
+#orbit-page .post {
+  border-radius: 12px;
+  margin-top: 20px;
+  background: var(--orbit-surface);
+  border-color: var(--orbit-border);
+  animation: none;
+}
+#orbit-page .post header {
+  display: flex;
+  justify-content: space-between;
+  color: var(--orbit-muted);
+  font-size: 12px;
+}
+#orbit-page .post-type {
+  color: var(--orbit-accent);
+}
+#orbit-page .post h2 {
+  font-size: 20px;
+}
+#orbit-page .post-body {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+#orbit-page .post-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+#orbit-page .locked-channel {
+  background: var(--orbit-surface);
+  border: 1px solid var(--orbit-border);
+  border-radius: 16px;
+  text-align: center;
+  padding: 60px 24px;
+}
+#orbit-page .locked-channel > span {
+  font-size: 50px;
+  color: var(--orbit-accent);
+}
+#orbit-page .locked-channel h2 {
+  font-size: 25px;
+}
+#orbit-page .locked-channel p {
+  color: var(--orbit-muted);
+  font-size: 14px;
+}
+#orbit-page .dialog-actions {
+  display: flex;
+  gap: 12px;
+}
+@media (max-width:1100px) {
+  #orbit-page .channel-layout {
+    grid-template-columns: minmax(0,1fr);
+  }
+  #orbit-page .channel-aside {
+    display: grid;
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    gap: 20px;
+  }
+  #orbit-page .orbit-room {
+    max-width: 650px;
+    margin-inline: auto;
+  }
+}
+@media (max-width:600px) {
+  #orbit-page .channel-summary {
+    align-items: stretch;
+    flex-direction: column;
+    padding: 20px;
+  }
+  #orbit-page .summary-actions {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  #orbit-page .channel-tabs {
+    gap: 18px;
+  }
+  #orbit-page .channel-aside {
+    display: block;
+  }
+  #orbit-page .classroom-panel,
+  #orbit-page .content-panel,
+  #orbit-page .members-panel {
+    padding: 18px;
+  }
+  #orbit-page .orbit-room {
+    height: auto;
+    display: grid;
+    grid-template-columns: repeat(3,minmax(0,1fr));
+    gap: 16px 8px;
+    margin: 24px 0;
+  }
+  #orbit-page .teacher-center {
+    position: static;
+    transform: none;
+    grid-column: 1/-1;
+    max-width: none;
+    margin-bottom: 10px;
+  }
+  #orbit-page .room-ring {
+    display: none;
+  }
+  #orbit-page .class-seat {
+    position: static;
+    transform: none;
+    width: auto;
+  }
+  #orbit-page .class-seat strong {
+    max-width: 80px;
+  }
+  #orbit-page .room-legend {
+    gap: 12px;
+  }
+  #orbit-page .room-legend .text-button {
+    margin-inline-start: 0;
+  }
+  #orbit-page .panel-heading {
+    align-items: start;
+  }
+  #orbit-page .panel-heading h2 {
+    font-size: 18px;
+  }
+  #orbit-page .room-count {
+    padding: 5px 8px;
+  }
+  #orbit-page[data-orbit-page="channel"] h1 {
+    font-size: 26px;
+  }
+  #orbit-page .member-row .btn {
+    font-size: 12px;
+    padding: 8px 10px;
+  }
+}
+
+/* Actual chairs and seated learners. Drawings never create membership. */
+#orbit-page .orbit-room {
+  height: 530px;
+}
+#orbit-page .class-seat {
+  width: 112px;
+  gap: 3px;
+}
+#orbit-page .seat-illustration {
+  display: block;
+  position: relative;
+  width: 76px;
+  height: 86px;
+  flex-shrink: 0;
+}
+#orbit-page .chair-art {
+  display: block;
+  width: 76px;
+  height: 86px;
+  overflow: visible;
+}
+#orbit-page .walking-student {
+  position: absolute;
+  inset: 0;
+  width: 76px;
+  height: 86px;
+  opacity: 0;
+  pointer-events: none;
+  overflow: visible;
+}
+#orbit-page .class-seat strong.seat-name {
+  font-size: 12px;
+  line-height: 1.5;
+  max-width: 110px;
+  color: #fff;
+  background: #ffffff09;
+  border-radius: 5px;
+  padding: 2px 7px;
+}
+#orbit-page .class-seat.vacant strong.seat-name {
+  color: var(--orbit-border);
+  background: transparent;
+  font-size: 11px;
+}
+#orbit-page .class-seat small {
+  font-size: 10px;
+}
+#orbit-page .class-seat.occupied .chair-art {
+  filter: drop-shadow(0 0 9px color-mix(in srgb,var(--orbit-accent) 14.51%,transparent));
+}
+#orbit-page .student-arriving {
+  z-index: 4;
+}
+#orbit-page .student-arriving .walking-legs {
+  transform-origin: 48px 65px;
+  animation: student-step .18s ease-in-out infinite alternate;
+}
+@keyframes student-step {
+  from {
+    transform: skewX(-5deg);
+  }
+  to {
+    transform: skewX(5deg);
+  }
+}
+@media (max-width:600px) {
+  #orbit-page .orbit-room {
+    height: auto;
+    gap: 22px 8px;
+  }
+  #orbit-page .class-seat {
+    width: auto;
+  }
+  #orbit-page .class-seat strong.seat-name {
+    max-width: 92px;
+    font-size: 11px;
+  }
+  #orbit-page .seat-illustration,
+  #orbit-page .chair-art,
+  #orbit-page .walking-student {
+    width: 68px;
+    height: 77px;
+  }
+}
+@media (prefers-reduced-motion:reduce) {
+  #orbit-page .student-arriving .walking-legs {
+    animation: none;
+  }
+}
+
+/* Living classroom: quiet idle motion, not a claim about student activity. */
+#orbit-page .seat-person {
+  display: block;
+  border: 0;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  color: inherit;
+  border-radius: 12px;
+  touch-action: manipulation;
+}
+#orbit-page .seat-person:focus-visible {
+  outline: 2px solid var(--orbit-accent);
+  outline-offset: 5px;
+}
+#orbit-page .occupied .sitting-student {
+  transform-box: fill-box;
+  transform-origin: center bottom;
+  animation: student-breathe 3.4s ease-in-out infinite;
+}
+#orbit-page .occupied:nth-child(odd) .sitting-student {
+  animation-delay: -1.7s;
+}
+#orbit-page .student-feet {
+  transform-box: fill-box;
+  transform-origin: 50% 0;
+  animation: student-foot-sway 4.8s ease-in-out infinite;
+}
+#orbit-page .student-arriving .sitting-student {
+  animation: none;
+}
+#orbit-page .seat-person:hover .chair-art,
+#orbit-page .seat-person:focus-visible .chair-art {
+  filter: drop-shadow(0 0 12px color-mix(in srgb,var(--orbit-accent) 50.2%,transparent));
+}
+#orbit-page .seat-details {
+  position: fixed;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 14px 16px;
+  text-align: start;
+  direction: inherit;
+  border: 1px solid color-mix(in srgb,var(--orbit-accent) 31.37%,transparent);
+  border-radius: 12px;
+  background: var(--orbit-space);
+  color: #fff;
+  box-shadow: 0 12px 32px #0005;
+  pointer-events: none;
+  line-height: 1.5;
+}
+#orbit-page .seat-details[hidden] {
+  display: none;
+}
+#orbit-page .seat-details strong {
+  font-size: 14px;
+  max-width: none;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+#orbit-page .seat-details > span {
+  color: var(--orbit-accent);
+  font-size: 12px;
+}
+#orbit-page .teacher-center {
+  max-width: 190px;
+}
+#orbit-page .teacher-figure {
+  width: 156px;
+  height: 150px;
+  overflow: visible;
+}
+#orbit-page .teacher-center strong {
+  font-size: 15px;
+  max-width: 180px;
+  margin-top: 4px;
+}
+#orbit-page .teacher-center small {
+  background: #ffffff09;
+  border: 1px solid #ffffff13;
+  padding: 3px 12px;
+  border-radius: 20px;
+  margin-top: 6px;
+}
+#orbit-page .teacher-gesture {
+  transform-box: fill-box;
+  transform-origin: left bottom;
+  animation: teacher-explain 5s ease-in-out infinite;
+}
+#orbit-page .teacher-body {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: teacher-breathe 4s ease-in-out infinite;
+}
+@keyframes student-breathe {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2.5px);
+  }
+}
+@keyframes student-foot-sway {
+  0%,
+  70%,
+  100% {
+    transform: rotate(0);
+  }
+  35% {
+    transform: rotate(5deg);
+  }
+}
+@keyframes teacher-explain {
+  0%,
+  65%,
+  100% {
+    transform: rotate(0);
+  }
+  25% {
+    transform: rotate(-10deg);
+  }
+  40% {
+    transform: rotate(3deg);
+  }
+}
+@keyframes teacher-breathe {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-1.5px);
+  }
+}
+@media (max-width:600px) {
+  #orbit-page .teacher-figure {
+    width: 132px;
+    height: 128px;
+  }
+  #orbit-page .teacher-center {
+    max-width: none;
+  }
+}
+@media (prefers-reduced-motion:reduce) {
+  #orbit-page .occupied .sitting-student,
+  #orbit-page .student-feet,
+  #orbit-page .teacher-gesture,
+  #orbit-page .teacher-body {
+    animation: none;
+  }
+}
+body[data-mood="calm"] #orbit-page .sitting-student,
+body[data-mood="calm"] #orbit-page .student-feet,
+body[data-mood="calm"] #orbit-page .teacher-gesture,
+body[data-mood="calm"] #orbit-page .teacher-body {
+  animation: none;
+}
+html[dir="rtl"] #orbit-page .seat-details {
+  direction: rtl;
+}
+#orbit-page .seat-details {
+  position: absolute;
+}
+#orbit-page .class-seat.show-details {
+  z-index: 8;
+}
+
+#orbit-page .room-tools {
+  display: flex;
+  align-items: end;
+  gap: 14px;
+  margin-top: 20px;
+}
+#orbit-page .room-tools label {
+  font-size: 12px;
+  color: var(--orbit-soft);
+  margin: 0;
+}
+#orbit-page .room-search {
+  flex: 1;
+  min-width: 0;
+}
+#orbit-page .room-tools input,
+#orbit-page .room-tools select {
+  display: block;
+  width: 100%;
+  margin-top: 7px;
+  border: 1px solid #ffffff26;
+  background: var(--orbit-space);
+  color: #fff;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 13px;
+}
+#orbit-page .room-tools input::placeholder {
+  color: var(--orbit-border);
+}
+#orbit-page .room-group-label {
+  min-width: 130px;
+}
+#orbit-page .room-pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  border-top: 1px solid #ffffff16;
+  padding: 16px 0;
+  margin-top: 6px;
+}
+#orbit-page .room-page-button {
+  border: 1px solid #ffffff26;
+  border-radius: 8px;
+  background: #ffffff08;
+  color: var(--orbit-soft);
+  padding: 9px 12px;
+  font-size: 12px;
+  cursor: pointer;
+}
+#orbit-page .room-page-button:disabled {
+  opacity: .4;
+  cursor: default;
+}
+#orbit-page #room-page-status {
+  text-align: center;
+  font-size: 12px;
+  white-space: nowrap;
+}
+#orbit-page #room-page-status small {
+  display: block;
+  color: var(--orbit-border);
+  font-size: 10px;
+}
+#orbit-page .seat-search-results:empty {
+  display: none;
+}
+#orbit-page .seat-search-results {
+  margin-top: 12px;
+  max-height: 220px;
+  overflow: auto;
+  border: 1px solid #ffffff20;
+  border-radius: 10px;
+  padding: 10px;
+  background: var(--orbit-space);
+}
+#orbit-page .seat-search-results p {
+  font-size: 12px;
+  color: var(--orbit-soft);
+  margin: 5px;
+}
+#orbit-page .seat-search-result {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  text-align: start;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid #ffffff12;
+  color: #fff;
+  padding: 10px 8px;
+  cursor: pointer;
+}
+#orbit-page .seat-search-result span {
+  font-size: 11px;
+  color: var(--orbit-border);
+}
+#orbit-page .seat-search-result:hover,
+#orbit-page .seat-search-result:focus-visible {
+  background: #ffffff09;
+}
+#orbit-page .seat-found .chair-art {
+  filter: drop-shadow(0 0 14px color-mix(in srgb,var(--orbit-accent) 69.02%,transparent));
+}
+#orbit-page .seat-found .seat-name {
+  outline: 1px solid var(--orbit-accent);
+}
+@media (max-width:600px) {
+  #orbit-page .room-tools {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  #orbit-page .room-pagination {
+    gap: 6px;
+  }
+  #orbit-page .room-page-button {
+    font-size: 10px;
+    padding: 9px 7px;
+  }
+  #orbit-page .seat-search-result {
+    align-items: start;
+    flex-direction: column;
+    gap: 3px;
+  }
+}
+
+/* Front-facing classroom with twelve chairs in three rows. */
+#orbit-page .orbit-room {
+  position: relative;
+  display: block;
+  height: auto;
+  direction: ltr;
+  margin-top: 24px;
+  max-width: none;
+}
+#orbit-page .classroom-front {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  padding: 0 0 12px;
+}
+#orbit-page .classroom-board {
+  width: min(100%,480px);
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 16px 24px;
+  border: 5px solid var(--orbit-muted);
+  border-bottom-width: 10px;
+  border-radius: 10px;
+  background: var(--orbit-space);
+  box-shadow: 0 8px 18px color-mix(in srgb,var(--orbit-space) 25.1%,transparent);
+  color: var(--orbit-soft);
+}
+#orbit-page .classroom-board span {
+  font-size: 10px;
+  letter-spacing: 1.2px;
+  color: var(--orbit-border);
+}
+#orbit-page .classroom-board strong {
+  font-size: 20px;
+}
+#orbit-page .classroom-board i {
+  font-style: normal;
+  font-size: 18px;
+  letter-spacing: 3px;
+  color: var(--orbit-soft);
+}
+#orbit-page .classroom-front .teacher-center {
+  position: static;
+  transform: none;
+  max-width: none;
+  margin-top: -4px;
+  z-index: 1;
+}
+#orbit-page .classroom-front .teacher-figure {
+  width: 130px;
+  height: 126px;
+}
+#orbit-page .classroom-front .teacher-center strong {
+  font-size: 13px;
+  margin-top: 0;
+}
+#orbit-page .classroom-front .teacher-center small {
+  margin-top: 2px;
+  font-size: 10px;
+}
+#orbit-page .classroom-rows {
+  display: grid;
+  grid-template-columns: repeat(4,minmax(0,1fr));
+  gap: 22px 16px;
+  position: relative;
+  padding: 26px 12px 20px;
+  margin-top: 10px;
+  border-top: 1px solid color-mix(in srgb,var(--orbit-accent) 18.82%,transparent);
+  background: repeating-linear-gradient(180deg,transparent 0,transparent 132px,#ffffff04 132px,#ffffff04 134px);
+}
+#orbit-page .classroom-rows .class-seat {
+  position: relative;
+  left: auto;
+  top: auto;
+  transform: none;
+  width: auto;
+  min-width: 0;
+  gap: 3px;
+}
+#orbit-page .classroom-rows .seat-name {
+  max-width: 100%;
+  font-size: 11px;
+}
+#orbit-page .empty-seat-choice {
+  display: block;
+  padding: 0;
+  border: 1px dashed color-mix(in srgb,var(--orbit-accent) 30.98%,transparent);
+  border-radius: 12px;
+  background: #ffffff03;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition:
+    background .15s,border-color .15s;
+}
+#orbit-page .empty-seat-choice:hover,
+#orbit-page .empty-seat-choice:focus-visible {
+  background: color-mix(in srgb,var(--orbit-accent) 13.33%,transparent);
+  border-color: var(--orbit-accent);
+  outline: 2px solid var(--orbit-accent);
+  outline-offset: 3px;
+}
+#orbit-page .seat-choice-prompt {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  align-items: center;
+  border: 1px solid color-mix(in srgb,var(--orbit-accent) 30.2%,transparent);
+  background: color-mix(in srgb,var(--orbit-accent) 10.2%,transparent);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-top: 18px;
+  direction: inherit;
+}
+#orbit-page .seat-choice-prompt strong {
+  font-size: 14px;
+  color: var(--orbit-soft);
+}
+#orbit-page .seat-choice-prompt span {
+  font-size: 12px;
+  color: var(--orbit-accent);
+}
+#orbit-page .seat-choice-prompt button {
+  margin-inline-start: auto;
+  color: var(--orbit-soft);
+}
+html[dir="rtl"] #orbit-page .classroom-board {
+  direction: rtl;
+}
+@media (max-width:600px) {
+  #orbit-page .classroom-rows {
+    grid-template-columns: repeat(3,minmax(0,1fr));
+    gap: 22px 8px;
+    padding: 20px 0;
+  }
+  #orbit-page .classroom-board {
+    min-height: 90px;
+    padding: 12px;
+  }
+  #orbit-page .classroom-board strong {
+    font-size: 18px;
+  }
+  #orbit-page .classroom-front .teacher-figure {
+    width: 116px;
+    height: 112px;
+  }
+  #orbit-page .seat-choice-prompt {
+    align-items: start;
+    flex-direction: column;
+  }
+  #orbit-page .seat-choice-prompt button {
+    margin-inline-start: 0;
+  }
+}
+
+#orbit-page .classroom-board {
+  justify-content: center;
+}
+#orbit-page .classroom-board strong {
+  font-size: 24px;
+  line-height: 1.5;
+  text-align: center;
+  overflow-wrap: anywhere;
+}

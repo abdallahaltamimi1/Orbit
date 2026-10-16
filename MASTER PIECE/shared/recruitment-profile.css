@@ -1,0 +1,52 @@
+#orbit-page #recruit-profile {
+  margin-top: 25px;
+}
+#orbit-page #recruit-profile label {
+  display: block;
+  margin: 15px 0;
+}
+#orbit-page #recruit-profile input:not([type="checkbox"]),
+#orbit-page #recruit-profile textarea {
+  width: 100%;
+  padding: 11px;
+  border: 1px solid var(--line,#ddd);
+  border-radius: 9px;
+  background: var(--panel,#fff);
+  color: inherit;
+  font: inherit;
+}
+#orbit-page #recruit-profile textarea {
+  min-height: 90px;
+}
+#orbit-page #recruit-profile input[type="checkbox"] {
+  width: auto;
+}
+#orbit-page #recruit-profile .recruit-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 20px;
+}
+#orbit-page #recruit-profile .recruit-photo {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+#orbit-page #recruit-profile p {
+  line-height: 1.9;
+  overflow-wrap: anywhere;
+}
+#orbit-page #recruit-profile video,
+#orbit-page #recruit-profile .attachment {
+  width: 100%;
+  max-height: 400px;
+  object-fit: contain;
+}
+#orbit-page #recruit-profile figure {
+  margin: 15px 0;
+}
+@media (max-width:600px) {
+  #orbit-page #recruit-profile .recruit-form-grid {
+    grid-template-columns: 1fr;
+  }
+}

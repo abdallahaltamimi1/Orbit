@@ -1,0 +1,3 @@
+# Asset provenance
+
+`shared/assets/lunar-observatory.png`: generated with the installed imagegen skill and built-in image generation tool on 12 October 2026. Fictional photorealistic lunar scientific observatory, sparse stars, lunar terrain and Earth view. No representation of a real mission or external photograph. Original generated PNG copied unchanged from the Codex generated_images directory into the project; 1536 × 1024. No external image URL/runtime dependency. Used as a decorative login background, with no information carried only by the picture. Original output: exec-b2150cbb-8cc8-4b75-8adb-0180d9b91245.png.

@@ -1,0 +1,221 @@
+@import url('../shared/experience.css');
+#orbit-page[data-orbit-page="registration"] .wrap {
+  max-width: 1280px;
+  padding: 36px 24px 64px;
+}
+#orbit-page[data-orbit-page="registration"] .onboarding-layout {
+  display: grid;
+  grid-template-columns: minmax(0,.9fr) minmax(0,1.1fr);
+  gap: 40px;
+  align-items: start;
+  background: none;
+  border: 0;
+  overflow: visible;
+}
+#orbit-page[data-orbit-page="registration"] .onboarding-story {
+  position: sticky;
+  top: 30px;
+  min-height: 620px;
+  overflow: hidden;
+  background: var(--orbit-midnight);
+  color: #fff;
+  border: 0;
+  border-radius: 24px;
+  padding: 32px;
+}
+#orbit-page .mission-label {
+  font-size: 14px;
+  font-weight: 650;
+  color: #d4e3f7;
+  letter-spacing: .03em;
+}
+#orbit-page .cosmic-space {
+  height: 340px;
+  position: relative;
+  margin: 16px -18px;
+}
+#orbit-page .universe-fallback,
+#orbit-page .universe-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+#orbit-page .learning-universe[data-renderer="ready"] .universe-fallback {
+  visibility: hidden;
+}
+#orbit-page .learning-universe[data-renderer="fallback"] .universe-canvas {
+  visibility: hidden;
+}
+#orbit-page .mission-copy {
+  position: relative;
+  max-width: 40ch;
+}
+#orbit-page .mission-copy > span {
+  display: none;
+}
+#orbit-page .mission-copy h2 {
+  font-size: 32px;
+  line-height: 1.45;
+  color: #fff;
+  margin: 8px 0 16px;
+}
+#orbit-page .mission-copy p {
+  font-size: 15px;
+  line-height: 1.85;
+  color: #d4e3f7;
+}
+#orbit-page .mission-indicator {
+  margin-top: 24px;
+  font-size: 14px;
+  color: #b2eadf;
+  border-top: 1px solid #ffffff22;
+  padding-top: 18px;
+}
+#orbit-page .register-card {
+  padding: 32px;
+  background: var(--orbit-surface);
+  border: 0;
+  border-radius: 20px;
+  min-width: 0;
+}
+#orbit-page .register-card h2 {
+  font-size: 27px;
+  margin: 0 0 26px;
+}
+#orbit-page .register-card label {
+  display: block;
+  font-size: 14px;
+  color: var(--orbit-ink);
+  margin: 0 0 18px;
+}
+#orbit-page .register-card :is(input, select) {
+  display: block;
+  width: 100%;
+  min-height: 50px;
+  margin-top: 8px;
+  padding: 12px 14px;
+  border: 1px solid var(--orbit-border);
+  border-radius: 10px;
+  background: var(--orbit-canvas);
+  color: var(--orbit-ink);
+}
+#orbit-page .register-card input:focus {
+  outline: 2px solid var(--orbit-focus);
+  outline-offset: 2px;
+}
+#orbit-page .register-card .orbit-validated input {
+  border-color: var(--orbit-teal);
+}
+#orbit-page .register-card [aria-invalid="true"] {
+  border-color: var(--orbit-error);
+}
+#orbit-page .register-card :is(.orbit-field-error, #registration-status) {
+  color: var(--orbit-error);
+  line-height: 1.7;
+}
+#orbit-page .register-card .btn {
+  width: 100%;
+  min-height: 50px;
+  background: var(--orbit-action);
+  color: #fff;
+  margin-top: 12px;
+}
+#orbit-page .register-card .auth-success {
+  display: block;
+  background: var(--orbit-role-soft,var(--orbit-soft));
+  color: var(--orbit-accent);
+  padding: 14px;
+  border-radius: 10px;
+}
+#orbit-page .role-source {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+#orbit-page .orbit-role-picker {
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 10px;
+  margin-bottom: 26px;
+}
+#orbit-page .orbit-role-picker button {
+  min-height: 48px;
+  border: 1px solid var(--orbit-border);
+  background: var(--orbit-surface);
+  color: var(--orbit-ink);
+  border-radius: 10px;
+  padding: 12px 8px;
+  cursor: pointer;
+}
+#orbit-page .orbit-role-picker button[aria-pressed="true"] {
+  background: var(--orbit-soft);
+  color: var(--orbit-accent);
+  border-color: var(--orbit-accent);
+  font-weight: 650;
+}
+#orbit-page .register-card .orbit-password-toggle {
+  margin-top: 8px;
+}
+#orbit-page .register-card [hidden] {
+  display: none !important;
+}
+@media (max-width:900px) {
+  #orbit-page[data-orbit-page="registration"] .onboarding-layout {
+    gap: 24px;
+    grid-template-columns: minmax(0,.8fr) minmax(0,1.2fr);
+  }
+  #orbit-page .register-card {
+    padding: 24px;
+  }
+  #orbit-page .mission-copy h2 {
+    font-size: 26px;
+  }
+}
+@media (max-width:760px) {
+  #orbit-page[data-orbit-page="registration"] .wrap {
+    padding: 24px 16px;
+  }
+  #orbit-page[data-orbit-page="registration"] .onboarding-layout {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  #orbit-page[data-orbit-page="registration"] .onboarding-story {
+    position: relative;
+    top: auto;
+    min-height: 0;
+    padding: 18px;
+  }
+  #orbit-page .cosmic-space {
+    height: 140px;
+    margin: 0;
+  }
+  #orbit-page .mission-label {
+    display: none;
+  }
+  #orbit-page .mission-copy h2 {
+    font-size: 22px;
+    margin: 0;
+  }
+  #orbit-page .mission-copy p {
+    display: none;
+  }
+  #orbit-page .mission-indicator {
+    margin-top: 12px;
+    padding-top: 12px;
+  }
+  #orbit-page .register-card {
+    padding: 24px 20px;
+  }
+}
+@media print {
+  #orbit-page .onboarding-story {
+    display: none;
+  }
+  #orbit-page .onboarding-layout {
+    display: block;
+  }
+}

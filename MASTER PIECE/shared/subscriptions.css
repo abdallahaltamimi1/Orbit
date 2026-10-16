@@ -1,0 +1,252 @@
+/* Shared access and plan components use the existing site tokens. */
+.orbit-access-dialog {
+  border: 1px solid var(--line,var(--orbit-soft));
+  border-radius: 22px;
+  padding: 30px;
+  background: var(--panel,#fff);
+  color: var(--text,#24304c);
+  width: min(520px,calc(100% - 32px));
+  max-height: 85vh;
+  overflow: auto;
+  box-shadow: 0 24px 90px color-mix(in srgb,var(--orbit-space) 25.1%,transparent);
+  font: inherit;
+}
+.orbit-access-dialog::backdrop {
+  background: color-mix(in srgb,var(--orbit-space) 60.0%,transparent);
+  backdrop-filter: blur(5px);
+}
+.orbit-access-dialog h2 {
+  font-size: 23px;
+  line-height: 1.6;
+}
+.orbit-access-dialog p {
+  line-height: 1.9;
+}
+.orbit-access-mark {
+  color: var(--purple,var(--orbit-accent));
+  font-size: 32px;
+}
+.orbit-dialog-close {
+  float: inline-end;
+  border: 0;
+  border-radius: 50%;
+  background: var(--soft,var(--orbit-soft));
+  color: var(--text,#24304c);
+  font-size: 24px;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+}
+.orbit-access-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 18px 0;
+}
+#orbit-page .orbit-access-button,
+.orbit-access-button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 44px;
+  padding: 10px 16px;
+  border-radius: 11px;
+  border: 1px solid transparent;
+  background: var(--purple,var(--orbit-accent));
+  color: white;
+  text-decoration: none;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  line-height: 1.6;
+}
+#orbit-page .orbit-access-button.secondary,
+.orbit-access-button.secondary {
+  background: var(--soft,var(--orbit-soft));
+  color: var(--purple,var(--orbit-accent));
+  border-color: var(--line,var(--orbit-soft));
+}
+.orbit-access-button:focus-visible,
+.orbit-dialog-close:focus-visible {
+  outline: 3px solid #7ea4ff;
+  outline-offset: 4px;
+}
+.orbit-access-button:hover {
+  filter: brightness(1.07);
+}
+#orbit-page .orbit-subscription-panel {
+  background: var(--panel,#fff);
+  border: 1px solid var(--line,var(--orbit-soft));
+  border-radius: 20px;
+  padding: 24px;
+  margin: 28px 0;
+  color: var(--text,#24304c);
+}
+#orbit-page .orbit-subscription-panel header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+#orbit-page .orbit-subscription-panel h2 {
+  font-size: 22px;
+}
+#orbit-page .orbit-subscription-panel p {
+  font-size: 13px;
+  line-height: 1.9;
+}
+#orbit-page .orbit-usage-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(125px,1fr));
+  gap: 12px;
+  margin: 20px 0;
+}
+#orbit-page .orbit-usage-grid > div {
+  border: 1px solid var(--line,var(--orbit-soft));
+  border-radius: 12px;
+  padding: 12px;
+}
+#orbit-page .orbit-usage-grid small {
+  display: block;
+  font-size: 12px;
+  color: var(--muted,#79839c);
+}
+#orbit-page .orbit-usage-grid strong {
+  display: block;
+  font-size: 21px;
+  margin-top: 6px;
+}
+#orbit-page .orbit-pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 20px;
+}
+#orbit-page .orbit-plan-card {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+#orbit-page .orbit-plan-card ul {
+  padding-inline-start: 20px;
+  line-height: 2;
+  font-size: 14px;
+  flex: 1;
+}
+#orbit-page .orbit-plan-price {
+  font-size: 16px;
+  color: var(--purple,var(--orbit-accent));
+}
+#orbit-page .orbit-plan-pill {
+  display: inline-block;
+  background: var(--soft,var(--orbit-soft));
+  color: var(--purple,var(--orbit-accent));
+  padding: 6px 12px;
+  border-radius: 24px;
+  font-size: 12px;
+}
+#orbit-page .orbit-local-note {
+  color: var(--muted,#79839c);
+  font-size: 12px;
+  line-height: 1.8;
+}
+#orbit-page .orbit-school-members {
+  border-top: 1px solid var(--line,var(--orbit-soft));
+  padding-top: 15px;
+}
+#orbit-page .orbit-school-members form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+#orbit-page .orbit-school-members form label {
+  margin: 0;
+  font-size: 13px;
+}
+#orbit-page .orbit-school-members form input,
+#orbit-page .orbit-school-members form select {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--line,var(--orbit-soft));
+  border-radius: 10px;
+  background: var(--panel,#fff);
+  color: inherit;
+  box-sizing: border-box;
+}
+#orbit-page .orbit-school-members fieldset,
+#orbit-page .orbit-member-status {
+  grid-column: 1/-1;
+}
+#orbit-page .orbit-school-members fieldset {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  border: 1px solid var(--line,var(--orbit-soft));
+  border-radius: 10px;
+}
+#orbit-page .orbit-school-members input[type="checkbox"] {
+  width: auto;
+  display: inline-block;
+}
+#orbit-page .orbit-member-list {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+#orbit-page .orbit-member-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  overflow-wrap: anywhere;
+}
+.orbit-table-scroll {
+  overflow: auto;
+}
+.orbit-access-dialog table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.orbit-access-dialog th,
+.orbit-access-dialog td {
+  padding: 10px;
+  text-align: start;
+  border-bottom: 1px solid var(--line,var(--orbit-soft));
+  font-size: 13px;
+  white-space: nowrap;
+}
+#orbit-page .orbit-preview-banner {
+  padding: 12px 16px;
+  border: 1px solid var(--line,var(--orbit-soft));
+  border-radius: 12px;
+  background: var(--soft,var(--orbit-soft));
+  color: var(--text,#24304c);
+  font-size: 13px;
+  line-height: 1.9;
+  margin: 14px 0;
+}
+@media (max-width:650px) {
+  #orbit-page .orbit-pricing-grid,
+  #orbit-page .orbit-school-members form {
+    grid-template-columns: 1fr;
+  }
+  #orbit-page .orbit-subscription-panel {
+    padding: 18px;
+  }
+  #orbit-page .orbit-school-members fieldset,
+  #orbit-page .orbit-member-status {
+    grid-column: 1;
+  }
+}
+@media (prefers-reduced-motion:reduce) {
+  .orbit-access-button {
+    transition: none;
+  }
+}
+#orbit-page .orbit-subscription-panel {
+  scroll-margin-block-start: 76px;
+}

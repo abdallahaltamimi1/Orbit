@@ -1,0 +1,194 @@
+/* Existing ORBIT colors and copy; a directional text-safe composition. */
+#orbit-page #hero[data-hero-media="cinematic"] {
+  display: grid;
+  height: auto;
+  min-height: 0;
+  aspect-ratio: 16/9;
+  background: var(--orbit-midnight);
+  isolation: isolate;
+}
+#hero .hero-film {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  background: var(--orbit-midnight);
+}
+#hero .hero-film-poster,
+#hero .hero-film video {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+#hero .hero-film-poster {
+  z-index: 0;
+}
+#hero .hero-film video {
+  z-index: 1;
+}
+#hero .hero-film-shade {
+  z-index: 2;
+}
+#hero .hero-film::after {
+  z-index: 3;
+}
+/* The navbar retains its own structure and styling; this local top scrim gives it context. */
+#hero .hero-film::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg,color-mix(in srgb,var(--orbit-midnight) 55%,transparent),transparent 22%);
+}
+#hero .hero-film-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg,color-mix(in srgb,var(--orbit-midnight) 88%,transparent),color-mix(in srgb,var(--orbit-midnight) 70%,transparent) 24%,transparent 63%);
+  opacity: 1;
+  transition: opacity 320ms ease-out;
+}
+html[dir="rtl"] #hero .hero-film-shade {
+  background: linear-gradient(270deg,color-mix(in srgb,var(--orbit-midnight) 88%,transparent),color-mix(in srgb,var(--orbit-midnight) 70%,transparent) 24%,transparent 63%);
+}
+#orbit-page #hero[data-hero-media="cinematic"] :is(#sky, .u-vig, .u-scrim, .u-label, .u-cue) {
+  visibility: hidden;
+  pointer-events: none;
+}
+#orbit-page #hero[data-hero-media="cinematic"] .u-shell {
+  position: relative;
+  inset: auto;
+  width: 100%;
+  height: 100%;
+  padding: 112px 6vw 80px;
+  display: grid;
+  grid-template-columns: minmax(0,1fr);
+  align-content: center;
+  pointer-events: none;
+  z-index: 2;
+}
+#orbit-page #hero[data-hero-media="cinematic"] .u-panel {
+  justify-self: start;
+  align-self: center;
+  width: min(100%,350px);
+  max-width: 350px;
+  margin: 0;
+  transform: none;
+  pointer-events: auto;
+  text-align: start;
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity 320ms ease-out,visibility 0s;
+}
+#orbit-page #hero[data-hero-media="cinematic"] .u-h1 {
+  font-family: var(--orbit-font-heading,var(--display));
+  font-size: clamp(28px,2.3vw,34px);
+  line-height: 1.5;
+  letter-spacing: normal;
+  max-width: 18ch;
+  margin: 0 0 20px;
+  text-wrap: balance;
+}
+html[lang="en"] #orbit-page #hero[data-hero-media="cinematic"] .u-h1 {
+  line-height: 1.25;
+  letter-spacing: -.02em;
+  max-width: 16ch;
+}
+#orbit-page #hero[data-hero-media="cinematic"] .u-lede {
+  font-size: 16px;
+  line-height: 1.85;
+  max-width: 36ch;
+  margin: 0 0 26px;
+  color: var(--orbit-on-action);
+}
+#orbit-page #hero[data-hero-media="cinematic"] .u-tag {
+  display: none;
+}
+#orbit-page #hero[data-hero-media="cinematic"] .u-cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 0;
+}
+#orbit-page #hero[data-hero-media="cinematic"] .u-cta .u-btn {
+  font-size: 15px;
+  min-height: 46px;
+  padding: 12px 17px;
+}
+#orbit-page #hero[data-hero-media="cinematic"][data-film-reveal="true"] .u-panel {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 320ms ease-out,visibility 0s linear 320ms;
+}
+#hero[data-film-reveal="true"] .hero-film-shade {
+  opacity: 0;
+}
+@media (max-width:1100px) {
+  #orbit-page #hero[data-hero-media="cinematic"] {
+    aspect-ratio: auto;
+    display: grid;
+    grid-template-columns: minmax(0,1fr);
+    height: auto;
+    min-height: clamp(560px,85svh,760px);
+  }
+  #orbit-page #hero[data-hero-media="cinematic"] .u-shell {
+    position: relative;
+    inset: auto;
+    height: auto;
+    padding: 104px 28px 52px;
+    display: grid;
+    align-content: center;
+  }
+  #orbit-page #hero[data-hero-media="cinematic"] .u-panel {
+    width: 100%;
+    max-width: 350px;
+    justify-self: start;
+  }
+  #orbit-page #hero[data-hero-media="cinematic"] .u-h1 {
+    font-size: 30px;
+    max-width: 24ch;
+    margin-bottom: 16px;
+  }
+  #orbit-page #hero[data-hero-media="cinematic"] .u-lede {
+    max-width: 54ch;
+    margin-bottom: 22px;
+  }
+}
+@media (max-width:480px) {
+  #orbit-page #hero[data-hero-media="cinematic"] {
+    min-height: clamp(520px,78svh,640px);
+  }
+  #orbit-page #hero[data-hero-media="cinematic"] .u-shell {
+    padding: 96px 24px 48px;
+  }
+  #orbit-page #hero[data-hero-media="cinematic"] .u-h1 {
+    font-size: 28px;
+    max-width: 20ch;
+  }
+  #orbit-page #hero[data-hero-media="cinematic"] .u-lede {
+    font-size: 15px;
+    line-height: 1.8;
+  }
+  #orbit-page #hero[data-hero-media="cinematic"] .u-cta {
+    gap: 10px;
+  }
+  #orbit-page #hero[data-hero-media="cinematic"] .u-cta .u-btn {
+    font-size: 14px;
+    padding-inline: 14px;
+  }
+}
+@media (prefers-reduced-motion:reduce) {
+  #hero[data-hero-media="cinematic"] .hero-film video {
+    display: none;
+  }
+  #orbit-page #hero[data-hero-media="cinematic"] .u-panel,
+  #hero .hero-film-shade {
+    transition: none;
+  }
+}

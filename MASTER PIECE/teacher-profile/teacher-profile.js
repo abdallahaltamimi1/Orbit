@@ -1,0 +1,1222 @@
+const ORBIT_ROUTES = {
+  "student-dashboard.html": "../student-dashboard/student-dashboard.html",
+  "channels.html": "../channels/channels.html",
+  "channel.html": "../channel/channel.html",
+  "teacher-studio.html": "../teacher-studio/teacher-studio.html",
+  "teacher-profile.html": "../teacher-profile/teacher-profile.html",
+  "teachers.html": "../teacher-directory/teacher-directory.html",
+  "class-details.html": "../class-details/class-details.html",
+  "lessons.html": "../lessons/lessons.html",
+  "lesson.html": "../lesson/lesson.html",
+  "practice.html": "../practice/practice.html",
+  "lab.html": "../lab/lab.html",
+  "quiz.html": "../quiz/quiz.html",
+  "result.html": "../result/result.html",
+  "achievements.html": "../achievements/achievements.html",
+  "exchange.html": "../exchange/exchange.html",
+  "login.html": "../login/login.html",
+  "messages.html": "../channels/channels.html",
+  "index.html": "../student-dashboard/student-dashboard.html",
+};
+
+function orbitRoute(url) {
+  if (url.startsWith("../")) return url;
+  const match = url.match(/^([^?#]+)(.*)$/);
+  return match ? (ORBIT_ROUTES[match[1]] || match[1]) + match[2] : url;
+}
+
+("use strict");
+
+const storage = {
+  get(k) {
+    try {
+      return localStorage.getItem(k);
+    } catch {
+      return null;
+    }
+  },
+  set(k, v) {
+    try {
+      localStorage.setItem(k, v);
+    } catch {}
+  },
+};
+
+function parsed(k) {
+  try {
+    return JSON.parse(storage.get(k));
+  } catch {
+    return null;
+  }
+}
+
+const legacy =
+  parsed("orbitUser") || parsed("currentUser") || parsed("user") || parsed("student") || {};
+
+let state = Object.assign(
+  {
+    lang: storage.get("orbitLanguage") || storage.get("language") || "ar",
+    theme: storage.get("orbitTheme") || storage.get("theme") || "light",
+    mood: storage.get("orbitMood") || "fun",
+    name:
+      legacy.name ||
+      legacy.fullName ||
+      storage.get("studentName") ||
+      storage.get("orbitStudentName") ||
+      "Lina",
+    xp: 1280,
+    done: [],
+    quiz: null,
+  },
+  parsed("orbit.student.v1") || {},
+  { name: OrbitProfiles.current()?.name || legacy.name || "Visitor" },
+);
+
+state.lang = ["ar", "en"].includes(state.lang) ? state.lang : "en";
+state.done = Array.isArray(state.done) ? state.done : [];
+
+const page = "teacher-profile";
+
+const t = (en, ar) => (state.lang === "ar" ? ar : en);
+const esc = (s) =>
+  String(s).replace(
+    /[&<>"']/g,
+    (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c],
+  );
+
+function save() {
+  storage.set(
+    "orbit.student.v1",
+    JSON.stringify({ ...state, name: OrbitProfiles.current()?.name || state.name }),
+  );
+  storage.set("orbitLanguage", state.lang);
+  storage.set("orbitTheme", state.theme);
+  storage.set("orbitMood", state.mood);
+  storage.set("studentName", state.name);
+}
+
+function toast(s) {
+  const el = document.getElementById("toast");
+  el.textContent = s;
+  el.style.display = "block";
+  clearTimeout(window.toastTimer);
+  window.toastTimer = setTimeout(() => (el.style.display = "none"), 3500);
+}
+
+const icon = (s, c = "") => `<span class="icon ${c}" aria-hidden="true">${s}</span>`;
+
+const btn = (label, url, cls = "") => `<a class="btn ${cls}" href="${url}">${label}</a>`;
+
+function award(id, xp) {
+  if (!state.done.includes(id)) {
+    state.done.push(id);
+    state.xp += xp;
+    save();
+    toast(t(`Great work! +${xp} XP`, `أحسنت! +${xp} نقطة XP`));
+  }
+}
+
+function dashboard() {
+  return `<section class="hero"><div><span class="pill">♨ ${t("5 day streak", "سلسلة إنجاز 5 أيام")}</span><h1>${t("Hi", "مرحبًا")} ${esc(state.name)}, ${t("ready for today?", "جاهز لليوم؟")}</h1><p>${t("Finish two tasks to hit your daily goal and earn 80 XP. One homework is late, start there.", "أنجز مهمتين لتصل لهدفك اليومي وتكسب 80 XP. لديك واجب متأخر، ابدأ به.")}</p><div class="actions">${btn("▷ " + t("Continue learning", "تابع التعلم"), "../lesson/lesson.html", "gold-button")}${btn("⚒ " + t("Daily challenge", "التحدي اليومي"), "../practice/practice.html", "secondary")}</div></div><div class="ring"><div><strong>${Math.min(100, 60 + state.done.length * 10)}%</strong><small>${t("daily goal", "الهدف اليومي")}</small></div></div></section>
+
+<section class="stats" aria-label="${t("Your statistics", "إحصائياتك")}">${[
+    [
+      "▣",
+      "rose",
+      t("1 late", "واجب متأخر"),
+      "pink",
+      Math.max(0, 3 - state.done.filter((x) => x === "homework" || x === "practice").length),
+      t("tasks this week", "مهام هذا الأسبوع"),
+    ],
+    ["◎", "mint", "+4%", "green", "76%", t("your average", "معدلك")],
+    [
+      "ϟ",
+      "orange",
+      t("+120 today", "+120 اليوم"),
+      "gold",
+      state.xp.toLocaleString(),
+      t("XP this term", "نقاط هذا الفصل"),
+    ],
+    [
+      "♙",
+      "",
+      t("2 new", "2 جديدة"),
+      "violet",
+      9 + Number(state.done.includes("quiz")),
+      t("badges unlocked", "شارات مكتسبة"),
+    ],
+  ]
+    .map(
+      (s) =>
+        `<div class="card stat"><div class="stat-top">${icon(s[0], s[1])}<span class="pill ${s[3]}">${s[2]}</span></div><strong>${s[4]}</strong><span class="muted">${s[5]}</span></div>`,
+    )
+    .join("")}</section>
+
+<div class="columns"><div class="stack"><section class="card"><div class="card-title"><h2>${t("What to do next", "ماذا تفعل الآن؟")}</h2><span class="pill gold">ϟ 80 XP ${t("available", "متاحة")}</span></div><div class="muted">${t("Sorted by what matters today.", "مرتبة حسب الأولوية اليوم.")}</div>
+
+<div class="task ${state.done.includes("homework") ? "" : "late"}">${icon("◴", "rose")}<div class="task-text"><h3>${t("Maths worksheet 5", "ورقة الرياضيات 5")}</h3><p>${state.done.includes("homework") ? t("Submitted — well done!", "تم التسليم — أحسنت!") : t("Was due yesterday, you can still submit", "كان موعدها أمس، ما زال بإمكانك التسليم")}</p></div><span class="pill gold">ϟ 30 XP</span>${btn(t("Finish now", "أكمل الآن"), "../practice/practice.html?task=homework")}</div>
+
+<div class="task">${icon("▤", "orange")}<div class="task-text"><h3>${t("Homework 3: Newton’s second law", "الواجب 3: قانون نيوتن الثاني")}</h3><p>${t("Physics, Grade 9A, due tomorrow", "الفيزياء، الصف 9A، موعده غدًا")}</p></div><span class="pill gold">ϟ 50 XP</span>${btn(t("Start", "ابدأ"), "../practice/practice.html")}</div>
+
+<div class="task">${icon("♜", "blue")}<div class="task-text"><h3>${t("Quiz: forces", "اختبار: القوى")}</h3><p>${state.quiz ? t("Your result is ready", "نتيجتك جاهزة") : t("Test what you have learned", "اختبر ما تعلمته")}</p></div>${btn(t("Open", "افتح"), state.quiz ? "../result/result.html" : "../quiz/quiz.html", "outline")}</div>
+
+<div class="task">${icon("♙", "mint")}<div class="task-text"><h3>${t("Homework 2 was graded: 82%", "تم تقييم الواجب 2: ‏82%")}</h3><p>${t("Mr. Khaled left you a note", "ترك لك الأستاذ خالد ملاحظة")}</p></div><button class="btn outline" data-action="feedback">${t("See result", "عرض النتيجة")}</button></div></section>
+
+<section class="card"><div class="card-title"><h2>${t("Pick up where you left off", "تابع من حيث توقفت")}</h2><a class="link" href="../lessons/lessons.html">${t("All lessons", "جميع الدروس")}</a></div><div class="lesson-grid">${lessonTile(t("Newton’s laws", "قوانين نيوتن"), t("Intermediate level", "المستوى المتوسط"), "⚛", 60, "../lesson/lesson.html", t("3 of 5 parts", "3 من 5 أجزاء"), 20)}${lessonTile(t("Reading force graphs", "قراءة منحنيات القوى"), t("Beginner level", "المستوى المبتدئ"), "⌁", 25, "../lesson/lesson.html?topic=graphs", t("1 of 4 parts", "1 من 4 أجزاء"), 35)}</div><div class="lab-banner">${icon("♧")}<div class="task-text"><h3>${t("Try the lab: force and acceleration", "جرّب المختبر: القوة والتسارع")}</h3><p>${t("Change the mass and watch what happens. 5 minutes", "غيّر الكتلة وراقب ما يحدث. 5 دقائق")}</p></div><span class="pill green">ϟ 15 XP</span>${btn(t("Try the lab", "جرّب المختبر"), "../lab/lab.html")}</div></section></div>
+
+<div class="stack right-stack"><section class="card"><div class="card-title"><h2>${t("Class leaderboard", "متصدرو الصف")}</h2><small class="muted">${t("This week", "هذا الأسبوع")}</small></div>${[
+    ["RM", "Rami M.", 1640],
+    ["OK", "Omar K.", 1410],
+    [initials(), t("You", "أنت"), state.xp],
+  ]
+    .sort((a, b) => b[2] - a[2])
+    .map(
+      (r, i) =>
+        `<div class="rank ${r[1] === t("You", "أنت") ? "you" : ""}"><span class="place">${i + 1}</span><span class="avatar">${r[0]}</span><span>${r[1]}</span><span class="points">${r[2].toLocaleString()}</span></div>`,
+    )
+    .join(
+      "",
+    )}<span class="muted">${t("Keep learning to climb the ranks.", "واصل التعلم لتتقدم في الترتيب.")}</span></section>
+
+<section class="card"><div class="card-title"><h2>${t("Your badges", "شاراتك")}</h2><a class="link" href="../achievements/achievements.html">${t("See all 24", "عرض الـ24")}</a></div><div class="badges">${badge("♨", "#ffa500", "5", t("day streak", "أيام متتالية"))}${badge("♧", "#8235f8", "Lab", t("explorer", "مستكشف"))}${badge("✓", "#0cbc8b", "10", t("tasks", "مهام"))}${badge("♧", "#bcc6d7", t("Perfect", "أسبوع"), t("week", "مثالي"))}</div></section>
+
+<section class="card"><div class="card-title"><h2>${t("From the exchange", "من سوق التبادل")}</h2><a href="../exchange/exchange.html" class="link">${t("Browse", "تصفح")}</a></div><a href="../exchange/exchange.html" class="exchange-row">${icon("▣", "blue")}<div><h3>${t("Physics 9 textbook", "كتاب فيزياء 9")}</h3><small>${t("Good condition", "بحالة جيدة")}</small></div><b>5 JD</b></a><a href="../exchange/exchange.html" class="exchange-row">${icon("◇", "mint")}<div><h3>${t("Geometry set", "طقم هندسة")}</h3><small>${t("For lending", "للإعارة")}</small></div><b>3 JD</b></a></section></div></div>`;
+}
+
+function lessonTile(title, sub, symbol, progress, url, parts, xp) {
+  return `<a class="lesson-tile" href="${url}"><div class="lesson-top">${icon(symbol)}<div><h3>${title}</h3><span class="muted">${sub}</span></div></div><div class="bar"><span style="width:${progress}%"></span></div><div class="lesson-meta"><span>${parts}</span><b>+${xp} XP ${t("left", "متبقية")}</b></div></a>`;
+}
+
+function badge(symbol, color, label, sub) {
+  return `<div class="badge"><span class="icon" style="background:${color}">${symbol}</span><small>${label}<br>${sub}</small></div>`;
+}
+
+function initials() {
+  return esc(
+    state.name
+      .trim()
+      .split(/\s+/)
+      .map((s) => s[0])
+      .slice(0, 2)
+      .join("")
+      .toUpperCase(),
+  );
+}
+
+const stages = ["class-details", "lesson", "practice", "lab", "quiz", "result"];
+
+function cycleNav() {
+  return `<nav class="cycle-nav">${stages.map((s, i) => `<a href="${orbitRoute(s + ".html")}" class="${page === s ? "active" : ""}">${i + 1}. ${[t("Class", "الصف"), t("Lesson", "الدرس"), t("Practice", "التدريب"), t("Lab", "المختبر"), t("Quiz", "الاختبار"), t("Result", "النتيجة")][i]}</a>`).join("")}</nav>`;
+}
+
+function contentPage() {
+  let body = "",
+    title = "";
+  const homework = new URLSearchParams(location.search).get("task") === "homework";
+  const graphs = new URLSearchParams(location.search).get("topic") === "graphs";
+
+  if (page === "class-details" || page === "lessons") {
+    title = t("Physics 11 · Your learning space", "فيزياء 11 · مساحة تعلمك");
+    body = `<section class="hero"><div><span class="pill">${t("Mr. Khaled · Grade 11", "الأستاذ خالد · الصف 11")}</span><h1>${t("A little progress, every day.", "خطوة صغيرة، كل يوم.")}</h1><p>${t("Unit 2: Forces and motion · 3 of 5 lessons completed", "الوحدة 2: القوى والحركة · أنجزت 3 من 5 دروس")}</p>${btn(t("Continue lesson", "تابع الدرس"), "../lesson/lesson.html", "gold-button")}</div>${icon("⚛")}</section><div class="lesson-grid">${lessonTile(t("Newton’s laws", "قوانين نيوتن"), t("Learn with examples", "تعلم مع الأمثلة"), "⚛", 60, "../lesson/lesson.html", "3 / 5", 20)}${lessonTile(t("Reading force graphs", "قراءة منحنيات القوى"), t("Discover the relationship", "اكتشف العلاقة"), "⌁", 25, "../lesson/lesson.html?topic=graphs", "1 / 4", 35)}</div><p>${btn(t("Practice homework", "تدرب على الواجب"), "../practice/practice.html")} ${btn(t("Interactive lab", "المختبر التفاعلي"), "../lab/lab.html")}</p>`;
+  }
+
+  if (page === "lesson") {
+    title = graphs
+      ? t("Reading force graphs", "قراءة منحنيات القوى")
+      : t("Newton’s second law", "قانون نيوتن الثاني");
+    body = `<article class="card reading"><span class="pill violet">${t("PHYSICS · 5 MIN", "فيزياء · 5 دقائق")}</span><h2>${title}</h2><p>${graphs ? t("A force–acceleration graph reveals how mass affects motion. With constant mass, doubling force doubles acceleration. The slope of a force versus acceleration graph is the mass.", "يوضح منحنى القوة والتسارع تأثير الكتلة على الحركة. عند ثبات الكتلة، مضاعفة القوة تضاعف التسارع. ميل منحنى القوة بالنسبة للتسارع يساوي الكتلة.") : t("A net force changes an object’s motion. Newton’s second law connects force, mass and acceleration:", "تغيّر القوة المحصلة حركة الجسم. يربط قانون نيوتن الثاني بين القوة والكتلة والتسارع:")}</p><div class="lesson-tile" style="text-align:center;font-size:30px" dir="ltr">F = m × a</div><p>${t("Example: a 2 kg cart pushed with a net force of 10 N accelerates at 5 m/s². If the mass doubles while force stays the same, acceleration halves.", "مثال: عربة كتلتها 2 كغ تؤثر عليها قوة محصلة 10 نيوتن تتسارع بمقدار 5 م/ث². إذا تضاعفت الكتلة وثبتت القوة، يقل التسارع إلى النصف.")}</p><button class="btn" data-action="lesson">${t("Mark complete & practice", "أكمل الدرس وابدأ التدريب")}</button></article>`;
+  }
+
+  if (page === "practice") {
+    title = homework
+      ? t("Maths worksheet 5", "ورقة الرياضيات 5")
+      : t("Practice: force and acceleration", "تدريب: القوة والتسارع");
+    body = `<form class="card reading" id="practice-form"><h2>${t("Your turn", "دورك الآن")}</h2><p>${homework ? t("Solve: 3x + 6 = 21. What is x?", "حل: 3x + 6 = 21. ما قيمة x؟") : t("A 4 kg object is pushed with a net force of 20 N. What is its acceleration in m/s²?", "جسم كتلته 4 كغ تؤثر عليه قوة محصلة 20 نيوتن. ما تسارعه بوحدة م/ث²؟")}</p><label for="answer">${t("Your answer", "إجابتك")}</label><input id="answer" class="form-field" type="number" step="any" required><button class="btn" type="submit">${t("Check & submit", "تحقق وسلّم")}</button><p id="practice-feedback" role="status"></p>${btn(t("Continue to the lab", "تابع إلى المختبر"), "../lab/lab.html", "outline")}</form>`;
+  }
+
+  if (page === "lab") {
+    title = t("Interactive lab: force & acceleration", "مختبر تفاعلي: القوة والتسارع");
+    body = `<section class="card reading"><p>${t("Keep force constant and increase mass. Observe how acceleration changes.", "ثبّت القوة وزد الكتلة. راقب تغير التسارع.")}</p><label for="mass">${t("Mass", "الكتلة")} <output id="mass-value">2 kg</output></label><input class="form-field" id="mass" type="range" min="1" max="10" value="2"><label for="force">${t("Net force", "القوة المحصلة")} <output id="force-value">10 N</output></label><input class="form-field" id="force" type="range" min="0" max="50" value="10"><p dir="ltr" id="accel">a = 10 ÷ 2 = 5.00 m/s²</p><div class="sim"><div class="sim-block" id="sim-block">2 kg</div></div><p><button class="btn" data-action="simulate">${t("Run experiment", "شغّل التجربة")}</button> ${btn(t("Take the quiz", "ابدأ الاختبار"), "../quiz/quiz.html", "outline")}</p></section>`;
+  }
+
+  if (page === "quiz") {
+    title = t("Quiz: forces", "اختبار: القوى");
+    const qs = [
+      [
+        t("What is the SI unit of force?", "ما وحدة القوة في النظام الدولي؟"),
+        [t("Newton", "نيوتن"), t("Kilogram", "كيلوغرام"), t("Metre", "متر")],
+      ],
+      [
+        t(
+          "10 N acting on 2 kg produces acceleration of…",
+          "قوة 10 نيوتن على كتلة 2 كغ تنتج تسارعًا قدره…",
+        ),
+        ["20 m/s²", "5 m/s²", "2 m/s²"],
+      ],
+      [
+        t("If net force is zero, acceleration is…", "إذا كانت القوة المحصلة صفرًا، فإن التسارع…"),
+        [t("Zero", "صفر"), t("Increasing", "متزايد"), t("Always 10", "دائمًا 10")],
+      ],
+    ];
+    body = `<form id="quiz-form" class="card reading">${qs.map((q, i) => `<fieldset class="question"><legend>${i + 1}. ${q[0]}</legend>${q[1].map((a, j) => `<label><input type="radio" name="q${i}" value="${j}" required> ${a}</label>`).join("")}</fieldset>`).join("")}<button class="btn" type="submit">${t("Submit quiz", "سلّم الاختبار")}</button></form>`;
+  }
+
+  if (page === "result") {
+    title = t("Your result", "نتيجتك");
+    body = state.quiz
+      ? `<section class="card reading"><span class="pill green">${t("Quiz completed", "اكتمل الاختبار")}</span><h1>${state.quiz.score}%</h1><p>${t(`You answered ${state.quiz.correct} of 3 questions correctly.`, `أجبت بشكل صحيح عن ${state.quiz.correct} من 3 أسئلة.`)}</p><p>${t("Answers: Newton · 5 m/s² · Zero acceleration. Review the lesson and try again whenever you want.", "الإجابات: نيوتن · 5 م/ث² · تسارع صفر. راجع الدرس وأعد المحاولة متى أردت.")}</p>${btn(t("Back to Physics class", "العودة لصف الفيزياء"), "../class-details/class-details.html")} ${btn(t("Try again", "حاول مجددًا"), "../quiz/quiz.html", "outline")}</section>`
+      : `<div class="card empty">${t("Complete the quiz to see your result.", "أكمل الاختبار لعرض نتيجتك.")} ${btn(t("Start quiz", "ابدأ الاختبار"), "../quiz/quiz.html")}</div>`;
+  }
+
+  if (page === "achievements") {
+    title = t("Your achievements", "إنجازاتك");
+    body = `<section class="card"><p>${t("9 badges unlocked · 24 to collect", "9 شارات مكتسبة · 24 شارة للتجميع")}</p><div class="badges">${Array.from({ length: 24 }, (_, i) => badge(i < 9 ? "★" : "♧", i < 9 ? ["#ffa500", "#8235f8", "#0cbc8b"][i % 3] : "#bcc6d7", `${i + 1}`, i < 9 ? t("Unlocked", "مكتسبة") : t("Locked", "مقفلة"))).join("")}</div></section>`;
+  }
+
+  if (page === "exchange") {
+    title = t("Student exchange", "تبادل الطلاب");
+    body = `<div class="lesson-grid">${[
+      [t("Physics 9 textbook", "كتاب فيزياء 9"), "5 JD"],
+      [t("Geometry set", "طقم هندسة"), "3 JD"],
+    ]
+      .map(
+        (r) =>
+          `<section class="card reading">${icon("▣", "blue")}<h2>${r[0]}</h2><p>${r[1]} · ${t("Demo listing", "إعلان تجريبي")}</p><button class="btn" data-action="reserve" data-item="${esc(r[0])}">${t("Save interest", "احفظ اهتمامك")}</button></section>`,
+      )
+      .join(
+        "",
+      )}</div><p class="muted">${t("Interest is saved on this device. Contact and payment require your school’s exchange service.", "يُحفظ اهتمامك على هذا الجهاز. التواصل والدفع يحتاجان خدمة التبادل الخاصة بمدرستك.")}</p>`;
+  }
+
+  if (page === "messages") {
+    title = t("Messages", "الرسائل");
+    body = `<section class="card reading"><h2>${t("Mr. Khaled", "الأستاذ خالد")}</h2><p>${t("Great progress! In Homework 2 you scored 82%. Remember to include units in every answer.", "تقدم رائع! حصلت على 82% في الواجب 2. تذكر كتابة الوحدات في كل إجابة.")}</p></section>`;
+  }
+
+  if (page === "login") {
+    title = t("Welcome to ORBIT", "أهلًا بك في ORBIT");
+    body = `<form id="login-form" class="card reading"><label for="student-name">${t("Student name", "اسم الطالب")}</label><input id="student-name" class="form-field" value="${esc(state.name)}" maxlength="40" required><p class="muted">${t("Local demo profile — name and preferences stay on this device.", "ملف تجريبي محلي — يُحفظ الاسم والإعدادات على هذا الجهاز.")}</p><button class="btn">${t("Enter dashboard", "الدخول للوحة الطالب")}</button></form>`;
+  }
+
+  return `<header class="page-head"><a class="link" href="../student-dashboard/student-dashboard.html">← ${t("Dashboard", "لوحة الطالب")}</a><h1>${title}</h1></header>${stages.includes(page) ? cycleNav() : ""}${body}`;
+}
+
+function render() {
+  document.documentElement.lang = state.lang;
+  document.documentElement.dir = state.lang === "ar" ? "rtl" : "ltr";
+  document.body.dataset.theme = state.theme;
+  document.body.dataset.mood = state.mood;
+  document.title = `ORBIT · ${t("Teaching portfolio", "الملف المهني")}`;
+  const navs = [
+    ["◫", "Dashboard", "لوحة الطالب", "student-dashboard"],
+    ["▣", "Lessons", "الدروس", "lessons"],
+    ["♧", "Lab", "المختبر", "lab"],
+    ["◉", "My classes", "صفوفي", "class-details"],
+    ["♙", "Achievements", "الإنجازات", "achievements"],
+    ["▤", "Exchange", "التبادل", "exchange"],
+  ];
+  document.getElementById("app").innerHTML =
+    `<div class="shell"><aside class="sidebar"><a class="brand" href="../student-dashboard/student-dashboard.html"><span class="logo">♧</span><div><strong>ORBIT</strong><small>${t("Learn and level up", "تعلم وارتقِ")}</small></div></a><div class="level"><div class="level-top">${icon("L7")}<div><b>${t("Level 7 · Explorer", "المستوى 7 · مستكشف")}</b><br><small>${t("Physics · Your orbit", "الفيزياء · مدارك")}</small></div></div><div class="bar"><span style="width:${Math.min(100, state.xp / 20)}%"></span></div><div class="level-foot"><span>${state.xp.toLocaleString()} XP</span><span>2,000 XP</span></div></div><nav aria-label="${t("Main navigation", "التنقل الرئيسي")}">${navs.map((n) => `<a href="${orbitRoute(n[3] + ".html")}" class="${page === n[3] ? "active" : ""}"><span aria-hidden="true">${n[0]}</span>${t(n[1], n[2])}</a>`).join("")}</nav><div class="sidebar-bottom"><div class="streak">${icon("♨")}<div><b>${t("5 day streak", "5 أيام متتالية")}</b><small>${t("Study today to keep it", "تعلم اليوم لتحافظ عليها")}</small></div></div><button class="settings" data-action="settings">⚙ ${t("Settings", "الإعدادات")}</button></div></aside><main class="main"><header class="topbar"><input class="search" id="search" aria-label="${t("Search lessons", "ابحث في الدروس")}" placeholder="⌕ ${t("Search lessons, classes, teachers", "ابحث عن دروس، صفوف، معلمين")}"><div class="top-right"><span class="pill gold">ϟ ${state.xp.toLocaleString()} XP</span><div class="controls"><button data-action="language" aria-label="${t("Switch to Arabic", "التبديل إلى الإنجليزية")}">${state.lang === "en" ? "عربي" : "EN"}</button><button data-action="theme" aria-label="${t("Toggle color theme", "تبديل المظهر")}">${state.theme === "dark" ? "☀" : "☾"}</button><button data-action="mood" aria-label="${t("Toggle fun or calm mood", "تبديل المرح والهدوء")}">${state.mood === "fun" ? "☺" : "◌"}</button><a class="btn outline" href="../channels/channels.html" aria-label="${t("Messages", "الرسائل")}">♧</a></div><a class="user" href="../login/login.html"><span class="avatar">${initials()}</span><div><strong>${esc(state.name)}</strong><small>${t("Grade 9A", "الصف 9A")}</small></div></a></div></header><div class="content">${page === "student-dashboard" || page === "index" ? dashboard() : contentPage()}<div class="footer">ORBIT · ${t("Small steps. Bigger possibilities.", "خطوات صغيرة. إمكانيات أكبر.")}</div></div></main></div><dialog id="settings-dialog"><h2>${t("Your preferences", "إعداداتك")}</h2>${[
+      [
+        "lang",
+        t("Language", "اللغة"),
+        [
+          ["en", "English"],
+          ["ar", "العربية"],
+        ],
+      ],
+      [
+        "theme",
+        t("Appearance", "المظهر"),
+        [
+          ["light", t("Light", "فاتح")],
+          ["dark", t("Dark", "داكن")],
+        ],
+      ],
+      [
+        "mood",
+        t("Orbit mood", "مزاج ORBIT"),
+        [
+          ["fun", t("Fun", "مرح")],
+          ["calm", t("Calm", "هادئ")],
+        ],
+      ],
+    ]
+      .map(
+        (r) =>
+          `<label class="setting-row">${r[1]}<select data-setting="${r[0]}">${r[2].map((o) => `<option value="${o[0]}" ${state[r[0]] === o[0] ? "selected" : ""}>${o[1]}</option>`).join("")}</select></label>`,
+      )
+      .join(
+        "",
+      )}<a class="btn outline" href="../login/login.html">${t("Edit student name", "تعديل اسم الطالب")}</a><button class="btn" data-action="close">${t("Done", "تم")}</button></dialog>`;
+  bindForms();
+}
+
+document.addEventListener("click", (e) => {
+  const b = e.target.closest("[data-action]");
+  if (!b) return;
+  const a = b.dataset.action;
+  if (["language", "theme", "mood"].includes(a)) {
+    const key = { language: "lang", theme: "theme", mood: "mood" }[a];
+    state[key] =
+      a === "language"
+        ? state.lang === "en"
+          ? "ar"
+          : "en"
+        : a === "theme"
+          ? state.theme === "light"
+            ? "dark"
+            : "light"
+          : state.mood === "fun"
+            ? "calm"
+            : "fun";
+    save();
+    render();
+    if (a === "mood")
+      toast(t(`Mood: ${state.mood}`, state.mood === "fun" ? "وضع المرح" : "وضع الهدوء"));
+  }
+  if (a === "settings") document.getElementById("settings-dialog").showModal();
+  if (a === "close") document.getElementById("settings-dialog").close();
+  if (a === "feedback") location.href = "../channel/channel.html?id=9b";
+  if (a === "lesson") {
+    award("lesson", 20);
+    location.href = "../practice/practice.html";
+  }
+  if (a === "reserve") {
+    storage.set("orbit.exchange.interest", b.dataset.item);
+    toast(t("Interest saved on this device.", "تم حفظ اهتمامك على هذا الجهاز."));
+  }
+  if (a === "simulate") {
+    const m = +document.getElementById("mass").value,
+      f = +document.getElementById("force").value;
+    const el = document.getElementById("sim-block");
+    const room = el.parentElement.clientWidth - 100;
+    el.style.transform = `translateX(${(state.lang === "ar" ? -1 : 1) * Math.min(room, (f / m) * 12)}px)`;
+    award("lab", 15);
+    setTimeout(() => (el.style.transform = ""), 1400);
+  }
+});
+
+document.addEventListener("change", (e) => {
+  if (e.target.dataset.setting) {
+    state[e.target.dataset.setting] = e.target.value;
+    save();
+    render();
+    document.getElementById("settings-dialog").showModal();
+  }
+});
+
+document.addEventListener("input", (e) => {
+  if (["mass", "force"].includes(e.target.id)) {
+    let m = +document.getElementById("mass").value,
+      f = +document.getElementById("force").value;
+    document.getElementById("mass-value").textContent = m + " kg";
+    document.getElementById("force-value").textContent = f + " N";
+    document.getElementById("accel").textContent = `a = ${f} ÷ ${m} = ${(f / m).toFixed(2)} m/s²`;
+    document.getElementById("sim-block").textContent = m + " kg";
+  }
+  if (e.target.id === "search") {
+    const q = e.target.value.toLowerCase().trim();
+    document
+      .querySelectorAll(".lesson-tile")
+      .forEach((el) => (el.hidden = !!q && !el.textContent.toLowerCase().includes(q)));
+  }
+});
+
+document.addEventListener("keydown", (e) => {
+  if (e.target.id === "search" && e.key === "Enter") location.href = "../lessons/lessons.html";
+});
+
+function bindForms() {
+  document.getElementById("login-form")?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const name = document.getElementById("student-name").value.trim();
+    if (!name) return;
+    state.name = name;
+    save();
+    location.href = "../student-dashboard/student-dashboard.html";
+  });
+  document.getElementById("practice-form")?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const ok = +document.getElementById("answer").value === 5;
+    const homework = new URLSearchParams(location.search).get("task") === "homework";
+    document.getElementById("practice-feedback").textContent = ok
+      ? t("Correct! Your work has been saved.", "صحيح! تم حفظ إجابتك.")
+      : t(
+          "Try again. Divide both sides by 3, or use a = F / m.",
+          "حاول مجددًا. اقسم الطرفين على 3، أو استخدم a = F / m.",
+        );
+    if (ok) award(homework ? "homework" : "practice", homework ? 30 : 50);
+  });
+  document.getElementById("quiz-form")?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const data = new FormData(e.target);
+    let correct = 0;
+    [0, 1, 0].forEach((a, i) => {
+      if (+data.get("q" + i) === a) correct++;
+    });
+    state.quiz = {
+      correct,
+      score: Math.round((correct / 3) * 100),
+      date: new Date().toISOString(),
+    };
+    award("quiz", 30);
+    save();
+    location.href = "../result/result.html";
+  });
+}
+
+render();
+
+/* ORBIT Channels: interactive local prototype */
+
+const catalog = [
+  {
+    id: "physics",
+    en: "Physics, in motion",
+    ar: "الفيزياء بحركة",
+    subject: "physics",
+    teacher: "khaled",
+    private: false,
+    code: "",
+    symbol: "⚛",
+    color: "purple",
+    descEn: "Understand the world. One experiment at a time.",
+    descAr: "افهم العالم، تجربة بعد تجربة.",
+  },
+  {
+    id: "9b",
+    en: "Grade 9B · Physics",
+    ar: "تاسع باء · فيزياء",
+    subject: "physics",
+    teacher: "khaled",
+    private: true,
+    code: "ORBIT9B",
+    symbol: "↗",
+    color: "blue",
+    descEn: "Our classroom, beyond the classroom.",
+    descAr: "صفنا الدراسي، خارج حدود الصف.",
+  },
+  {
+    id: "math",
+    en: "The maths studio",
+    ar: "استوديو الرياضيات",
+    subject: "math",
+    teacher: "sara",
+    private: false,
+    code: "",
+    symbol: "∑",
+    color: "peach",
+    descEn: "Big ideas. Simple steps.",
+    descAr: "أفكار كبيرة، بخطوات بسيطة.",
+  },
+];
+
+const people = [
+  {
+    id: "khaled",
+    en: "Khaled Ahmad",
+    ar: "خالد أحمد",
+    subject: "physics",
+    experience: 8,
+    letters: "KA",
+    bioEn: "Physics educator turning everyday questions into hands-on discoveries.",
+    bioAr: "معلم فيزياء يحوّل الأسئلة اليومية إلى اكتشافات وتجارب.",
+    degreeEn: "BSc Physics · Teaching diploma",
+    degreeAr: "بكالوريوس فيزياء · دبلوم تأهيل تربوي",
+    style: "purple",
+  },
+  {
+    id: "sara",
+    en: "Sara Ali",
+    ar: "سارة علي",
+    subject: "math",
+    experience: 5,
+    letters: "SA",
+    bioEn: "Making mathematics visual and approachable.",
+    bioAr: "أجعل الرياضيات مرئية وقريبة للجميع.",
+    degreeEn: "BSc Mathematics",
+    degreeAr: "بكالوريوس رياضيات",
+    style: "peach",
+  },
+];
+
+const requestedTeacher =
+  new URLSearchParams(location.search).get("id") ||
+  (JSON.parse(localStorage.getItem("orbitUser") || "{}").role === "teacher"
+    ? JSON.parse(localStorage.getItem("orbitUser") || "{}").email
+    : "teacher@orbit.com");
+const teacherKey = requestedTeacher === "khaled" ? "teacher@orbit.com" : requestedTeacher;
+const candidateTeacher = teacherKey === "sara" ? null : OrbitProfiles.read(teacherKey, "teacher");
+const orbitStoredTeacher = candidateTeacher?.role === "teacher" ? candidateTeacher : null;
+if (orbitStoredTeacher && teacherKey !== "teacher@orbit.com") {
+  people[0].id = teacherKey;
+  Object.assign(people[0], {
+    experience: 0,
+    bioEn: "",
+    bioAr: "",
+    degreeEn: "Not supplied",
+    degreeAr: "غير مذكور",
+  });
+}
+if (orbitStoredTeacher) {
+  const p = orbitStoredTeacher;
+  Object.assign(people[0], {
+    en: p.name || people[0].en,
+    ar: p.name || people[0].ar,
+    subject: p.subject || people[0].subject,
+    experience: Number.isFinite(+p.experience) ? +p.experience : 8,
+    bioEn: p.bio || people[0].bioEn,
+    bioAr: p.bio || people[0].bioAr,
+    degreeEn: p.qualification || people[0].degreeEn,
+    degreeAr: p.qualification || people[0].degreeAr,
+    letters: esc(
+      (p.name || "KA")
+        .split(/\s+/)
+        .map((x) => x[0])
+        .slice(0, 2)
+        .join(""),
+    ),
+  });
+}
+
+let db = Object.assign(
+  {
+    joined: ["physics", "9b"],
+    likes: [],
+    saved: [],
+    comments: {},
+    role: "student",
+    channels: [],
+    posts: [],
+  },
+  parsed("orbit.channels.v2") || {},
+);
+
+db.role = OrbitAuth.current()?.role || "visitor";
+db.joined = OrbitAuth.current()?.email
+  ? (parsed("orbit.memberships.v3") || {})[OrbitAuth.current().email] || []
+  : [];
+
+const allChannels = () => [...catalog, ...db.channels],
+  persist = () => storage.set("orbit.channels.v2", JSON.stringify(db));
+
+const allPosts = () => [
+  ...db.posts,
+  {
+    id: "p1",
+    channel: "physics",
+    type: "lesson",
+    titleEn: "Why do we lean forward when a bus stops?",
+    titleAr: "لماذا نميل للأمام عندما تتوقف الحافلة؟",
+    bodyEn:
+      "That little moment is Newton’s first law in action. Open the lesson, then tell us: where else do you notice inertia?",
+    bodyAr:
+      "هذه اللحظة الصغيرة هي قانون نيوتن الأول! افتح الشرح وفكّر: أين تلاحظ القصور الذاتي في يومك؟",
+    likes: 42,
+  },
+  {
+    id: "p2",
+    channel: "9b",
+    type: "assignment",
+    titleEn: "Your next mission: forces around you",
+    titleAr: "مهمتك القادمة: القوى من حولك",
+    bodyEn:
+      "Find three examples of forces at home. Practice the calculation and submit your answer.",
+    bodyAr: "ابحث عن ثلاثة أمثلة للقوى في منزلك. تدرب على الحساب وسلّم إجابتك.",
+    likes: 18,
+  },
+  {
+    id: "p3",
+    channel: "math",
+    type: "discussion",
+    titleEn: "One question, many ways to solve it.",
+    titleAr: "سؤال واحد، وطرق كثيرة للحل.",
+    bodyEn: "What makes a good mathematical explanation? Share your idea below.",
+    bodyAr: "ما الذي يجعل شرح الرياضيات جيدًا؟ شارك فكرتك بالأسفل.",
+    likes: 26,
+  },
+];
+
+const label = (x) => esc(state.lang === "ar" ? x.ar : x.en),
+  person = (id) => people.find((p) => p.id === id) || people[0],
+  channelURL = (c) => `../channel/channel.html?id=${encodeURIComponent(c.id)}`,
+  subj = (s) =>
+    ({
+      physics: t("Physics", "الفيزياء"),
+      math: t("Mathematics", "الرياضيات"),
+      arabic: t("Arabic", "اللغة العربية"),
+      english: t("English", "اللغة الإنجليزية"),
+      chemistry: t("Chemistry", "الكيمياء"),
+      biology: t("Biology", "الأحياء"),
+    })[s] || t("Education", "التعليم");
+
+const currentChannel = () =>
+  allChannels().find((c) => c.id === new URLSearchParams(location.search).get("id")) || catalog[0];
+
+const typeName = (s) =>
+  ({
+    lesson: t("LESSON", "شرح"),
+    assignment: t("ASSIGNMENT", "واجب"),
+    discussion: t("DISCUSSION", "نقاش"),
+    video: t("VIDEO", "فيديو"),
+    announcement: t("ANNOUNCEMENT", "إعلان"),
+  })[s] || s;
+
+function chCard(c) {
+  return `<a class="channel-card ${c.color}" href="${channelURL(c)}"><div class="channel-top"><span class="channel-symbol">${esc(c.symbol)}</span><span class="pill">${c.private ? t("◈ Private", "◈ خاصة") : t("◎ Public", "◎ عامة")}</span></div><h3>${label(c)}</h3><p>${esc(state.lang === "ar" ? c.descAr : c.descEn)}</p><div class="channel-foot"><span class="mini-avatar">${person(c.teacher).letters}</span>${label(person(c.teacher))}<span class="arrow">↗</span></div></a>`;
+}
+
+function postCard(p) {
+  const c = allChannels().find((c) => c.id === p.channel);
+  if (!c) return "";
+  const teacher = person(c.teacher),
+    liked = db.likes.includes(p.id),
+    saved = db.saved.includes(p.id),
+    comments = db.comments[p.id] || [];
+  return `<article class="post card" data-post="${esc(p.id)}"><header class="post-head"><a class="mini-avatar ${c.color}" href="../teacher-profile/teacher-profile.html?id=${teacher.id}">${teacher.letters}</a><div><a class="post-author" href="../teacher-profile/teacher-profile.html?id=${teacher.id}">${label(teacher)}</a><a class="post-channel" href="${channelURL(c)}">${label(c)} · ${typeName(p.type)}</a></div><button class="icon-button ${saved ? "selected" : ""}" data-v2="save" data-id="${esc(p.id)}" aria-pressed="${saved}" aria-label="${t("Save post", "حفظ المنشور")}">${saved ? "◆" : "◇"}</button></header><h2>${esc(state.lang === "ar" ? p.titleAr || p.title : p.titleEn || p.title)}</h2><p class="post-body">${esc(state.lang === "ar" ? p.bodyAr || p.body : p.bodyEn || p.body)}</p>${p.type === "lesson" ? `<a class="lesson-preview" href="../lesson/lesson.html"><span class="play-circle">▷</span><div><strong>${t("A little curiosity goes a long way.", "قليل من الفضول يفتح عالمًا.")}</strong><small>${t("Interactive lesson · 5 min", "درس تفاعلي · 5 دقائق")}</small></div><span class="preview-atom">⚛</span></a>` : ""}${p.type === "video" && (p.url || p.videoAsset) ? `<video controls preload="metadata" src="${esc(p.url || "")}" data-orbit-media="${esc(p.videoAsset || "")}"></video>` : ""}${p.type === "assignment" ? `<div class="assignment-preview"><span>${t("Ready for your next step?", "جاهز للخطوة القادمة؟")}</span>${btn(t("Open assignment", "افتح الواجب"), "../practice/practice.html")}</div>` : ""}<footer class="post-actions"><button class="reaction ${liked ? "selected" : ""}" data-v2="like" data-id="${esc(p.id)}" aria-pressed="${liked}">${liked ? "♥" : "♡"} ${p.likes + Number(liked)}</button><button class="reaction" data-v2="comment" data-id="${esc(p.id)}">☏ ${comments.length} ${t("Comments", "تعليقات")}</button><span class="muted">${t("Demo classroom activity", "نشاط صفّي تجريبي")}</span></footer>${comments.length ? `<div class="comments">${comments.map((m) => `<p><b>${esc(m.authorId ? OrbitProfiles.read(m.authorId).name || m.name : m.name)}</b> ${esc(m.text)}</p>`).join("")}</div>` : ""}<form class="comment-form" data-comment="${esc(p.id)}" hidden><label class="sr-only" for="comment-${esc(p.id)}">${t("Your comment", "تعليقك")}</label><input id="comment-${esc(p.id)}" name="comment" required maxlength="300" placeholder="${t("Add to the conversation…", "شارك بالنقاش…")}"><button class="btn">${t("Post", "نشر")}</button></form></article>`;
+}
+
+const basePage = contentPage,
+  baseRender = render;
+
+dashboard = () =>
+  `<div class="welcome-line"><div><span class="eyebrow">${t("YOUR LEARNING ORBIT", "مدارك التعليمي")}</span><h1>${t("Good to see you", "أهلًا برجعتك")}, ${esc(state.name)} <span class="wave">✦</span></h1></div><button class="btn outline" data-v2="join">＋ ${t("Join a channel", "انضم لقناة")}</button></div><section class="orbit-hero"><div class="hero-copy"><span class="hero-kicker">✧ ${t("A new idea is waiting for you", "فكرة جديدة بانتظارك")}</span><h2>${t("Your next discovery<br>starts with a channel.", "اكتشافك القادم<br>يبدأ من قناة.")}</h2><p>${t("Your teachers. Your questions. A whole world to explore.", "أساتذتك، أسئلتك، وعالم كامل لتكتشفه.")}</p><div class="actions">${btn(t("Explore channels", "استكشف القنوات") + " ↗", "../channels/channels.html", "white-button")}${btn(t("Continue learning", "تابع التعلم"), "../lesson/lesson.html", "secondary")}</div></div><div class="orbital-art" aria-hidden="true"><div class="orbit-line one"></div><div class="orbit-line two"></div><span class="orbit-dot"></span><div class="planet">⚛</div><div class="floating-note note-a">ϟ <b>+${state.xp.toLocaleString()} XP</b></div><div class="floating-note note-b">✓ ${t("Keep growing", "واصل التقدم")}</div><span class="star s1">✧</span><span class="star s2">✦</span></div></section><div class="metric-strip">${[
+    ["♨", "amber", "5", t("day streak", "أيام متتالية")],
+    ["ϟ", "violet", state.xp.toLocaleString(), "XP"],
+    ["◎", "mint", db.joined.length, t("channels joined", "قنواتك")],
+    ["♙", "pink", 9 + Number(state.done.includes("quiz")), t("badges earned", "شارات مكتسبة")],
+  ]
+    .map(
+      (x) =>
+        `<div><span class="metric-icon ${x[1]}">${x[0]}</span><strong>${x[2]}<small>${x[3]}</small></strong></div>`,
+    )
+    .join(
+      "",
+    )}</div><div class="section-heading"><div><h2>${t("Your channels", "قنواتك")}</h2><span>${t("A little closer to your teachers.", "أقرب لأساتذتك، كل يوم.")}</span></div><a class="link" href="../channels/channels.html">${t("View all", "عرض الكل")} ↗</a></div><div class="channel-grid">${
+    allChannels()
+      .filter((c) => db.joined.includes(c.id))
+      .map(chCard)
+      .join("") ||
+    `<div class="card">${t("Join your first channel to begin.", "انضم لأول قناة لتبدأ.")}</div>`
+  }</div><div class="feed-layout"><div><div class="section-heading"><h2>${t("Fresh from your teachers", "جديد أساتذتك")}</h2><span class="live-dot">${t("Your feed", "منشوراتك")}</span></div>${allPosts()
+    .filter((p) => db.joined.includes(p.channel))
+    .slice(0, 4)
+    .map(postCard)
+    .join(
+      "",
+    )}</div><aside class="stack companion"><section class="card mission-card"><span class="eyebrow">${t("TODAY’S SMALL WIN", "إنجازك الصغير اليوم")}</span><h2>${t("A little effort.<br>A bigger orbit.", "جهد صغير.<br>ومدار أكبر.")}</h2><div class="mission-progress"><strong>${Math.min(100, 60 + state.done.length * 10)}%</strong><div class="bar"><span style="width:${Math.min(100, 60 + state.done.length * 10)}%"></span></div></div><p>${t("Finish a lesson or try an experiment. Your progress adds up.", "أنهِ درسًا أو جرّب تجربة. كل خطوة تفرق.")}</p>${btn(t("Try the force lab", "جرّب مختبر القوى") + " ↗", "../lab/lab.html")}</section><section class="card"><div class="card-title"><h2>${t("Your next lesson", "درسك القادم")}</h2><span class="pill violet">5 ${t("min", "دقائق")}</span></div>${lessonTile(t("Newton’s laws", "قوانين نيوتن"), t("Physics 11", "فيزياء 11"), "⚛", 60, "../lesson/lesson.html", "3 / 5", 20)}</section><section class="card"><h2>${t("Class leaderboard", "متصدرو الصف")}</h2>${[
+    ["RM", t("Rami", "رامي"), 1640],
+    ["OK", t("Omar", "عمر"), 1410],
+    [initials(), t("You", "أنت"), state.xp],
+  ]
+    .sort((a, b) => b[2] - a[2])
+    .map(
+      (r, i) =>
+        `<div class="rank ${r[1] === t("You", "أنت") ? "you" : ""}"><span class="place">${i + 1}</span><span class="avatar">${r[0]}</span>${r[1]}<span class="points">${r[2]}</span></div>`,
+    )
+    .join(
+      "",
+    )}</section><a href="../exchange/exchange.html" class="exchange-teaser">◇ ${t("Give a book a new orbit.", "امنح كتابًا مدارًا جديدًا.")}<span>${t("Visit the exchange", "تصفح التبادل")} ↗</span></a></aside></div>`;
+
+contentPage = () => {
+  let title = "",
+    body = "";
+  if (page === "channels") {
+    title = t("Find your next orbit.", "اكتشف مدارك القادم.");
+    body = `<div class="toolbar"><div class="tabs">${[
+      ["all", t("All channels", "كل القنوات")],
+      ["joined", t("My channels", "قنواتي")],
+      ["public", t("Public", "عامة")],
+      ["saved", t("Saved posts", "المحفوظات")],
+    ]
+      .map(
+        (x, i) =>
+          `<button class="tab ${i === 0 ? "active" : ""}" data-filter="${x[0]}">${x[1]}</button>`,
+      )
+      .join(
+        "",
+      )}</div><button class="btn" data-v2="join">＋ ${t("Join with a code", "انضم بكود")}</button></div><div class="channel-grid directory" id="channel-directory">${allChannels()
+      .map(
+        (c) =>
+          `<div data-channel-card data-private="${c.private}" data-joined="${db.joined.includes(c.id)}">${chCard(c)}</div>`,
+      )
+      .join("")}</div><div id="saved-posts" hidden>${
+      allPosts()
+        .filter(
+          (p) =>
+            db.saved.includes(p.id) &&
+            allChannels().some(
+              (c) => c.id === p.channel && (!c.private || db.joined.includes(c.id)),
+            ),
+        )
+        .map(postCard)
+        .join("") ||
+      `<div class="card empty">${t("Save a post to find it here.", "احفظ منشورًا لتجده هنا.")}</div>`
+    }</div><p class="demo-hint">${t("Private demo classroom code:", "كود الصف الخاص التجريبي:")} <b dir="ltr">ORBIT9B</b></p>`;
+  } else if (page === "channel") {
+    const c = currentChannel(),
+      joined = db.joined.includes(c.id),
+      teach = db.role === "teacher";
+    title = label(c);
+    body = `<section class="channel-banner ${c.color}"><span class="channel-symbol">${c.symbol}</span><div><span class="eyebrow">${c.private ? t("PRIVATE CLASSROOM", "صف خاص") : t("PUBLIC CHANNEL", "قناة عامة")}</span><h2>${label(c)}</h2><p>${esc(state.lang === "ar" ? c.descAr : c.descEn)}</p><a href="../teacher-profile/teacher-profile.html?id=${c.teacher}" class="link">${label(person(c.teacher))} ↗</a></div><button class="btn ${joined ? "outline" : ""}" data-v2="${joined ? "leave" : c.private ? "join" : "follow"}" data-id="${esc(c.id)}">${joined ? t("✓ Joined · leave", "✓ عضو · مغادرة") : t("Join channel", "انضم للقناة")}</button></section>${
+      c.private && !joined && !teach
+        ? `<section class="card locked"><span>◈</span><h2>${t("A space just for your classroom.", "مساحة خاصة بصفك.")}</h2><p>${t("Enter your teacher’s code to see the posts.", "أدخل كود المعلم لعرض المنشورات.")}</p><button class="btn" data-v2="join">${t("Enter code", "أدخل الكود")}</button></section>`
+        : `${teach ? `<div class="toolbar"><span class="muted">${t("Teacher demo view", "عرض المعلم التجريبي")}</span><button class="btn" data-v2="compose" data-id="${esc(c.id)}">＋ ${t("Create a post", "أضف منشورًا")}</button></div>` : ""}<div class="channel-posts">${
+            allPosts()
+              .filter((p) => p.channel === c.id)
+              .map(postCard)
+              .join("") ||
+            `<div class="card empty">${t("Your first post starts the conversation.", "منشورك الأول يبدأ الحوار.")}</div>`
+          }</div>`
+    }`;
+  } else if (page === "teacher-studio") {
+    title = t("Your teaching, in one place.", "كل شغلك التعليمي، بمكان واحد.");
+    body =
+      db.role !== "teacher"
+        ? `<div class="card"><p>${t("Switch the demo role to Teacher in the sidebar to explore the studio.", "اختر دور المعلم التجريبي من القائمة الجانبية لتجربة الاستوديو.")}</p></div>`
+        : `<section class="studio-intro"><div><span class="eyebrow">${t("TEACHER STUDIO", "استوديو المعلم")}</span><h2>${t("Teach. Share. Get discovered.", "علّم. شارك. خلّي شغلك يحكي.")}</h2><p>${t("Create a classroom or share your ideas with the world.", "أنشئ مساحة لصفك، أو شارك أفكارك مع الجميع.")}</p></div><button class="btn" data-v2="create">＋ ${t("Create channel", "أنشئ قناة")}</button></section><div class="channel-grid directory">${allChannels()
+            .filter((c) => c.teacher === "khaled")
+            .map(
+              (c) =>
+                `<section>${chCard(c)}<div class="studio-actions"><a class="link" href="${channelURL(c)}">${t("Manage & post", "الإدارة والنشر")} ↗</a>${c.private ? `<span class="pill violet" dir="ltr">${esc(c.code)}</span>` : ""}</div></section>`,
+            )
+            .join(
+              "",
+            )}</div><section class="card plan-card"><div><span class="pill gold">ORBIT PLUS · ${t("Concept", "تصور")}</span><h2>${t("More room for your ideas.", "مساحة أكبر لأفكارك.")}</h2><p>${t("Longer videos, more storage and richer insights. No payment is connected in this demo.", "فيديوهات أطول، مساحة أكبر وتحليلات أوسع. الدفع غير مربوط في هذه النسخة.")}</p></div><button class="btn outline" data-v2="premium">${t("Explore Plus", "اكتشف Plus")}</button></section>`;
+  } else if (page === "teachers") {
+    title = t("Discover the teacher behind the lesson.", "اكتشف المعلم وراء الدرس.");
+    body = `<section class="teacher-filters card"><label>${t("Subject", "التخصص")}<select id="teacher-subject"><option value="all">${t("All subjects", "جميع التخصصات")}</option><option value="physics">${subj("physics")}</option><option value="math">${subj("math")}</option>${["arabic", "english", "chemistry", "biology"].map((s) => `<option value="${s}">${subj(s)}</option>`).join("")}</select></label><label>${t("Experience", "الخبرة")}<select id="teacher-exp"><option value="0">${t("Any experience", "أي خبرة")}</option><option value="6">${t("6+ years", "6 سنوات فأكثر")}</option></select></label></section><div class="teacher-grid">${people.map((p) => `<article class="teacher-card card" data-teacher data-subject="${p.subject}" data-exp="${p.experience}"><div class="teacher-cover ${p.style}">✧</div><span class="profile-avatar ${p.style}">${p.letters}</span><h2>${label(p)}</h2><span class="pill violet">${subj(p.subject)}</span><p>${esc(state.lang === "ar" ? p.bioAr : p.bioEn)}</p><div class="teacher-meta">${p.experience} ${t("years · Secondary education", "سنوات · تعليم ثانوي")}</div>${btn(t("View teaching portfolio", "شاهد الملف المهني") + " ↗", "../teacher-profile/teacher-profile.html?id=" + p.id, "outline")}</article>`).join("")}</div><p id="teacher-empty" class="empty" hidden>${t("No teachers match these filters.", "لا يوجد معلمون يطابقون الفلاتر.")}</p><p class="demo-hint">${t("Explore teachers by subject and experience. Credentials are self-reported, not verified.", "ابحث عن المعلمين حسب المادة والخبرة. المؤهلات معلنة ذاتيًا وغير موثقة.")}</p>`;
+  } else if (page === "teacher-profile") {
+    const requested =
+        new URLSearchParams(location.search).get("id") ||
+        (ORBIT.user.role === "teacher" ? ORBIT.user.email : "khaled"),
+      canonical = OrbitProfiles.canonical(requested),
+      storedProfile = OrbitProfiles.read(canonical, "teacher"),
+      profile =
+        storedProfile.role === "teacher"
+          ? storedProfile
+          : canonical === "sara"
+            ? {
+                id: "sara",
+                name: t("Sara Ali", "سارة علي"),
+                subject: "math",
+                experience: 5,
+                bio: t(
+                  "Making mathematics visual and approachable.",
+                  "أجعل الرياضيات مرئية وقريبة للجميع.",
+                ),
+                qualification: t("BSc Mathematics", "بكالوريوس رياضيات"),
+              }
+            : {},
+      p = {
+        id: requested,
+        en: profile.name || t("Teacher", "معلم"),
+        ar: profile.name || t("Teacher", "معلم"),
+        letters: (profile.name || "ORBIT")
+          .split(/\s+/)
+          .map((x) => x[0])
+          .slice(0, 2)
+          .join("")
+          .toUpperCase(),
+        subject: profile.subject || "physics",
+        experience: Number(profile.experience) || 0,
+        bioEn: profile.bio || "",
+        bioAr: profile.bio || "",
+        degreeEn: profile.qualification || t("Not supplied", "غير مذكور"),
+        degreeAr: profile.qualification || t("Not supplied", "غير مذكور"),
+        style: "purple",
+      };
+
+    const own =
+      ORBIT.user.role === "teacher" && OrbitProfiles.canonical(ORBIT.user.email) === canonical;
+
+    const publicChannels = ORBIT.channels().filter(
+      (c) => !c.private && OrbitProfiles.canonical(c.teacher) === canonical,
+    );
+
+    const posts = ORBIT.db().posts.filter(
+      (post) =>
+        ["lesson", "video", "resource"].includes(post.type) &&
+        publicChannels.some((c) => c.id === post.channel) &&
+        !ORBIT.get("orbit.deleted.posts", []).includes(post.id) &&
+        !post.sample,
+    );
+
+    title = t("The educator behind the ideas", "المعلم وراء الأفكار");
+
+    body = `<section class="profile-header card"><div class="profile-cover"><span aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5"><ellipse cx="12" cy="12" rx="10" ry="5" transform="rotate(-35 12 12)"/><circle cx="12" cy="12" r="3"/></svg></span><div><span class="professional-kicker">${t("ORBIT / TEACHING PORTFOLIO", "ORBIT / الملف المهني")}</span><h2>${t("Small questions.<br>Lasting discoveries.", "أسئلة صغيرة.<br>اكتشافات بتضل معنا.")}</h2></div></div><div class="profile-detail"><span class="profile-avatar purple">${esc(p.letters)}</span><div class="profile-identity"><span class="pill violet">${subj(p.subject)}</span><h2>${label(p)}</h2><p>${esc(profile.bio || t("A teaching story waiting to be shared.", "قصة تعليمية بانتظار المشاركة."))}</p></div>${own ? btn(t("Edit my profile", "تعديل ملفي") + " ↗", "../account-profile/account-profile.html", "profile-edit") : ""}</div></section><div class="professional-metrics"><div><strong>${publicChannels.length}</strong><span>${t("Public channels", "قنوات عامة")}</span></div><div><strong>${posts.length}</strong><span>${t("Published teaching contributions", "مساهمات تعليمية منشورة")}</span></div><div><strong>${p.experience}</strong><span>${t("Years of teaching", "سنوات تدريس")}</span></div></div><div class="profile-layout"><section class="card professional-about"><span class="professional-kicker">${t("THE TEACHING STORY", "القصة التعليمية")}</span><h2>${t("Experience & education", "الخبرة والتعليم")}</h2><div class="professional-field"><small>${t("Qualification", "المؤهل")}</small><p>${esc(p.degreeAr)}</p></div><div class="professional-field"><small>${t("Teaching experience", "الخبرة التعليمية")}</small><p>${p.experience} ${t("years", "سنوات")}</p></div>${profile.location ? `<div class="professional-field"><small>${t("Location", "الموقع")}</small><p>${esc(profile.location)}</p></div>` : ""}${profile.cv && (own || (ORBIT.user.role === "school" && profile.shareWithSchools && profile.shareCV)) && /^https:\/\//i.test(profile.cv) ? `<a class="btn outline" href="${esc(profile.cv)}" target="_blank" rel="noopener noreferrer">${t("View CV", "شاهد السيرة الذاتية")}</a>` : ""}<p class="professional-note">${t("Self-reported qualifications · unverified.", "مؤهلات معلنة ذاتيًا · غير موثقة.")}</p></section><section class="professional-content"><div class="section-heading"><div><span class="professional-kicker">${t("IDEAS IN PRACTICE", "أفكار على أرض الواقع")}</span><h2>${t("Teaching contributions", "مساهمات تعليمية")}</h2></div><span class="pill violet">${posts.length}</span></div><p class="professional-intro">${t("Lessons and resources published in this teacher’s public channels.", "دروس ومصادر نشرها المعلم في قنواته العامة.")}</p>${
+      posts
+        .map((post) => {
+          const c = publicChannels.find((c) => c.id === post.channel);
+          return `<article class="card portfolio-sample" data-sample="${esc(post.id)}"><header><span class="pill violet">${typeName(post.type)}</span><a href="${channelURL(c)}">${esc(ORBIT.label(c))} ↗</a></header><h3>${esc(post.title || t(post.titleEn, post.titleAr) || "")}</h3><p>${esc(post.body || t(post.bodyEn, post.bodyAr) || "")}</p>${ORBIT.attachment(post)}<a class="btn outline" href="${channelURL(c)}&post=${encodeURIComponent(post.id)}">${t("View the contribution", "شاهد المساهمة")} ↗</a></article>`;
+        })
+        .join("") ||
+      `<div class="card portfolio-empty"><span aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5"><ellipse cx="12" cy="12" rx="10" ry="5" transform="rotate(-35 12 12)"/><circle cx="12" cy="12" r="3"/></svg></span><h3>${t("The next idea starts here.", "الفكرة الجاية بتبدأ هون.")}</h3><p>${t("No public teaching contributions have been published yet.", "لسه ما في مساهمات تعليمية عامة منشورة.")}</p>${own ? btn(t("Open my channels", "افتح قنواتي") + " ↗", "../channels/channels.html", "outline") : ""}</div>`
+    }</section></div>`;
+  } else return basePage();
+  return `<header class="page-head"><span class="eyebrow">ORBIT / ${t("CONNECTED LEARNING", "تعلم متصل")}</span><h1>${title}</h1></header>${body}`;
+};
+
+render = () => {
+  baseRender();
+  const nav = document.querySelector(".sidebar nav");
+  const items =
+    db.role === "teacher"
+      ? [
+          ["◎", t("My channels", "قنواتي"), "channels"],
+          ["✧", t("Teacher studio", "استوديو المعلم"), "teacher-studio"],
+          ["↗", t("My portfolio", "ملفي المهني"), "teacher-profile?id=khaled"],
+        ]
+      : [
+          ["◎", t("My channels", "قنواتي"), "channels"],
+          ["✧", t("Teacher discovery", "اكتشف المعلمين"), "teachers"],
+        ];
+  items.reverse().forEach((n) => {
+    const a = document.createElement("a"),
+      parts = n[2].split("?");
+    a.href = orbitRoute(parts[0] + ".html" + (parts[1] ? "?" + parts[1] : ""));
+    a.className = page === parts[0] ? "active" : "";
+    a.innerHTML = `<span>${n[0]}</span>${n[1]}`;
+    nav.prepend(a);
+  });
+  document.querySelector('.controls a[href="../channels/channels.html"]')?.remove();
+  document
+    .querySelector(".content")
+    .insertAdjacentHTML("beforeend", '<dialog id="channel-dialog"></dialog>');
+  document
+    .querySelectorAll(".card,.channel-card")
+    .forEach((el, i) => el.style.setProperty("--delay", `${Math.min(i, 6) * 45}ms`));
+  document.querySelectorAll("[data-comment]").forEach((f) =>
+    f.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const text = new FormData(f).get("comment").trim();
+      if (!text) return;
+      const id = f.dataset.comment;
+      db.comments[id] ??= [];
+      db.comments[id].push({
+        name: OrbitProfiles.current()?.name || state.name,
+        authorId: OrbitAuth.current()?.email,
+        text,
+      });
+      persist();
+      render();
+    }),
+  );
+};
+
+function modal(html) {
+  const d = document.getElementById("channel-dialog");
+  d.innerHTML = `<button class="dialog-close" data-v2="close" aria-label="${t("Close", "إغلاق")}">×</button>${html}`;
+  d.showModal();
+  d.querySelector("input,textarea,select,button:not(.dialog-close)")?.focus();
+}
+
+function field(id, name) {
+  return `<label class="modal-field">${name}<input name="${id}" required maxlength="100"></label>`;
+}
+
+document.addEventListener("click", (e) => {
+  const b = e.target.closest("[data-v2]");
+  if (!b) return;
+  const a = b.dataset.v2,
+    id = b.dataset.id;
+
+  if (a === "close") document.getElementById("channel-dialog").close();
+
+  if (a === "join") {
+    modal(
+      `<span class="eyebrow">${t("YOUR CLASSROOM AWAITS", "صفك بانتظارك")}</span><h2>${t("Enter your channel code", "أدخل كود قناتك")}</h2><form id="join-form">${field("code", t("Code from your teacher", "الكود من معلمك"))}<p class="muted">${t("Demo code: ORBIT9B", "كود تجريبي: ORBIT9B")}</p><p id="join-error" role="status"></p><button class="btn">${t("Join channel", "انضم للقناة")} ↗</button></form>`,
+    );
+    document.getElementById("join-form").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const code = new FormData(e.target).get("code").trim().toUpperCase(),
+        c = allChannels().find((c) => c.private && c.code === code);
+      if (!c) {
+        document.getElementById("join-error").textContent = t(
+          "Code not found. Check it and try again.",
+          "الكود غير موجود. تأكد منه وحاول مجددًا.",
+        );
+        return;
+      }
+      if (!db.joined.includes(c.id)) db.joined.push(c.id);
+      persist();
+      location.href = channelURL(c);
+    });
+  }
+
+  if (a === "follow" || a === "leave") {
+    db.joined =
+      a === "leave" ? db.joined.filter((x) => x !== id) : [...new Set([...db.joined, id])];
+    persist();
+    render();
+    toast(
+      a === "leave"
+        ? t("Channel left.", "غادرت القناة.")
+        : t("Welcome to your new orbit!", "أهلًا في مدارك الجديد!"),
+    );
+  }
+
+  if (a === "like" || a === "save") {
+    const key = a === "like" ? "likes" : "saved";
+    db[key] = db[key].includes(id) ? db[key].filter((x) => x !== id) : [...db[key], id];
+    persist();
+    const y = scrollY;
+    render();
+    window.scrollTo(0, y);
+    if (a === "save")
+      toast(t("Saved posts stay on this device.", "تُحفظ المنشورات على هذا الجهاز."));
+  }
+
+  if (a === "comment") {
+    const f = document.querySelector(`[data-comment="${id}"]`);
+    f.hidden = !f.hidden;
+    if (!f.hidden) f.querySelector("input").focus();
+  }
+
+  if (a === "premium")
+    modal(
+      `<span class="pill gold">ORBIT PLUS</span><h2>${t("Room to grow.", "مساحة لتكبر.")}</h2><p>${t("Proposed features: longer videos, additional channels, storage and learning analytics. No paid plan, billing or upload limits are connected in this demo.", "ميزات مقترحة: فيديوهات أطول، قنوات إضافية، تخزين أكبر وتحليلات تعلم. الاشتراك والفوترة وحدود الرفع غير مربوطة في النموذج.")}</p><button class="btn" data-v2="close">${t("Got it", "تمام")}</button>`,
+    );
+
+  if (a === "create" && db.role === "teacher") {
+    modal(
+      `<h2>${t("Start a new orbit.", "ابدأ مدارًا جديدًا.")}</h2><form id="create-form">${field("name", t("Channel name", "اسم القناة"))}<label class="modal-field">${t("Who is it for?", "لمن القناة؟")}<select name="visibility"><option value="public">${t("Public · everyone can view", "عامة · يشاهدها الجميع")}</option><option value="private">${t("Private · join with code", "خاصة · انضمام بكود")}</option></select></label><button class="btn">${t("Create channel", "أنشئ القناة")} ↗</button></form>`,
+    );
+    document.getElementById("create-form").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const f = new FormData(e.target),
+        name = f.get("name").trim();
+      if (!name) return;
+      const id = "c" + Date.now().toString(36),
+        code =
+          "ORB" +
+          crypto.getRandomValues(new Uint32Array(1))[0].toString(36).slice(0, 6).toUpperCase();
+      db.channels.push({
+        id,
+        en: name,
+        ar: name,
+        private: f.get("visibility") === "private",
+        code,
+        teacher: "khaled",
+        subject: "physics",
+        color: "purple",
+        symbol: "✧",
+        descEn: "A new space to learn together.",
+        descAr: "مساحة جديدة لنتعلم معًا.",
+      });
+      persist();
+      location.href = channelURL({ id });
+    });
+  }
+
+  if (a === "compose" && db.role === "teacher") {
+    modal(
+      `<h2>${t("Share something worth discovering.", "شارك شيئًا يستحق الاكتشاف.")}</h2><form id="compose-form">${field("title", t("Post title", "عنوان المنشور"))}<label class="modal-field">${t("Type", "النوع")}<select name="type">${["discussion", "lesson", "assignment", "announcement", "video"].map((x) => `<option value="${x}">${typeName(x)}</option>`).join("")}</select></label><label class="modal-field">${t("Your idea", "فكرتك")}<textarea name="body" required maxlength="2000" rows="4"></textarea></label><label class="modal-field">${t("Optional direct HTTPS video URL", "رابط فيديو HTTPS مباشر اختياري")}<input name="url" type="url" placeholder="https://…"></label><p class="muted">${t("Saved locally. Video hosting is not connected.", "يُحفظ محليًا. استضافة الفيديو غير مربوطة.")}</p><p id="post-error" role="status"></p><button class="btn">${t("Publish locally", "نشر محلي")} ↗</button></form>`,
+    );
+    document.getElementById("compose-form").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const f = new FormData(e.target),
+        url = f.get("url").trim();
+      if (url && !/^https:\/\//i.test(url)) {
+        document.getElementById("post-error").textContent = t(
+          "Use an HTTPS video URL.",
+          "استخدم رابط فيديو HTTPS.",
+        );
+        return;
+      }
+      db.posts.unshift({
+        id: "p" + Date.now().toString(36),
+        channel: id,
+        type: f.get("type"),
+        title: f.get("title").trim(),
+        body: f.get("body").trim(),
+        url,
+        likes: 0,
+      });
+      persist();
+      render();
+      toast(t("Your post is now in the channel.", "منشورك صار بالقناة."));
+    });
+  }
+});
+
+document.addEventListener("click", (e) => {
+  const b = e.target.closest("[data-filter]");
+  if (!b) return;
+  document.querySelectorAll(".tab").forEach((el) => el.classList.toggle("active", el === b));
+  const saved = b.dataset.filter === "saved";
+  document.getElementById("channel-directory").hidden = saved;
+  document.getElementById("saved-posts").hidden = !saved;
+  document
+    .querySelectorAll("[data-channel-card]")
+    .forEach(
+      (el) =>
+        (el.hidden =
+          b.dataset.filter === "joined"
+            ? el.dataset.joined !== "true"
+            : b.dataset.filter === "public"
+              ? el.dataset.private === "true"
+              : false),
+    );
+});
+
+document.addEventListener("change", (e) => {
+  if (e.target.id === "demo-role") {
+    db.role = e.target.value;
+    persist();
+    location.href =
+      db.role === "teacher"
+        ? "../teacher-studio/teacher-studio.html"
+        : db.role === "school"
+          ? "../teacher-directory/teacher-directory.html"
+          : "../student-dashboard/student-dashboard.html";
+  }
+  if (["teacher-subject", "teacher-exp"].includes(e.target.id)) {
+    const sub = document.getElementById("teacher-subject").value,
+      exp = +document.getElementById("teacher-exp").value;
+    let visible = 0;
+    document.querySelectorAll("[data-teacher]").forEach((el) => {
+      el.hidden = (sub !== "all" && el.dataset.subject !== sub) || +el.dataset.exp < exp;
+      if (!el.hidden) visible++;
+    });
+    document.getElementById("teacher-empty").hidden = visible !== 0;
+  }
+});
+
+const nativeAward = award;
+award = (id, xp) => {
+  const fresh = !state.done.includes(id);
+  nativeAward(id, xp);
+  if (fresh && state.mood === "fun" && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    const sparks = document.createElement("div");
+    sparks.className = "celebration";
+    sparks.setAttribute("aria-hidden", "true");
+    sparks.innerHTML = Array.from(
+      { length: 22 },
+      (_, i) =>
+        `<i style="--x:${(i * 41) % 100}%;--r:${i * 27}deg;--delay:${(i % 5) * 50}ms;background:${["#8b5cf6", "#ffb82e", "#23d6b1"][i % 3]}"></i>`,
+    ).join("");
+    document.body.append(sparks);
+    setTimeout(() => sparks.remove(), 1500);
+  }
+};
+
+render();
+
+// Search the channel experience without interrupting the learning-page search.
+
+const channelPages = [
+  "student-dashboard",
+  "index",
+  "channels",
+  "channel",
+  "teachers",
+  "teacher-profile",
+  "teacher-studio",
+];
+
+function searchChannels(q) {
+  q = q.trim().toLocaleLowerCase();
+  document.querySelectorAll(".channel-card,.post,[data-teacher]").forEach((el) => {
+    el.hidden = !!q && !el.textContent.toLocaleLowerCase().includes(q);
+  });
+}
+
+document.addEventListener("input", (e) => {
+  if (e.target.id === "search" && channelPages.includes(page)) searchChannels(e.target.value);
+});
+
+document.addEventListener(
+  "keydown",
+  (e) => {
+    if (e.target.id === "search" && e.key === "Enter" && channelPages.includes(page)) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      searchChannels(e.target.value);
+    }
+  },
+  true,
+);
+
+let orbitMediaURLs = [];
+const orbitIntegratedRender = render;
+render = () => {
+  orbitMediaURLs.forEach((u) => URL.revokeObjectURL(u));
+  orbitMediaURLs = [];
+  orbitIntegratedRender();
+  document.querySelectorAll("video[data-orbit-media]").forEach((v) => {
+    const key = v.dataset.orbitMedia;
+    if (!key) return;
+    const req = indexedDB.open("orbit-media-v1", 1);
+    req.onupgradeneeded = () => {
+      if (!req.result.objectStoreNames.contains("videos")) req.result.createObjectStore("videos");
+    };
+    req.onsuccess = () => {
+      const d = req.result;
+      if (!d.objectStoreNames.contains("videos")) {
+        d.close();
+        return;
+      }
+      const get = d.transaction("videos").objectStore("videos").get(key);
+      get.onsuccess = () => {
+        if (get.result && v.isConnected) {
+          const url = URL.createObjectURL(get.result);
+          orbitMediaURLs.push(url);
+          v.src = url;
+        }
+        d.close();
+      };
+      get.onerror = () => d.close();
+    };
+  });
+  document.querySelectorAll(".post[data-post]").forEach((el) => {
+    const p = db.posts.find((p) => p.id === el.dataset.post);
+    if (p && p.dueDate) {
+      const span = document.createElement("p");
+      span.className = "pill violet";
+      span.textContent = t("Due: ", "التسليم: ") + p.dueDate;
+      el.querySelector(".assignment-preview")?.append(span);
+    }
+  });
+};
+render();
+
+const portfolioContentRender = render;
+render = () => {
+  portfolioContentRender();
+  document.querySelectorAll(".post[data-post]").forEach((el) => {
+    const p = ORBIT.db().posts.find((p) => p.id === el.dataset.post);
+    if (ORBIT.get("orbit.deleted.posts", []).includes(el.dataset.post)) {
+      el.remove();
+      return;
+    }
+    if (p?.attachments?.length) {
+      const div = document.createElement("div");
+      div.innerHTML = ORBIT.attachment({ ...p, videoAsset: "", url: "" });
+      el.append(div);
+    }
+  });
+  ORBIT.hydrate();
+};
+render();
+
+window.addEventListener("orbit:profile-change", () => {
+  state.name = OrbitProfiles.current()?.name || state.name;
+  if (
+    !["INPUT", "TEXTAREA", "SELECT"].includes(document.activeElement?.tagName) &&
+    !document.querySelector("dialog[open]")
+  ) {
+    const position = scrollY;
+    render();
+    scrollTo(0, position);
+  }
+});
+
+const professionalHeaderRender = render;
+render = () => {
+  professionalHeaderRender();
+  const userLink = document.querySelector(".top-right .user");
+  if (userLink) userLink.href = "../account-profile/account-profile.html";
+};
+render();

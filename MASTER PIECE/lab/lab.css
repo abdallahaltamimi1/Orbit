@@ -1,0 +1,576 @@
+@import url("../shared/experience.css");
+#orbit-page[data-orbit-page="lab"] {
+  background: var(--orbit-canvas);
+  color: var(--orbit-ink);
+  min-height: 100vh;
+}
+#orbit-page[data-orbit-page="lab"] .wrap {
+  max-width: 1180px;
+}
+#orbit-page .lab-back {
+  display: inline-flex;
+  border: 1px solid var(--orbit-border);
+  border-radius: 30px;
+  padding: 9px 18px;
+  color: var(--orbit-accent);
+  text-decoration: none;
+  font-size: 13px;
+  margin-bottom: 25px;
+}
+#orbit-page .discovery-hero {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  align-items: center;
+  padding: 42px 48px;
+  border: 1px solid var(--orbit-border);
+  border-radius: 24px;
+  overflow: hidden;
+  background: linear-gradient(115deg,var(--orbit-surface),var(--soft));
+  margin-bottom: 44px;
+  min-height: 280px;
+}
+#orbit-page .lab-kicker {
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--orbit-accent);
+}
+#orbit-page .discovery-hero h2 {
+  font-size: clamp(30px,4vw,48px);
+  line-height: 1.4;
+  margin: 15px 0;
+}
+#orbit-page .discovery-hero p {
+  color: var(--orbit-muted);
+  line-height: 1.9;
+  max-width: 510px;
+  font-size: 15px;
+}
+#orbit-page .hero-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  color: var(--orbit-accent);
+  font-size: 12px;
+  margin-top: 24px;
+}
+#orbit-page .lab-orbital {
+  position: relative;
+  height: 250px;
+  display: grid;
+  place-items: center;
+  direction: ltr;
+}
+#orbit-page .orbital-ring {
+  position: absolute;
+  width: 250px;
+  height: 130px;
+  border: 1px solid color-mix(in srgb,var(--orbit-accent) 66.67%,transparent);
+  border-radius: 50%;
+  transform: rotate(-30deg);
+}
+#orbit-page .ring-two {
+  transform: rotate(40deg);
+  width: 220px;
+  height: 200px;
+  border-color: #65bdf85c;
+}
+#orbit-page .orbital-core {
+  height: 120px;
+  width: 120px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 25%,var(--orbit-accent),#111933 70%);
+  box-shadow: 0 0 70px color-mix(in srgb,var(--orbit-accent) 26.67%,transparent);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  color: #dce9ff;
+}
+#orbit-page .orbital-core span {
+  font: 7px monospace;
+  margin-top: 10px;
+  color: #9cb8e4;
+}
+#orbit-page .orbital-point {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  background: #a4e7ff;
+  box-shadow: 0 0 15px #72cbff;
+  border-radius: 50%;
+  animation: lab-orbit 18s linear infinite;
+}
+#orbit-page .lab-browser-head {
+  display: flex;
+  gap: 24px;
+  align-items: end;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+#orbit-page .lab-browser-head h2 {
+  margin: 10px 0 0;
+  font-size: 26px;
+}
+#orbit-page .lab-search {
+  font-size: 12px;
+  color: var(--orbit-muted);
+  display: grid;
+  gap: 8px;
+  min-width: 250px;
+}
+#orbit-page .lab-search input {
+  background: var(--orbit-surface);
+  border: 1px solid var(--orbit-border);
+  color: var(--orbit-ink);
+  padding: 12px 16px;
+  border-radius: 12px;
+  font: inherit;
+}
+#orbit-page .experiment-grid {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 24px;
+}
+#orbit-page .experiment-card {
+  display: block;
+  background: var(--orbit-surface);
+  border: 1px solid var(--orbit-border);
+  border-radius: 18px;
+  text-decoration: none;
+  color: inherit;
+  overflow: hidden;
+  transition:
+    transform .2s,border-color .2s;
+  min-width: 0;
+}
+#orbit-page .experiment-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--orbit-accent);
+}
+#orbit-page .experiment-card:focus-visible,
+#orbit-page .lab-search input:focus-visible,
+#orbit-page .lab-back:focus-visible {
+  outline: 2px solid #91daff;
+  outline-offset: 4px;
+}
+#orbit-page .experiment-image {
+  height: 220px;
+  position: relative;
+  overflow: hidden;
+  background: #0b112b;
+}
+#orbit-page .experiment-image img,
+#orbit-page .experiment-image svg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+#orbit-page .experiment-number {
+  position: absolute;
+  top: 14px;
+  inset-inline-start: 14px;
+  padding: 5px 9px;
+  background: #090e26c9;
+  border: 1px solid #697aad66;
+  color: #b1bbe0;
+  font: 11px monospace;
+  border-radius: 8px;
+}
+#orbit-page .experiment-formula {
+  position: absolute;
+  bottom: 14px;
+  left: 16px;
+  padding: 6px 10px;
+  background: color-mix(in srgb,var(--orbit-space) 79.22%,transparent);
+  border: 1px solid #7784b344;
+  border-radius: 8px;
+  color: #becded;
+  font: 12px monospace;
+}
+#orbit-page .experiment-content {
+  padding: 24px;
+}
+#orbit-page .experiment-topic {
+  font-size: 11px;
+  color: var(--orbit-accent);
+}
+#orbit-page .experiment-card h3 {
+  font-size: 22px;
+  margin: 10px 0;
+}
+#orbit-page .experiment-card p {
+  color: var(--orbit-muted);
+  font-size: 14px;
+  line-height: 1.85;
+  min-height: 52px;
+  margin: 0 0 20px;
+}
+#orbit-page .experiment-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--orbit-muted);
+  font-size: 11px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--orbit-border);
+}
+#orbit-page .experiment-action {
+  display: flex;
+  justify-content: space-between;
+  color: var(--orbit-accent);
+  font-size: 13px;
+  margin-top: 18px;
+}
+#orbit-page[data-orbit-page="lab"] [hidden] {
+  display: none !important;
+}
+#orbit-page #lab-empty {
+  padding: 30px;
+  border: 1px dashed var(--orbit-muted);
+  border-radius: 16px;
+  color: var(--orbit-muted);
+}
+#orbit-page .lab-objective {
+  border-inline-start: 3px solid var(--orbit-accent);
+  padding: 16px 20px;
+  margin: 20px 0;
+  background: var(--soft);
+  border-radius: 10px;
+}
+#orbit-page .lab-objective p {
+  color: var(--orbit-muted);
+}
+#orbit-page .lab-objective small {
+  color: var(--orbit-accent);
+}
+#orbit-page[data-orbit-page="lab"] .lab-stage,
+#orbit-page[data-orbit-page="lab"] section.card {
+  background: #0e1630;
+  border-color: #3c4565;
+  color: #dbe4fc;
+}
+#orbit-page #simulation {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+#orbit-page[data-orbit-page="lab"] .muted {
+  color: var(--orbit-muted);
+}
+@keyframes lab-orbit {
+  from {
+    transform: rotate(0) translateX(128px) rotate(0);
+  }
+  to {
+    transform: rotate(360deg) translateX(128px) rotate(-360deg);
+  }
+}
+@media (max-width:700px) {
+  #orbit-page .discovery-hero {
+    grid-template-columns: 1fr;
+    padding: 26px;
+    min-height: 0;
+  }
+  #orbit-page .lab-orbital {
+    height: 190px;
+    transform: scale(.8);
+  }
+  #orbit-page .lab-browser-head {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  #orbit-page .lab-search {
+    min-width: 0;
+  }
+  #orbit-page .experiment-grid {
+    grid-template-columns: 1fr;
+  }
+  #orbit-page .experiment-image {
+    height: 190px;
+  }
+  #orbit-page .experiment-content {
+    padding: 20px;
+  }
+  #orbit-page .discovery-hero h2 {
+    font-size: 32px;
+  }
+}
+@media (prefers-reduced-motion:reduce) {
+  #orbit-page .orbital-point {
+    animation: none;
+    transform: translateX(128px);
+  }
+  #orbit-page .experiment-card {
+    transition: none;
+  }
+  #orbit-page .experiment-card:hover {
+    transform: none;
+  }
+}
+#orbit-page[data-orbit-page="lab"] section.card {
+  background: var(--orbit-surface);
+  border-color: var(--orbit-border);
+  color: var(--orbit-ink);
+}
+#orbit-page .experiment-card h3,
+#orbit-page .discovery-hero h2 {
+  color: var(--orbit-ink);
+} /* Experiment workspace; preserve the existing gallery and simulation. */
+#orbit-page {
+  --purple: var(--orbit-accent);
+  --text: var(--orbit-ink);
+  --muted: var(--orbit-muted);
+  --line: var(--orbit-border);
+  --panel: var(--orbit-surface);
+}
+#orbit-page[data-orbit-page="lab"] .wrap {
+  max-width: 1300px;
+  padding: 32px;
+}
+#orbit-page h1 {
+  font-size: 32px;
+  letter-spacing: -.5px;
+}
+#orbit-page .lab-page-tools {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin: 20px 0;
+}
+#orbit-page .lab-result-count {
+  font-size: 12px;
+  color: var(--orbit-muted);
+  margin: 0 0 20px;
+}
+#orbit-page .lab-objective {
+  background: var(--soft);
+  border: 1px solid var(--line);
+  padding: 24px;
+  border-radius: 16px;
+  margin-bottom: 28px;
+}
+#orbit-page .lab-objective > strong {
+  font-size: 18px;
+}
+#orbit-page .lab-objective p {
+  font-size: 14px;
+  margin: 12px 0;
+}
+#orbit-page .lab-objective small {
+  font-size: 12px;
+  line-height: 1.9;
+}
+#orbit-page .lab-experiment-workspace {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) 310px;
+  gap: 24px;
+  align-items: start;
+}
+#orbit-page .lab-stage {
+  border: 1px solid #3c4565;
+  border-radius: 18px;
+  padding: 22px;
+  min-width: 0;
+  overflow: hidden;
+}
+#orbit-page .simulation-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 10px;
+  color: #b9c5e5;
+  padding-bottom: 18px;
+  border-bottom: 1px solid #ffffff20;
+  letter-spacing: .5px;
+}
+#orbit-page #simulation {
+  margin-top: 20px;
+}
+#orbit-page .lab-stage .toolbar {
+  margin-bottom: 0;
+  padding-top: 18px;
+  border-top: 1px solid #ffffff20;
+  gap: 12px;
+}
+#orbit-page .lab-stage .btn {
+  font-size: 13px;
+}
+#orbit-page #clock {
+  margin-inline-start: auto;
+  color: #bbc9e6;
+  font-size: 14px;
+  direction: ltr;
+}
+#orbit-page[data-orbit-page="lab"] .experiment-controls.card {
+  background: var(--panel);
+  color: var(--text);
+  border-color: var(--line);
+  padding: 26px;
+  border-radius: 18px;
+  animation: none;
+}
+#orbit-page .experiment-controls > h2 {
+  font-size: 22px;
+  margin: 16px 0 24px;
+}
+#orbit-page .experiment-controls .controls-grid {
+  grid-template-columns: 1fr;
+  gap: 22px;
+}
+#orbit-page .experiment-controls label {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 0;
+}
+#orbit-page .experiment-controls output {
+  color: var(--purple);
+  font-weight: 600;
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+#orbit-page .experiment-controls input[type="range"] {
+  accent-color: var(--purple);
+  padding: 0;
+  height: 28px;
+  margin-top: 12px;
+  background: none;
+  border: 0;
+}
+#orbit-page .experiment-equation {
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+  background: var(--soft);
+  padding: 14px;
+  border-radius: 10px;
+  margin: 26px 0;
+}
+#orbit-page #measurements {
+  font-size: 17px;
+  color: var(--purple);
+  line-height: 1.9;
+  overflow-wrap: anywhere;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 20px;
+}
+#orbit-page .experiment-controls > .muted {
+  font-size: 12px;
+  line-height: 1.9;
+}
+@media (max-width:1050px) {
+  #orbit-page[data-orbit-page="lab"] .wrap {
+    padding: 28px 20px;
+  }
+  #orbit-page .lab-experiment-workspace {
+    grid-template-columns: minmax(0,1fr) 270px;
+  }
+}
+@media (max-width:850px) {
+  #orbit-page .lab-experiment-workspace {
+    grid-template-columns: 1fr;
+  }
+  #orbit-page .experiment-controls .controls-grid {
+    grid-template-columns: repeat(2,minmax(0,1fr));
+  }
+}
+@media (max-width:540px) {
+  #orbit-page[data-orbit-page="lab"] .wrap {
+    padding: 24px 16px;
+  }
+  #orbit-page h1 {
+    font-size: 27px;
+  }
+  #orbit-page .lab-stage {
+    padding: 16px;
+  }
+  #orbit-page .simulation-heading {
+    font-size: 9px;
+    letter-spacing: 0;
+  }
+  #orbit-page .experiment-controls .controls-grid {
+    grid-template-columns: 1fr;
+  }
+  #orbit-page .lab-page-tools .btn {
+    font-size: 12px;
+  }
+  #orbit-page .lab-page-tools .lab-kicker {
+    font-size: 10px;
+    letter-spacing: 0;
+  }
+  #orbit-page .lab-stage .btn {
+    font-size: 12px;
+  }
+  #orbit-page #clock {
+    font-size: 12px;
+  }
+}
+/* Car-only art-direction proof. Other previews, layout and simulation code stay intact. */
+#orbit-page .car-science-preview {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  background: #071722;
+  overflow: hidden;
+  direction: ltr;
+}
+#orbit-page .car-science-preview > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 57%;
+  display: block;
+}
+#orbit-page .car-science-preview .car-preview-forces {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+  font:
+    600 22px/1.2 Inter,sans-serif;
+  filter: drop-shadow(0 2px 2px #071722);
+}
+#orbit-page .car-preview-note {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  padding: 7px 10px;
+  background: #071722e8;
+  color: #d5eeec;
+  font-size: 12px;
+  line-height: 1.5;
+  text-align: end;
+  direction: inherit;
+}
+#orbit-page .car-science-preview .car-preview-drive,
+#orbit-page .car-science-preview .car-preview-friction {
+  transition: transform 220ms var(--ease-out,cubic-bezier(.23,1,.32,1));
+}
+#orbit-page .experiment-card:has(.car-science-preview) .experiment-formula {
+  bottom: 39px;
+  color: #ccfbf1;
+  background: #071722e8;
+  border-color: #27736e;
+}
+@media (hover:hover) and (pointer:fine) {
+  #orbit-page .experiment-card:hover .car-preview-drive {
+    transform: translateX(3px);
+  }
+  #orbit-page .experiment-card:hover .car-preview-friction {
+    transform: translateX(-3px);
+  }
+}
+@media (prefers-reduced-motion:reduce) {
+  #orbit-page .car-science-preview .car-preview-drive,
+  #orbit-page .car-science-preview .car-preview-friction {
+    transition: none !important;
+    transform: none !important;
+  }
+}

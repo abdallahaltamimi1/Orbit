@@ -1,0 +1,271 @@
+@import url("../shared/recruitment.css");
+/* Recruitment workspace: scoped to this route; shared services stay intact. */
+body.recruitment-hub {
+  --purple: #0d9488;
+  --purple-dark: #0f766e;
+  --hub-border: #e2ecef;
+  --hub-surface: var(--card,#fff);
+}
+.recruitment-hub #school-follow,
+.recruitment-hub #orbit-subscription-panel {
+  display: none !important;
+}
+.recruitment-hub main > .eyebrow {
+  display: none;
+}
+.recruitment-hub main.wrap {
+  max-width: 1440px;
+}
+.recruitment-hub h1 {
+  font-size: clamp(1.7rem,3vw,2.3rem);
+  margin-block: 12px;
+}
+.hub-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 28px;
+}
+.hub-heading p {
+  margin: 0;
+  max-width: 65ch;
+}
+.recruitment-hub .btn {
+  border-radius: 10px;
+  min-height: 42px;
+  font-size: .9rem;
+}
+.recruitment-hub .btn:not(.soft) {
+  background: #0d9488;
+  color: white;
+}
+.recruitment-hub .recruit-stats {
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 16px;
+  margin-bottom: 28px;
+}
+.recruitment-hub .recruit-stats article {
+  padding: 22px;
+  border: 1px solid var(--hub-border);
+  border-radius: 14px;
+  background: var(--hub-surface);
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+.recruitment-hub .recruit-stats strong {
+  color: #0f766e;
+  font-size: 2rem;
+  font-variant-numeric: tabular-nums;
+}
+.recruitment-hub .recruit-tabs {
+  display: flex;
+  gap: 8px;
+  border-bottom: 1px solid var(--hub-border);
+  padding-bottom: 14px;
+  flex-wrap: wrap;
+}
+.hub-content {
+  margin-top: 20px;
+}
+.hub-table-scroll {
+  overflow: auto;
+  border: 1px solid var(--hub-border);
+  border-radius: 14px;
+  background: var(--hub-surface);
+}
+.hub-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: start;
+  font-size: .9rem;
+  min-width: 700px;
+}
+.hub-table caption {
+  text-align: start;
+  padding: 20px;
+  font-weight: 700;
+}
+.hub-table th {
+  font-weight: 600;
+  background: color-mix(in srgb,#0d9488 5%,var(--hub-surface));
+}
+.hub-table :is(th, td) {
+  padding: 16px;
+  border-bottom: 1px solid var(--hub-border);
+  text-align: start;
+}
+.hub-table small,
+.hub-applicant small {
+  display: block;
+  margin-top: 5px;
+  color: var(--muted,#64748b);
+}
+.hub-link {
+  color: var(--purple);
+  font-weight: 600;
+  background: none;
+  border: 0;
+  text-decoration: none;
+  cursor: pointer;
+}
+.hub-applicants {
+  border: 1px solid var(--hub-border);
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--hub-surface);
+}
+.hub-applicant {
+  display: grid;
+  grid-template-columns: minmax(180px,1.3fr) minmax(150px,1fr) auto auto auto;
+  gap: 18px;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid var(--hub-border);
+}
+.hub-applicant:last-child {
+  border: 0;
+}
+.hub-applicant h2 {
+  font-size: 1rem;
+  margin: 0;
+}
+.hub-applicant p {
+  font-size: .85rem;
+  margin: 6px 0;
+}
+.hub-unavailable {
+  padding: 32px;
+  border: 1px solid var(--hub-border);
+  border-radius: 14px;
+  background: var(--hub-surface);
+  max-width: 850px;
+}
+.recruitment-hub .filters {
+  align-items: end;
+  gap: 12px;
+}
+.recruitment-hub :is(input, select, textarea) {
+  border-radius: 9px;
+  min-height: 42px;
+}
+.recruitment-hub :is(a, button, input, select, textarea):focus-visible {
+  outline: 3px solid #14b8a6;
+  outline-offset: 3px;
+}
+.recruitment-hub .pill {
+  white-space: nowrap;
+}
+.recruitment-hub .actions {
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.recruitment-hub ::selection {
+  background: #ccfbf1;
+  color: #102238;
+}
+.recruitment-hub .role-banner {
+  font-size: .8rem;
+}
+.recruitment-hub[data-theme="dark"] {
+  --hub-border: #294343;
+  --hub-surface: #10242d;
+}
+.recruitment-hub[data-theme="dark"] .recruit-stats strong {
+  color: #5eead4;
+}
+.recruitment-hub[data-theme="dark"] .hub-link {
+  color: #5eead4;
+}
+@media (max-width:1100px) {
+  .hub-applicant {
+    grid-template-columns: 1fr 1fr;
+  }
+  .hub-applicant .teacher-mini {
+    grid-column: 1/-1;
+  }
+}
+@media (max-width:600px) {
+  .hub-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .recruitment-hub .recruit-stats {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .recruitment-hub .recruit-stats article {
+    padding: 14px;
+  }
+  .recruitment-hub .recruit-stats strong {
+    font-size: 1.5rem;
+  }
+  .hub-applicant {
+    padding: 16px;
+    gap: 12px;
+  }
+  .recruitment-hub .recruit-tabs .btn {
+    flex: 1 1 40%;
+  }
+  .hub-unavailable {
+    padding: 20px;
+  }
+  .recruitment-hub .filters {
+    grid-template-columns: 1fr;
+  }
+}
+@media (prefers-reduced-motion:reduce) {
+  .recruitment-hub * {
+    scroll-behavior: auto !important;
+    animation: none !important;
+    transition: none !important;
+  }
+}
+.hub-form-group {
+  border: 0;
+  border-bottom: 1px solid var(--hub-border);
+  padding: 16px 0;
+  margin: 0 0 16px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.hub-form-group legend {
+  font-weight: 700;
+  padding-block: 6px;
+}
+.hub-form-group label:has(textarea) {
+  grid-column: 1/-1;
+}
+@media (max-width:600px) {
+  .hub-form-group {
+    grid-template-columns: 1fr;
+  }
+}
+/* Shared legacy theme rules load later: keep the approved hub palette local. */
+body.recruitment-hub #app main .btn:not(.soft) {
+  background: #0d9488 !important;
+  color: #fff !important;
+  border-color: #0d9488 !important;
+}
+body.recruitment-hub #app main .btn.soft {
+  background: #effaf8 !important;
+  color: #0f766e !important;
+  border-color: #d5eeea !important;
+}
+body.recruitment-hub #app main .recruit-stats strong {
+  color: #0f766e !important;
+}
+body.recruitment-hub[data-theme="dark"] #app main .btn.soft {
+  background: #173e3b !important;
+  color: #99f6e4 !important;
+  border-color: #28534e !important;
+}
+body.recruitment-hub[data-theme="dark"] #app main .recruit-stats strong {
+  color: #5eead4 !important;
+}
+.recruitment-hub #meetings-section:not(:target) {
+  display: none;
+}

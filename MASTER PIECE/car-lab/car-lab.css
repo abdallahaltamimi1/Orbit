@@ -1,0 +1,1413 @@
+:root {
+  --bg: #f9fbff;
+  --panel: #fff;
+  --text: #233148;
+  --muted: #7e8ba1;
+  --line: #e4eaf3;
+  --purple: var(--orbit-accent);
+  --soft: var(--orbit-soft);
+  --blue: #397af0;
+  --scene: #dce8ef;
+  color-scheme: light;
+}
+#orbit-page * {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+}
+#orbit-page button,
+#orbit-page input,
+#orbit-page select {
+  font: inherit;
+}
+#orbit-page button,
+#orbit-page a {
+  touch-action: manipulation;
+}
+#orbit-page button {
+  cursor: pointer;
+  border: 0;
+}
+#orbit-page button:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+#orbit-page a {
+  color: inherit;
+  text-decoration: none;
+}
+#orbit-page .icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+#orbit-page a:focus-visible,
+#orbit-page button:focus-visible,
+#orbit-page input:focus-visible,
+#orbit-page select:focus-visible,
+#orbit-page summary:focus-visible {
+  outline: 3px solid var(--orbit-accent);
+  outline-offset: 4px;
+}
+#orbit-page .lab-header {
+  display: flex;
+  align-items: center;
+  gap: 35px;
+  padding: 20px 38px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--line);
+}
+#orbit-page .brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+#orbit-page .brand > span {
+  background: linear-gradient(135deg,var(--orbit-accent),#477ef8);
+  color: white;
+  width: 35px;
+  height: 35px;
+  border-radius: 11px;
+  display: grid;
+  place-items: center;
+}
+#orbit-page .brand .icon {
+  width: 25px;
+  height: 25px;
+}
+#orbit-page .brand b {
+  font-size: 19px;
+  letter-spacing: 2px;
+}
+#orbit-page .brand small {
+  font-size: 7px;
+  color: var(--muted);
+  letter-spacing: 1px;
+  display: block;
+  margin-top: 4px;
+  font-weight: 500;
+}
+#orbit-page .lab-header nav {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 10px;
+  color: var(--muted);
+}
+#orbit-page .lab-header nav b {
+  font-weight: 500;
+  color: var(--text);
+}
+#orbit-page .lab-header nav > span {
+  color: #bbc4d4;
+}
+#orbit-page .preferences {
+  display: flex;
+  gap: 6px;
+  margin-inline-start: auto;
+  align-items: center;
+}
+#orbit-page .preferences button {
+  display: grid;
+  place-items: center;
+  min-width: 33px;
+  min-height: 33px;
+  padding: 8px;
+  background: var(--orbit-soft);
+  color: var(--muted);
+  border-radius: 8px;
+  font-size: 10px;
+}
+#orbit-page .preferences button:hover {
+  background: var(--soft);
+  color: var(--purple);
+}
+#orbit-page main {
+  max-width: 1550px;
+  margin: auto;
+  padding: 29px 38px 24px;
+}
+#orbit-page .intro {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+#orbit-page .eyebrow {
+  font-size: 8px;
+  color: var(--muted);
+  letter-spacing: 1.5px;
+  font-weight: 600;
+  display: block;
+}
+#orbit-page .intro h1 {
+  font-size: 33px;
+  font-weight: 500;
+  letter-spacing: -1px;
+  margin: 11px 0 8px;
+}
+#orbit-page .intro p {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 0;
+}
+#orbit-page .next-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  color: var(--purple);
+}
+#orbit-page [dir="rtl"] .next-link .icon {
+  transform: rotate(180deg);
+}
+#orbit-page .experiment-layout {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) 295px;
+  gap: 25px;
+  align-items: start;
+}
+#orbit-page .experiment {
+  min-width: 0;
+}
+#orbit-page .experiment-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border: 1px solid var(--line);
+  border-bottom: 0;
+  border-radius: 15px 15px 0 0;
+  background: var(--panel);
+  font-size: 8px;
+  color: var(--muted);
+  letter-spacing: .4px;
+  gap: 10px;
+}
+#orbit-page .status-dot {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #36b898;
+  margin-inline-end: 5px;
+}
+#orbit-page .vector-toggle {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 9px;
+  letter-spacing: 0;
+  cursor: pointer;
+}
+#orbit-page .vector-toggle input {
+  accent-color: var(--orbit-accent);
+}
+#orbit-page .scene {
+  height: 410px;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(180deg,#d3e4ee 0%,#eaf1f4 46%,#ced6c9 67%,#a6b49d 100%);
+  border: 1px solid #dce6ed;
+  isolation: isolate;
+  direction: ltr;
+}
+#orbit-page .sky-glow {
+  position: absolute;
+  width: 260px;
+  height: 260px;
+  top: -140px;
+  right: 120px;
+  background: radial-gradient(circle,#fff8d675,transparent 65%);
+  border-radius: 50%;
+}
+#orbit-page .cloud {
+  position: absolute;
+  width: 250px;
+  height: 45px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse,#fff9,transparent 65%);
+  filter: blur(8px);
+}
+#orbit-page .cloud-one {
+  left: 12%;
+  top: 7%;
+}
+#orbit-page .cloud-two {
+  right: 0;
+  top: 18%;
+  width: 350px;
+  opacity: .6;
+}
+#orbit-page .hills {
+  position: absolute;
+  left: -10%;
+  width: 120%;
+  border-radius: 48% 58% 0 0;
+}
+#orbit-page .hills.distant {
+  height: 100px;
+  bottom: 90px;
+  background: linear-gradient(#8caaa530,#acb6a640);
+  filter: blur(2px);
+  transform: rotate(-2deg);
+}
+#orbit-page .hills.near {
+  height: 80px;
+  bottom: 65px;
+  background: linear-gradient(#99ab8a40,#9cac8260);
+  transform: rotate(2deg);
+}
+#orbit-page .scene-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(#687b8510 1px,transparent 1px),linear-gradient(90deg,#687b8510 1px,transparent 1px);
+  background-size: 40px 40px;
+  mask-image: linear-gradient(transparent,#0005 20%,#0005 60%,transparent);
+}
+#orbit-page .coordinate-label {
+  position: absolute;
+  left: 17px;
+  top: 17px;
+  font-size: 7px;
+  letter-spacing: 1px;
+  color: #7d929d;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+#orbit-page .coordinate-label > span {
+  font-size: 10px;
+  color: #67778b;
+}
+#orbit-page .road-rig {
+  position: absolute;
+  left: -50%;
+  width: 200%;
+  height: 180px;
+  top: 72%;
+  transform-origin: 50% 0;
+  will-change: transform;
+  z-index: 3;
+}
+#orbit-page .road-top {
+  height: 9px;
+  background: linear-gradient(#717777,#424849);
+  border-top: 2px solid #bfc4ba;
+  box-shadow: 0 1px 3px #1a243332;
+  position: absolute;
+  width: 100%;
+  top: 0;
+  z-index: 2;
+}
+#orbit-page .asphalt {
+  height: 180px;
+  background: repeating-linear-gradient(163deg,#333e43 0 1px,#374247 1px 3px,#354045 3px 5px);
+  border-bottom: 1px solid #3f4649;
+  box-shadow: inset 0 18px 35px #18242b66;
+}
+#orbit-page .lane-markings {
+  position: absolute;
+  top: 55px;
+  height: 6px;
+  width: 100%;
+  background: repeating-linear-gradient(90deg,#f4edcdcc 0 60px,transparent 60px 120px);
+  box-shadow: 0 2px 0 #0002;
+}
+#orbit-page .road-measure {
+  position: absolute;
+  top: 99px;
+  height: 14px;
+  width: 100%;
+  background: repeating-linear-gradient(90deg,#d2dce638 0 1px,transparent 1px 40px);
+  border-top: 1px solid #d2dce638;
+}
+#orbit-page .car {
+  --car-width: 310px;
+  --car-shift: 0px;
+  position: absolute;
+  width: var(--car-width);
+  height: calc(var(--car-width)*.5045);
+  left: 50%;
+  bottom: calc(100% - var(--car-width)*.075);
+  transform: translateX(calc(-50% + var(--car-shift)));
+  z-index: 5;
+  will-change: transform;
+}
+#orbit-page .car img {
+  width: 100%;
+  height: auto;
+  display: block;
+  pointer-events: none;
+  user-select: none;
+  filter: drop-shadow(0 2px 1px #1114);
+}
+#orbit-page .contact-shadow {
+  position: absolute;
+  left: 9%;
+  width: 83%;
+  bottom: 14%;
+  height: 9px;
+  border-radius: 50%;
+  background: #101a1f75;
+  filter: blur(3px);
+  z-index: -1;
+}
+#orbit-page .wheel-rotor {
+  position: absolute;
+  border-radius: 50%;
+  background-image: url('./assets/realistic-car.png');
+  background-repeat: no-repeat;
+  pointer-events: none;
+  will-change: transform;
+}
+#orbit-page .force-overlay {
+  position: absolute;
+  top: -239px;
+  left: calc(50% - 240px);
+  width: 480px;
+  height: 150px;
+  z-index: 4;
+  overflow: visible;
+}
+#orbit-page .force-overlay line {
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+#orbit-page .force-overlay text {
+  font:
+    10px Inter,sans-serif;
+  paint-order: stroke;
+  stroke: #f0f5f3;
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+#orbit-page .force-overlay #drive-vector {
+  color: var(--orbit-accent);
+}
+#orbit-page .force-overlay #drive-vector line {
+  stroke: var(--orbit-accent);
+}
+#orbit-page .force-overlay #drive-vector text {
+  fill: var(--orbit-accent);
+}
+#orbit-page .force-overlay #friction-vector line {
+  stroke: #dc9957;
+}
+#orbit-page .force-overlay #friction-vector text {
+  fill: #af793f;
+}
+#orbit-page .force-overlay #gravity-vector line {
+  stroke: #548faa;
+}
+#orbit-page .force-overlay #gravity-vector text {
+  fill: #548faa;
+}
+#orbit-page .scene-readout {
+  position: absolute;
+  right: 21px;
+  top: 25px;
+  z-index: 6;
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  color: #637b8a;
+  pointer-events: none;
+}
+#orbit-page .scene-readout > span {
+  font-size: 7px;
+  letter-spacing: 1.4px;
+}
+#orbit-page .scene-readout strong {
+  font-size: 35px;
+  color: #34495b;
+  font-weight: 500;
+  letter-spacing: -1px;
+}
+#orbit-page .scene-readout strong small {
+  font-size: 12px;
+  letter-spacing: 0;
+  font-weight: 400;
+}
+#orbit-page .scene-readout > small {
+  font-size: 8px;
+}
+#orbit-page .scene-angle {
+  position: absolute;
+  bottom: 58px;
+  right: 18px;
+  z-index: 7;
+  color: #e5e9ec;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  background: #34455088;
+  backdrop-filter: blur(7px);
+  padding: 9px 12px;
+  border: 1px solid #ffffff1c;
+  border-radius: 25px;
+  font-size: 10px;
+}
+#orbit-page .scene-angle > span {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border: 1px solid #ffffff35;
+  border-radius: 50%;
+  font-size: 15px;
+}
+#orbit-page .scene-angle small {
+  font-size: 7px;
+  opacity: .7;
+}
+#orbit-page .scene-bottom {
+  position: absolute;
+  bottom: 16px;
+  left: 18px;
+  right: 18px;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  z-index: 8;
+  color: #d0d8de;
+  font-size: 7px;
+  letter-spacing: .2px;
+}
+#orbit-page .scene-bottom > span:last-child {
+  font-size: 10px;
+}
+#orbit-page .transport {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-top: 0;
+  border-radius: 0 0 15px 15px;
+}
+#orbit-page .transport-buttons {
+  display: flex;
+  gap: 7px;
+  align-items: center;
+}
+#orbit-page .button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 9px;
+  font-size: 10px;
+  min-height: 36px;
+  transition:
+    background .2s,box-shadow .2s;
+}
+#orbit-page .button.primary {
+  background: var(--orbit-accent);
+  color: white;
+  box-shadow: 0 5px 15px color-mix(in srgb,var(--orbit-accent) 14.12%,transparent);
+}
+#orbit-page .button.primary:hover {
+  background: var(--orbit-accent);
+}
+#orbit-page .button .icon {
+  width: 15px;
+  height: 15px;
+}
+#orbit-page .button.subtle {
+  background: var(--soft);
+  color: var(--purple);
+}
+#orbit-page .icon-button {
+  display: grid;
+  place-items: center;
+  width: 35px;
+  height: 35px;
+  background: #f2f5fa;
+  color: var(--muted);
+  border-radius: 9px;
+}
+#orbit-page .icon-button .icon {
+  width: 16px;
+  height: 16px;
+}
+#orbit-page .run-status {
+  font-size: 8px;
+  color: var(--muted);
+  flex: 1;
+  line-height: 1.8;
+}
+#orbit-page .telemetry {
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  margin: 20px 0 23px;
+  padding: 4px 0;
+}
+#orbit-page .telemetry > div {
+  padding: 0 15px;
+  border-inline-end: 1px solid var(--line);
+}
+#orbit-page .telemetry > div:first-child {
+  padding-inline-start: 0;
+}
+#orbit-page .telemetry > div:last-child {
+  border: 0;
+}
+#orbit-page .telemetry small {
+  display: block;
+  font-size: 9px;
+  color: var(--muted);
+  margin-bottom: 9px;
+}
+#orbit-page .telemetry strong {
+  display: block;
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: -.5px;
+}
+#orbit-page .telemetry strong > span {
+  font-size: 9px;
+  font-weight: 400;
+  color: var(--muted);
+  letter-spacing: 0;
+}
+#orbit-page .plot-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  margin-bottom: 14px;
+}
+#orbit-page .plot-heading label {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  color: var(--muted);
+  font-size: 8px;
+}
+#orbit-page .plot-heading select {
+  padding: 4px 7px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--muted);
+  border-radius: 6px;
+  font-size: 9px;
+}
+#orbit-page #velocity-chart {
+  display: block;
+  width: 100%;
+  height: 170px;
+  direction: ltr;
+}
+#orbit-page .chart-legend {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 5px 0 0;
+  font-size: 8px;
+  color: var(--muted);
+}
+#orbit-page .chart-legend span:first-child {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+#orbit-page .chart-legend i {
+  width: 6px;
+  height: 6px;
+  background: var(--orbit-accent);
+  border-radius: 50%;
+}
+#orbit-page .controls {
+  padding: 21px 22px 18px;
+  border-inline-start: 1px solid var(--line);
+  background: var(--panel);
+  border-radius: 0 15px 15px 0;
+}
+#orbit-page .controls h2 {
+  font-size: 21px;
+  font-weight: 500;
+  letter-spacing: -.5px;
+  margin: 9px 0;
+}
+#orbit-page .controls header p {
+  font-size: 9px;
+  line-height: 1.9;
+  color: var(--muted);
+  margin-bottom: 25px;
+}
+#orbit-page .variable {
+  display: block;
+  margin: 22px 0 27px;
+}
+#orbit-page .variable-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+#orbit-page .variable-heading b {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+}
+#orbit-page .variable-heading small {
+  font-size: 8px;
+  color: var(--muted);
+  margin-top: 5px;
+  display: block;
+  line-height: 1.7;
+}
+#orbit-page .variable-heading output {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--purple);
+  white-space: nowrap;
+  padding-top: 2px;
+}
+#orbit-page .variable input {
+  width: 100%;
+  margin: 0;
+  appearance: none;
+  height: 4px;
+  background: linear-gradient(90deg,var(--orbit-soft),#dbe6f7);
+  border-radius: 10px;
+  direction: ltr;
+  cursor: pointer;
+  display: block;
+}
+#orbit-page .variable input::-webkit-slider-thumb {
+  appearance: none;
+  width: 17px;
+  height: 17px;
+  border: 4px solid var(--panel);
+  background: var(--orbit-accent);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 1px var(--orbit-accent),0 3px 7px color-mix(in srgb,var(--orbit-accent) 13.33%,transparent);
+}
+#orbit-page .variable input::-moz-range-thumb {
+  width: 10px;
+  height: 10px;
+  border: 3px solid white;
+  background: var(--orbit-accent);
+  border-radius: 50%;
+}
+#orbit-page .range-ends {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  font-size: 7px;
+  color: #a6afbd;
+  align-items: center;
+}
+#orbit-page .variable-symbol {
+  font-size: 11px;
+  color: var(--orbit-accent);
+}
+#orbit-page .preset-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding-top: 15px;
+  border-top: 1px solid var(--line);
+}
+#orbit-page .preset-group .eyebrow {
+  width: 100%;
+  margin-bottom: 6px;
+}
+#orbit-page .preset-group button {
+  background: var(--orbit-soft);
+  color: var(--orbit-accent);
+  border-radius: 7px;
+  padding: 7px 9px;
+  font-size: 8px;
+}
+#orbit-page .preset-group button:hover {
+  background: var(--soft);
+  color: var(--purple);
+}
+#orbit-page .control-note {
+  font-size: 8px;
+  line-height: 1.9;
+  color: var(--muted);
+  margin-top: 15px;
+}
+#orbit-page .science-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 45px;
+  border-top: 1px solid var(--line);
+  margin-top: 30px;
+  padding: 28px 0;
+}
+#orbit-page .science-section h2 {
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: -.5px;
+  margin: 9px 0 20px;
+}
+#orbit-page .equation {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 25px;
+  font-weight: 400;
+  justify-content: flex-start;
+  padding: 8px 0;
+}
+#orbit-page .fraction {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  font-size: 19px;
+}
+#orbit-page .fraction b {
+  border-bottom: 1px solid var(--orbit-muted);
+  padding: 0 8px 7px;
+  font-weight: 400;
+}
+#orbit-page .fraction i {
+  font-style: normal;
+  padding-top: 5px;
+}
+#orbit-page .equation sub {
+  font-size: 11px;
+}
+#orbit-page .live-equation {
+  display: block;
+  font-size: 11px;
+  color: var(--purple);
+  background: var(--soft);
+  border-radius: 9px;
+  padding: 11px 14px;
+  margin-top: 17px;
+  overflow-wrap: anywhere;
+}
+#orbit-page .force-key {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  font-size: 8px;
+  margin-top: 16px;
+}
+#orbit-page .drive {
+  color: var(--orbit-accent);
+}
+#orbit-page .resist {
+  color: #bc8548;
+}
+#orbit-page .gravity {
+  color: #548faa;
+}
+#orbit-page .investigation {
+  border-inline-start: 1px solid var(--line);
+  padding-inline-start: 35px;
+}
+#orbit-page .investigation ol {
+  padding-inline-start: 18px;
+  font-size: 11px;
+  line-height: 2;
+  color: var(--muted);
+  margin: 0 0 17px;
+}
+#orbit-page .investigation li {
+  margin-bottom: 7px;
+}
+#orbit-page .investigation summary {
+  font-size: 10px;
+  color: var(--purple);
+  cursor: pointer;
+}
+#orbit-page .investigation details p {
+  font-size: 9px;
+  line-height: 2;
+  color: var(--muted);
+}
+#orbit-page .trials-section {
+  border-top: 1px solid var(--line);
+  padding: 27px 0;
+}
+#orbit-page .trials-section > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+#orbit-page .trials-section h2 {
+  font-size: 22px;
+  font-weight: 500;
+  margin: 10px 0 19px;
+}
+#orbit-page .trials-section > header > div:last-child {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+#orbit-page .text-button {
+  background: none;
+  color: var(--muted);
+  font-size: 9px;
+}
+#orbit-page .empty-notebook {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  min-height: 105px;
+  border: 1px dashed var(--orbit-soft);
+  border-radius: 12px;
+  color: var(--muted);
+}
+#orbit-page .empty-notebook > span {
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--orbit-soft);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: var(--orbit-accent);
+}
+#orbit-page .empty-notebook p {
+  font-size: 10px;
+  line-height: 1.9;
+}
+#orbit-page .table-scroll {
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+#orbit-page table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 9px;
+  white-space: nowrap;
+}
+#orbit-page th,
+#orbit-page td {
+  padding: 13px 12px;
+  text-align: center;
+  border-bottom: 1px solid var(--line);
+}
+#orbit-page th {
+  font-weight: 500;
+  color: var(--muted);
+  background: #f4f6fa;
+}
+#orbit-page td {
+  color: var(--text);
+}
+#orbit-page tr:last-child td {
+  border-bottom: 0;
+}
+#orbit-page .notebook-note {
+  font-size: 8px;
+  line-height: 1.8;
+  color: var(--muted);
+  margin-top: 12px;
+}
+#orbit-page footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-top: 21px;
+  border-top: 1px solid var(--line);
+  font-size: 9px;
+  color: var(--muted);
+}
+#orbit-page footer > span {
+  font-size: 8px;
+}
+#orbit-page #lab-toast {
+  position: fixed;
+  bottom: 22px;
+  left: 50%;
+  translate: -50% 12px;
+  opacity: 0;
+  pointer-events: none;
+  background: var(--orbit-accent);
+  color: white;
+  padding: 12px 19px;
+  border-radius: 11px;
+  font-size: 11px;
+  max-width: 90vw;
+  z-index: 20;
+  transition:
+    opacity .2s,translate .2s;
+}
+#orbit-page #lab-toast.show {
+  opacity: 1;
+  translate: -50% 0;
+}
+@keyframes ambient-cloud {
+  50% {
+    transform: translateX(22px);
+  }
+}
+body[data-mood="fun"] #orbit-page .cloud {
+  animation: ambient-cloud 24s ease-in-out infinite;
+}
+body[data-mood="calm"] #orbit-page .cloud {
+  animation: none;
+}
+body[data-theme="dark"] {
+  --bg: #171c2b;
+  --panel: #202738;
+  --text: #e3e9f4;
+  --muted: #9eabc1;
+  --line: #333e52;
+  --purple: var(--orbit-accent);
+  --soft: var(--orbit-space);
+  color-scheme: dark;
+}
+body[data-theme="dark"] #orbit-page .preferences button,
+body[data-theme="dark"] #orbit-page .preset-group button {
+  background: var(--orbit-space);
+  color: var(--orbit-accent);
+}
+body[data-theme="dark"] #orbit-page .icon-button {
+  background: #2a3245;
+  color: #adb7cb;
+}
+body[data-theme="dark"] #orbit-page th {
+  background: #283146;
+}
+body[data-theme="dark"] #orbit-page .variable input {
+  background: linear-gradient(90deg,var(--orbit-accent),#37475e);
+}
+body[data-theme="dark"] #orbit-page .empty-notebook {
+  border-color: var(--orbit-accent);
+}
+body[data-theme="dark"] #orbit-page .scene {
+  filter: brightness(.88);
+  border-color: #333e52;
+}
+@media (max-width:1150px) {
+  #orbit-page main {
+    padding: 25px;
+  }
+  #orbit-page .lab-header {
+    padding: 18px 25px;
+  }
+  #orbit-page .experiment-layout {
+    grid-template-columns: minmax(0,1fr) 265px;
+    gap: 18px;
+  }
+  #orbit-page .controls {
+    padding: 20px 18px;
+  }
+  #orbit-page .scene {
+    height: 385px;
+  }
+  #orbit-page .car {
+    --car-width: 275px;
+  }
+  #orbit-page .transport {
+    gap: 9px;
+    padding: 13px;
+  }
+  #orbit-page .button {
+    font-size: 9px;
+    padding: 9px 11px;
+  }
+  #orbit-page .run-status {
+    font-size: 7px;
+  }
+  #orbit-page .telemetry strong {
+    font-size: 20px;
+  }
+  #orbit-page .telemetry small {
+    font-size: 8px;
+  }
+  #orbit-page .scene-readout strong {
+    font-size: 30px;
+  }
+}
+@media (max-width:850px) {
+  #orbit-page .experiment-layout {
+    grid-template-columns: 1fr;
+  }
+  #orbit-page .controls {
+    border-inline-start: 0;
+    border-top: 1px solid var(--line);
+    border-radius: 14px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 28px;
+  }
+  #orbit-page .controls header {
+    grid-column: 1/-1;
+  }
+  #orbit-page .controls header p {
+    margin-bottom: 0;
+    max-width: 500px;
+  }
+  #orbit-page .variable {
+    margin: 20px 0;
+  }
+  #orbit-page .preset-group,
+  #orbit-page .control-note {
+    grid-column: 1/-1;
+  }
+  #orbit-page .science-section {
+    gap: 25px;
+  }
+  #orbit-page .investigation {
+    padding-inline-start: 23px;
+  }
+  #orbit-page .lab-header nav {
+    font-size: 9px;
+  }
+  #orbit-page .scene {
+    height: 410px;
+  }
+  #orbit-page .car {
+    --car-width: 310px;
+  }
+  #orbit-page .transport {
+    padding: 15px;
+  }
+  #orbit-page .telemetry strong {
+    font-size: 23px;
+  }
+  #orbit-page .intro h1 {
+    font-size: 30px;
+  }
+  #orbit-page .force-overlay {
+    top: -239px;
+  }
+  #orbit-page .intro p {
+    font-size: 11px;
+  }
+}
+@media (max-width:560px) {
+  #orbit-page .lab-header {
+    padding: 15px 17px;
+    gap: 10px;
+  }
+  #orbit-page .brand b {
+    font-size: 17px;
+  }
+  #orbit-page .brand small {
+    font-size: 6px;
+    letter-spacing: .5px;
+  }
+  #orbit-page .brand > span {
+    width: 30px;
+    height: 30px;
+  }
+  #orbit-page .lab-header nav {
+    display: none;
+  }
+  #orbit-page .preferences {
+    gap: 4px;
+  }
+  #orbit-page .preferences button {
+    min-width: 30px;
+    min-height: 30px;
+    padding: 7px;
+    font-size: 9px;
+  }
+  #orbit-page main {
+    padding: 23px 17px;
+  }
+  #orbit-page .intro {
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 23px;
+  }
+  #orbit-page .intro h1 {
+    font-size: 26px;
+    line-height: 1.5;
+    letter-spacing: -.7px;
+  }
+  #orbit-page .intro p {
+    font-size: 10px;
+    line-height: 1.8;
+  }
+  #orbit-page .intro > .next-link {
+    font-size: 8px;
+    max-width: 105px;
+    line-height: 1.9;
+    margin-top: 25px;
+    gap: 5px;
+  }
+  #orbit-page .intro > .next-link .icon {
+    width: 15px;
+    height: 15px;
+  }
+  #orbit-page .eyebrow {
+    font-size: 7px;
+    letter-spacing: 1px;
+  }
+  #orbit-page .experiment-header {
+    padding: 12px 10px;
+    font-size: 7px;
+    gap: 5px;
+  }
+  #orbit-page .vector-toggle {
+    font-size: 7px;
+    gap: 3px;
+  }
+  #orbit-page .scene {
+    height: 330px;
+  }
+  #orbit-page .car {
+    --car-width: 225px;
+  }
+  #orbit-page .force-overlay {
+    top: -205px;
+    scale: .75;
+    transform-origin: 50% 100%;
+  }
+  #orbit-page .scene-readout {
+    right: 12px;
+    top: 30px;
+    gap: 6px;
+  }
+  #orbit-page .scene-readout > span {
+    font-size: 6px;
+    letter-spacing: .6px;
+  }
+  #orbit-page .scene-readout strong {
+    font-size: 26px;
+  }
+  #orbit-page .scene-readout > small {
+    font-size: 7px;
+    max-width: 120px;
+    line-height: 1.7;
+  }
+  #orbit-page .scene-angle {
+    right: 11px;
+    bottom: 52px;
+    padding: 7px 9px;
+    gap: 6px;
+    font-size: 9px;
+  }
+  #orbit-page .scene-angle small {
+    font-size: 6px;
+  }
+  #orbit-page .coordinate-label {
+    left: 10px;
+    top: 13px;
+    font-size: 6px;
+    letter-spacing: 0;
+    gap: 7px;
+  }
+  #orbit-page .coordinate-label > span {
+    font-size: 8px;
+  }
+  #orbit-page .scene-bottom {
+    font-size: 6px;
+    left: 11px;
+    right: 11px;
+    bottom: 13px;
+    line-height: 1.7;
+  }
+  #orbit-page .scene-bottom > span:first-child {
+    max-width: 190px;
+  }
+  #orbit-page .scene-bottom > span:last-child {
+    font-size: 8px;
+  }
+  #orbit-page .transport {
+    flex-wrap: wrap;
+    padding: 12px;
+    gap: 10px;
+  }
+  #orbit-page .transport-buttons {
+    gap: 6px;
+  }
+  #orbit-page .run-status {
+    order: 3;
+    width: 100%;
+    flex: auto;
+    font-size: 8px;
+  }
+  #orbit-page .transport > .button {
+    margin-inline-start: auto;
+    font-size: 8px;
+    padding: 8px 10px;
+  }
+  #orbit-page .transport-buttons .button {
+    font-size: 9px;
+    padding: 9px 12px;
+  }
+  #orbit-page .telemetry {
+    grid-template-columns: 1fr 1fr;
+    row-gap: 20px;
+    margin: 20px 0 25px;
+  }
+  #orbit-page .telemetry > div {
+    padding: 0 12px;
+  }
+  #orbit-page .telemetry > div:nth-child(3) {
+    padding-inline-start: 0;
+  }
+  #orbit-page .telemetry > div:nth-child(2) {
+    border: 0;
+  }
+  #orbit-page .telemetry strong {
+    font-size: 22px;
+  }
+  #orbit-page .telemetry small {
+    font-size: 9px;
+  }
+  #orbit-page .plot-heading {
+    font-size: 10px;
+  }
+  #orbit-page .plot-heading label {
+    font-size: 7px;
+  }
+  #orbit-page .chart-legend {
+    font-size: 7px;
+    gap: 15px;
+    line-height: 1.8;
+  }
+  #orbit-page .chart-legend span:last-child {
+    max-width: 170px;
+  }
+  #orbit-page #velocity-chart {
+    height: 165px;
+  }
+  #orbit-page .controls {
+    grid-template-columns: 1fr;
+    padding: 23px 19px;
+    gap: 0;
+  }
+  #orbit-page .controls header,
+  #orbit-page .preset-group,
+  #orbit-page .control-note {
+    grid-column: auto;
+  }
+  #orbit-page .controls h2 {
+    font-size: 23px;
+  }
+  #orbit-page .controls header p {
+    font-size: 10px;
+  }
+  #orbit-page .variable {
+    margin: 24px 0;
+  }
+  #orbit-page .variable-heading b {
+    font-size: 12px;
+  }
+  #orbit-page .variable-heading small {
+    font-size: 9px;
+  }
+  #orbit-page .variable-heading output {
+    font-size: 11px;
+  }
+  #orbit-page .range-ends {
+    font-size: 8px;
+  }
+  #orbit-page .preset-group button {
+    font-size: 9px;
+    padding: 8px 10px;
+  }
+  #orbit-page .control-note {
+    font-size: 9px;
+  }
+  #orbit-page .science-section {
+    grid-template-columns: 1fr;
+    gap: 25px;
+    padding: 26px 0;
+  }
+  #orbit-page .science-section h2 {
+    font-size: 23px;
+  }
+  #orbit-page .equation {
+    font-size: 23px;
+    gap: 12px;
+  }
+  #orbit-page .fraction {
+    font-size: 17px;
+  }
+  #orbit-page .live-equation {
+    font-size: 10px;
+    padding: 12px 10px;
+  }
+  #orbit-page .force-key {
+    font-size: 7px;
+    gap: 12px;
+  }
+  #orbit-page .investigation {
+    border-inline-start: 0;
+    border-top: 1px solid var(--line);
+    padding-inline-start: 0;
+    padding-top: 25px;
+  }
+  #orbit-page .investigation ol {
+    font-size: 11px;
+  }
+  #orbit-page .trials-section > header {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+  #orbit-page .trials-section h2 {
+    font-size: 23px;
+    margin-bottom: 10px;
+  }
+  #orbit-page .trials-section > header > div:last-child {
+    margin-bottom: 18px;
+  }
+  #orbit-page .empty-notebook {
+    padding: 15px;
+    gap: 10px;
+  }
+  #orbit-page .empty-notebook p {
+    font-size: 9px;
+    max-width: 200px;
+  }
+  #orbit-page .empty-notebook > span {
+    flex-shrink: 0;
+  }
+  #orbit-page .trials-section {
+    padding-bottom: 24px;
+  }
+  #orbit-page .notebook-note {
+    font-size: 8px;
+  }
+  #orbit-page footer {
+    flex-wrap: wrap;
+    font-size: 8px;
+    row-gap: 16px;
+  }
+  #orbit-page footer > span {
+    order: 3;
+    width: 100%;
+    text-align: center;
+    font-size: 7px;
+  }
+  #orbit-page footer > .next-link {
+    font-size: 8px;
+  }
+  #orbit-page #lab-toast {
+    font-size: 10px;
+    text-align: center;
+    line-height: 1.8;
+  }
+}
+@media (prefers-reduced-motion:reduce) {
+  #orbit-page *,
+  #orbit-page *:before,
+  #orbit-page *:after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+#orbit-page .wheel-rotor {
+  transform-origin: 50% 50%;
+  backface-visibility: hidden;
+}

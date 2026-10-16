@@ -1,0 +1,12 @@
+@import url("../shared/experience.css");
+#orbit-page .profile-photo {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+#orbit-page input,
+#orbit-page select,
+#orbit-page textarea {
+  max-width: 100%;
+}

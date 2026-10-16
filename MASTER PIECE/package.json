@@ -1,0 +1,16 @@
+{
+  "name": "the-learning-orbit",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "vite build --configLoader runner && vite build --config registration/scene-build.config.js --configLoader runner && vite build --config school-tour/scene-build.config.js --configLoader runner"
+  },
+  "dependencies": {
+    "three": "^0.180.0"
+  },
+  "devDependencies": {
+    "vite": "^7.1.0",
+    "@playwright/test": "^1.55.0"
+  }
+}

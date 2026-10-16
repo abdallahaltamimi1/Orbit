@@ -1,0 +1,581 @@
+body.orbit-shell-mounted {
+  padding-inline-start: 220px;
+}
+#orbit-page .shell,
+#orbit-page .app-shell {
+  display: block;
+  grid-template-columns: none;
+  max-width: none;
+  margin: 0;
+}
+#orbit-page .main,
+#orbit-page .page-shell {
+  width: 100%;
+  min-width: 0;
+}
+#orbit-page .bar > nav,
+#orbit-page .lab-header > nav,
+#orbit-page .profile-link {
+  display: none;
+}
+#orbit-rail {
+  position: fixed;
+  inset-block: 0;
+  inset-inline-start: 0;
+  width: 220px;
+  height: 100dvh;
+  padding: 24px 16px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  background: var(--orbit-canvas);
+  border-inline-end: 1px solid var(--orbit-soft);
+  z-index: 1100;
+  overflow: auto;
+  isolation: isolate;
+  color: var(--orbit-ink);
+  font-family: var(--orbit-font);
+  font-size: var(--orbit-type-nav);
+  line-height: 1.5;
+  letter-spacing: normal;
+}
+body[data-theme="dark"] #orbit-rail {
+  background: var(--orbit-space);
+  border-color: var(--orbit-space);
+}
+#orbit-rail .orbit-rail-brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 0 6px;
+  text-decoration: none;
+  color: inherit;
+  font-size: 21px;
+  font-weight: 750;
+  letter-spacing: 1.4px;
+}
+#orbit-rail .orbit-brand-mark {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  background: var(--orbit-action);
+  color: white;
+  border-radius: 10px;
+}
+#orbit-rail .orbit-brand-mark svg {
+  width: 25px;
+  height: 25px;
+}
+#orbit-rail .orbit-identity {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 9px;
+  background: var(--orbit-surface);
+  border: 1px solid var(--orbit-border);
+  border-radius: 12px;
+}
+#orbit-rail .orbit-avatar {
+  display: grid;
+  place-items: center;
+  width: 35px;
+  height: 35px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--orbit-action);
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+}
+#orbit-rail .orbit-avatar img {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+#orbit-rail .orbit-identity strong {
+  font-size: 12px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+  display: block;
+}
+#orbit-rail .orbit-identity small {
+  font-size: 11px;
+  color: var(--orbit-muted);
+  display: block;
+  margin-top: 5px;
+}
+#orbit-rail nav {
+  display: grid;
+  gap: 5px;
+  padding: 0;
+  margin: 0;
+}
+#orbit-rail .orbit-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 10px;
+  margin: 0;
+  border: 0;
+  border-radius: 9px;
+  font-size: var(--orbit-type-nav);
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--orbit-muted);
+  text-decoration: none;
+  min-height: 42px;
+  transition:
+    background .18s,color .18s;
+  letter-spacing: normal;
+}
+#orbit-rail .orbit-nav-link:is(:hover, :active, .is-current) {
+  background: var(--orbit-soft);
+  color: var(--orbit-accent);
+}
+body[data-theme="dark"] #orbit-rail .orbit-nav-link:is(:hover, :active, .is-current) {
+  background: var(--orbit-soft);
+  color: var(--orbit-accent);
+}
+#orbit-rail nav svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+#orbit-rail .orbit-rail-foot {
+  margin-top: auto;
+  display: grid;
+  gap: 8px;
+}
+#orbit-rail .orbit-rail-foot button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--orbit-border);
+  border-radius: 9px;
+  padding: 11px;
+  background: transparent;
+  color: inherit;
+  font-family: var(--orbit-font);
+  font-size: var(--orbit-type-nav);
+  font-weight: 500;
+  line-height: 1.5;
+  cursor: pointer;
+  transition: background .18s;
+}
+#orbit-rail .orbit-rail-foot button:hover {
+  background: var(--orbit-surface);
+}
+#orbit-rail .orbit-rail-foot svg {
+  width: 18px;
+  height: 18px;
+}
+#orbit-mobile-toggle {
+  display: none;
+  position: fixed;
+  inset-block-start: 12px;
+  inset-inline-start: 12px;
+  z-index: 1200;
+  background: var(--orbit-action);
+  color: white;
+  padding: 9px 12px;
+  border: 0;
+  border-radius: 9px;
+  font: 500 15px/1.5 var(--orbit-font);
+}
+#orbit-mobile-shade {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: color-mix(in srgb,var(--orbit-space) 53.33%,transparent);
+  border: 0;
+  z-index: 1050;
+}
+#orbit-rail .notification-badge {
+  font-size: 10px;
+  border-radius: 12px;
+  background: var(--orbit-soft);
+  padding: 1px 6px;
+}
+#orbit-page .orbit-account-picture {
+  width: 32px;
+  height: 32px;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+#orbit-page .student-avatar:has(img),
+#orbit-page .top-avatar:has(img) {
+  padding: 0;
+}
+#orbit-rail :focus-visible {
+  outline: 3px solid var(--orbit-focus);
+  outline-offset: 2px;
+}
+#orbit-rail :disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+@media (max-width:780px) {
+  body.orbit-shell-mounted {
+    padding-inline-start: 0;
+    padding-top: 44px;
+  }
+  #orbit-mobile-toggle {
+    display: block;
+  }
+  #orbit-rail {
+    visibility: hidden;
+    transform: translateX(-110%);
+    transition: transform .22s ease;
+  }
+  html[dir="rtl"] #orbit-rail {
+    transform: translateX(110%);
+  }
+  body.orbit-menu-open #orbit-rail {
+    visibility: visible;
+    transform: translateX(0);
+  }
+  body.orbit-menu-open #orbit-mobile-shade {
+    display: block;
+  }
+}
+@media (prefers-reduced-motion:reduce) {
+  #orbit-rail,
+  #orbit-rail .orbit-nav-link {
+    transition: none;
+  }
+}
+@media print {
+  #orbit-rail,
+  #orbit-mobile-toggle,
+  #orbit-mobile-shade {
+    display: none;
+  }
+  body.orbit-shell-mounted {
+    padding: 0;
+  }
+}
+
+#orbit-mobile-toggle {
+  min-width: 44px;
+  min-height: 44px;
+}
+#orbit-mobile-toggle svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+/* Shared logout stays outside the scrollable navigation for every role. */
+body.orbit-shell-mounted #orbit-rail.orbit-rail {
+  box-sizing: border-box;
+  overflow: hidden;
+  gap: 16px;
+  --orbit-accent: #0d9488;
+  --orbit-action: #0d9488;
+}
+body.orbit-shell-mounted #orbit-rail.orbit-rail > .orbit-rail-brand,
+body.orbit-shell-mounted #orbit-rail.orbit-rail > .orbit-identity {
+  flex-shrink: 0;
+}
+body.orbit-shell-mounted #orbit-rail.orbit-rail > nav {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  align-content: start;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #b8d8d5 transparent;
+  padding: 3px;
+}
+body.orbit-shell-mounted #orbit-rail.orbit-rail .orbit-rail-foot {
+  display: grid !important;
+  flex-shrink: 0;
+  margin-top: 0;
+  border-top: 1px solid var(--orbit-border,#e2ecef);
+  padding-top: 12px;
+  padding-bottom: env(safe-area-inset-bottom,0px);
+  gap: 6px;
+}
+body.orbit-shell-mounted #orbit-rail.orbit-rail #orbit-logout {
+  display: flex !important;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 44px;
+  padding: 11px 12px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: #a9465b;
+  font: 500 13px/1.5 var(--orbit-font);
+  text-align: start;
+  cursor: pointer;
+  transition:
+    background-color 200ms,color 200ms;
+}
+body.orbit-shell-mounted #orbit-rail.orbit-rail #orbit-logout:hover {
+  background: #fff0f3;
+  color: #92364b;
+}
+body.orbit-shell-mounted #orbit-rail.orbit-rail #orbit-logout svg {
+  width: 19px;
+  height: 19px;
+  flex-shrink: 0;
+}
+html[dir="rtl"] #orbit-logout svg {
+  transform: scaleX(-1);
+}
+body.orbit-shell-mounted[data-theme="dark"] #orbit-rail.orbit-rail #orbit-logout {
+  color: #f2a6b6;
+}
+body.orbit-shell-mounted[data-theme="dark"] #orbit-rail.orbit-rail #orbit-logout:hover {
+  background: #442c3a;
+  color: #ffc5d1;
+}
+#orbit-rail #orbit-rail-collapse {
+  border: 0;
+  background: transparent;
+  color: var(--orbit-muted);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  min-height: 32px;
+  width: 32px;
+  border-radius: 8px;
+  align-self: flex-end;
+  flex-shrink: 0;
+}
+#orbit-rail-collapse svg {
+  width: 18px;
+  height: 18px;
+}
+#orbit-rail #orbit-rail-collapse:hover {
+  background: var(--orbit-soft);
+}
+@media (min-width:781px) {
+  body.orbit-shell-mounted.orbit-sidebar-collapsed {
+    padding-inline-start: 76px;
+  }
+  body.orbit-sidebar-collapsed #orbit-rail.orbit-rail {
+    width: 76px;
+    padding-inline: 10px;
+  }
+  body.orbit-sidebar-collapsed #orbit-rail .orbit-rail-brand {
+    padding: 0;
+    justify-content: center;
+  }
+  body.orbit-sidebar-collapsed #orbit-rail .orbit-rail-brand b,
+  body.orbit-sidebar-collapsed #orbit-rail .orbit-identity,
+  body.orbit-sidebar-collapsed #orbit-rail .orbit-nav-link span,
+  body.orbit-sidebar-collapsed #orbit-rail .orbit-nav-link small,
+  body.orbit-sidebar-collapsed #orbit-rail #orbit-logout span {
+    display: none !important;
+  }
+  body.orbit-sidebar-collapsed #orbit-rail .orbit-nav-link,
+  body.orbit-shell-mounted.orbit-sidebar-collapsed #orbit-rail.orbit-rail #orbit-logout {
+    justify-content: center;
+    padding-inline: 8px;
+  }
+  body.orbit-sidebar-collapsed #orbit-rail .orbit-back {
+    display: none !important;
+  }
+  body.orbit-sidebar-collapsed #orbit-rail-collapse svg {
+    transform: rotate(180deg);
+  }
+}
+@media (max-width:780px) {
+  #orbit-rail #orbit-rail-collapse {
+    display: none;
+  }
+  body.orbit-shell-mounted #orbit-rail.orbit-rail {
+    padding-top: 65px;
+    height: 100dvh;
+  }
+}
+@media (prefers-reduced-motion:reduce) {
+  body.orbit-shell-mounted #orbit-rail.orbit-rail #orbit-logout {
+    transition: none;
+  }
+}
+@media (min-width:781px) {
+  body.orbit-shell-mounted.orbit-sidebar-collapsed #orbit-rail.orbit-rail {
+    width: 76px;
+  }
+  body.orbit-shell-mounted.orbit-sidebar-collapsed #orbit-rail.orbit-rail .orbit-rail-brand::after,
+  body.orbit-sidebar-collapsed #orbit-rail .orbit-nav-group > p {
+    display: none !important;
+  }
+  body.orbit-sidebar-collapsed #orbit-rail .orbit-rail-brand {
+    margin-bottom: 0;
+  }
+  body.orbit-sidebar-collapsed #orbit-rail .orbit-nav-group {
+    padding-top: 6px;
+  }
+}
+@media (max-width:780px) {
+  body.orbit-shell-mounted #orbit-rail.orbit-rail .orbit-rail-brand::after {
+    display: none;
+  }
+}
+/* One shared rail appearance on dashboards and every portal destination. */
+body.orbit-shell-mounted {
+  padding-inline-start: 232px;
+}
+body.orbit-shell-mounted #orbit-rail.orbit-rail {
+  width: 232px;
+  padding: 24px 18px 18px;
+  gap: 16px;
+  background: #fff;
+  color: #102238;
+  border-inline-end: 1px solid #e2ecef;
+  --orbit-accent: #0d9488;
+  --orbit-action: #0d9488;
+  --orbit-soft: #e2f7f3;
+  --orbit-border: #e2ecef;
+  --orbit-muted: #64748b;
+  --orbit-font: OrbitAuditArabic,'Segoe UI',sans-serif;
+  font-family: var(--orbit-font);
+  font-size: 14px;
+}
+html[lang="en"] body.orbit-shell-mounted #orbit-rail.orbit-rail {
+  --orbit-font: OrbitAuditEnglish,'Segoe UI',sans-serif;
+}
+body.orbit-shell-mounted[data-theme="dark"] #orbit-rail.orbit-rail {
+  background: #10232d;
+  color: #e8f7f8;
+  border-color: #29434c;
+  --orbit-muted: #b0c6cc;
+  --orbit-border: #29434c;
+  --orbit-soft: #123832;
+  --orbit-accent: #6ee7d4;
+}
+body.orbit-shell-mounted #orbit-rail.orbit-rail .orbit-rail-brand {
+  font:
+    750 25px/1.5 OrbitAuditEnglish,sans-serif;
+  letter-spacing: -.6px;
+  gap: 10px;
+  padding: 0 6px;
+  margin: 0;
+  color: inherit;
+}
+body.orbit-shell-mounted #orbit-rail.orbit-rail .orbit-rail-brand::after {
+  display: none !important;
+}
+body.orbit-shell-mounted #orbit-rail.orbit-rail .orbit-brand-mark {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: transparent;
+  color: #0d9488;
+}
+body.orbit-shell-mounted #orbit-rail.orbit-rail .orbit-brand-mark svg {
+  width: 34px;
+  height: 34px;
+}
+body.orbit-shell-mounted #orbit-rail.orbit-rail .orbit-identity {
+  display: flex !important;
+  gap: 10px;
+  padding: 11px 9px;
+  border: 1px solid var(--orbit-border);
+  background: transparent;
+  border-radius: 13px;
+}
+body.orbit-shell-mounted #orbit-rail.orbit-rail .orbit-identity strong {
+  font: 600 13px/1.7 var(--orbit-font);
+}
+body.orbit-shell-mounted #orbit-rail.orbit-rail .orbit-identity small {
+  font: 400 12px/1.5 var(--orbit-font);
+  color: var(--orbit-muted);
+}
+body.orbit-shell-mounted #orbit-rail.orbit-rail > nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 3px;
+  flex: 1;
+  overflow: auto;
+  min-height: 0;
+}
+body.orbit-shell-mounted #orbit-rail.orbit-rail .orbit-nav-heading {
+  border-top: 1px solid var(--orbit-border);
+  padding: 15px 10px 6px;
+  margin: 10px 0 3px;
+  color: var(--orbit-muted);
+  font: 400 12px/1.5 var(--orbit-font);
+}
+body.orbit-shell-mounted #orbit-rail.orbit-rail .orbit-nav-heading:first-child {
+  border: 0;
+  margin-top: 0;
+  padding-top: 3px;
+}
+body.orbit-shell-mounted #orbit-rail.orbit-rail .orbit-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+  padding: 11px 12px;
+  min-height: 44px;
+  box-sizing: border-box;
+  margin: 0;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--orbit-muted);
+  box-shadow: none;
+  font: 500 14px/1.5 var(--orbit-font);
+}
+body.orbit-shell-mounted #orbit-rail.orbit-rail .orbit-nav-link svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+body.orbit-shell-mounted #orbit-rail.orbit-rail .orbit-nav-link:is(:hover, .is-current) {
+  background: var(--orbit-soft);
+  color: var(--orbit-accent);
+  box-shadow: none;
+}
+body.orbit-shell-mounted #orbit-rail.orbit-rail .orbit-nav-link.is-current {
+  font-weight: 600;
+}
+body.orbit-shell-mounted #orbit-rail.orbit-rail #orbit-back {
+  font: 500 13px/1.5 var(--orbit-font);
+  min-height: 44px;
+  color: var(--orbit-muted);
+}
+@media (min-width:781px) {
+  body.orbit-shell-mounted.orbit-sidebar-collapsed {
+    padding-inline-start: 76px;
+  }
+  body.orbit-shell-mounted.orbit-sidebar-collapsed #orbit-rail.orbit-rail {
+    width: 76px;
+    padding-inline: 10px;
+  }
+  body.orbit-shell-mounted.orbit-sidebar-collapsed #orbit-rail.orbit-rail .orbit-identity,
+  body.orbit-sidebar-collapsed #orbit-rail.orbit-rail .orbit-nav-heading {
+    display: none !important;
+  }
+  body.orbit-shell-mounted.orbit-sidebar-collapsed #orbit-rail.orbit-rail .orbit-nav-link {
+    justify-content: center;
+    padding-inline: 8px;
+  }
+  body.orbit-sidebar-collapsed #orbit-rail.orbit-rail .orbit-rail-brand {
+    padding: 0;
+    justify-content: center;
+  }
+}
+@media (max-width:780px) {
+  body.orbit-shell-mounted {
+    padding-inline-start: 0;
+  }
+  body.orbit-shell-mounted #orbit-rail.orbit-rail {
+    padding-top: 65px;
+    width: 232px;
+  }
+  body.orbit-shell-mounted #orbit-mobile-toggle {
+    background: #0d9488;
+  }
+}

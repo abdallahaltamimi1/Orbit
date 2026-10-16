@@ -1,0 +1,679 @@
+/* Presentation only. Explicit opt-in on non-homepage documents. */
+#orbit-page[data-orbit-page]:not([data-orbit-page="hompage"]) {
+  --ease-out: cubic-bezier(.23,1,.32,1);
+  --ease-in-out: cubic-bezier(.77,0,.175,1);
+}
+
+#orbit-page[data-orbit-page] :is(h1, h2, h3) {
+  text-wrap: balance;
+}
+#orbit-page[data-orbit-page] :is(h1, h2) {
+  letter-spacing: -.025em;
+}
+html[lang="ar"] #orbit-page[data-orbit-page] :is(h1, h2, h3) {
+  letter-spacing: 0;
+  line-height: 1.5;
+}
+#orbit-page[data-orbit-page] :is(input, textarea) {
+  caret-color: var(--orbit-accent);
+}
+#orbit-page[data-orbit-page] ::selection {
+  background: color-mix(in srgb,var(--orbit-accent) 15.69%,transparent);
+  color: var(--orbit-ink);
+}
+#orbit-page[data-orbit-page] :is(.value, .stat-value, .metric-value, .kpi-value, output, #clock) {
+  font-variant-numeric: tabular-nums;
+}
+#orbit-page[data-orbit-page] :is(.btn, .primary, .login-button, .quiet, .orbital-button) {
+  transition:
+    background-color 160ms ease,color 160ms ease,transform 160ms var(--ease-out);
+}
+#orbit-page[data-orbit-page]
+  :is(.btn, .primary, .login-button, .orbital-button):active:not(:disabled) {
+  transform: scale(.98);
+}
+#orbit-page[data-orbit-page] :is(.card, .panel) {
+  animation: none;
+}
+#orbit-page[data-orbit-page]
+  :is(.eyebrow, .lab-kicker, .catalog-kicker, .hero-kicker, .visual-badge) {
+  display: none;
+}
+#orbit-page[data-orbit-page] :is(.wrap, .content, .page-shell, main) {
+  min-width: 0;
+}
+#orbit-page[data-orbit-page] :is(.card, .panel, .post, .profile-data) {
+  overflow-wrap: anywhere;
+}
+#orbit-page[data-orbit-page] :focus-visible {
+  outline: 2px solid var(--orbit-accent);
+  outline-offset: 4px;
+}
+#orbit-page[data-orbit-page] :is(input, textarea, select)::placeholder {
+  color: var(--orbit-muted);
+  opacity: 1;
+}
+/* A photographic threshold, with calm form fields on the opposite side. */
+#orbit-page:is([data-orbit-page="login"], [data-orbit-page="school-login"]) .login-page {
+  min-height: 100dvh;
+  grid-template-columns: minmax(0,1.1fr) minmax(0,.9fr);
+}
+#orbit-page:is([data-orbit-page="login"], [data-orbit-page="school-login"]) .login-visual {
+  min-height: 100dvh;
+  padding: 40px clamp(28px,4vw,64px);
+  background: var(--orbit-space);
+  isolation: isolate;
+}
+#orbit-page:is([data-orbit-page="login"], [data-orbit-page="school-login"]) .login-visual::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(180deg,color-mix(in srgb,var(--orbit-space) 18.82%,transparent),color-mix(in srgb,var(--orbit-space) 43.92%,transparent) 65%,color-mix(in srgb,var(--orbit-space) 90.98%,transparent)),url('./assets/lunar-observatory.png') 82% center/cover;
+}
+#orbit-page:is([data-orbit-page="login"], [data-orbit-page="school-login"])
+  :is(.stars, .planet, .learning-orbit, .animation-stars) {
+  display: none;
+}
+#orbit-page:is([data-orbit-page="login"], [data-orbit-page="school-login"]) .visual-content {
+  margin: auto 0 12%;
+  transform: none;
+  max-width: 490px;
+}
+#orbit-page:is([data-orbit-page="login"], [data-orbit-page="school-login"]) .visual-content h1 {
+  font-size: clamp(36px,4vw,60px);
+  line-height: 1.18;
+  letter-spacing: -.03em;
+}
+#orbit-page:is([data-orbit-page="login"], [data-orbit-page="school-login"])
+  .visual-content
+  h1
+  span {
+  color: var(--orbit-soft);
+  background: none;
+  animation: none;
+}
+#orbit-page:is([data-orbit-page="login"], [data-orbit-page="school-login"]) .visual-content p {
+  color: var(--orbit-soft);
+  font-size: 16px;
+  max-width: 38ch;
+}
+#orbit-page:is([data-orbit-page="login"], [data-orbit-page="school-login"]) .visual-footer {
+  color: var(--orbit-soft);
+}
+#orbit-page:is([data-orbit-page="login"], [data-orbit-page="school-login"]) .login-area {
+  min-height: 100dvh;
+  padding: 64px clamp(24px,4vw,64px);
+}
+#orbit-page:is([data-orbit-page="login"], [data-orbit-page="school-login"]) .login-container {
+  animation: none;
+  max-width: 420px;
+}
+#orbit-page:is([data-orbit-page="login"], [data-orbit-page="school-login"]) .login-heading h2 {
+  font-size: clamp(28px,3vw,38px);
+  font-weight: 650;
+}
+#orbit-page:is([data-orbit-page="login"], [data-orbit-page="school-login"]) .input-box {
+  transition:
+    border-color 160ms ease,box-shadow 160ms ease;
+}
+#orbit-page:is([data-orbit-page="login"], [data-orbit-page="school-login"]) .input-status {
+  transition:
+    opacity 160ms ease,transform 160ms var(--ease-out);
+}
+#orbit-page:is([data-orbit-page="login"], [data-orbit-page="school-login"]) .login-animation {
+  transition:
+    opacity 180ms ease,visibility 180ms ease;
+}
+/* Discovery is a route map, rather than another orbiting planet. */
+#orbit-page[data-orbit-page="channels"] .directory-banner {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: 16px;
+  background: var(--soft,var(--orbit-soft));
+  padding: 36px 32px;
+  border: 0;
+}
+#orbit-page[data-orbit-page="channels"] .directory-banner::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background:
+    radial-gradient(circle at 18% 30%,color-mix(in srgb,var(--orbit-accent) 12.55%,transparent) 0 2px,transparent 3px),radial-gradient(circle at 30% 70%,color-mix(in srgb,var(--orbit-accent) 18.82%,transparent) 0 3px,transparent 4px),radial-gradient(circle at 80% 22%,color-mix(in srgb,var(--orbit-accent) 14.51%,transparent) 0 2px,transparent 3px),linear-gradient(155deg,transparent 25%,color-mix(in srgb,var(--orbit-accent) 4.31%,transparent) 25.2%,transparent 25.4%,transparent 70%,color-mix(in srgb,var(--orbit-accent) 4.31%,transparent) 70.2%,transparent 70.4%);
+}
+#orbit-page[data-orbit-page="channels"] .directory-orbit {
+  display: none;
+}
+#orbit-page[data-orbit-page="channels"] .channel-card {
+  border-radius: 14px;
+  box-shadow: none;
+}
+#orbit-page[data-orbit-page="channels"] .channel-card h2 {
+  font-size: 22px;
+}
+#orbit-page[data-orbit-page="channels"] .channel-cover {
+  border-radius: 12px 12px 0 0;
+}
+/* Classroom: fixed architecture; genuine membership controls the moving students. */
+#orbit-page[data-orbit-page="channel"] .classroom-panel {
+  background: linear-gradient(155deg,var(--orbit-space),var(--orbit-space));
+  border: 1px solid var(--orbit-muted);
+  border-radius: 16px;
+}
+#orbit-page[data-orbit-page="channel"] .classroom-board {
+  background: linear-gradient(140deg,var(--orbit-space),var(--orbit-space));
+  border-color: var(--orbit-accent);
+  box-shadow: 0 8px 20px color-mix(in srgb,var(--orbit-space) 18.82%,transparent);
+}
+#orbit-page[data-orbit-page="channel"] .classroom-rows {
+  background: linear-gradient(180deg,#ffffff04,transparent);
+}
+#orbit-page[data-orbit-page="channel"] .room-tools label {
+  color: var(--orbit-soft);
+}
+#orbit-page[data-orbit-page="channel"] :is(.room-page-button, .choose-seat-button) {
+  min-height: 40px;
+}
+#orbit-page[data-orbit-page="channel"]
+  :is(.teacher-gesture, .teacher-body, .sitting-student, .student-feet) {
+  animation: none;
+}
+#orbit-page[data-orbit-page="channel"] .seat-name {
+  max-width: 100%;
+}
+/* Mission overview and publishing desk keep the existing working layout. */
+#orbit-page[data-orbit-page="student-dashboard"] .welcome {
+  padding-block: 20px 28px;
+}
+#orbit-page[data-orbit-page="student-dashboard"] .welcome h1 {
+  font-size: clamp(28px,3.2vw,44px);
+}
+#orbit-page[data-orbit-page="student-dashboard"] .panel {
+  border-radius: 14px;
+  box-shadow: none;
+}
+#orbit-page[data-orbit-page="student-dashboard"] .timeline-row {
+  padding-block: 18px;
+}
+#orbit-page[data-orbit-page="student-dashboard"] .welcome-orbit {
+  animation: none;
+}
+#orbit-page[data-orbit-page="teacher-dashboard"] .studio-banner {
+  border-radius: 16px;
+  background: var(--soft);
+  padding: 32px;
+  box-shadow: none;
+}
+#orbit-page[data-orbit-page="teacher-dashboard"] .studio-banner h2 {
+  font-size: clamp(26px,3vw,36px);
+}
+#orbit-page[data-orbit-page="teacher-dashboard"] :is(.channel-card, .portfolio-panel, .plus-panel) {
+  border-radius: 14px;
+  box-shadow: none;
+}
+#orbit-page[data-orbit-page="teacher-dashboard"] .welcome h1 {
+  font-size: 30px;
+  font-weight: 650;
+}
+#orbit-page[data-orbit-page="school-dashboard"] .hero {
+  border-radius: 12px;
+  padding: 28px 32px;
+}
+#orbit-page[data-orbit-page="school-dashboard"] :is(th, td) {
+  padding-block: 16px;
+  text-align: start;
+}
+/* Research library retains the existing, independently managed Three.js scene. */
+#orbit-page[data-orbit-page="lessons"] .learning-hero {
+  border-radius: 16px;
+}
+#orbit-page[data-orbit-page="lessons"] .learning-hero-copy h2 {
+  font-size: clamp(30px,3.2vw,44px);
+}
+#orbit-page[data-orbit-page="lessons"] .topic-card {
+  border-radius: 14px;
+  box-shadow: none;
+}
+#orbit-page[data-orbit-page="lessons"] .topic-card h2 {
+  font-size: 22px;
+}
+#orbit-page[data-orbit-page="lesson"] .lesson-hero {
+  border-radius: 14px;
+  padding: 32px;
+}
+#orbit-page[data-orbit-page="lesson"] :is(.lesson-reader, .lesson-body, .lesson-content) {
+  max-width: 75ch;
+  line-height: 1.9;
+}
+#orbit-page[data-orbit-page="practice"] .practice-intro {
+  border-radius: 14px;
+  padding-block: 28px;
+}
+#orbit-page[data-orbit-page="practice"] .question-card {
+  border-radius: 14px;
+  box-shadow: none;
+}
+#orbit-page[data-orbit-page="quiz"] .hero {
+  padding: 28px 32px;
+  border-radius: 12px;
+}
+#orbit-page[data-orbit-page="quiz"] :is(.answer, .option, .quiz-option) {
+  transition:
+    background-color 120ms ease,border-color 120ms ease;
+}
+#orbit-page[data-orbit-page="result"] .hero {
+  background: var(--soft);
+  border-radius: 16px;
+}
+#orbit-page[data-orbit-page="achievements"] .hero {
+  border-radius: 16px;
+}
+#orbit-page[data-orbit-page="achievements"] :is(.badge, .achievement-card) {
+  box-shadow: none;
+  border-radius: 12px;
+}
+#orbit-page[data-orbit-page="class-details"] .hero {
+  padding: 32px;
+  border-radius: 16px;
+}
+/* Instrument bay: the canvas, plots and measurements own the motion budget. */
+#orbit-page[data-orbit-page="lab"] .discovery-hero {
+  border-radius: 16px;
+  border: 0;
+}
+#orbit-page[data-orbit-page="lab"] .discovery-hero h2 {
+  font-size: clamp(30px,3.4vw,44px);
+}
+#orbit-page[data-orbit-page="lab"] .lab-orbital {
+  display: none;
+}
+#orbit-page[data-orbit-page="lab"] .discovery-hero {
+  grid-template-columns: 1fr;
+}
+#orbit-page[data-orbit-page="lab"] .experiment-card {
+  border-radius: 14px;
+  box-shadow: none;
+}
+#orbit-page[data-orbit-page="lab"] .lab-stage {
+  background: var(--orbit-space);
+  border-radius: 14px;
+}
+#orbit-page[data-orbit-page="lab"] .experiment-controls {
+  border-radius: 14px;
+}
+#orbit-page[data-orbit-page="lab"] .value {
+  font-size: 19px;
+  line-height: 1.7;
+  color: var(--orbit-accent);
+}
+#orbit-page[data-orbit-page="car-lab"] :is(.control-panel, .plot-panel, .telemetry) {
+  border-radius: 12px;
+}
+#orbit-page[data-orbit-page="car-lab"] :is(.telemetry, .readout, .metric) {
+  font-variant-numeric: tabular-nums;
+}
+/* Professional dossiers and roster: editorial hierarchy, no private data added. */
+#orbit-page[data-orbit-page="teacher-profile"] .professional-intro {
+  padding-block: 24px;
+}
+#orbit-page[data-orbit-page="teacher-profile"] .profile-cover {
+  border-radius: 16px;
+  background: var(--soft);
+}
+#orbit-page[data-orbit-page="teacher-profile"] .profile-identity h1 {
+  font-size: clamp(28px,3.6vw,42px);
+}
+#orbit-page[data-orbit-page="teacher-profile"] .profile-detail {
+  border-radius: 12px;
+  box-shadow: none;
+}
+#orbit-page[data-orbit-page="teacher-directory"] .directory-intro {
+  border-radius: 16px;
+  padding-block: 30px;
+}
+#orbit-page[data-orbit-page="teacher-directory"] .teacher-card {
+  border-radius: 14px;
+  box-shadow: none;
+}
+#orbit-page[data-orbit-page="teacher-directory"] .teacher-card h2 {
+  font-size: 22px;
+}
+#orbit-page[data-orbit-page="account-profile"] .profile-overview {
+  border-radius: 14px;
+}
+#orbit-page[data-orbit-page="account-profile"] .profile-editor {
+  border-radius: 14px;
+  box-shadow: none;
+}
+#orbit-page[data-orbit-page="account-profile"] .profile-section {
+  padding-block: 28px;
+}
+/* Dense workflows remain quiet and task-led. */
+#orbit-page[data-orbit-page="lesson-planner"] .planner-hero {
+  border-radius: 14px;
+  padding-block: 28px;
+}
+#orbit-page[data-orbit-page="lesson-planner"] :is(.plan-item, .setup-grid > *) {
+  border-radius: 12px;
+}
+#orbit-page[data-orbit-page="jobs"] .jobs-hero {
+  border-radius: 16px;
+}
+#orbit-page[data-orbit-page="jobs"] .job-card {
+  border-radius: 12px;
+  box-shadow: none;
+}
+#orbit-page[data-orbit-page="applications"] .applications-hero {
+  border-radius: 14px;
+}
+#orbit-page[data-orbit-page="applications"] .application-card {
+  border-radius: 12px;
+  box-shadow: none;
+}
+#orbit-page[data-orbit-page="notifications"] .notification-intro {
+  border-radius: 14px;
+}
+#orbit-page[data-orbit-page="notifications"] .notification-card {
+  border-radius: 12px;
+  transition: background-color 160ms ease;
+}
+#orbit-page[data-orbit-page="settings"] .settings-intro {
+  border-radius: 14px;
+}
+#orbit-page[data-orbit-page="settings"] .settings-panel {
+  border-radius: 12px;
+  box-shadow: none;
+}
+#orbit-page[data-orbit-page="pricing"] :is(.plan-card, .pricing-card) {
+  border-radius: 14px;
+  box-shadow: none;
+}
+#orbit-page[data-orbit-page="exchange"] .hero {
+  border-radius: 14px;
+}
+#orbit-page[data-orbit-page="exchange"] .card {
+  border-radius: 12px;
+  box-shadow: none;
+}
+#orbit-page[data-orbit-page="admin"] .panel {
+  border-radius: 12px;
+  box-shadow: none;
+}
+#orbit-page[data-orbit-page="admin"] :is(th, td) {
+  text-align: start;
+  font-variant-numeric: tabular-nums;
+}
+#admin-app .panel {
+  border-radius: 12px;
+  box-shadow: none;
+}
+#admin-app :is(th, td, .kpi-value) {
+  font-variant-numeric: tabular-nums;
+}
+#admin-app :is(h1, h2, h3) {
+  text-wrap: balance;
+}
+#orbit-page[data-orbit-page="student-dashboard"] .solar-system * {
+  animation: none;
+}
+#orbit-page:is([data-orbit-page="registration"], [data-orbit-page="school-registration"])
+  :is(.register-card, .onboarding-story) {
+  border-radius: 16px;
+  box-shadow: none;
+}
+#orbit-page[data-orbit-page="registration"] .mission-copy h2 {
+  font-size: 30px;
+}
+#orbit-page[data-orbit-page="about"] .about-hero {
+  border-radius: 16px;
+  padding: 40px;
+}
+#orbit-page[data-orbit-page="about"] .about-hero h1 {
+  font-size: clamp(32px,4vw,52px);
+}
+/* One finite arrival per document, assigned only to the page's primary region. */
+.orbit-scene-entry {
+  animation: orbit-briefing-in 240ms var(--ease-out) both !important;
+}
+#orbit-page[data-orbit-page="channels"] .orbit-scene-entry {
+  animation-name: orbit-map-in !important;
+}
+#orbit-page[data-orbit-page="result"] .orbit-scene-entry {
+  animation-name: orbit-debrief-in !important;
+}
+#orbit-page[data-orbit-page="teacher-profile"] .orbit-scene-entry {
+  animation-name: orbit-dossier-in !important;
+}
+#orbit-page:is([data-orbit-page="login"], [data-orbit-page="school-login"])
+  .login-visual.orbit-scene-entry::before {
+  animation: orbit-window-in 640ms var(--ease-out) both;
+}
+#orbit-page:is([data-orbit-page="login"], [data-orbit-page="school-login"])
+  .login-visual.orbit-scene-entry {
+  animation: none !important;
+}
+@keyframes orbit-briefing-in {
+  from {
+    opacity: .72;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes orbit-map-in {
+  from {
+    opacity: .72;
+    transform: translateX(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes orbit-debrief-in {
+  from {
+    opacity: .7;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes orbit-dossier-in {
+  from {
+    opacity: .7;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes orbit-window-in {
+  from {
+    opacity: .7;
+    transform: scale(1.035);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@media (hover:hover) and (pointer:fine) {
+  #orbit-page[data-orbit-page] :is(.channel-card, .teacher-card, .topic-card, .experiment-card) {
+    transition:
+      transform 160ms var(--ease-out),border-color 160ms ease;
+  }
+  #orbit-page[data-orbit-page]
+    :is(.channel-card, .teacher-card, .topic-card, .experiment-card):hover {
+    transform: translateY(-2px);
+    border-color: var(--orbit-accent);
+  }
+}
+@media (max-width:760px) {
+  #orbit-page:is([data-orbit-page="login"], [data-orbit-page="school-login"]) .login-page {
+    display: block;
+  }
+  #orbit-page:is([data-orbit-page="login"], [data-orbit-page="school-login"]) .login-visual {
+    display: none;
+  }
+  #orbit-page:is([data-orbit-page="login"], [data-orbit-page="school-login"]) .login-area {
+    min-height: 100dvh;
+    padding: 30px 20px;
+  }
+  #orbit-page[data-orbit-page] :is(.directory-banner, .studio-banner, .lesson-hero, .about-hero) {
+    padding: 24px 20px;
+  }
+  #orbit-page[data-orbit-page="student-dashboard"] .welcome h1 {
+    font-size: 28px;
+  }
+  #orbit-page[data-orbit-page="teacher-dashboard"] .welcome h1 {
+    font-size: 26px;
+  }
+}
+body[data-mood="calm"] #orbit-page[data-orbit-page] .orbit-scene-entry,
+body[data-mood="calm"] #orbit-page[data-orbit-page] .orbit-scene-entry::before {
+  animation: none !important;
+}
+@media (prefers-reduced-motion:reduce) {
+  #orbit-page:is([data-orbit-page="login"], [data-orbit-page="school-login"])
+    .login-visual.orbit-scene-entry::before {
+    animation: none !important;
+  }
+  #orbit-page[data-orbit-page] .orbit-scene-entry,
+  #orbit-page[data-orbit-page] .orbit-scene-entry::before {
+    animation: none !important;
+  }
+  #orbit-page[data-orbit-page]
+    :is(
+      .btn,
+      .primary,
+      .login-button,
+      .orbital-button,
+      .channel-card,
+      .teacher-card,
+      .topic-card,
+      .experiment-card
+    ) {
+    transition: none;
+  }
+}
+@media print {
+  #orbit-page[data-orbit-page] .orbit-scene-entry {
+    animation: none !important;
+  }
+  #orbit-page[data-orbit-page] :is(.login-visual, .directory-banner)::before {
+    display: none;
+  }
+}
+
+/* Depth stays behind login copy. Pointer transforms touch this leaf only. */
+#orbit-page:is([data-orbit-page="login"], [data-orbit-page="school-login"]) .login-visual {
+  overflow: hidden;
+}
+#orbit-page:is([data-orbit-page="login"], [data-orbit-page="school-login"])
+  .login-visual:has(.orbit-observatory-depth)::before {
+  background: none;
+  animation: none;
+}
+#orbit-page:is([data-orbit-page="login"], [data-orbit-page="school-login"])
+  .orbit-observatory-depth {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  transform: scale(1.04);
+  background:
+    linear-gradient(180deg,color-mix(in srgb,var(--orbit-space) 18.82%,transparent),color-mix(in srgb,var(--orbit-space) 43.92%,transparent) 65%,color-mix(in srgb,var(--orbit-space) 90.98%,transparent)),url('./assets/lunar-observatory.png') 82% center/cover;
+  transition: transform 250ms var(--ease-out);
+}
+/* Daily data stays still: communicate navigation through decorative icons. */
+#orbit-page[data-orbit-page="teacher-dashboard"] .channel-card:hover {
+  transform: none;
+}
+#orbit-page[data-orbit-page="student-dashboard"]
+  :is(.quick-destination > .icon, .node-circle > .icon),
+#orbit-page[data-orbit-page="teacher-dashboard"] .channel-title > .icon,
+#orbit-page[data-orbit-page="school-dashboard"] .btn > svg {
+  transition: transform 160ms var(--ease-out);
+}
+@media (hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference) {
+  body:not([data-mood="calm"])
+    #orbit-page[data-orbit-page="student-dashboard"]
+    .quick-destination:hover
+    > .icon:not(.arrow) {
+    transform: rotate(-6deg) scale(1.06);
+  }
+  body:not([data-mood="calm"])
+    #orbit-page[data-orbit-page="student-dashboard"]
+    .journey-node:hover
+    .node-circle
+    > .icon {
+    transform: translateY(-2px);
+  }
+  body:not([data-mood="calm"])
+    #orbit-page[data-orbit-page="teacher-dashboard"]
+    .channel-title:hover
+    > .icon {
+    transform: translateX(3px);
+  }
+  html[dir="rtl"]
+    body:not([data-mood="calm"])
+    #orbit-page[data-orbit-page="teacher-dashboard"]
+    .channel-title:hover
+    > .icon {
+    transform: translateX(-3px);
+  }
+  body:not([data-mood="calm"]) #orbit-page[data-orbit-page="school-dashboard"] .btn:hover > svg {
+    transform: translateX(2px);
+  }
+  html[dir="rtl"]
+    body:not([data-mood="calm"])
+    #orbit-page[data-orbit-page="school-dashboard"]
+    .btn:hover
+    > svg {
+    transform: translateX(-2px);
+  }
+}
+body[data-mood="calm"] #orbit-page .orbit-observatory-depth {
+  transform: scale(1.04);
+  transition: none;
+}
+@media (prefers-reduced-motion:reduce) {
+  #orbit-page .orbit-observatory-depth {
+    transform: scale(1.04);
+    transition: none;
+  }
+  #orbit-page[data-orbit-page="student-dashboard"]
+    :is(.quick-destination > .icon, .node-circle > .icon),
+  #orbit-page[data-orbit-page="teacher-dashboard"] .channel-title > .icon,
+  #orbit-page[data-orbit-page="school-dashboard"] .btn > svg {
+    transform: none;
+    transition: none;
+  }
+}
+
+/* School actions get a quiet marker; tables, labels and counts never travel. */
+#orbit-page[data-orbit-page="school-dashboard"] .btn {
+  position: relative;
+}
+#orbit-page[data-orbit-page="school-dashboard"] .btn::after {
+  content: '';
+  position: absolute;
+  inset-inline: 12px;
+  bottom: 5px;
+  height: 2px;
+  background: currentColor;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 160ms ease;
+}
+@media (hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference) {
+  body:not([data-mood="calm"]) #orbit-page[data-orbit-page="school-dashboard"] .btn:hover::after {
+    opacity: .55;
+  }
+}

@@ -1,0 +1,96 @@
+@import url("./audit-foundations.css");
+:root {
+  --orbit-font: OrbitAuditArabic,'Segoe UI',Tahoma,Arial,sans-serif;
+  --orbit-font-heading: OrbitAuditHeading,'Segoe UI',Tahoma,Arial,sans-serif;
+  --orbit-type-body: 16px;
+  --orbit-type-label: 15px;
+  --orbit-type-control: 16px;
+  --orbit-type-nav: 15px;
+  --orbit-line: 1.75;
+  --orbit-midnight: #142b4a;
+  --orbit-blue: #3b82f6;
+  --orbit-turquoise: #22c7a9;
+  --orbit-yellow: #ffd166;
+  --orbit-coral: #ff7a70;
+  --orbit-teal: #0f9d91;
+  --orbit-indigo: #4355a5;
+  --orbit-ink: #17243a;
+  --orbit-muted: #64748b;
+  --orbit-accent: #2563eb;
+  --orbit-action: #2563eb;
+  --orbit-on-action: #fff;
+  --orbit-focus: #2563eb;
+  --orbit-border: #dce4ef;
+  --orbit-surface: #fff;
+  --orbit-canvas: #f6f8fc;
+  --orbit-soft: #eaf1ff;
+  --orbit-space: #142b4a;
+  --orbit-error: #b4233b;
+  --orbit-radius: 14px;
+  --orbit-space-unit: 8px;
+  --purple: var(--orbit-accent);
+  --blue: var(--orbit-blue);
+  --text: var(--orbit-ink);
+  --muted: var(--orbit-muted);
+  --line: var(--orbit-border);
+  --panel: var(--orbit-surface);
+  --bg: var(--orbit-canvas);
+  --soft: var(--orbit-soft);
+}
+html {
+  font-size: 16px;
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  scrollbar-gutter: stable;
+}
+body {
+  font-family: var(--orbit-font);
+  font-size: var(--orbit-type-body);
+  line-height: var(--orbit-line);
+}
+body[data-theme="dark"] {
+  --orbit-ink: #edf4ff;
+  --orbit-muted: #b4c3d8;
+  --orbit-border: #304763;
+  --orbit-surface: #162b43;
+  --orbit-canvas: #0d1d30;
+  --orbit-soft: #203b59;
+  --orbit-space: #0b192a;
+  --orbit-accent: #9ac3ff;
+  --orbit-focus: #9ac3ff;
+  --orbit-error: #ffacb5;
+}
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+button {
+  touch-action: manipulation;
+}
+img {
+  max-width: 100%;
+}
+.orbit-content {
+  min-width: 0;
+}
+body.orbit-shell-mounted {
+  background: var(--orbit-canvas);
+}
+/* Frozen scene palette: localization may change copy, never the hero's art. */
+#orbit-page[data-orbit-page="hompage"] #hero {
+  --orbit-accent: #7542df;
+  --orbit-focus: #a58ae5;
+  --orbit-ink: #25263e;
+  --orbit-muted: #777a92;
+  --orbit-border: #e5e0ef;
+  --orbit-surface: #fff;
+  --orbit-canvas: #f8f7fc;
+  --orbit-error: #b63455;
+}

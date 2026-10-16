@@ -1,0 +1,178 @@
+:root {
+  --orbit-motion-feedback: 360ms;
+  --orbit-motion-interaction: 200ms;
+  --orbit-motion-ease-out: cubic-bezier(.16,1,.3,1);
+  --orbit-motion-return: cubic-bezier(.34,1.3,.64,1);
+}
+[data-orbit-magnetic] {
+  transition: translate var(--orbit-motion-interaction) var(--orbit-motion-return) !important;
+}
+#learning-start button,
+#save-profile,
+#join-code,
+#join-form button,
+#publish-form button[type="submit"],
+.assignment-button.primary,
+[data-orbit-magnet] {
+  transition: translate var(--orbit-motion-interaction) var(--orbit-motion-return);
+}
+#orbit-action-feedback {
+  position: fixed;
+  inset-inline-end: 24px;
+  bottom: max(24px,env(safe-area-inset-bottom));
+  z-index: 3000;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  max-width: min(440px,calc(100vw - 32px));
+  box-sizing: border-box;
+  border: 1px solid #a5ddd4;
+  border-radius: 15px;
+  background: #effcf8;
+  color: #155e53;
+  box-shadow: 0 10px 35px #10223820;
+  font: 500 14px/1.8 var(--orbit-font,sans-serif);
+}
+#orbit-action-feedback[hidden] {
+  display: none;
+}
+#orbit-action-feedback > svg {
+  width: 25px;
+  height: 25px;
+  flex-shrink: 0;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 24;
+  stroke-dashoffset: 0;
+}
+#orbit-action-feedback button {
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  min-width: 36px;
+  min-height: 36px;
+  font-size: 23px;
+  cursor: pointer;
+}
+#orbit-action-feedback button:focus-visible {
+  outline: 3px solid #0d9488;
+  outline-offset: 2px;
+}
+#orbit-action-feedback[data-type="error"] {
+  background: #fff0f3;
+  border-color: #f1c5d1;
+  color: #92364b;
+}
+body[data-theme="dark"] #orbit-action-feedback {
+  background: #173d38;
+  border-color: #32665a;
+  color: #bbf7df;
+}
+body[data-theme="dark"] #orbit-action-feedback[data-type="error"] {
+  background: #442c3a;
+  border-color: #794357;
+  color: #ffc5d1;
+}
+.orbit-smart-skeleton {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit,minmax(min(100%,190px),1fr));
+  width: 100%;
+  box-sizing: border-box;
+  pointer-events: none;
+}
+.orbit-skeleton-item {
+  display: grid;
+  gap: 14px;
+  align-content: start;
+  padding: 20px;
+  border-radius: 16px;
+  background: var(--orbit-surface,#fff);
+  overflow: hidden;
+}
+.orbit-skeleton-bar {
+  display: block;
+  height: 14px;
+  width: 100%;
+  border-radius: 7px;
+  background: var(--orbit-border,#e2ecef);
+  animation: orbit-skeleton-pulse 1.5s ease-in-out infinite alternate;
+}
+.orbit-skeleton-bar:last-child {
+  width: 65%;
+}
+.orbit-smart-skeleton[data-kind="statistics"] .orbit-skeleton-bar:first-child {
+  width: 35%;
+  height: 30px;
+}
+.orbit-smart-skeleton:is([data-kind="lesson"], [data-kind="channel"])
+  .orbit-skeleton-bar:first-child {
+  height: 130px;
+  border-radius: 12px;
+}
+.orbit-smart-skeleton[data-kind="profile"] .orbit-skeleton-bar:first-child {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+}
+.orbit-smart-skeleton[data-kind="table"] {
+  grid-template-columns: 1fr;
+}
+.orbit-smart-skeleton[data-kind="table"] .orbit-skeleton-item {
+  grid-template-columns: repeat(3,minmax(0,1fr));
+}
+.orbit-smart-skeleton:is([data-kind="assignment"], [data-kind="panel"]) {
+  grid-template-columns: 1fr;
+}
+.orbit-smart-skeleton[data-kind="panel"] .orbit-skeleton-bar:first-child {
+  width: 45%;
+  height: 25px;
+}
+.orbit-loading-content {
+  min-height: 240px;
+}
+.orbit-loading-content > *:not(.orbit-skeleton-overlay) {
+  visibility: hidden;
+}
+.orbit-skeleton-overlay {
+  position: absolute;
+  inset: 0;
+  min-height: 100%;
+  background: var(--orbit-surface,#fff);
+  z-index: 1;
+  align-content: start;
+}
+@keyframes orbit-skeleton-pulse {
+  from {
+    opacity: .45;
+  }
+  to {
+    opacity: .85;
+  }
+}
+@media (max-width:600px) {
+  #orbit-action-feedback {
+    inset-inline: 16px;
+    bottom: 16px;
+  }
+  .orbit-smart-skeleton {
+    grid-template-columns: 1fr;
+  }
+}
+@media (prefers-reduced-motion:reduce) {
+  .orbit-skeleton-bar {
+    animation: none;
+  }
+  [data-orbit-magnetic] {
+    translate: none !important;
+    transition: none !important;
+  }
+}
+body[data-mood="calm"] .orbit-skeleton-bar {
+  animation: none;
+}

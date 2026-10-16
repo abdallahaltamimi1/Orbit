@@ -1,0 +1,5 @@
+body {
+  background: var(--orbit-canvas);
+  color: var(--orbit-accent);
+  padding: 40px;
+}

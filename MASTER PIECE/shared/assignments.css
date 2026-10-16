@@ -1,0 +1,572 @@
+.orbit-assignments {
+  margin-block: 28px;
+  color: var(--orbit-ink);
+  min-width: 0;
+}
+.assignment-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.assignment-heading h2 {
+  margin: 0;
+  font-size: 24px;
+}
+.assignment-note {
+  color: var(--orbit-muted);
+  font-size: 13px;
+  line-height: 1.8;
+}
+.assignment-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(min(100%,270px),1fr));
+  gap: 16px;
+}
+.assignment-card {
+  background: var(--orbit-surface);
+  border: 1px solid var(--orbit-border);
+  border-radius: var(--orbit-radius);
+  padding: 20px;
+  min-width: 0;
+}
+.assignment-card h3 {
+  font-size: 18px;
+  line-height: 1.7;
+  margin: 10px 0;
+  overflow-wrap: anywhere;
+}
+.assignment-card p,
+.assignment-inline p {
+  overflow-wrap: anywhere;
+  line-height: 1.8;
+}
+.assignment-inline {
+  padding-block: 14px;
+  margin-top: 14px;
+  border-top: 1px solid var(--orbit-border);
+}
+.assignment-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+.assignment-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 16px;
+  border: 1px solid var(--orbit-border);
+  border-radius: 10px;
+  color: var(--orbit-ink);
+  background: var(--orbit-surface);
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+  text-decoration: none;
+}
+.assignment-button.primary {
+  background: var(--orbit-action);
+  color: var(--orbit-on-action);
+  border-color: var(--orbit-action);
+}
+#orbit-page a.assignment-button {
+  color: var(--orbit-ink);
+}
+.assignment-button:disabled {
+  opacity: .6;
+  cursor: default;
+}
+.assignment-button:focus-visible,
+.assignment-dialog :focus-visible {
+  outline: 3px solid var(--orbit-focus);
+  outline-offset: 3px;
+}
+.assignment-status {
+  display: inline-block;
+  padding: 4px 9px;
+  border-radius: 10px;
+  background: var(--orbit-soft);
+  font-size: 13px;
+}
+.assignment-status.late {
+  color: var(--orbit-error);
+}
+.assignment-empty {
+  padding: 24px;
+  border: 1px dashed var(--orbit-border);
+  border-radius: var(--orbit-radius);
+  color: var(--orbit-muted);
+}
+.assignment-dialog {
+  width: min(760px,calc(100vw - 24px));
+  max-height: 90dvh;
+  overflow: auto;
+  padding: 24px;
+  border: 1px solid var(--orbit-border);
+  border-radius: var(--orbit-radius);
+  background: var(--orbit-surface);
+  color: var(--orbit-ink);
+  font: inherit;
+}
+.assignment-dialog::backdrop {
+  background: rgb(10 25 42 / .55);
+}
+.assignment-dialog header {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.assignment-dialog h2 {
+  font-size: 22px;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.assignment-dialog label {
+  display: grid;
+  gap: 8px;
+  margin-block: 14px;
+  font-size: 14px;
+}
+.assignment-dialog input:not([type="checkbox"]),
+.assignment-dialog textarea {
+  width: 100%;
+  padding: 12px;
+  min-height: 44px;
+  border: 1px solid var(--orbit-border);
+  border-radius: 10px;
+  background: var(--orbit-canvas);
+  color: var(--orbit-ink);
+  font: inherit;
+  font-size: 16px;
+}
+.assignment-dialog textarea {
+  min-height: 160px;
+  resize: vertical;
+}
+.assignment-error {
+  color: var(--orbit-error);
+  min-height: 24px;
+  line-height: 1.8;
+}
+.assignment-answer {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: 1.9;
+  max-height: 380px;
+  overflow: auto;
+  padding: 16px;
+  border-radius: 10px;
+  background: var(--orbit-canvas);
+}
+.assignment-files {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-block: 12px;
+}
+.assignment-files button {
+  overflow-wrap: anywhere;
+  max-width: 100%;
+  text-align: start;
+}
+.assignment-dialog .assignment-keep {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.assignment-keep input {
+  width: 18px;
+  height: 18px;
+}
+.assignment-submission {
+  padding-block: 16px;
+  border-bottom: 1px solid var(--orbit-border);
+}
+.assignment-submission h3 {
+  margin: 4px 0;
+  font-size: 18px;
+}
+.assignment-feedback {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  padding: 12px;
+  background: var(--orbit-soft);
+  border-radius: 10px;
+  margin-block: 12px;
+}
+.assignment-alert {
+  position: fixed;
+  bottom: 20px;
+  inset-inline: 20px;
+  max-width: 700px;
+  margin: auto;
+  padding: 14px 20px;
+  background: var(--orbit-surface);
+  color: var(--orbit-ink);
+  border: 1px solid var(--orbit-border);
+  border-radius: 10px;
+  z-index: 1000;
+}
+.assignment-notifications {
+  margin-top: 20px;
+}
+.assignment-notifications summary {
+  cursor: pointer;
+  min-height: 44px;
+}
+.assignment-notification {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  border-bottom: 1px solid var(--orbit-border);
+  padding: 12px 0;
+}
+.assignment-notification p {
+  margin: 0;
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+@media (max-width:600px) {
+  .assignment-dialog {
+    padding: 18px;
+  }
+  .assignment-card {
+    padding: 18px;
+  }
+}
+.orbit-assignments [hidden],
+.assignment-dialog [hidden],
+.assignment-alert[hidden] {
+  display: none !important;
+}
+
+/* Assignment workspace: reading first, task controls second. */
+.assignment-summary {
+  margin: 8px 0 0;
+  color: var(--orbit-muted);
+  font-size: 14px;
+  line-height: 1.8;
+}
+.assignment-summary strong {
+  color: var(--orbit-ink);
+  font-variant-numeric: tabular-nums;
+}
+.assignment-storage {
+  margin-block: 12px 20px;
+}
+.assignment-toolbar {
+  display: flex;
+  align-items: end;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-block: 24px 16px;
+}
+.assignment-toolbar label {
+  display: grid;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.assignment-toolbar label:first-child {
+  flex: 1;
+  min-width: min(100%,240px);
+}
+.assignment-toolbar input,
+.assignment-toolbar select {
+  font: inherit;
+  font-size: 16px;
+  min-height: 44px;
+  border: 1px solid var(--orbit-border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: var(--orbit-surface);
+  color: var(--orbit-ink);
+  width: 100%;
+  caret-color: var(--orbit-action);
+}
+.assignment-toolbar [data-assignment-count] {
+  padding-bottom: 12px;
+}
+.assignment-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.assignment-card {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) minmax(240px,.42fr);
+  gap: 24px;
+  padding: 24px;
+  border-radius: 14px;
+}
+.assignment-content {
+  min-width: 0;
+}
+.assignment-card h3 {
+  margin: 4px 0 12px;
+  font-size: 20px;
+  line-height: 1.6;
+}
+.assignment-channel {
+  font-size: 13px;
+  color: var(--orbit-muted);
+  margin: 0;
+}
+.assignment-description {
+  margin: 0 0 20px;
+  max-width: 70ch;
+  color: var(--orbit-ink);
+}
+.assignment-meta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  font-size: 13px;
+  color: var(--orbit-muted);
+}
+.assignment-meta a {
+  color: var(--orbit-ink);
+  text-underline-offset: 4px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+.assignment-card > .assignment-inline {
+  margin: 0;
+  padding: 0;
+  padding-inline-start: 24px;
+  border-top: 0;
+  border-inline-start: 1px solid var(--orbit-border);
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: center;
+}
+.assignment-card .assignment-feedback {
+  width: 100%;
+  box-sizing: border-box;
+}
+.assignment-tally {
+  font-variant-numeric: tabular-nums;
+  font-size: 14px;
+}
+.assignment-status {
+  border-radius: 10px;
+  font-weight: 600;
+  line-height: 1.6;
+  color: var(--orbit-ink);
+}
+.assignment-status.reviewed {
+  background: var(--orbit-soft);
+  color: var(--orbit-ink);
+}
+.assignment-status.missing {
+  background: var(--orbit-canvas);
+  border: 1px solid var(--orbit-border);
+}
+.assignment-empty {
+  margin: 0;
+  padding: 32px;
+  background: var(--orbit-surface);
+  border-style: solid;
+}
+.assignment-empty h3 {
+  margin: 0 0 8px;
+  color: var(--orbit-ink);
+}
+.assignment-empty p {
+  margin: 0;
+  line-height: 1.8;
+}
+.assignment-review-dialog {
+  width: min(1040px,calc(100vw - 24px));
+}
+.assignment-review-layout {
+  display: grid;
+  grid-template-columns: minmax(0,1.25fr) minmax(0,1fr);
+  gap: 32px;
+  align-items: start;
+}
+.assignment-review-layout h3 {
+  margin: 8px 0 16px;
+  font-size: 18px;
+}
+.assignment-review-form {
+  padding-inline-start: 24px;
+  border-inline-start: 1px solid var(--orbit-border);
+  min-width: 0;
+}
+.assignment-response {
+  min-width: 0;
+}
+.assignment-back {
+  padding: 8px 0;
+  margin-bottom: 16px;
+  border: 0;
+  background: none;
+  color: var(--orbit-ink);
+  font: inherit;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  cursor: pointer;
+  min-height: 44px;
+}
+.assignment-roster .assignment-submission {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) auto auto;
+  gap: 16px;
+  align-items: center;
+}
+.assignment-submission h3 {
+  overflow-wrap: anywhere;
+}
+.assignment-roster .assignment-note {
+  margin: 6px 0 0;
+}
+.assignment-roster .assignment-status {
+  justify-self: start;
+}
+.assignment-dialog header {
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--orbit-border);
+}
+.assignment-dialog input,
+.assignment-dialog textarea {
+  box-sizing: border-box;
+  caret-color: var(--orbit-action);
+}
+.assignment-dialog .assignment-error:empty {
+  min-height: 0;
+  margin: 0;
+}
+.assignment-dialog form > [type="submit"] {
+  min-width: 160px;
+}
+.assignment-notifications {
+  padding-top: 16px;
+  border-top: 1px solid var(--orbit-border);
+}
+.assignment-note,
+.assignment-channel {
+  color: var(--orbit-muted);
+}
+.orbit-assignments :focus-visible {
+  outline: 3px solid var(--orbit-focus);
+  outline-offset: 3px;
+}
+.orbit-assignments ::selection,
+.assignment-dialog ::selection {
+  background: var(--orbit-soft);
+  color: var(--orbit-ink);
+}
+.assignment-dialog {
+  scrollbar-color: var(--orbit-border) var(--orbit-surface);
+}
+@media (hover:hover) {
+  .assignment-button:not(:disabled):hover {
+    border-color: var(--orbit-action);
+  }
+  .assignment-meta a:hover,
+  .assignment-back:hover {
+    text-decoration-thickness: 2px;
+  }
+}
+@media (max-width:760px) {
+  .assignment-card {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 20px;
+  }
+  .assignment-card > .assignment-inline {
+    padding-inline-start: 0;
+    padding-top: 16px;
+    border-inline-start: 0;
+    border-top: 1px solid var(--orbit-border);
+  }
+  .assignment-review-layout {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .assignment-review-form {
+    padding-inline-start: 0;
+    padding-top: 16px;
+    border-inline-start: 0;
+    border-top: 1px solid var(--orbit-border);
+  }
+  .assignment-roster .assignment-submission {
+    grid-template-columns: minmax(0,1fr) auto;
+  }
+  .assignment-roster .assignment-submission > button {
+    grid-column: 1/-1;
+    justify-self: start;
+  }
+}
+@media (max-width:480px) {
+  .assignment-toolbar {
+    gap: 12px;
+  }
+  .assignment-toolbar label:first-child {
+    flex-basis: 100%;
+  }
+  .assignment-toolbar label:nth-child(2) {
+    flex: 1;
+  }
+  .assignment-heading h2 {
+    font-size: 22px;
+  }
+  .assignment-notification {
+    align-items: start;
+    flex-wrap: wrap;
+  }
+  .assignment-dialog form > [type="submit"] {
+    width: 100%;
+  }
+}
+.orbit-assignments {
+  scroll-margin-top: 88px;
+}
+.assignment-files svg {
+  flex-shrink: 0;
+}
+.assignment-files bdi {
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+
+.assignment-roster-filter {
+  max-width: 320px;
+}
+.assignment-roster-filter select {
+  min-height: 44px;
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--orbit-border);
+  border-radius: 10px;
+  background: var(--orbit-surface);
+  color: var(--orbit-ink);
+  font: inherit;
+  font-size: 16px;
+}
+.assignment-dialog [hidden] {
+  display: none !important;
+}
+.assignment-former {
+  margin-top: 24px;
+}
+.assignment-former summary {
+  min-height: 44px;
+  cursor: pointer;
+}
+.assignment-roster bdi {
+  overflow-wrap: anywhere;
+}

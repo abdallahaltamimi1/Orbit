@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#142b4a" />
+    <title>ORBIT | جولة المدرسة</title>
+    <link rel="stylesheet" href="../shared/tokens.css" />
+    <link rel="stylesheet" href="../shared/role-themes.css" />
+    <link rel="stylesheet" href="./school-tour.css" />
+    <link rel="stylesheet" href="./physics-laboratory.css" />
+    <script src="../shared/account-access.js"></script>
+    <script src="../shared/config.js"></script>
+    <script src="../shared/recruitment-service.js"></script>
+    <script src="../shared/profiles.js"></script>
+    <script src="../shared/auth.js"></script>
+    <script src="../shared/session.js"></script>
+    <script src="../shared/language-control.js" defer></script>
+    <script src="./tour-data.js" defer></script>
+    <script src="./tour-ui.js" defer></script>
+  </head>
+  <body
+    id="orbit-page"
+    data-orbit-page="school-tour"
+    data-orbit-role="student"
+    data-tour-state="loading"
+  >
+    <a class="tour-skip" href="#tour-navigator">اختيار المواقع</a>
+    <div id="tour-scene" aria-hidden="true"></div>
+    <div id="tour-hotspots" aria-hidden="true"></div>
+    <header class="tour-header">
+      <a
+        class="tour-brand"
+        href="../student-dashboard/student-dashboard.html#school-tour-entry"
+        aria-label="العودة للوحة الطالب"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3 21V8l9-5 9 5v13ZM9 21v-7h6v7M7 9v2m10-2v2M7 15v2m10-2v2" />
+        </svg>
+        <span class="brand-label">ORBIT <span id="tour-title">جولة المدرسة</span></span>
+      </a>
+      <a
+        class="tour-button exit-tour"
+        href="../student-dashboard/student-dashboard.html#school-tour-entry"
+        id="tour-exit"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M9 3H4v18h5M9 12h12m-5-5 5 5-5 5" /></svg
+        ><span>العودة للوحة</span>
+      </a>
+    </header>
+    <nav id="tour-navigator" class="tour-navigator" tabindex="-1" aria-label="مواقع المدرسة"></nav>
+    <div class="tour-controls">
+      <button class="tour-button" id="tour-overview" type="button"></button>
+      <button class="tour-button" id="tour-previous" type="button" disabled></button>
+      <button class="tour-button" id="tour-pause" type="button" aria-pressed="false"></button>
+      <button class="tour-button" id="tour-simple" type="button" aria-pressed="false"></button>
+    </div>
+    <main>
+      <div id="tour-route" class="tour-route" aria-hidden="true"></div>
+      <section class="tour-info" aria-labelledby="location-title">
+        <div class="tour-info-top"><span id="tour-counter"></span><span id="tour-hint"></span></div>
+        <h1 id="location-title"></h1>
+        <p id="location-description"></p>
+        <p class="tour-empty" id="tour-empty" hidden></p>
+        <a class="tour-content-link" id="tour-content-link" hidden></a>
+        <p id="tour-feedback" class="tour-feedback" role="status"></p>
+      </section>
+      <section class="tour-loading" id="tour-loading" aria-label="تحميل الجولة">
+        <div>
+          <svg class="loading-school" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 21V8l9-5 9 5v13ZM9 21v-7h6v7M7 9v2m10-2v2" />
+          </svg>
+          <h2 id="loading-title">نجهّز جولتك</h2>
+          <p id="loading-description"></p>
+          <progress id="tour-loading-progress" max="3" aria-label="تحميل المشهد"></progress>
+        </div>
+      </section>
+      <section class="tour-fallback" id="tour-fallback" hidden aria-labelledby="fallback-title">
+        <h2 id="fallback-title"></h2>
+        <p id="fallback-description"></p>
+        <div class="fallback-campus">
+          <img id="fallback-preview" loading="lazy" alt="حرم المدرسة التوضيحي" />
+          <svg id="fallback-plan" viewBox="0 0 160 110" role="img" aria-label="مخطط الحرم">
+            <path d="M0 0h160v110H0Z" fill="#e4efe2" />
+            <path d="M34 28h42v42H34ZM84 28h42v42H84Z" fill="#e7dfcc" stroke="#8d927f" />
+            <path d="M76 16h8v67h-8Z" fill="#fff" stroke="#64748b" />
+            <path d="M60 83h40v18H60Z" fill="#d3c6ae" stroke="#8d927f" />
+            <path d="M110 80h42v24h-42Z" fill="#608668" stroke="#f6f8fc" />
+            <path d="M16 78h34v26H16Z" fill="#bd9b76" stroke="#8d927f" />
+            <path d="M80 3v105M4 75h152" fill="none" stroke="#97ab99" stroke-dasharray="2 3" />
+          </svg>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
