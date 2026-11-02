@@ -2,7 +2,7 @@
   "use strict";
   const S = OrbitSubscriptions,
     { t, escape: esc } = S;
-  let audience = "all",
+  let audience = "teacher",
     selected = null,
     billingPeriod = null,
     pending = false,
@@ -38,18 +38,11 @@
         : t("Not announced yet", "لم تُعلن بعد");
   }
   function filter() {
-    const grid = document.querySelector(".orbit-pricing-grid"),
-      student = document.getElementById("pricing-student-info");
+    const grid = document.querySelector(".orbit-pricing-grid");
     if (!grid) return;
-    grid.hidden = audience === "student";
-    if (student) student.hidden = audience !== "student";
-    if (audience === "student") {
-      const checkout = document.getElementById("pricing-checkout");
-      if (checkout) checkout.hidden = true;
-    }
     grid
       .querySelectorAll(".orbit-plan-card")
-      .forEach((card) => (card.hidden = audience !== "all" && card.dataset.audience !== audience));
+      .forEach((card) => (card.hidden = card.dataset.audience !== audience));
     document
       .querySelectorAll("[data-plan-audience]")
       .forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.planAudience === audience)));
@@ -156,34 +149,40 @@
     const grid = document.querySelector(".orbit-pricing-grid");
     if (!grid || grid.dataset.pricingEnhanced) return;
     grid.dataset.pricingEnhanced = "true";
+    const pricingRole = grid.dataset.pricingRole || "public";
+    if (pricingRole === "teacher" || pricingRole === "school") audience = pricingRole;
+    else if (!["teacher", "school"].includes(audience)) audience = "teacher";
+    if (selected && S.config.plans[selected]?.accountType !== audience) {
+      selected = null;
+      billingPeriod = null;
+    }
     const heading = document.createElement("section");
     heading.id = "pricing-comparison-heading";
     heading.className = "pricing-comparison-heading";
-    heading.innerHTML = `<div><h2>${t("A plan for every next step", "باقة تناسب خطوتك الجاية")}</h2><p>${t("Compare the actual features and limits.", "قارن المزايا والحدود المتاحة بكل وضوح.")}</p></div><nav aria-label="${t("Plan audience", "فئة الباقات")}">${[
-      ["all", "All", "الكل"],
-      ["student", "Students", "الطلاب"],
-      ["teacher", "Teachers", "المعلمون"],
-      ["school", "Schools", "المدارس"],
+    heading.innerHTML = `<div><h2>${t("A plan for every next step", "باقة تناسب خطوتك الجاية")}</h2><p>${t("Compare the actual features and limits.", "قارن المزايا والحدود المتاحة بكل وضوح.")}</p></div>${pricingRole === "public" ? `<nav aria-label="${t("Plan audience", "فئة الباقات")}">${[
+      ["teacher", "Teacher Plans", "باقات المعلمين"],
+      ["school", "School Plans", "باقات المدارس"],
     ]
       .map(
         ([id, en, ar]) =>
-          `<button type="button" data-plan-audience="${id}" aria-pressed="${audience === id}">${t(en, ar)}</button>`,
+          `<button type="button" data-plan-audience="${id}" aria-pressed="${audience === id}" aria-controls="orbit-pricing-grid">${t(en, ar)}</button>`,
       )
-      .join("")}</nav>`;
+      .join("")}</nav>` : ""}`;
     grid.before(heading);
     heading.querySelectorAll("button").forEach(
       (b) =>
         (b.onclick = () => {
           audience = b.dataset.planAudience;
+          if (selected && S.config.plans[selected]?.accountType !== audience) {
+            selected = null;
+            billingPeriod = null;
+            const checkout = document.getElementById("pricing-checkout");
+            if (checkout) checkout.hidden = true;
+          }
+          updateSelected();
           filter();
         }),
     );
-    const student = document.createElement("section");
-    student.id = "pricing-student-info";
-    student.className = "pricing-student-info";
-    student.hidden = true;
-    student.innerHTML = `<h3>${t("Your learning journey", "رحلتك التعليمية")}</h3><p>${t("No student subscription plans are currently configured. Your existing learning access remains unchanged.", "لا توجد باقات اشتراك للطلاب مهيأة حاليًا. وصولك الحالي للتعلّم يبقى كما هو.")}</p><a class="orbit-access-button secondary" href="../lessons/lessons.html">${t("Explore lessons", "استكشف الدروس")}</a>`;
-    grid.after(student);
     const current = S.effective().plan;
     grid.querySelectorAll(".orbit-plan-card").forEach((card) => {
       const button = card.querySelector("[data-select-plan]"),
@@ -226,7 +225,7 @@
     checkout.id = "pricing-checkout";
     checkout.className = "pricing-checkout";
     checkout.hidden = true;
-    student.after(checkout);
+    grid.after(checkout);
     if (selected && S.config.plans[selected]) renderCheckout();
     updateSelected();
     filter();

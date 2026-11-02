@@ -99,22 +99,7 @@
         url: "../meetings/meeting.html?id=" + encodeURIComponent(m.id),
         icon: "users",
       }));
-    const assignments = (window.OrbitAssignments?.visible() || [])
-      .filter((p) => p.dueDate?.slice(0, 10) === key)
-      .map((p) => {
-        const record = OrbitAssignments.records(p.id).find(
-          (r) => r.studentId === A.current().email,
-        );
-        return {
-          title: p.title || p.titleAr || p.titleEn,
-          time: t("Due", "التسليم"),
-          when: Date.parse(p.dueDate),
-          detail: record ? t("Submitted", "تم التسليم") : t("Not submitted", "لم يُسلّم"),
-          url: "#assignments-section",
-          icon: "clipboard-list",
-        };
-      });
-    const items = [...meetings, ...assignments].sort((a, b) => a.when - b.when);
+    const items = meetings.sort((a, b) => a.when - b.when);
     host.innerHTML =
       items
         .slice(0, 5)
@@ -162,6 +147,8 @@
         }),
       );
     events.sort((a, b) => (Date.parse(b.time) || 0) - (Date.parse(a.time) || 0));
+    const section = host.closest(".orbit-recent");
+    if (section) section.hidden = events.length === 0;
     host.innerHTML =
       events
         .slice(0, 4)

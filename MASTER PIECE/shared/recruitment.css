@@ -94,8 +94,8 @@
   background: #fff0f3;
 }
 #orbit-page .pill.accepted {
-  color: #137c62;
-  background: #e9faf4;
+  color: var(--orbit-accent);
+  background: var(--orbit-green-50);
 }
 #orbit-page .match-reasons {
   list-style: none;

@@ -22,6 +22,7 @@
   }
   const routes = new Set([
     "hompage",
+    "contact",
     "about",
     "login",
     "registration",
@@ -115,7 +116,7 @@
     return prior || fallbackDestination();
   }
   function mountBack() {
-    if (!root() || location.pathname.includes("/hompage/")) return;
+    if (!root() || /\/(hompage|contact)\//.test(location.pathname)) return;
     const host =
       document.querySelector(".login-container") ||
       document.querySelector("#orbit-page .wrap") ||
@@ -139,7 +140,7 @@
   }
   function mountFooter() {
     if (
-      !/\/(hompage|about)\//.test(location.pathname) ||
+      !/\/(hompage|about|contact)\//.test(location.pathname) ||
       document.getElementById("orbit-site-footer")
     )
       return;
@@ -170,7 +171,6 @@
       [
         ["../lessons/lessons.html", t("Lessons", "الدروس")],
         ["../lab/lab.html", t("Interactive labs", "المختبرات التفاعلية")],
-        ["../teacher-directory/teacher-directory.html", t("Teacher directory", "دليل المعلمين")],
         ["../registration/registration.html", t("Sign up", "إنشاء حساب")],
       ],
     )}</ul></section><section class="orbit-footer-quick"><h2>${t("Quick links", "روابط سريعة")}</h2><ul>${links(
@@ -178,7 +178,7 @@
         ["../hompage/hompage.html", t("Home", "الرئيسية")],
         ["../channels/channels.html", t("Channels", "القنوات")],
         ["../hompage/hompage.html#faq", t("FAQ", "الأسئلة الشائعة")],
-        ["../hompage/hompage.html#contact", t("Contact us", "تواصل معنا")],
+        ["../contact/contact.html", t("Contact us", "تواصل معنا")],
       ],
     )}</ul></section></div><div class="orbit-footer-bottom"><span>${t("Learning connects us.", "التعلّم يجمعنا.")}</span><span class="orbit-footer-copyright">© ORBIT ${new Date().getFullYear()}${t(". All rights reserved.", "، جميع الحقوق محفوظة.")}</span><button type="button" class="orbit-footer-top" aria-label="${t("Back to top", "العودة إلى أعلى الصفحة")}" title="${t("Back to top", "العودة إلى أعلى الصفحة")}">${icon("up")}</button></div>`;
     root().append(footer);

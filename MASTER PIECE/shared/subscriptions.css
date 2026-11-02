@@ -1,10 +1,36 @@
 /* Shared access and plan components use the existing site tokens. */
+body[data-orbit-role="school"] :is(.orbit-subscription-panel, .orbit-school-members, .orbit-access-dialog) {
+  --orbit-accent: var(--orbit-green-800);
+  --orbit-action: var(--orbit-green-800);
+  --orbit-action-hover: var(--orbit-green-900);
+  --orbit-focus: var(--orbit-green-800);
+  --orbit-soft: var(--orbit-green-50);
+  --orbit-on-soft: var(--orbit-green-800);
+  --purple: var(--orbit-accent);
+  --purple-dark: var(--orbit-action);
+  --blue: var(--orbit-accent);
+  --soft: var(--orbit-soft);
+}
+body[data-theme="dark"][data-orbit-role="school"] :is(.orbit-subscription-panel, .orbit-school-members, .orbit-access-dialog) {
+  --orbit-accent: var(--orbit-green-400);
+  --orbit-action: var(--orbit-green-800);
+  --orbit-action-hover: var(--orbit-green-800);
+  --orbit-focus: var(--orbit-green-400);
+  --orbit-soft: var(--orbit-green-900);
+  --orbit-on-soft: var(--orbit-green-400);
+}
+body[data-orbit-role="school"] :is(.orbit-access-button, .orbit-dialog-close):focus-visible {
+  outline-color: var(--orbit-focus);
+}
+body[data-orbit-role="school"] .orbit-school-members input:is([type="checkbox"], [type="radio"]) {
+  accent-color: var(--orbit-accent);
+}
 .orbit-access-dialog {
   border: 1px solid var(--line,var(--orbit-soft));
   border-radius: 22px;
   padding: 30px;
   background: var(--panel,#fff);
-  color: var(--text,#24304c);
+  color: var(--text,var(--orbit-green-900));
   width: min(520px,calc(100% - 32px));
   max-height: 85vh;
   overflow: auto;
@@ -31,7 +57,7 @@
   border: 0;
   border-radius: 50%;
   background: var(--soft,var(--orbit-soft));
-  color: var(--text,#24304c);
+  color: var(--text,var(--orbit-green-900));
   font-size: 24px;
   width: 36px;
   height: 36px;
@@ -69,7 +95,7 @@
 }
 .orbit-access-button:focus-visible,
 .orbit-dialog-close:focus-visible {
-  outline: 3px solid #7ea4ff;
+  outline: 3px solid var(--orbit-focus);
   outline-offset: 4px;
 }
 .orbit-access-button:hover {
@@ -81,7 +107,7 @@
   border-radius: 20px;
   padding: 24px;
   margin: 28px 0;
-  color: var(--text,#24304c);
+  color: var(--text,var(--orbit-green-900));
 }
 #orbit-page .orbit-subscription-panel header {
   display: flex;
@@ -111,7 +137,7 @@
 #orbit-page .orbit-usage-grid small {
   display: block;
   font-size: 12px;
-  color: var(--muted,#79839c);
+  color: var(--muted,var(--orbit-green-500));
 }
 #orbit-page .orbit-usage-grid strong {
   display: block;
@@ -147,7 +173,7 @@
   font-size: 12px;
 }
 #orbit-page .orbit-local-note {
-  color: var(--muted,#79839c);
+  color: var(--muted,var(--orbit-green-500));
   font-size: 12px;
   line-height: 1.8;
 }
@@ -224,7 +250,7 @@
   border: 1px solid var(--line,var(--orbit-soft));
   border-radius: 12px;
   background: var(--soft,var(--orbit-soft));
-  color: var(--text,#24304c);
+  color: var(--text,var(--orbit-green-900));
   font-size: 13px;
   line-height: 1.9;
   margin: 14px 0;

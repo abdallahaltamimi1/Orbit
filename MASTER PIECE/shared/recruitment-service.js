@@ -68,6 +68,8 @@
       skills: p.skills || [],
       methods: p.methods || [],
       positions: p.positions || "",
+      certificates: p.certificates || [],
+      workSamples: p.workSamples || [],
       location: p.location || "",
       bio: p.bio || "",
       photo: p.photo || "",
@@ -292,8 +294,13 @@
     requireRole("school");
     const job = jobId ? ownJobs().find((j) => j.id === jobId) : null;
     if (jobId && !job) throw Error("NOT_OWNER");
+    const inactive = new Set(
+      data()
+        .accounts.filter((account) => ["suspended", "deleted"].includes(account.status))
+        .map((account) => account.email),
+    );
     return allTeachers()
-      .filter((p) => p.available && p.shareWithSchools)
+      .filter((p) => p.available && p.shareWithSchools && !inactive.has(p.id))
       .map((p) => ({ ...p, match: job ? match(job, p) : null }));
   }
   function apply(jobId, message, consent) {
@@ -344,12 +351,14 @@
         .map((a) => ({ ...a, submittedProfile: a.profile, profile: teacher(a.teacherId) }));
     throw Error("ROLE_DENIED");
   }
-  const statuses = ["pending", "review", "shortlisted", "accepted", "rejected", "withdrawn"];
+  const statuses = ["pending", "review", "shortlisted", "interview_scheduled", "accepted", "rejected", "withdrawn"];
   function updateApplication(appId, status) {
     const u = current(),
       d = data(),
       a = d.applications.find((a) => a.id === appId);
     if (!a || !statuses.includes(status)) throw Error("INVALID_APPLICATION");
+    if (status === "interview_scheduled" && (a.status !== status || !a.interviewMeetingId))
+      throw Error("INTERVIEW_MEETING_REQUIRED");
     if (u.role === "teacher") {
       if (
         a.teacherId !== u.email ||
@@ -374,6 +383,7 @@
           pending: "Pending",
           review: "Under review",
           shortlisted: "Shortlisted",
+          interview_scheduled: "Interview scheduled",
           accepted: "Accepted",
           rejected: "Rejected",
           withdrawn: "Withdrawn",
@@ -383,6 +393,7 @@
           pending: "قيد الانتظار",
           review: "قيد المراجعة",
           shortlisted: "القائمة المختصرة",
+          interview_scheduled: "تمت جدولة المقابلة",
           accepted: "مقبول",
           rejected: "مرفوض",
           withdrawn: "منسحب",
@@ -516,8 +527,7 @@
       !v.location?.trim() ||
       !v.contact?.trim() ||
       !v.type ||
-      !split(v.levels).length ||
-      !split(v.subjects).length
+      !split(v.levels).length
     )
       throw Error("REQUIRED_FIELDS");
     if (v.website && !/^https:\/\//i.test(v.website)) throw Error("HTTPS_REQUIRED");
@@ -616,14 +626,84 @@
   }
   function profileForSchool(applicationId, teacherId) {
     const u = requireRole("school");
+    let p;
     if (applicationId) {
       const a = applications().find((a) => a.id === applicationId);
-      if (!a) throw Error("ROLE_DENIED");
-      return a.profile;
+      if (!a || (teacherId && OrbitProfiles.canonical(a.teacherId) !== OrbitProfiles.canonical(teacherId)))
+        throw Error("ROLE_DENIED");
+      p = a.profile;
+    } else {
+      if (!teacherId) throw Error("ROLE_DENIED");
+      p = teacher(teacherId === "khaled" ? "teacher@orbit.com" : teacherId);
+      const account = data().accounts.find((item) => item.email === p.id);
+      if (
+        !p.available ||
+        !p.shareWithSchools ||
+        ["suspended", "deleted"].includes(account?.status)
+      )
+        throw Error("PRIVATE_PROFILE");
     }
-    const p = teacher(teacherId === "khaled" ? "teacher@orbit.com" : teacherId);
-    if (!p.shareWithSchools) throw Error("PRIVATE_PROFILE");
-    return p;
+    return {
+      id: p.id,
+      name: p.name,
+      photo: p.photo || "",
+      bio: p.bio || "",
+      subject: p.subject || "",
+      subjects: p.subjects || [],
+      qualification: p.qualification || "",
+      experience: p.experience,
+      grades: p.grades || [],
+      skills: p.skills || [],
+      methods: p.methods || [],
+      positions: p.positions || "",
+      certificates: p.certificates || [],
+      workSamples: p.workSamples || [],
+      location: p.location || "",
+      cv: p.cv || "",
+    };
+  }
+  function portfolioForViewer(teacherId, applicationId) {
+    const u = current();
+    if (u.role === "school") return profileForSchool(applicationId, teacherId);
+    if (
+      u.role !== "teacher" ||
+      (teacherId && OrbitProfiles.canonical(teacherId) !== OrbitProfiles.canonical(u.email))
+    )
+      throw Error("ROLE_DENIED");
+    const p = OrbitProfiles.read(u.email, "teacher");
+    return {
+      id: p.id,
+      name: p.name,
+      photo: p.photo || "",
+      bio: p.bio || "",
+      subject: p.subject || "",
+      subjects: p.subjects || [],
+      qualification: p.qualification || "",
+      experience: p.experience,
+      grades: p.grades || [],
+      skills: p.skills || [],
+      methods: p.methods || [],
+      positions: p.positions || "",
+      certificates: p.certificates || [],
+      workSamples: p.workSamples || [],
+      location: p.location || "",
+      cv: p.cv || "",
+    };
+  }
+  function teacherForViewer(email) {
+    const u = current();
+    if (u.role === "teacher") {
+      if (email && OrbitProfiles.canonical(email) !== OrbitProfiles.canonical(u.email))
+        throw Error("ROLE_DENIED");
+      return teacher(u.email);
+    }
+    if (u.role !== "school" || !email) throw Error("ROLE_DENIED");
+    const application = applications().find(
+      (item) => OrbitProfiles.canonical(item.teacherId) === OrbitProfiles.canonical(email),
+    );
+    return application
+      ? profileForSchool(application.id, email)
+      : profileForSchool("", email);
   }
   async function registerAccount(v, password) {
     if (v.role === "school") return registerSchool(v, password);
@@ -781,10 +861,44 @@
     );
     save(d);
   }
+  function linkInterviewMeeting(applicationId, meetingId) {
+    const u = requireRole("school"),
+      d = data(),
+      a = d.applications.find((item) => item.id === applicationId && item.schoolId === u.email);
+    if (
+      !a ||
+      !meetingId ||
+      !["pending", "interview_scheduled"].includes(a.status) ||
+      (a.interviewMeetingId && a.interviewMeetingId !== meetingId)
+    )
+      throw Error("INVALID_APPLICATION");
+    if (a.status !== "interview_scheduled") a.interviewPreviousStatus = a.status;
+    a.interviewMeetingId = meetingId;
+    a.status = "interview_scheduled";
+    a.updatedAt = new Date().toISOString();
+    save(d);
+    window.dispatchEvent(new CustomEvent("orbit:recruitment-change"));
+    return a;
+  }
+  function clearInterviewMeeting(applicationId, meetingId) {
+    const u = requireRole("school"),
+      d = data(),
+      a = d.applications.find((item) => item.id === applicationId && item.schoolId === u.email);
+    if (!a || a.interviewMeetingId !== meetingId) return false;
+    delete a.interviewMeetingId;
+    if (a.status === "interview_scheduled") a.status = a.interviewPreviousStatus || "pending";
+    delete a.interviewPreviousStatus;
+    a.updatedAt = new Date().toISOString();
+    save(d);
+    window.dispatchEvent(new CustomEvent("orbit:recruitment-change"));
+    return true;
+  }
   window.OrbitRecruitment = {
     interviews,
     scheduleInterview,
     cancelInterview,
+    linkInterviewMeeting,
+    clearInterviewMeeting,
     provisionLocalAdmin,
     refreshMatching,
     registerAccount,
@@ -800,13 +914,14 @@
     ownJobs,
     putJob,
     setJobStatus,
-    teacher,
+    teacher: teacherForViewer,
     match,
     discover,
     apply,
     applications,
     updateApplication,
     statuses,
+    portfolioForViewer,
     notifications,
     readNotification,
     interest,

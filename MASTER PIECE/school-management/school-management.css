@@ -1,0 +1,128 @@
+body { margin: 0; background: var(--orbit-canvas); color: var(--orbit-ink); }
+body:has(#orbit-page[data-orbit-page="school-management"]) #orbit-language-button { z-index: 1200; }
+#orbit-page[data-orbit-page="school-management"] .bar { padding-inline-end: 120px; }
+#orbit-page .school-management { max-width: 1440px; padding-block: 32px 64px; }
+.school-management { color: var(--orbit-ink); }
+.school-management h1, .school-management h2, .school-management h3 { margin: 0; text-wrap: balance; }
+#orbit-page .school-management h1 { font-size: clamp(1.7rem, 3vw, 2.2rem); }
+#orbit-page .school-management h2 { font-size: 1.4rem; }
+#orbit-page .school-management h3 { font-size: 1.1rem; }
+.sm-heading, .sm-section-heading, .sm-panel > header { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.sm-heading p { margin: 6px 0 0; color: var(--orbit-muted); }
+.sm-demo-label, .sm-status { color: var(--orbit-on-soft); background: var(--orbit-soft); padding: 5px 12px; border-radius: 8px; font-size: .85rem; font-weight: 650; }
+.sm-demo-label { flex-shrink: 0; }
+#orbit-page .sm-demo-notice { margin: 24px 0; padding: 16px 20px; border: 1px solid var(--orbit-border); border-radius: 12px; background: var(--orbit-surface); font-size: .95rem; max-width: 90ch; }
+.sm-nav { display: flex; flex-wrap: wrap; gap: 8px; margin-block: 24px 32px; }
+#orbit-page .sm-nav a { min-height: 44px; padding: 9px 14px; font-size: .9rem; border-radius: 10px; }
+#orbit-page[data-orbit-page="school-management"] .sm-nav a[aria-current="page"] { color: var(--orbit-on-action); background: var(--orbit-action); }
+#orbit-page .sm-nav a:hover { box-shadow: inset 0 0 0 1px var(--orbit-focus); }
+.sm-section-heading { margin-bottom: 16px; }
+.sm-section-heading > span, .sm-panel > header > span, .sm-caption { color: var(--orbit-muted); font-size: .85rem; }
+.sm-totals { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin: 0 0 28px; border: 1px solid var(--orbit-border); border-radius: 14px; background: var(--orbit-surface); overflow: hidden; }
+.sm-totals > div { padding: 22px 24px; }
+.sm-totals > div + div { border-inline-start: 1px solid var(--orbit-border); }
+.sm-totals dt { color: var(--orbit-muted); font-size: .9rem; }
+.sm-totals dd { margin: 4px 0 0; color: var(--orbit-accent); font-size: 2rem; line-height: 1.4; font-weight: 700; font-variant-numeric: tabular-nums; }
+.sm-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+.sm-panel { min-width: 0; background: var(--orbit-surface); border: 1px solid var(--orbit-border); border-radius: 14px; padding: 24px; }
+.sm-panel > header { align-items: baseline; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+.sm-list { list-style: none; padding: 0; margin: 0; }
+.sm-list li { display: flex; align-items: start; justify-content: space-between; gap: 16px; padding-block: 16px; }
+.sm-list li + li { border-top: 1px solid var(--orbit-border); }
+.sm-list li:first-child { padding-top: 0; }
+.sm-list li:last-child { padding-bottom: 0; }
+.sm-list strong { font-size: .95rem; font-weight: 650; }
+#orbit-page .sm-list p { margin: 4px 0 0; color: var(--orbit-muted); font-size: .85rem; }
+.sm-list time, .sm-event-date { flex-shrink: 0; color: var(--orbit-on-soft); font-size: .85rem; font-variant-numeric: tabular-nums; }
+.sm-period { display: flex; flex-direction: column; flex-shrink: 0; gap: 2px; min-width: 58px; }
+.sm-period span { color: var(--orbit-muted); font-size: .8rem; }
+.sm-schedule li { justify-content: start; gap: 24px; }
+#orbit-page .sm-caption { margin: -10px 0 20px; }
+.sm-events { grid-column: 1 / -1; }
+.sm-placeholder { max-width: 75ch; padding: 32px; border: 1px solid var(--orbit-border); border-radius: 14px; background: var(--orbit-surface); }
+.sm-placeholder h2 { margin-top: 20px; }
+.sm-placeholder p { color: var(--orbit-muted); }
+.sm-placeholder .btn { margin-top: 12px; }
+.school-management a { touch-action: manipulation; }
+.school-management :focus-visible { outline: 2px solid var(--orbit-focus); outline-offset: 4px; }
+.school-management ::selection { background: var(--orbit-selection); color: var(--orbit-selection-ink); }
+.sm-academic-tools { display: flex; flex-wrap: wrap; align-items: end; gap: 16px; margin-block: 20px; }
+.sm-academic-tools label { flex: 1 1 160px; min-width: 0; }
+#orbit-page .sm-academic-tools label { margin: 0; }
+.sm-academic-tools input, .sm-academic-tools select { margin-top: 6px; }
+.sm-academic-note { max-width: 75ch; color: var(--orbit-muted); font-size: .9rem; }
+.sm-table-scroll { max-width: 100%; overflow: auto; border: 1px solid var(--orbit-border); border-radius: 14px; background: var(--orbit-surface); scrollbar-color: var(--orbit-input-border) var(--orbit-surface); }
+.sm-academic-table { width: 100%; border-collapse: collapse; text-align: start; font-size: .9rem; }
+.sm-academic-table caption { text-align: start; padding: 16px; color: var(--orbit-muted); }
+.sm-academic-table th, .sm-academic-table td { padding: 14px 16px; border-top: 1px solid var(--orbit-border); vertical-align: top; min-width: 110px; overflow-wrap: anywhere; }
+.sm-academic-table thead { background: var(--orbit-soft); color: var(--orbit-on-soft); }
+.sm-academic-table th { font-weight: 650; }
+.sm-row-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+#orbit-page .sm-row-actions .btn { margin: 0; white-space: nowrap; }
+.sm-empty { padding: 32px; text-align: center; color: var(--orbit-muted); }
+.sm-allocation-section { margin-top: 32px; }
+.sm-error { color: var(--orbit-error); }
+[data-academic-feedback] { min-height: 1.8em; color: var(--orbit-success); }
+[data-academic-feedback].sm-error { color: var(--orbit-error); }
+#orbit-page .sm-academic-dialog { box-sizing: border-box; width: min(560px, calc(100% - 32px)); max-height: calc(100dvh - 32px); padding: 28px; border: 1px solid var(--orbit-border); border-radius: 14px; color: var(--orbit-ink); background: var(--orbit-surface); overflow: auto; }
+.sm-academic-dialog::backdrop { background: var(--orbit-overlay); }
+.sm-academic-dialog form { min-width: 0; }
+.sm-academic-dialog h2 { margin: 0; font-size: 1.4rem; }
+.sm-academic-dialog p { overflow-wrap: anywhere; }
+.sm-dialog-fields input, .sm-dialog-fields select { box-sizing: border-box; margin-top: 6px; }
+.sm-dialog-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 24px; }
+.sm-academic-dialog :focus-visible { outline: 2px solid var(--orbit-focus); outline-offset: 3px; }
+.sm-monitor-owner { display: block; margin-top: 6px; overflow-wrap: anywhere; font-weight: 400; }
+.sm-monitor-totals { grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); }
+.sm-monitor-totals dd { font-size: 1.4rem; overflow-wrap: anywhere; }
+.sm-mapping-panel { margin-top: 32px; }
+.sm-mapping-panel summary { min-height: 44px; cursor: pointer; font-weight: 650; color: var(--orbit-on-soft); }
+.sm-week { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 20px; align-items: start; }
+.sm-week-day { min-width: 0; border: 1px solid var(--orbit-border); border-radius: 14px; background: var(--orbit-surface); overflow: hidden; }
+.sm-week-day h3 { padding: 16px 20px; background: var(--orbit-soft); color: var(--orbit-on-soft); }
+.sm-week-day ol { list-style: none; padding: 0; margin: 0; }
+.sm-week-day li { padding: 20px; overflow-wrap: anywhere; }
+.sm-week-day li + li { border-top: 1px solid var(--orbit-border); }
+.sm-week-day time { display: block; font-variant-numeric: tabular-nums; color: var(--orbit-on-soft); font-weight: 650; margin-bottom: 8px; text-align: start; }
+.sm-week-day strong { display: block; }
+#orbit-page .sm-week-day p { margin-block: 6px 12px; font-size: .9rem; }
+.sm-day-empty { color: var(--orbit-muted); }
+.sm-time-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.sm-schedule-dialog label { display: block; margin-block: 16px; }
+.sm-schedule-dialog { color-scheme: light; }
+body[data-theme="dark"] .sm-schedule-dialog { color-scheme: dark; }
+.sm-schedule-dialog :is(input, select, textarea) { width: 100%; min-width: 0; max-width: 100%; color: var(--orbit-ink); background: var(--orbit-input-bg, var(--orbit-surface)); border: 1px solid var(--orbit-input-border, var(--orbit-border)); padding: 10px 12px; border-radius: 10px; font: inherit; caret-color: var(--orbit-accent); }
+.sm-schedule-dialog fieldset { border: 1px solid var(--orbit-border); border-radius: 10px; min-width: 0; }
+.sm-schedule-dialog fieldset[hidden] { display: none; }
+.sm-schedule-dialog .sm-class-choice { display: flex; align-items: start; gap: 10px; overflow-wrap: anywhere; }
+.sm-schedule-dialog .sm-class-choice input { width: 20px; height: 20px; flex-shrink: 0; accent-color: var(--orbit-action); margin: 2px 0; }
+.sm-event-groups { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px; }
+.sm-event-list { list-style: none; padding: 0; margin: 16px 0; }
+.sm-event-list > li { border-top: 1px solid var(--orbit-border); padding-block: 24px; overflow-wrap: anywhere; }
+.sm-event-list header { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.sm-event-list h4 { margin: 4px 0 0; font-size: 1.1rem; }
+.sm-event-list time { color: var(--orbit-muted); font-size: .9rem; }
+.sm-event-description { white-space: pre-wrap; }
+#orbit-page .sm-reference-warning { color: var(--orbit-error); font-size: .9rem; }
+[data-schedule-feedback] { min-height: 1.8em; color: var(--orbit-success); }
+#orbit-page .sm-totals dd { overflow-wrap: anywhere; }
+#orbit-page .sm-totals > div:last-child dd { font-size: 1.25rem; }
+@media (max-width: 700px) {
+  .sm-event-groups { grid-template-columns: 1fr; }
+  .sm-schedule-dialog :is(input, select, textarea) { font-size: 16px; }
+}
+@media (max-width: 1000px) {
+  .sm-totals { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sm-totals > div:nth-child(3) { border-inline-start: 0; }
+  .sm-totals > div:nth-child(n+3) { border-top: 1px solid var(--orbit-border); }
+  .sm-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  #orbit-page .school-management { padding: 24px 16px 48px; }
+  .sm-heading { align-items: start; flex-direction: column; gap: 12px; }
+  .sm-totals > div { padding: 18px 16px; }
+  .sm-panel, .sm-placeholder { padding: 20px; }
+  .sm-section-heading { align-items: start; flex-direction: column; gap: 4px; }
+  .sm-list li { gap: 12px; }
+  .sm-nav { gap: 8px; }
+}

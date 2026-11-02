@@ -13,6 +13,54 @@
 })();
 (() => {
   "use strict";
+  if (!window.OrbitThemePreference) {
+    const valid = (value) => ["light", "dark", "auto"].includes(value),
+      read = (key, fallback) => {
+        try { return OrbitAuth.get(key, fallback); } catch { return fallback; }
+      },
+      preference = () => {
+        const saved = read("orbit.settings.appearance", null),
+          prefs = read("orbit.student.v1", {}),
+          legacy = localStorage.getItem("orbitTheme") || localStorage.getItem("theme") || "light";
+        return valid(saved) ? saved : valid(prefs.theme) ? prefs.theme : valid(legacy) ? legacy : "light";
+      },
+      resolve = () => {
+        const selected = preference();
+        return selected === "auto" ? matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light" : selected;
+      },
+      apply = () => {
+        const theme = resolve();
+        document.documentElement.dataset.orbitAppearance = preference();
+        document.documentElement.dataset.theme = theme;
+        document.body.dataset.theme = theme;
+        return theme;
+      },
+      save = (selected) => {
+        if (!valid(selected)) return apply();
+        const theme = selected === "auto" ? matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light" : selected;
+        OrbitAuth.set("orbit.settings.appearance", selected);
+        OrbitAuth.set("orbit.student.v1", { ...read("orbit.student.v1", {}), theme });
+        OrbitAuth.set("orbit.preferences", { ...read("orbit.preferences", {}), theme });
+        localStorage.setItem("orbitTheme", theme);
+        return apply();
+      };
+    window.OrbitThemePreference = { read: () => ({ preference: preference(), theme: resolve() }), apply, save };
+    const systemAppearance = matchMedia("(prefers-color-scheme: dark)");
+    systemAppearance.addEventListener?.("change", () => { if (preference() === "auto") apply(); });
+    if (!window.__orbitThemeToggleCapture) {
+      window.__orbitThemeToggleCapture = true;
+      document.addEventListener("click", (event) => {
+        if (!event.target.closest?.('[data-action="theme"]')) return;
+        save(apply() === "dark" ? "light" : "dark");
+      }, true);
+    }
+    window.addEventListener("storage", (event) => {
+      if (["orbit.settings.appearance", "orbit.student.v1", "orbitTheme", "theme"].includes(event.key)) apply();
+    });
+    apply();
+  } else {
+    window.OrbitThemePreference.apply();
+  }
   const A = OrbitAuth;
   let signature = "",
     urls = new Map(),
@@ -143,12 +191,13 @@
               ["lab", "lab", "Lab", "المختبر"],
               ["account-profile", "profile", "My profile", "ملفي"],
               ["teacher-profile", "profile", "Professional portfolio", "ملفي المهني"],
-              ["teacher-directory", "profile", "Teacher directory", "دليل المعلمين"],
+              ["jobs", "jobs", "Teaching Opportunities", "فرص التدريس"],
               ["applications", "jobs", "My applications", "طلباتي"],
               ["notifications", "bell", "Notifications", "الإشعارات"],
               ["settings", "settings", "Settings", "الإعدادات"],
             ]
           : [
+              ["school-management", "home", "School Management", "إدارة المدرسة"],
               ["school-dashboard", "jobs", "School recruitment", "توظيف المدرسة"],
               ["account-profile", "profile", "School profile", "ملف المدرسة"],
               ["notifications", "bell", "Notifications", "الإشعارات"],
@@ -164,17 +213,8 @@
         ["student-dashboard", "home", "Home", "الرئيسية"],
         ["lessons", "learn", "Learn", "تعلّم"],
         ["lab", "lab", "Lab", "المختبر"],
-        [
-          "student-dashboard",
-          "planner",
-          "Assignments",
-          "الواجبات",
-          "assignments-section",
-          "assignment",
-        ],
         ["student-dashboard", "video", "Meetings", "الاجتماعات", "meetings-section", "meeting"],
         ["channels", "channel", "My channels", "قنواتي"],
-        ["student-dashboard", "users", "Community", "المجتمع", "student-community"],
         ["exchange", "exchange", "Exchange", "التبادل"],
         ["achievements", "award", "Achievements", "الإنجازات"],
         ["account-profile", "profile", "My profile", "ملفي"],
@@ -182,15 +222,6 @@
       );
     } else {
       const dashboard = u.role === "teacher" ? "teacher-dashboard" : "school-dashboard";
-      if (u.role === "teacher")
-        links.push([
-          dashboard,
-          "planner",
-          "Assignments",
-          "الواجبات",
-          "assignments-section",
-          "assignment",
-        ]);
       links.push([dashboard, "video", "Meetings", "الاجتماعات", "meetings-section", "meeting"]);
     }
     const sig = JSON.stringify([

@@ -4,7 +4,7 @@
   grid-template-columns: minmax(0,1fr) minmax(0,1.1fr);
   align-items: center;
   background: var(--orbit-midnight);
-  color: var(--orbit-on-action);
+  color: var(--orbit-on-dark, #ECFDF5);
   border-radius: 24px;
   overflow: hidden;
   margin-block: 8px 28px;
@@ -17,12 +17,12 @@
 #orbit-page .student-welcome h1 {
   font-size: clamp(28px,3vw,42px);
   line-height: 1.55;
-  color: var(--orbit-on-action);
+  color: var(--orbit-on-dark, #ECFDF5);
   margin: 0 0 16px;
   overflow-wrap: anywhere;
 }
 #orbit-page .student-welcome p {
-  color: var(--orbit-on-action);
+  color: var(--orbit-on-dark, #ECFDF5);
   line-height: 1.85;
   margin: 0 0 24px;
   max-width: 48ch;
@@ -32,10 +32,10 @@
   font-size: 13px;
   line-height: 1.8;
   margin-top: 16px;
-  color: var(--orbit-on-action);
+  color: var(--orbit-on-dark, #ECFDF5);
 }
 #orbit-page .student-welcome .student-tour-cta {
-  background: var(--orbit-yellow);
+  background: var(--orbit-action);
   color: var(--orbit-midnight);
   min-height: 48px;
   box-shadow: none;

@@ -10,6 +10,7 @@ function body(p) {
   return p.body || t(p.bodyEn, p.bodyAr) || "";
 }
 const teacherMode = O.user.role === "teacher",
+  teacherDirectoryVisible = ["student", "school"].includes(O.user.role),
   path = location.pathname;
 const seedPosts = [
   {
@@ -200,9 +201,13 @@ function renderDirectory() {
       t("Search channels, teachers, subjects…", "ابحث عن قناة أو معلم أو مادة…") +
       '" aria-label="' +
       t("Search channels", "البحث عن قنوات") +
-      '"></label></div><div class="directory-caption"><span id="result-count" role="status"></span><a href="../teacher-directory/teacher-directory.html">' +
-      t("Explore teachers", "تعرّف على المعلمين") +
-      ' ↗</a></div><div class="grid" id="channel-results"></div></section>',
+      '"></label></div><div class="directory-caption"><span id="result-count" role="status"></span>' +
+      (mode === "search" && teacherDirectoryVisible
+        ? '<a href="../teacher-directory/teacher-directory.html">' +
+          t("Teacher Directory", "دليل المعلمين") +
+          " ↗</a>"
+        : "") +
+      '</div><div class="grid" id="channel-results"></div></section>',
   );
   if (O.user.role === "student" || teacherMode) {
     const heading = document.querySelector(".directory-heading>div"),

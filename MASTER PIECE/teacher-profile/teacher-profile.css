@@ -1,10 +1,10 @@
-500;600;700;800&family=Noto+Sans+Arabic:wght@400;500;600;700;800&display=swap');:root{--bg:#f9fbff;--panel:#fff;--side:var(--orbit-canvas);--text:#202b40;--muted:#7b879f;--line:#e5ebf5;--purple:var(--orbit-accent);--blue:#3979e7;--soft:var(--orbit-soft);--tile:#f3f6fb;--green:#0fbc89;--amber:#ffab00}
+500;600;700;800&family=Noto+Sans+Arabic:wght@400;500;600;700;800&display=swap');:root{--bg:var(--orbit-canvas);--panel:#fff;--side:var(--orbit-canvas);--text:var(--orbit-ink);--muted:var(--orbit-muted);--line:var(--orbit-border);--purple:var(--orbit-accent);--blue:var(--orbit-accent);--soft:var(--orbit-soft);--tile:var(--orbit-soft);--green:#0fbc89;--amber:#ffab00}
 #orbit-page * {
   box-sizing: border-box;
 }
 body {
   margin: 0;
-  background: #f1eeee;
+  background: var(--orbit-canvas);
   color: var(--text);
 }
 #orbit-page button,
@@ -66,7 +66,7 @@ body {
 #orbit-page .logo {
   width: 34px;
   height: 34px;
-  background: linear-gradient(135deg,var(--purple),#4675ff);
+  background: linear-gradient(135deg,var(--purple),var(--orbit-accent));
   border-radius: 10px;
   color: white;
   font-size: 22px;

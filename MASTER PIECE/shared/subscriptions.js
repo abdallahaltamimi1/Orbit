@@ -47,10 +47,10 @@
         id,
         accountType: user.role,
         planId,
-        status: school ? "trialing" : "active",
+        status: "active",
         startDate: now.toISOString(),
         endDate: null,
-        trialExpiration: school ? new Date(+now + plan.trialDays * 86400000).toISOString() : null,
+        trialExpiration: plan.trialDays ? new Date(+now + plan.trialDays * 86400000).toISOString() : null,
         usage: {},
         usagePeriodStart: p.start,
         usagePeriodEnd: p.end,
@@ -60,6 +60,13 @@
       };
       data.records[id] = record;
     }
+    const freeSchoolPlan =
+      record.accountType === "school" &&
+      record.planId === "school-starter" &&
+      config.plans[record.planId]?.price === null &&
+      !config.plans[record.planId]?.trialDays;
+    if (freeSchoolPlan && ["trialing", "expired"].includes(record.status))
+      record.status = "active";
     if (
       !Number.isFinite(Date.parse(record.usagePeriodEnd)) ||
       +now >= Date.parse(record.usagePeriodEnd)
@@ -75,7 +82,7 @@
     )
       record.status = "expired";
     if (
-      record.planId !== "teacher-free" &&
+      !["teacher-free", "school-starter"].includes(record.planId) &&
       record.status === "active" &&
       (!record.endDate || +now >= Date.parse(record.endDate))
     )
@@ -186,6 +193,26 @@
         if (post.schoolId && post.schoolId !== context.schoolId) continue;
         events.add("post:" + post.id + ":" + resource);
       }
+    if (resource === "jobs" && context.user.role === "school") {
+      const publicationEvents = new Set(
+          (record.events || [])
+            .filter(
+              (event) =>
+                event.resource === "jobs" && String(event.id).startsWith("job-publish:"),
+            )
+            .map((event) => event.id),
+        ),
+        published = (window.OrbitRecruitment?.ownJobs?.() || []).filter((job) => {
+          if (job.status !== "published") return false;
+          const createdAt = Date.parse(job.createdAt),
+            updatedAt = Date.parse(job.updatedAt);
+          return (
+            (Number.isFinite(createdAt) && createdAt >= since && createdAt < until) ||
+            (Number.isFinite(updatedAt) && updatedAt >= since && updatedAt < until)
+          );
+        }).length;
+      return Math.max(publicationEvents.size, published);
+    }
     return Math.max(events.size, Number(record.usage?.[resource]) || 0);
   }
   const permissionFor = (resource) =>
@@ -357,6 +384,7 @@
     }
     const names = {
       lessons: t("Published lessons", "الدروس المنشورة"),
+      jobs: t("Published job opportunities", "فرص التدريس المنشورة"),
       labs: t("Lab sessions", "جلسات المختبر"),
       assignments: t("Assignments", "الواجبات"),
       classes: t("Classes", "الصفوف"),
@@ -373,7 +401,12 @@
             "Your school trial or subscription has expired. Public previews are still available.",
             "انتهت الفترة التجريبية أو الاشتراك. المعاينات العامة ما زالت متاحة.",
           )
-        : result.reason === "permission"
+        : result.reason === "limit" && result.resource === "jobs"
+          ? t(
+              `Your plan allows up to ${result.limit} published job opportunities per month. Drafts can still be saved.`,
+              `تتيح خطتك نشر حتى ${result.limit} فرص تدريس شهريًا. يمكنك الاستمرار في حفظ المسودات.`,
+            )
+          : result.reason === "permission"
           ? t(
               "Your school administrator has not enabled this action for your account.",
               "مسؤول المدرسة لم يمنح حسابك صلاحية هذا الإجراء.",
@@ -672,8 +705,14 @@
     const original = OrbitRecruitment[method];
     OrbitRecruitment[method] = (...args) => {
       if (current().role === "school" && !allow(feature)) throw Error("SUBSCRIPTION_BLOCKED");
-      if (method === "putJob" && !args[1])
-        return perform("jobs", () => original(...args), "job:" + crypto.randomUUID());
+      if (method === "setJobStatus" && args[1] === "published") {
+        const context = effective();
+        return perform(
+          "jobs",
+          () => original(...args),
+          `job-publish:${args[0]}:${context.record.usagePeriodStart}`,
+        );
+      }
       return original(...args);
     };
   }

@@ -111,131 +111,16 @@ if (faqList) {
 
     faqList.querySelectorAll(".m-faq__item.is-open").forEach((openItem) => {
       openItem.classList.remove("is-open");
+      openItem.querySelector(".m-faq__q")?.setAttribute("aria-expanded", "false");
     });
 
     if (!wasOpen) {
       item.classList.add("is-open");
+      button.setAttribute("aria-expanded", "true");
     }
   });
 }
 
-/* =========================================================
-   SERVICES ORBIT
-========================================================= */
-
-const orbit = document.getElementById("orbit");
-
-const orbitSpin = document.getElementById("orbitSpin");
-
-const orbitLabel = document.getElementById("orbitLabel");
-
-const serviceCards = document.querySelectorAll("[data-service]");
-
-if (orbit && orbitSpin && serviceCards.length) {
-  let angle = 0;
-
-  let target = null;
-
-  let sticky = false;
-
-  let lastTime = 0;
-
-  const speed = 11;
-
-  function paintOrbit() {
-    orbitSpin.style.transform = `rotate(${angle}deg)`;
-  }
-
-  function animate(time) {
-    const delta = lastTime ? Math.min((time - lastTime) / 1000, 0.05) : 0;
-
-    lastTime = time;
-
-    if (target === null) {
-      angle += delta * speed;
-    } else {
-      angle += (target - angle) * Math.min(1, delta * 7);
-    }
-
-    paintOrbit();
-
-    requestAnimationFrame(animate);
-  }
-
-  function activate(key, name) {
-    const nodes = orbitSpin.querySelectorAll(".m-orbit__node");
-
-    let index = -1;
-
-    nodes.forEach((node, i) => {
-      const active = node.dataset.node === key;
-
-      node.classList.toggle("is-live", active);
-
-      if (active) {
-        index = i;
-      }
-    });
-
-    if (index < 0) return;
-
-    target = -index * 90;
-
-    orbit.classList.add("is-focused");
-
-    if (orbitLabel) {
-      orbitLabel.textContent = name;
-    }
-  }
-
-  function release() {
-    if (sticky) return;
-
-    target = null;
-
-    orbit.classList.remove("is-focused");
-
-    orbitSpin.querySelectorAll(".m-orbit__node").forEach((node) => {
-      node.classList.remove("is-live");
-    });
-  }
-
-  serviceCards.forEach((card) => {
-    const key = card.dataset.service;
-
-    const title = card.querySelector("h3");
-
-    card.addEventListener("mouseenter", () => {
-      sticky = false;
-
-      activate(key, title?.textContent || "");
-    });
-
-    card.addEventListener("mouseleave", release);
-
-    card.addEventListener("click", () => {
-      sticky = true;
-
-      activate(key, title?.textContent || "");
-    });
-  });
-
-  document.addEventListener("click", (event) => {
-    if (!sticky) return;
-
-    if (event.target.closest("[data-service]")) {
-      return;
-    }
-
-    sticky = false;
-
-    release();
-  });
-
-  requestAnimationFrame(animate);
-
-  paintOrbit();
-}
 window.OrbitInitHeroScene = function () {
   if (!window.THREE || window.OrbitHeroSceneStarted) return;
   window.OrbitHeroSceneStarted = true;
@@ -578,7 +463,7 @@ window.OrbitInitHeroScene = function () {
 
       tilt: -0.16,
 
-      col: "#2E2456",
+      col: "#064E3B",
 
       acc: "rgba(196,165,255,1)",
 

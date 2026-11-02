@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <script src="../shared/account-access.js"></script>
+    <script>
+      (() => {
+        try {
+          const read = (key) => JSON.parse(localStorage.getItem(key) || "null"),
+            appearance = read("orbit.settings.appearance"),
+            prefs = read("orbit.student.v1") || {},
+            valid = (value) => ["light", "dark", "auto"].includes(value),
+            saved = valid(appearance)
+              ? appearance
+              : valid(prefs.theme)
+                ? prefs.theme
+                : localStorage.getItem("orbitTheme") || localStorage.getItem("theme") || "light",
+            resolved = saved === "auto"
+              ? matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
+              : saved;
+          document.documentElement.dataset.orbitAppearance = valid(saved) ? saved : "light";
+          document.documentElement.dataset.theme = resolved;
+        } catch {
+          document.documentElement.dataset.orbitAppearance = "light";
+          document.documentElement.dataset.theme = "light";
+        }
+      })();
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Have a question, suggestion, or feedback? Contact the ORBIT team." />
+    <title>Contact Us | ORBIT</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="../shared/tokens.css" />
+    <link rel="stylesheet" href="../hompage/hompage.css" />
+    <link rel="stylesheet" href="../hompage/landing-premium.css" />
+    <link rel="stylesheet" href="../hompage/night-sky.css" />
+    <link rel="stylesheet" href="../shared/ui-improvements.css" />
+    <link rel="stylesheet" href="./contact.css" />
+    <script src="../shared/config.js"></script>
+    <script src="../shared/recruitment-service.js"></script>
+    <script src="../shared/profiles.js"></script>
+    <script src="../shared/auth.js"></script>
+    <script src="../shared/subscription-config.js"></script>
+    <script src="../shared/subscriptions.js"></script>
+    <script src="../shared/ui-improvements.js" defer></script>
+    <script src="../shared/language-control.js" defer></script>
+  </head>
+  <body class="orbit-homepage contact-body">
+    <script>document.body.dataset.theme = document.documentElement.dataset.theme || "light";</script>
+    <div id="orbit-page" class="orbit-content" data-orbit-page="contact">
+      <header class="m-nav" id="siteNav">
+        <div class="m-container m-nav__inner">
+          <a class="m-nav__brand m-logo" href="../hompage/hompage.html#top" aria-label="ORBIT home">
+            <span class="m-nav__mark m-logo__mark" aria-hidden="true">
+              <svg viewBox="0 0 32 32" fill="none"><path class="m-logo__ring" d="M26.89 14.47A11 11 0 1 1 21.16 6.29"/><path class="m-logo__trail" d="M10.3 21.6Q16.5 15.5 28 6.5"/><circle class="m-logo__dot" cx="24.5" cy="9.3" r="2.3"/></svg>
+            </span>
+            <span class="m-logo__word">ORBIT</span>
+          </a>
+          <nav class="m-nav__links" aria-label="Primary navigation">
+            <a href="../hompage/hompage.html#top">Home</a>
+            <a href="../hompage/hompage.html#features">Features</a>
+            <a href="../hompage/hompage.html#services">Services</a>
+            <a href="../pricing/pricing.html">Plans</a>
+            <a href="../hompage/hompage.html#faq">FAQ</a>
+            <a href="../contact/contact.html" class="is-active" aria-current="page">Contact</a>
+          </nav>
+          <div class="m-nav__actions">
+            <a class="m-nav__login" href="../login/login.html">Log in</a>
+            <a class="m-btn m-btn--primary m-nav__cta" href="../registration/registration.html">Sign Up</a>
+            <button class="m-nav__theme" id="orbit-theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false" title="Switch to dark mode">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"></svg>
+            </button>
+            <button class="m-nav__burger" id="navBurger" type="button" aria-expanded="false" aria-controls="navPanel" aria-label="Open menu"><span></span><span></span><span></span></button>
+          </div>
+        </div>
+        <nav id="navPanel" class="orbit-home-mobile" hidden aria-label="Mobile navigation">
+          <a href="../hompage/hompage.html#top">Home</a>
+          <a href="../hompage/hompage.html#features">Features</a>
+          <a href="../hompage/hompage.html#services">Services</a>
+          <a href="../pricing/pricing.html">Plans</a>
+          <a href="../hompage/hompage.html#faq">FAQ</a>
+          <a href="../contact/contact.html" aria-current="page">Contact</a>
+          <a href="../login/login.html">Log in</a>
+          <a href="../registration/registration.html">Sign Up</a>
+        </nav>
+      </header>
+
+      <main class="contact-page" id="contact-content">
+        <section class="contact-hero" aria-labelledby="contact-title">
+          <div class="contact-hero__wash" aria-hidden="true"></div>
+          <h1 id="contact-title">Contact Us</h1>
+          <p>Have a question, suggestion, or feedback? We'd love to hear from you.</p>
+        </section>
+
+        <section class="contact-layout" aria-label="Contact ORBIT">
+          <article class="contact-card contact-form-card">
+            <div class="contact-card__heading">
+              <span class="contact-heading-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></span>
+              <h2>Send Us a Message</h2>
+            </div>
+            <form id="contact-form" novalidate>
+              <div class="contact-field" data-field="name">
+                <label for="contact-name">Full Name <span aria-hidden="true">*</span></label>
+                <div class="contact-input-wrap">
+                  <input id="contact-name" name="name" type="text" required minlength="2" maxlength="120" autocomplete="name" placeholder="Enter your full name" aria-describedby="contact-name-error" />
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M5 21v-2a7 7 0 0 1 14 0v2"/></svg>
+                </div>
+                <small class="contact-error" id="contact-name-error"></small>
+              </div>
+              <div class="contact-field" data-field="email">
+                <label for="contact-email">Email Address <span aria-hidden="true">*</span></label>
+                <div class="contact-input-wrap">
+                  <input id="contact-email" name="email" type="email" required maxlength="254" autocomplete="email" placeholder="example@email.com" aria-describedby="contact-email-error" />
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+                </div>
+                <small class="contact-error" id="contact-email-error"></small>
+              </div>
+              <div class="contact-field contact-field--message" data-field="message">
+                <label for="contact-message">Your Message <span aria-hidden="true">*</span></label>
+                <div class="contact-input-wrap">
+                  <textarea id="contact-message" name="message" required minlength="10" maxlength="2000" rows="4" placeholder="Write your message or feedback here..." aria-describedby="contact-message-error"></textarea>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8v.5Z"/><path d="M8 12h8m-8-4h5"/></svg>
+                </div>
+                <small class="contact-error" id="contact-message-error"></small>
+              </div>
+              <button class="contact-submit" type="submit">
+                <span class="contact-submit__label">Send Message</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+              </button>
+              <p class="contact-status" id="contact-status" role="status" aria-live="polite"></p>
+            </form>
+          </article>
+
+          <aside class="contact-card contact-info-card">
+            <div class="contact-artwork">
+              <img src="./assets/contact-illustration.svg" alt="An open envelope with a message, a paper airplane, and a chat bubble" width="720" height="460" />
+            </div>
+            <div class="contact-info-copy" dir="auto">
+              <h2>We are here for you</h2>
+              <p>We welcome your questions, suggestions, and feedback. Our team reads every message carefully and works to make ORBIT a better experience for everyone.</p>
+            </div>
+          </aside>
+        </section>
+      </main>
+    </div>
+    <script src="../hompage/home-locale.js"></script>
+    <script src="../hompage/hompage.js"></script>
+    <script src="../hompage/home-interactions.js"></script>
+    <script src="./contact.js"></script>
+  </body>
+</html>

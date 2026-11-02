@@ -7,7 +7,7 @@
   border: 1px solid var(--orbit-border,var(--orbit-soft));
   border-radius: 10px;
   background: var(--orbit-surface,#fff);
-  color: var(--orbit-accent,var(--orbit-accent));
+  color: var(--orbit-on-soft,var(--orbit-green-800));
   padding: 9px 14px;
   font: 600 12px var(--orbit-font,'Segoe UI',sans-serif);
   cursor: pointer;
@@ -16,6 +16,9 @@
 #orbit-language-button:focus-visible {
   outline: 3px solid var(--orbit-focus,var(--orbit-accent));
   outline-offset: 3px;
+}
+body[data-theme="dark"] #orbit-language-button {
+  color: var(--orbit-on-soft,var(--orbit-green-400));
 }
 [data-obsolete-language="true"] {
   display: none !important;

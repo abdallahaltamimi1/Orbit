@@ -1,5 +1,40 @@
 @import url("../shared/experience.css");
 
+/* Guest discovery uses the brand action tone while signed-in role variants keep their own banner. */
+body[data-orbit-role="public"] #orbit-page .directory-banner {
+  min-height: 184px;
+  padding: 28px 32px;
+  background: var(--orbit-action);
+  color: var(--orbit-on-action);
+}
+body[data-orbit-role="public"] #orbit-page .directory-banner p,
+body[data-orbit-role="public"] #orbit-page .directory-banner > div > span {
+  opacity: 0.9;
+}
+body[data-orbit-role="public"] #orbit-page .directory-orbit i {
+  border-color: color-mix(in srgb, var(--orbit-on-action) 35%, transparent);
+}
+body[data-orbit-role="public"] #orbit-page .directory-orbit b,
+body[data-orbit-role="public"] #orbit-page .channel-banner-book {
+  color: var(--orbit-on-action);
+}
+body[data-orbit-role="public"] #orbit-page .channel-card {
+  border-color: var(--orbit-border);
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+@media (hover: hover) {
+  body[data-orbit-role="public"] #orbit-page .channel-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--orbit-accent);
+    box-shadow: 0 10px 24px color-mix(in srgb, var(--orbit-space) 12%, transparent);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  body[data-orbit-role="public"] #orbit-page .channel-card {
+    transition: none;
+  }
+}
+
 #orbit-page[data-orbit-page="channels"] .wrap {
   max-width: 1240px;
   padding-top: 32px;

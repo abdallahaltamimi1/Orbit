@@ -767,7 +767,8 @@
   }
   window.OrbitPresentation = { prepare, switchTo, manifest, teacherId, schoolId, students };
   function bar() {
-    if (document.getElementById("orbit-presentation-bar") || !OrbitAuth.current() || !window.ORBIT)
+    const previewEnabled = ["localhost", "127.0.0.1", "::1"].includes(location.hostname) && new URLSearchParams(location.search).get("presentation") === "1";
+    if (!previewEnabled || document.getElementById("orbit-presentation-bar") || !OrbitAuth.current() || !window.ORBIT)
       return;
     const state = manifest(),
       teacher = OrbitAuth.current().role === "teacher" || OrbitAuth.current().role === "school";

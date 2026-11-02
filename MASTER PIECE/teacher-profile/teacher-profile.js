@@ -178,7 +178,7 @@ function dashboard() {
       "",
     )}<span class="muted">${t("Keep learning to climb the ranks.", "واصل التعلم لتتقدم في الترتيب.")}</span></section>
 
-<section class="card"><div class="card-title"><h2>${t("Your badges", "شاراتك")}</h2><a class="link" href="../achievements/achievements.html">${t("See all 24", "عرض الـ24")}</a></div><div class="badges">${badge("♨", "#ffa500", "5", t("day streak", "أيام متتالية"))}${badge("♧", "#8235f8", "Lab", t("explorer", "مستكشف"))}${badge("✓", "#0cbc8b", "10", t("tasks", "مهام"))}${badge("♧", "#bcc6d7", t("Perfect", "أسبوع"), t("week", "مثالي"))}</div></section>
+<section class="card"><div class="card-title"><h2>${t("Your badges", "شاراتك")}</h2><a class="link" href="../achievements/achievements.html">${t("See all 24", "عرض الـ24")}</a></div><div class="badges">${badge("♨", "#ffa500", "5", t("day streak", "أيام متتالية"))}${badge("♧", "#047857", "Lab", t("explorer", "مستكشف"))}${badge("✓", "#0cbc8b", "10", t("tasks", "مهام"))}${badge("♧", "#bcc6d7", t("Perfect", "أسبوع"), t("week", "مثالي"))}</div></section>
 
 <section class="card"><div class="card-title"><h2>${t("From the exchange", "من سوق التبادل")}</h2><a href="../exchange/exchange.html" class="link">${t("Browse", "تصفح")}</a></div><a href="../exchange/exchange.html" class="exchange-row">${icon("▣", "blue")}<div><h3>${t("Physics 9 textbook", "كتاب فيزياء 9")}</h3><small>${t("Good condition", "بحالة جيدة")}</small></div><b>5 JD</b></a><a href="../exchange/exchange.html" class="exchange-row">${icon("◇", "mint")}<div><h3>${t("Geometry set", "طقم هندسة")}</h3><small>${t("For lending", "للإعارة")}</small></div><b>3 JD</b></a></section></div></div>`;
 }
@@ -270,7 +270,7 @@ function contentPage() {
 
   if (page === "achievements") {
     title = t("Your achievements", "إنجازاتك");
-    body = `<section class="card"><p>${t("9 badges unlocked · 24 to collect", "9 شارات مكتسبة · 24 شارة للتجميع")}</p><div class="badges">${Array.from({ length: 24 }, (_, i) => badge(i < 9 ? "★" : "♧", i < 9 ? ["#ffa500", "#8235f8", "#0cbc8b"][i % 3] : "#bcc6d7", `${i + 1}`, i < 9 ? t("Unlocked", "مكتسبة") : t("Locked", "مقفلة"))).join("")}</div></section>`;
+    body = `<section class="card"><p>${t("9 badges unlocked · 24 to collect", "9 شارات مكتسبة · 24 شارة للتجميع")}</p><div class="badges">${Array.from({ length: 24 }, (_, i) => badge(i < 9 ? "★" : "♧", i < 9 ? ["#ffa500", "#047857", "#0cbc8b"][i % 3] : "#bcc6d7", `${i + 1}`, i < 9 ? t("Unlocked", "مكتسبة") : t("Locked", "مقفلة"))).join("")}</div></section>`;
   }
 
   if (page === "exchange") {
@@ -788,72 +788,33 @@ contentPage = () => {
     title = t("Discover the teacher behind the lesson.", "اكتشف المعلم وراء الدرس.");
     body = `<section class="teacher-filters card"><label>${t("Subject", "التخصص")}<select id="teacher-subject"><option value="all">${t("All subjects", "جميع التخصصات")}</option><option value="physics">${subj("physics")}</option><option value="math">${subj("math")}</option>${["arabic", "english", "chemistry", "biology"].map((s) => `<option value="${s}">${subj(s)}</option>`).join("")}</select></label><label>${t("Experience", "الخبرة")}<select id="teacher-exp"><option value="0">${t("Any experience", "أي خبرة")}</option><option value="6">${t("6+ years", "6 سنوات فأكثر")}</option></select></label></section><div class="teacher-grid">${people.map((p) => `<article class="teacher-card card" data-teacher data-subject="${p.subject}" data-exp="${p.experience}"><div class="teacher-cover ${p.style}">✧</div><span class="profile-avatar ${p.style}">${p.letters}</span><h2>${label(p)}</h2><span class="pill violet">${subj(p.subject)}</span><p>${esc(state.lang === "ar" ? p.bioAr : p.bioEn)}</p><div class="teacher-meta">${p.experience} ${t("years · Secondary education", "سنوات · تعليم ثانوي")}</div>${btn(t("View teaching portfolio", "شاهد الملف المهني") + " ↗", "../teacher-profile/teacher-profile.html?id=" + p.id, "outline")}</article>`).join("")}</div><p id="teacher-empty" class="empty" hidden>${t("No teachers match these filters.", "لا يوجد معلمون يطابقون الفلاتر.")}</p><p class="demo-hint">${t("Explore teachers by subject and experience. Credentials are self-reported, not verified.", "ابحث عن المعلمين حسب المادة والخبرة. المؤهلات معلنة ذاتيًا وغير موثقة.")}</p>`;
   } else if (page === "teacher-profile") {
-    const requested =
-        new URLSearchParams(location.search).get("id") ||
-        (ORBIT.user.role === "teacher" ? ORBIT.user.email : "khaled"),
-      canonical = OrbitProfiles.canonical(requested),
-      storedProfile = OrbitProfiles.read(canonical, "teacher"),
-      profile =
-        storedProfile.role === "teacher"
-          ? storedProfile
-          : canonical === "sara"
-            ? {
-                id: "sara",
-                name: t("Sara Ali", "سارة علي"),
-                subject: "math",
-                experience: 5,
-                bio: t(
-                  "Making mathematics visual and approachable.",
-                  "أجعل الرياضيات مرئية وقريبة للجميع.",
-                ),
-                qualification: t("BSc Mathematics", "بكالوريوس رياضيات"),
-              }
-            : {},
-      p = {
-        id: requested,
-        en: profile.name || t("Teacher", "معلم"),
-        ar: profile.name || t("Teacher", "معلم"),
-        letters: (profile.name || "ORBIT")
+    const params = new URLSearchParams(location.search),
+      requested = params.get("id") || (ORBIT.user.role === "teacher" ? ORBIT.user.email : ""),
+      applicationId = params.get("application"),
+      own = ORBIT.user.role === "teacher";
+    let profile;
+    try {
+      profile = OrbitRecruitment.portfolioForViewer(requested, applicationId);
+    } catch {
+      title = t("Professional portfolio unavailable", "الملف المهني غير متاح");
+      body = `<section class="card portfolio-empty"><h2>${title}</h2><p>${t("This teacher has not shared a profile with this school, or the application is not available to your account.", "لم يشارك المعلم ملفه مع هذه المدرسة، أو أن الطلب غير متاح لحسابك.")}</p><a class="btn outline" href="../${ORBIT.user.role === "school" ? "school-dashboard/school-dashboard.html?tab=discover" : "teacher-dashboard/teacher-dashboard.html"}">${t("Return to your workspace", "العودة لمساحة العمل")}</a></section>`;
+    }
+    if (profile) {
+      const values = (items) =>
+          (Array.isArray(items) ? items : [])
+            .filter((value) => String(value || "").trim())
+            .map((value) => esc(value)),
+        subjectNames = [...new Set([profile.subject, ...(profile.subjects || [])].filter(Boolean))],
+        initials = (profile.name || "ORBIT")
           .split(/\s+/)
-          .map((x) => x[0])
+          .map((part) => part[0])
           .slice(0, 2)
           .join("")
           .toUpperCase(),
-        subject: profile.subject || "physics",
-        experience: Number(profile.experience) || 0,
-        bioEn: profile.bio || "",
-        bioAr: profile.bio || "",
-        degreeEn: profile.qualification || t("Not supplied", "غير مذكور"),
-        degreeAr: profile.qualification || t("Not supplied", "غير مذكور"),
-        style: "purple",
-      };
-
-    const own =
-      ORBIT.user.role === "teacher" && OrbitProfiles.canonical(ORBIT.user.email) === canonical;
-
-    const publicChannels = ORBIT.channels().filter(
-      (c) => !c.private && OrbitProfiles.canonical(c.teacher) === canonical,
-    );
-
-    const posts = ORBIT.db().posts.filter(
-      (post) =>
-        ["lesson", "video", "resource"].includes(post.type) &&
-        publicChannels.some((c) => c.id === post.channel) &&
-        !ORBIT.get("orbit.deleted.posts", []).includes(post.id) &&
-        !post.sample,
-    );
-
-    title = t("The educator behind the ideas", "المعلم وراء الأفكار");
-
-    body = `<section class="profile-header card"><div class="profile-cover"><span aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5"><ellipse cx="12" cy="12" rx="10" ry="5" transform="rotate(-35 12 12)"/><circle cx="12" cy="12" r="3"/></svg></span><div><span class="professional-kicker">${t("ORBIT / TEACHING PORTFOLIO", "ORBIT / الملف المهني")}</span><h2>${t("Small questions.<br>Lasting discoveries.", "أسئلة صغيرة.<br>اكتشافات بتضل معنا.")}</h2></div></div><div class="profile-detail"><span class="profile-avatar purple">${esc(p.letters)}</span><div class="profile-identity"><span class="pill violet">${subj(p.subject)}</span><h2>${label(p)}</h2><p>${esc(profile.bio || t("A teaching story waiting to be shared.", "قصة تعليمية بانتظار المشاركة."))}</p></div>${own ? btn(t("Edit my profile", "تعديل ملفي") + " ↗", "../account-profile/account-profile.html", "profile-edit") : ""}</div></section><div class="professional-metrics"><div><strong>${publicChannels.length}</strong><span>${t("Public channels", "قنوات عامة")}</span></div><div><strong>${posts.length}</strong><span>${t("Published teaching contributions", "مساهمات تعليمية منشورة")}</span></div><div><strong>${p.experience}</strong><span>${t("Years of teaching", "سنوات تدريس")}</span></div></div><div class="profile-layout"><section class="card professional-about"><span class="professional-kicker">${t("THE TEACHING STORY", "القصة التعليمية")}</span><h2>${t("Experience & education", "الخبرة والتعليم")}</h2><div class="professional-field"><small>${t("Qualification", "المؤهل")}</small><p>${esc(p.degreeAr)}</p></div><div class="professional-field"><small>${t("Teaching experience", "الخبرة التعليمية")}</small><p>${p.experience} ${t("years", "سنوات")}</p></div>${profile.location ? `<div class="professional-field"><small>${t("Location", "الموقع")}</small><p>${esc(profile.location)}</p></div>` : ""}${profile.cv && (own || (ORBIT.user.role === "school" && profile.shareWithSchools && profile.shareCV)) && /^https:\/\//i.test(profile.cv) ? `<a class="btn outline" href="${esc(profile.cv)}" target="_blank" rel="noopener noreferrer">${t("View CV", "شاهد السيرة الذاتية")}</a>` : ""}<p class="professional-note">${t("Self-reported qualifications · unverified.", "مؤهلات معلنة ذاتيًا · غير موثقة.")}</p></section><section class="professional-content"><div class="section-heading"><div><span class="professional-kicker">${t("IDEAS IN PRACTICE", "أفكار على أرض الواقع")}</span><h2>${t("Teaching contributions", "مساهمات تعليمية")}</h2></div><span class="pill violet">${posts.length}</span></div><p class="professional-intro">${t("Lessons and resources published in this teacher’s public channels.", "دروس ومصادر نشرها المعلم في قنواته العامة.")}</p>${
-      posts
-        .map((post) => {
-          const c = publicChannels.find((c) => c.id === post.channel);
-          return `<article class="card portfolio-sample" data-sample="${esc(post.id)}"><header><span class="pill violet">${typeName(post.type)}</span><a href="${channelURL(c)}">${esc(ORBIT.label(c))} ↗</a></header><h3>${esc(post.title || t(post.titleEn, post.titleAr) || "")}</h3><p>${esc(post.body || t(post.bodyEn, post.bodyAr) || "")}</p>${ORBIT.attachment(post)}<a class="btn outline" href="${channelURL(c)}&post=${encodeURIComponent(post.id)}">${t("View the contribution", "شاهد المساهمة")} ↗</a></article>`;
-        })
-        .join("") ||
-      `<div class="card portfolio-empty"><span aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5"><ellipse cx="12" cy="12" rx="10" ry="5" transform="rotate(-35 12 12)"/><circle cx="12" cy="12" r="3"/></svg></span><h3>${t("The next idea starts here.", "الفكرة الجاية بتبدأ هون.")}</h3><p>${t("No public teaching contributions have been published yet.", "لسه ما في مساهمات تعليمية عامة منشورة.")}</p>${own ? btn(t("Open my channels", "افتح قنواتي") + " ↗", "../channels/channels.html", "outline") : ""}</div>`
-    }</section></div>`;
+        sampleLinks = (profile.workSamples || []).filter((url) => /^https:\/\//i.test(url));
+      title = own ? t("My Professional Profile", "ملفي المهني") : t("Teacher portfolio", "الملف المهني للمعلم");
+      body = `<section id="recruit-profile" class="card professional-portfolio"><header class="portfolio-person"><div class="portfolio-photo">${profile.photo ? `<img data-asset="${esc(profile.photo)}" alt="${t("Professional photo", "الصورة المهنية")}">` : `<span aria-hidden="true">${esc(initials)}</span>`}</div><div class="portfolio-person-copy"><span class="professional-kicker">${t("TEACHING PORTFOLIO", "الملف المهني للتدريس")}</span><h2>${esc(profile.name || t("Teacher", "معلم"))}</h2>${subjectNames.length ? `<p class="portfolio-specializations">${subjectNames.map(subj).join(" · ")}</p>` : ""}</div>${own ? btn(t("Edit professional profile", "تعديل الملف المهني"), "../account-profile/account-profile.html#profile-professional", "portfolio-edit") : ""}</header><p class="portfolio-introduction">${esc(profile.bio || t("No professional introduction added yet.", "لم تتم إضافة نبذة مهنية بعد."))}</p><div class="portfolio-details"><section class="portfolio-detail"><h3>${t("Qualifications & experience", "المؤهلات والخبرة")}</h3>${profile.qualification ? `<div><small>${t("Educational qualifications", "المؤهلات التعليمية")}</small><p>${esc(profile.qualification)}</p></div>` : ""}${profile.experience != null ? `<div><small>${t("Teaching experience", "الخبرة التعليمية")}</small><p>${Number(profile.experience)} ${t("years", "سنوات")}</p></div>` : ""}${profile.location && !own ? `<div><small>${t("Location", "الموقع")}</small><p>${esc(profile.location)}</p></div>` : ""}${profile.positions?.trim() ? `<div><small>${t("Teaching experience", "الخبرات التعليمية")}</small><ul>${values(profile.positions.split(/[\n]+/)).map((item) => `<li>${item}</li>`).join("")}</ul></div>` : ""}</section><section class="portfolio-detail"><h3>${t("Professional practice", "الممارسة المهنية")}</h3>${values(profile.skills).length ? `<div><small>${t("Professional skills", "المهارات المهنية")}</small><ul>${values(profile.skills).map((item) => `<li>${item}</li>`).join("")}</ul></div>` : ""}${values(profile.grades).length ? `<div><small>${t("Grade levels", "الصفوف")}</small><ul>${values(profile.grades).map((item) => `<li>${item}</li>`).join("")}</ul></div>` : ""}${values(profile.methods).length ? `<div><small>${t("Teaching strategies", "استراتيجيات التدريس")}</small><ul>${values(profile.methods).map((item) => `<li>${item}</li>`).join("")}</ul></div>` : ""}${values(profile.certificates).length ? `<div><small>${t("Certificates", "الشهادات")}</small><ul>${values(profile.certificates).map((item) => `<li>${item}</li>`).join("")}</ul></div>` : ""}</section></div>${profile.cv && /^https:\/\//i.test(profile.cv) ? `<section class="portfolio-links"><a class="btn outline" href="${esc(profile.cv)}" target="_blank" rel="noopener noreferrer">${t("View CV", "عرض السيرة الذاتية")} ↗</a></section>` : ""}${sampleLinks.length ? `<section class="portfolio-links"><h3>${t("Teaching work samples", "نماذج من الأعمال التعليمية")}</h3><ul>${sampleLinks.map((url, index) => `<li><a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${t("Work sample", "نموذج عمل")} ${index + 1} ↗</a></li>`).join("")}</ul></section>` : ""}<p class="portfolio-disclosure">${t("Professional information is supplied by the teacher and has not been independently verified.", "المعلومات المهنية مقدمة من المعلم ولم يتم التحقق منها بشكل مستقل.")}</p></section>`;
+    }
   } else return basePage();
   return `<header class="page-head"><span class="eyebrow">ORBIT / ${t("CONNECTED LEARNING", "تعلم متصل")}</span><h1>${title}</h1></header>${body}`;
 };
@@ -1095,7 +1056,7 @@ award = (id, xp) => {
     sparks.innerHTML = Array.from(
       { length: 22 },
       (_, i) =>
-        `<i style="--x:${(i * 41) % 100}%;--r:${i * 27}deg;--delay:${(i % 5) * 50}ms;background:${["#8b5cf6", "#ffb82e", "#23d6b1"][i % 3]}"></i>`,
+        `<i style="--x:${(i * 41) % 100}%;--r:${i * 27}deg;--delay:${(i % 5) * 50}ms;background:${["#34D399", "#ffb82e", "#23d6b1"][i % 3]}"></i>`,
     ).join("");
     document.body.append(sparks);
     setTimeout(() => sparks.remove(), 1500);

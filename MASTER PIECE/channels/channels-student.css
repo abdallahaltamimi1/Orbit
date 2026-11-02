@@ -16,22 +16,22 @@
   src: url('../student-dashboard/assets/Inter.ttf');
 }
 body:is(.student-channels, .teacher-channels) {
-  --orbit-accent: #0d9488;
-  --orbit-focus: #14b8a6;
-  --orbit-ink: #102238;
-  --orbit-muted: #52677c;
+  --orbit-accent: var(--orbit-green-800);
+  --orbit-focus: var(--orbit-green-700);
+  --orbit-ink: var(--orbit-green-900);
+  --orbit-muted: var(--orbit-green-700);
   --orbit-surface: #fff;
-  --orbit-border: #e2ecef;
-  background: #f6fafb;
+  --orbit-border: var(--orbit-green-100);
+  background: var(--orbit-green-50);
   color: var(--orbit-ink);
   font-family: ChannelArabic,ChannelEnglish,sans-serif;
 }
 body:is(.student-channels, .teacher-channels)[data-theme="dark"] {
-  --orbit-ink: #e7f3f5;
-  --orbit-muted: #aac1cc;
-  --orbit-surface: #142c3d;
-  --orbit-border: #2e4857;
-  background: #0b1c2b;
+  --orbit-ink: var(--orbit-green-50);
+  --orbit-muted: var(--orbit-green-300);
+  --orbit-surface: var(--orbit-green-900);
+  --orbit-border: var(--orbit-green-800);
+  background: var(--orbit-green-925);
 }
 body:is(.student-channels, .teacher-channels) #orbit-page .wrap {
   max-width: 1380px;
@@ -55,7 +55,7 @@ body:is(.student-channels, .teacher-channels) #orbit-page .directory-heading p {
   font-size: 15px;
 }
 body:is(.student-channels, .teacher-channels) #orbit-page .btn {
-  background: #0d9488;
+  background: var(--orbit-green-800);
   color: #fff;
   border: 0;
   border-radius: 12px;
@@ -71,24 +71,24 @@ body:is(.student-channels, .teacher-channels) #orbit-page .btn {
   box-shadow: none;
 }
 body:is(.student-channels, .teacher-channels) #orbit-page .btn:hover {
-  background: #0f766e;
+  background: var(--orbit-green-800);
 }
 body:is(.student-channels, .teacher-channels) #orbit-page .btn:active {
   transform: scale(.98);
 }
 body:is(.student-channels, .teacher-channels) :focus-visible {
-  outline: 3px solid #0d9488;
+  outline: 3px solid var(--orbit-green-800);
   outline-offset: 4px;
 }
 body:is(.student-channels, .teacher-channels) ::selection {
-  background: #ccfbf1;
-  color: #102238;
+  background: var(--orbit-green-100);
+  color: var(--orbit-green-900);
 }
 body:is(.student-channels, .teacher-channels) #orbit-page .directory-banner {
   min-height: 188px;
   padding: 25px 38px;
-  background: linear-gradient(110deg,#e1f6f3,#c9edf0);
-  color: #14485b;
+  background: linear-gradient(110deg,var(--orbit-green-100),var(--orbit-green-100));
+  color: var(--orbit-green-900);
   border-radius: 22px;
   position: relative;
   overflow: visible;
@@ -97,17 +97,17 @@ body:is(.student-channels, .teacher-channels) #orbit-page .directory-banner {
 body:is(.student-channels, .teacher-channels) #orbit-page .directory-banner h2 {
   font-family: ChannelHeading,sans-serif;
   font-size: 27px;
-  color: #12566a;
+  color: var(--orbit-accent);
   margin: 8px 0 12px;
 }
 body:is(.student-channels, .teacher-channels) #orbit-page .directory-banner p {
-  color: #24556b;
+  color: var(--orbit-accent);
   opacity: 1;
   font-size: 16px;
   max-width: 530px;
 }
 body:is(.student-channels, .teacher-channels) #orbit-page .directory-banner > div > span {
-  color: #24556b;
+  color: var(--orbit-accent);
   opacity: 1;
   letter-spacing: 0;
   font-size: 13px;
@@ -123,7 +123,7 @@ body:is(.student-channels, .teacher-channels) #orbit-page .directory-orbit img {
   height: 240px;
   object-fit: contain;
   bottom: -32px;
-  filter: drop-shadow(0 12px 10px #17485b1a);
+  filter: drop-shadow(0 12px 10px color-mix(in srgb, var(--orbit-green-900) 10.20%, transparent));
 }
 body:is(.student-channels, .teacher-channels) #orbit-page .channel-library {
   margin-top: 26px;
@@ -133,7 +133,7 @@ body:is(.student-channels, .teacher-channels) #orbit-page .directory-tools {
   padding-bottom: 18px;
 }
 body:is(.student-channels, .teacher-channels) #orbit-page .directory-tabs {
-  background: #e4eff1;
+  background: var(--orbit-green-100);
   border-radius: 15px;
   flex-shrink: 0;
   padding: 4px;
@@ -144,15 +144,15 @@ body:is(.student-channels, .teacher-channels) #orbit-page .directory-tabs button
   min-width: 108px;
   min-height: 44px;
   border-radius: 12px;
-  color: #52677c;
+  color: var(--orbit-accent);
 }
 body:is(.student-channels, .teacher-channels)
   #orbit-page
   .directory-tabs
   button[aria-pressed="true"] {
-  background: #0d9488;
+  background: var(--orbit-green-800);
   color: white;
-  box-shadow: 0 3px 7px #0f766e15;
+  box-shadow: 0 3px 7px color-mix(in srgb, var(--orbit-green-800) 8.24%, transparent);
 }
 body:is(.student-channels, .teacher-channels) #orbit-page .directory-search {
   flex: 1;
@@ -182,7 +182,7 @@ body:is(.student-channels, .teacher-channels) #channel-results {
 body:is(.student-channels, .teacher-channels) #orbit-page .channel-card {
   border: 0;
   border-radius: 20px;
-  box-shadow: 0 4px 18px #0f172a09;
+  box-shadow: 0 4px 18px color-mix(in srgb, var(--orbit-green-925) 3.53%, transparent);
   transition:
     transform .22s,box-shadow .22s;
   min-width: 0;
@@ -190,7 +190,7 @@ body:is(.student-channels, .teacher-channels) #orbit-page .channel-card {
 body:is(.student-channels, .teacher-channels) #orbit-page .channel-cover {
   height: auto;
   aspect-ratio: 1.95;
-  background: #d9eeec;
+  background: var(--orbit-green-100);
 }
 body:is(.student-channels, .teacher-channels) #orbit-page .channel-cover .tag {
   display: inline-flex;
@@ -198,7 +198,7 @@ body:is(.student-channels, .teacher-channels) #orbit-page .channel-cover .tag {
   align-items: center;
   font-size: 12px;
   background: #ffffffed;
-  color: #17394d;
+  color: var(--orbit-green-900);
   border-radius: 9px;
   padding: 5px 9px;
   top: 12px;
@@ -209,7 +209,7 @@ body:is(.student-channels, .teacher-channels) .cover-subject {
   bottom: 10px;
   inset-inline-end: 12px;
   background: #fff;
-  color: #0f766e;
+  color: var(--orbit-accent);
   padding: 3px 10px;
   border-radius: 8px;
   font-size: 12px;
@@ -270,7 +270,7 @@ body:is(.student-channels, .teacher-channels) .channel-join-dialog {
   border-radius: 22px;
   padding: 30px;
   width: min(450px,calc(100vw - 32px));
-  box-shadow: 0 24px 65px #03152133;
+  box-shadow: 0 24px 65px color-mix(in srgb, var(--orbit-green-950) 20.00%, transparent);
 }
 body:is(.student-channels, .teacher-channels) .channel-join-dialog h2 {
   font-size: 23px;
@@ -294,7 +294,7 @@ body:is(.student-channels, .teacher-channels) #invitation-code {
 }
 body:is(.student-channels, .teacher-channels) .channel-join-dialog .btn {
   width: 100%;
-  background: #0f766e;
+  background: var(--orbit-green-800);
   color: white;
   min-height: 46px;
   border: 0;
@@ -312,7 +312,7 @@ body:is(.student-channels, .teacher-channels) .channel-join-dialog .error {
   font-size: 14px;
 }
 body:is(.student-channels, .teacher-channels) .channel-join-dialog .join-success {
-  color: #0f766e;
+  color: var(--orbit-accent);
 }
 body:is(.student-channels, .teacher-channels)[data-theme="dark"] .channel-join-dialog .error {
   color: #ffb3bf;
@@ -320,12 +320,12 @@ body:is(.student-channels, .teacher-channels)[data-theme="dark"] .channel-join-d
 body:is(.student-channels, .teacher-channels)[data-theme="dark"]
   .channel-join-dialog
   .join-success {
-  color: #6ee7b7;
+  color: var(--orbit-accent);
 }
 @media (hover:hover) {
   body:is(.student-channels, .teacher-channels) #orbit-page .channel-card:hover {
     transform: translateY(-3px);
-    box-shadow: 0 14px 32px #0f172a17;
+    box-shadow: 0 14px 32px color-mix(in srgb, var(--orbit-green-925) 9.02%, transparent);
   }
 }
 @media (max-width:1150px) {
@@ -422,9 +422,9 @@ body:is(.student-channels, .teacher-channels)[data-theme="dark"]
 }
 body:is(.student-channels, .teacher-channels) #orbit-page[data-orbit-page="channels"] {
   font-family: ChannelArabic,ChannelEnglish,sans-serif;
-  --orbit-action: #0d9488;
+  --orbit-action: var(--orbit-green-800);
   --orbit-on-action: #fff;
-  --orbit-soft: #e2f5f1;
+  --orbit-soft: var(--orbit-green-100);
 }
 body:is(.student-channels, .teacher-channels)
   #orbit-page[data-orbit-page="channels"]
@@ -442,18 +442,18 @@ body:is(.student-channels, .teacher-channels)
   .cover-subject {
   font-size: 12px;
   opacity: 1;
-  color: #0f766e;
+  color: var(--orbit-accent);
 }
 body:is(.student-channels, .teacher-channels)
   #orbit-page[data-orbit-page="channels"]
   .btn:not(.soft):not(.danger) {
-  background: #0d9488;
+  background: var(--orbit-green-800);
   color: #fff;
 }
 body:is(.student-channels, .teacher-channels)
   #orbit-page[data-orbit-page="channels"]
   .btn:not(.soft):not(.danger):hover {
-  background: #0f766e;
+  background: var(--orbit-green-800);
 }
 body:is(.student-channels, .teacher-channels)
   #orbit-page[data-orbit-page="channels"]
@@ -486,18 +486,18 @@ body:is(.student-channels, .teacher-channels)
   font-display: swap;
 }
 body:is(.student-channels, .teacher-channels) #orbit-page[data-orbit-page="channels"] {
-  --orbit-ink: #102238;
-  --orbit-muted: #52677c;
+  --orbit-ink: var(--orbit-green-900);
+  --orbit-muted: var(--orbit-green-700);
   --orbit-surface: #fff;
-  --orbit-border: #dce8eb;
+  --orbit-border: var(--orbit-green-100);
   font-family: ChannelArabic,ChannelEnglish,sans-serif;
 }
 body:is(.student-channels, .teacher-channels)[data-theme="dark"]
   #orbit-page[data-orbit-page="channels"] {
-  --orbit-ink: #e7f3f5;
-  --orbit-muted: #aac1cc;
-  --orbit-surface: #142c3d;
-  --orbit-border: #2e4857;
+  --orbit-ink: var(--orbit-green-50);
+  --orbit-muted: var(--orbit-green-300);
+  --orbit-surface: var(--orbit-green-900);
+  --orbit-border: var(--orbit-green-800);
 }
 body:is(.student-channels, .teacher-channels) #orbit-page[data-orbit-page="channels"] .wrap {
   max-width: 1320px;
@@ -547,7 +547,7 @@ body:is(.student-channels, .teacher-channels)
   min-height: 132px;
   padding: 24px 28px;
   gap: 28px;
-  background: #103d42;
+  background: var(--orbit-green-900);
   color: #fff;
   border-radius: 16px;
   overflow: hidden;
@@ -575,7 +575,7 @@ body:is(.student-channels, .teacher-channels)
   p {
   font-size: 14px;
   line-height: 1.8;
-  color: #ccfbf1;
+  color: var(--orbit-green-100);
   max-width: none;
 }
 body:is(.student-channels, .teacher-channels)
@@ -592,7 +592,7 @@ body:is(.student-channels, .teacher-channels)
   width: 100px;
   height: 80px;
   flex-shrink: 0;
-  color: #5eead4;
+  color: var(--orbit-accent);
 }
 body:is(.student-channels, .teacher-channels)
   #orbit-page[data-orbit-page="channels"]
@@ -642,7 +642,7 @@ body:is(.student-channels, .teacher-channels)
   #orbit-page[data-orbit-page="channels"]
   .directory-tabs
   button[aria-pressed="true"] {
-  background: #0f766e;
+  background: var(--orbit-green-800);
   color: white;
   box-shadow: none;
 }
@@ -667,8 +667,8 @@ body:is(.student-channels, .teacher-channels)
 body:is(.student-channels, .teacher-channels)
   #orbit-page[data-orbit-page="channels"]
   .directory-search:focus-within {
-  border-color: #0d9488;
-  outline: 2px solid #14b8a633;
+  border-color: var(--orbit-green-800);
+  outline: 2px solid color-mix(in srgb, var(--orbit-green-700) 20.00%, transparent);
   outline-offset: 2px;
 }
 body:is(.student-channels, .teacher-channels)
@@ -710,7 +710,7 @@ body:is(.student-channels, .teacher-channels)
   width: 100%;
   aspect-ratio: 16/9;
   height: auto;
-  background: linear-gradient(125deg,#d9f3ed,#eaf4f5);
+  background: linear-gradient(125deg,var(--orbit-green-100),var(--orbit-green-50));
   overflow: hidden;
   flex: none;
 }
@@ -742,7 +742,7 @@ body:is(.student-channels, .teacher-channels)
   inset: 0;
   display: grid;
   place-items: center;
-  color: #0f766e;
+  color: var(--orbit-accent);
 }
 body:is(.student-channels, .teacher-channels)
   #orbit-page[data-orbit-page="channels"]
@@ -762,19 +762,19 @@ body:is(.student-channels, .teacher-channels)
   font-size: 12px;
   line-height: 1.5;
   background: #fffffff2;
-  color: #17394d;
+  color: var(--orbit-green-900);
   padding: 6px 9px;
   top: 10px;
   inset-inline-start: 10px;
   max-width: calc(100% - 20px);
-  border: 1px solid #d9e8e9;
+  border: 1px solid var(--orbit-green-100);
   gap: 5px;
 }
 body:is(.student-channels, .teacher-channels)
   #orbit-page[data-orbit-page="channels"]
   .cover-subject {
   background: #fff;
-  color: #0f766e;
+  color: var(--orbit-accent);
   font-size: 12px;
   padding: 4px 9px;
   bottom: 10px;
@@ -853,12 +853,12 @@ body:is(.student-channels, .teacher-channels)
 body:is(.student-channels, .teacher-channels)[data-theme="dark"]
   #orbit-page[data-orbit-page="channels"]
   .channel-cover {
-  background: linear-gradient(125deg,#184b49,#1c3545);
+  background: linear-gradient(125deg,var(--orbit-green-900),var(--orbit-green-900));
 }
 body:is(.student-channels, .teacher-channels)[data-theme="dark"]
   #orbit-page[data-orbit-page="channels"]
   .channel-cover-fallback {
-  color: #8aead8;
+  color: var(--orbit-green-300);
 }
 body:is(.student-channels, .teacher-channels)[data-theme="dark"]
   #orbit-page[data-orbit-page="channels"]
@@ -871,7 +871,7 @@ body:is(.student-channels, .teacher-channels)[data-theme="dark"]
     #orbit-page[data-orbit-page="channels"]
     .channel-card:hover {
     transform: translateY(-3px);
-    border-color: #0d9488;
+    border-color: var(--orbit-green-800);
     box-shadow: none;
   }
   body:is(.student-channels, .teacher-channels)

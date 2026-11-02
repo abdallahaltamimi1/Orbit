@@ -202,7 +202,7 @@ body.student-learn-space #orbit-page .learn-text-link {
   display: inline-block;
   border: 0;
   background: none;
-  color: var(--orbit-action);
+  color: var(--orbit-accent);
   padding: 6px 0;
   font: inherit;
   text-decoration: underline;

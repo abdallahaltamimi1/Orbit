@@ -9,7 +9,19 @@
     t = (en, ar) => (document.documentElement.lang === "ar" ? ar : en);
   const reduced = matchMedia("(prefers-reduced-motion:reduce)");
   const initialPrefs = OrbitAuth.get("orbit.student.v1", {});
-  root.dataset.theme = initialPrefs.theme || "light";
+  const systemAppearance = matchMedia("(prefers-color-scheme: dark)");
+  function applyTheme() {
+    const saved = OrbitAuth.get("orbit.settings.appearance", null),
+      selected = ["light", "dark", "auto"].includes(saved) ? saved : initialPrefs.theme || "light",
+      theme = selected === "auto" ? systemAppearance.matches ? "dark" : "light" : selected;
+    initialPrefs.theme = theme;
+    root.dataset.theme = theme;
+    return theme;
+  }
+  applyTheme();
+  systemAppearance.addEventListener?.("change", () => {
+    if (OrbitAuth.get("orbit.settings.appearance", null) === "auto") applyTheme();
+  });
   let api = null,
     current = 0,
     previous = null,
@@ -296,7 +308,7 @@
           location.reload();
           return;
         }
-        root.dataset.theme = prefs.theme || "light";
+        applyTheme();
       }
       if (["orbit.student.v1", "orbit.motion.preference"].includes(event.key)) preference();
     },

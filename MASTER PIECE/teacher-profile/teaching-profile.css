@@ -1,0 +1,18 @@
+#orbit-page[data-orbit-page="teaching-profile"] .bar { padding-inline-end: 120px; }
+#orbit-page[data-orbit-page="teaching-profile"] .btn.soft { background: var(--orbit-surface); color: var(--orbit-ink); border: 1px solid var(--orbit-border); }
+#orbit-page[data-orbit-page="teaching-profile"] .logo { color: var(--orbit-on-soft); }
+#orbit-page .teaching-profile { max-width: 1040px; padding-block: 32px 64px; }
+.teaching-profile-heading { margin-block: 28px 36px; }
+.teaching-profile-heading h1 { margin-bottom: 24px; }
+.teaching-profile-heading h2 { margin-bottom: 8px; }
+.teaching-profile p, .teaching-profile small { color: var(--orbit-muted); }
+.teaching-channel-list { list-style: none; padding: 0; margin-block: 24px; }
+.teaching-channel-list li { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding-block: 24px; border-top: 1px solid var(--orbit-border); overflow-wrap: anywhere; }
+.teaching-channel-list li > div { min-width: 0; }
+.teaching-channel-list h3, .teaching-channel-list p { margin-block: 0 8px; }
+.teaching-channel-list .btn { flex-shrink: 0; }
+.teaching-profile-empty { padding-block: 24px; border-top: 1px solid var(--orbit-border); }
+@media (max-width: 600px) {
+  #orbit-page .teaching-profile { padding: 24px 16px 48px; }
+  .teaching-channel-list li { align-items: start; flex-direction: column; gap: 16px; }
+}

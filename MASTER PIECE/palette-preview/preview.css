@@ -1,0 +1,39 @@
+
+#palette-preview { --ink:#064e3b; --muted:#376556; --surface:#fff; --canvas:#ecfdf5; --line:#b5d9ca; --action:#047857; min-height:100vh; background:var(--canvas); color:var(--ink); font:16px/1.75 'Segoe UI',Tahoma,Arial,sans-serif; color-scheme:light; }
+#palette-preview[data-mode="dark"] { --ink:#ecfdf5; --muted:#bbd9cd; --surface:#0c3027; --canvas:#06251d; --line:#386658; --action:#047857; color-scheme:dark; }
+#palette-preview *,#palette-preview *::before,#palette-preview *::after { box-sizing:border-box; }
+#palette-preview ::selection { background:#34d399; color:#064e3b; }
+#palette-preview :focus-visible { outline:3px solid var(--ink); outline-offset:4px; }
+#palette-preview a { color:inherit; text-underline-offset:5px; }
+#palette-preview nav { max-width:1200px; margin:auto; padding:22px 28px; display:flex; align-items:center; gap:28px; flex-wrap:wrap; border-bottom:1px solid var(--line); }
+#palette-preview .brand { font-size:26px; font-weight:800; text-decoration:none; letter-spacing:.04em; }
+#palette-preview .tools { margin-inline-start:auto; display:flex; gap:8px; }
+#palette-preview main { max-width:1200px; margin:auto; padding:24px 28px 64px; }
+#palette-preview .preview-label { color:var(--muted); font-size:13px; }
+#palette-preview h1 { font-size:clamp(32px,4.5vw,56px); line-height:1.35; margin:0 0 20px; text-wrap:balance; }
+#palette-preview h2 { font-size:26px; line-height:1.5; margin:0 0 18px; }
+#palette-preview h3 { font-size:22px; line-height:1.5; margin:14px 0 8px; }
+#palette-preview p { max-width:65ch; }
+#palette-preview .hero { display:grid; grid-template-columns:1.5fr 1fr; align-items:center; gap:64px; padding:48px 0 64px; }
+#palette-preview .hero p,#palette-preview article p { color:var(--muted); }
+#palette-preview .hero-note { padding:32px; background:#064e3b; color:#fff; border-radius:16px; }
+#palette-preview .hero-note span { color:#34d399; font-size:14px; }
+#palette-preview .hero-note p { color:#ecfdf5; }
+#palette-preview .actions { display:flex; flex-wrap:wrap; gap:12px; margin-top:28px; }
+#palette-preview button,#palette-preview .button { font:inherit; cursor:pointer; min-height:44px; padding:10px 18px; border:1px solid var(--line); border-radius:8px; background:var(--surface); color:var(--ink); text-decoration:none; display:inline-flex; align-items:center; justify-content:center; }
+#palette-preview .primary { background:var(--action); color:white; border-color:var(--action); }
+#palette-preview button:hover,#palette-preview .button:hover { filter:brightness(.93); }
+#palette-preview .cards { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:20px; }
+#palette-preview article { padding:24px; border-radius:12px; background:var(--surface); border:1px solid var(--line); }
+#palette-preview .tag { font-size:13px; font-weight:600; }
+#palette-preview .samples { display:grid; grid-template-columns:1fr 1fr; gap:48px; margin-top:56px; }
+#palette-preview label { display:grid; gap:6px; margin-bottom:16px; }
+#palette-preview input,#palette-preview select { width:100%; min-height:48px; padding:10px 14px; font:inherit; border:1px solid var(--line); background:var(--surface); color:var(--ink); border-radius:8px; caret-color:var(--ink); }
+#palette-preview input::placeholder { color:var(--muted); opacity:1; }
+#palette-preview .notice { padding:14px 18px; border:1px solid var(--line); border-radius:8px; background:var(--surface); }
+#palette-preview .success { background:#064e3b; color:#fff; }
+#palette-preview .error { border-color:#b4233b; }
+#palette-preview .swatches { display:flex; gap:12px; flex-wrap:wrap; direction:ltr; }
+#palette-preview .swatches span { display:grid; gap:4px; }
+#palette-preview .swatches i { display:block; width:64px; height:36px; border:1px solid var(--line); border-radius:6px; }
+@media(max-width:760px) { #palette-preview .hero,#palette-preview .samples { grid-template-columns:1fr; gap:24px; } #palette-preview .cards { grid-template-columns:1fr; } #palette-preview nav { gap:14px; padding:16px; } #palette-preview main { padding-inline:18px; } #palette-preview .hero { padding-block:24px 40px; } #palette-preview .tools { width:100%; margin:0; } }

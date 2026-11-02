@@ -203,9 +203,9 @@ window.OrbitScene = {
     mesh(new THREE.SphereGeometry(1.1, 40, 28), atmosphereMaterial, planet);
     const distantPlanets = [];
     for (const [r, x, y, z, color] of [
-      [0.54, -2.9, 1.35, -2.1, 0x654ec1],
+      [0.54, -2.9, 1.35, -2.1, 0x047857],
       [0.3, 2.7, 1.45, -3.7, 0x3b8fc2],
-      [0.18, -1.7, -1.65, -1, 0x9a82d4],
+      [0.18, -1.7, -1.65, -1, 0x34d399],
       [0.38, 2.25, -1.4, -2.8, 0x4456ab],
     ]) {
       const p = mesh(
@@ -354,7 +354,7 @@ window.OrbitScene = {
         scan * (calm ? 0.12 : 0.1 + 0.12 * Math.max(0, Math.sin(elapsed * 5)));
       pulses.material.opacity = scan * 0.6;
       pulses.scale.setScalar(calm ? 1 : 0.7 + (elapsed % 1.2) * 0.6);
-      sensor.material.color.setHex(state === "Error" || state === "Empty" ? 0xb59aff : 0x69dcff);
+      sensor.material.color.setHex(state === "Error" || state === "Empty" ? 0x34d399 : 0x69dcff);
       sensorLight.intensity = scan * 2 + launch * 1.2;
       destinationRing.material.opacity = launch * 0.85;
       destinationCore.scale.setScalar(0.4 + launch * 1.6);

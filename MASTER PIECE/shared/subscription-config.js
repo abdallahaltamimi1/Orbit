@@ -29,9 +29,8 @@
       },
     },
     "school-starter": {
-      name: "School Starter",
+      name: "Free School",
       accountType: "school",
-      trialDays: 14,
       price: null,
       limits: {
         teachers: 5,
@@ -41,7 +40,7 @@
         lessons: 100,
         labs: 200,
         assignments: 100,
-        jobs: 10,
+        jobs: 3,
       },
       features: {
         publishing: true,

@@ -312,12 +312,166 @@
     persist(db);
     return meeting;
   }
+  function interviewApplication(applicationId, schoolId = user().email) {
+    if (user().role !== "school" || !schoolId || user().email !== schoolId)
+      fail("This interview is not available to your account.", "هذه المقابلة غير متاحة لحسابك.");
+    const recruitment = window.OrbitRecruitment,
+      application = recruitment?.applications().find((item) => item.id === applicationId),
+      job = application && recruitment.getJob(application.jobId);
+    if (!application || !job || application.schoolId !== schoolId)
+      fail("Choose an application belonging to your school.", "اختر طلبًا تابعًا لمدرستك.");
+    return { application, job };
+  }
+  function interviewForApplication(applicationId) {
+    requireRole("school");
+    return (
+      data().meetings.find(
+        (meeting) =>
+          meeting.kind === "recruitment-interview" &&
+          meeting.applicationId === applicationId &&
+          meeting.schoolId === user().email &&
+          meeting.status === "scheduled",
+      ) || null
+    );
+  }
+  function putInterview(values, applicationId, meetingId = null, expectedRevision = null) {
+    const school = requireRole("school"),
+      recruitment = window.OrbitRecruitment,
+      { application, job } = interviewApplication(applicationId, school.email),
+      original = data(),
+      before = data(),
+      old = meetingId
+        ? before.meetings.find(
+            (meeting) =>
+              meeting.id === meetingId &&
+              meeting.kind === "recruitment-interview" &&
+              meeting.applicationId === applicationId &&
+              meeting.schoolId === school.email,
+          )
+        : null;
+    if (meetingId && !old) fail("This interview is not available.", "هذه المقابلة غير متاحة.");
+    if (old && old.revision !== expectedRevision)
+      fail("This meeting changed. Reload it before editing.", "تغيّر الاجتماع. أعد فتحه قبل التعديل.");
+    if (old?.status === "cancelled")
+      fail("A cancelled interview cannot be rescheduled.", "لا يمكن إعادة جدولة مقابلة ملغاة.");
+    if (
+      !["pending", "interview_scheduled"].includes(application.status) ||
+      (application.status === "interview_scheduled" && application.interviewMeetingId && application.interviewMeetingId !== old?.id)
+    )
+      fail("This application is no longer eligible for an interview.", "لم يعد هذا الطلب مؤهلًا للمقابلة.");
+    const duplicate = before.meetings.find(
+      (meeting) =>
+        meeting.kind === "recruitment-interview" &&
+        meeting.applicationId === applicationId &&
+        meeting.status === "scheduled" &&
+        meeting.id !== old?.id,
+    );
+    if (duplicate)
+      fail("An interview is already scheduled for this application.", "تمت جدولة مقابلة لهذا الطلب بالفعل.");
+    const start = Date.parse(values.startAt),
+      end = Date.parse(values.endAt),
+      type = values.type,
+      location = String(values.location || "").trim().slice(0, 500),
+      externalUrl = String(values.externalUrl || "").trim();
+    if (
+      before.meetings.some(
+        (meeting) =>
+          meeting.kind === "recruitment-interview" &&
+          meeting.status === "scheduled" &&
+          meeting.id !== old?.id &&
+          (meeting.schoolId === school.email || meeting.teacherId === application.teacherId) &&
+          Date.parse(meeting.startAt) < end &&
+          Date.parse(meeting.endAt) > start,
+      )
+    )
+      fail("This time overlaps another interview for the school or teacher.", "يتعارض الموعد مع مقابلة أخرى للمدرسة أو المعلم.");
+    if (!String(values.title || "").trim() || values.title.length > 150 || !String(values.description || "").trim())
+      fail("Complete the interview title and details.", "أكمل عنوان المقابلة وتفاصيلها.");
+    if (!Number.isFinite(start) || !Number.isFinite(end) || start <= Date.now() || end <= start || end - start < 15 * 60000 || end - start > 180 * 60000)
+      fail("Choose a future interview between 15 and 180 minutes.", "اختر موعدًا مستقبليًا مدته بين 15 و180 دقيقة.");
+    if (!["interview-online", "interview-in-person"].includes(type))
+      fail("Choose online or in-person interview.", "اختر مقابلة عن بُعد أو حضورية.");
+    if (type === "interview-in-person" && !location)
+      fail("Enter the in-person interview location.", "أدخل موقع المقابلة الحضورية.");
+    if (externalUrl) {
+      let parsed;
+      try {
+        parsed = new URL(externalUrl);
+      } catch {
+        fail("Use a valid HTTPS meeting link.", "استخدم رابط اجتماع HTTPS صحيحًا.");
+      }
+      if (parsed.protocol !== "https:" || parsed.username || parsed.password || externalUrl.length > 2000)
+        fail("Use a valid HTTPS meeting link.", "استخدم رابط اجتماع HTTPS صحيحًا.");
+    }
+    if (type === "interview-in-person" && externalUrl)
+      fail("In-person interviews do not use an online meeting link.", "المقابلة الحضورية لا تستخدم رابطًا إلكترونيًا.");
+    const id = old?.id || crypto.randomUUID(),
+      teacher = recruitment.teacher(application.teacherId),
+      record = {
+        ...(old || {}),
+        id,
+        kind: "recruitment-interview",
+        applicationId,
+        jobId: application.jobId,
+        schoolId: school.email,
+        teacherId: application.teacherId,
+        teacherName: teacher.name,
+        title: String(values.title).trim().slice(0, 150),
+        subject: String(values.subject || job.subject).trim().slice(0, 100),
+        description: String(values.description).trim().slice(0, 3000),
+        channelId: null,
+        channelName: job.title,
+        audience: { mode: "individual", studentIds: [] },
+        recipientIds: [application.teacherId],
+        type,
+        location: type === "interview-in-person" ? location : "",
+        externalUrl: type === "interview-online" ? externalUrl : "",
+        roomName: old?.roomName || "LearningOrbit" + id.replaceAll("-", ""),
+        resources: [],
+        startAt: new Date(start).toISOString(),
+        endAt: new Date(end).toISOString(),
+        timezone: String(values.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone),
+        status: "scheduled",
+        revision: old ? old.revision + 1 : 1,
+        createdAt: old?.createdAt || new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+    if (old) before.meetings = before.meetings.map((meeting) => (meeting.id === id ? record : meeting));
+    else before.meetings.unshift(record);
+    const when = new Intl.DateTimeFormat("en-GB", { dateStyle: "medium", timeStyle: "short", timeZone: record.timezone }).format(new Date(start));
+    notify(
+      before,
+      [application.teacherId],
+      record,
+      `${old ? "changed" : "created"}:${record.id}:${record.revision}`,
+      `${old ? "Interview rescheduled: " : "Interview scheduled: "}${when}`,
+      `${old ? "تم تغيير موعد المقابلة: " : "تمت جدولة مقابلة: "}${new Intl.DateTimeFormat("ar-JO", { dateStyle: "medium", timeStyle: "short", timeZone: record.timezone }).format(new Date(start))}`,
+    );
+    persist(before);
+    try {
+      recruitment.linkInterviewMeeting(applicationId, id);
+    } catch (error) {
+      persist(original);
+      throw error;
+    }
+    return record;
+  }
   function cancel(id) {
-    const active = requireRole("teacher"),
+    const active = user(),
       db = data(),
-      meeting = db.meetings.find((item) => item.id === id && item.teacherId === active.email);
+      meeting = db.meetings.find((item) => item.id === id);
+    const interview = meeting?.kind === "recruitment-interview";
+    if (interview) {
+      if (active.role !== "school" || meeting.schoolId !== active.email)
+        fail("Only the organizing school can cancel this interview.", "المدرسة المنظمة فقط يمكنها إلغاء هذه المقابلة.");
+    } else {
+      requireRole("teacher");
+      if (!meeting || meeting.teacherId !== active.email)
+        fail("Meeting not found or not owned by you.", "الاجتماع غير موجود أو ليس ملكك.");
+    }
     if (!meeting) fail("Meeting not found or not owned by you.", "الاجتماع غير موجود أو ليس ملكك.");
     if (meeting.status === "cancelled") return;
+    const before = data();
     meeting.status = "cancelled";
     meeting.revision++;
     meeting.updatedAt = new Date().toISOString();
@@ -326,10 +480,18 @@
       meeting.recipientIds,
       meeting,
       "cancelled:" + id + ":" + meeting.revision,
-      "A meeting was cancelled: " + meeting.title,
-      "تم إلغاء اجتماع: " + meeting.title,
+      interview ? "An interview was cancelled: " + meeting.title : "A meeting was cancelled: " + meeting.title,
+      interview ? "تم إلغاء مقابلة: " + meeting.title : "تم إلغاء اجتماع: " + meeting.title,
     );
     persist(db);
+    if (interview) {
+      try {
+        window.OrbitRecruitment.clearInterviewMeeting(meeting.applicationId, meeting.id);
+      } catch (error) {
+        persist(before);
+        throw error;
+      }
+    }
   }
   function remove(id) {
     const active = requireRole("teacher"),
@@ -354,33 +516,56 @@
   }
   function canView(meeting, active = user()) {
     if (!active.email) return false;
+    if (meeting.kind === "recruitment-interview") {
+      const application = window.OrbitRecruitment?.data().applications.find(
+        (item) => item.id === meeting.applicationId,
+      );
+      if (
+        !application ||
+        application.jobId !== meeting.jobId ||
+        application.teacherId !== meeting.teacherId ||
+        application.schoolId !== meeting.schoolId ||
+        !meeting.recipientIds.includes(meeting.teacherId)
+      )
+        return false;
+      if (active.role === "teacher") return meeting.teacherId === active.email;
+      if (active.role === "school") return meeting.schoolId === active.email;
+      return false;
+    }
     if (active.role === "teacher") return meeting.teacherId === active.email;
     if (active.role === "student")
       return (
         meeting.recipientIds.includes(active.email) &&
         (read("orbit.memberships.v3", {})[active.email] || []).includes(meeting.channelId)
       );
-    if (active.role === "school") {
-      const channel = channels().find((item) => item.id === meeting.channelId);
-      return (
-        !!channel &&
-        meeting.schoolId === active.email &&
-        schoolFor(channel, meeting.teacherId) === active.email
-      );
-    }
+    // The existing non-interview meeting model is teacher-to-student and
+    // channel-scoped. School-channel association alone must not expose lessons.
+    if (active.role === "school") return false;
     return false;
   }
   const visible = () =>
     data()
       .meetings.filter((meeting) => canView(meeting))
       .sort((a, b) => Date.parse(a.startAt) - Date.parse(b.startAt));
+  const recruitmentInterviews = () =>
+    visible().filter((meeting) => meeting.kind === "recruitment-interview");
   function get(id) {
     const meeting = data().meetings.find((item) => item.id === id);
     return meeting && canView(meeting) ? meeting : null;
   }
+  function updateInterview(values, meetingId, expectedRevision) {
+    const meeting = get(meetingId);
+    if (!meeting || meeting.kind !== "recruitment-interview" || user().role !== "school")
+      fail("This interview is not available.", "هذه المقابلة غير متاحة.");
+    return putInterview(values, meeting.applicationId, meetingId, expectedRevision);
+  }
   function entry(id) {
     const meeting = get(id);
-    if (!meeting || !["teacher", "student"].includes(user().role))
+    const active = user();
+    // get() has already checked the interview/application relationship and ownership.
+    const organizingSchool = active.role === "school" &&
+      meeting?.kind === "recruitment-interview" && meeting.schoolId === active.email;
+    if (!meeting || (!["teacher", "student"].includes(active.role) && !organizingSchool))
       fail("This meeting is not available to your account.", "هذا الاجتماع غير متاح لحسابك.");
     if (status(meeting) !== "live")
       fail(
@@ -575,10 +760,14 @@
     groups,
     putGroup,
     put,
+    putInterview,
+    interviewForApplication,
+    updateInterview,
     cancel,
     remove,
     status,
     visible,
+    recruitmentInterviews,
     get,
     entry,
     reminders,

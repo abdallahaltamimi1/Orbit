@@ -26,7 +26,7 @@
 #orbit-page .mission-label {
   font-size: 14px;
   font-weight: 650;
-  color: #d4e3f7;
+  color: var(--orbit-green-100);
   letter-spacing: .03em;
 }
 #orbit-page .cosmic-space {
@@ -64,12 +64,12 @@
 #orbit-page .mission-copy p {
   font-size: 15px;
   line-height: 1.85;
-  color: #d4e3f7;
+  color: var(--orbit-green-100);
 }
 #orbit-page .mission-indicator {
   margin-top: 24px;
   font-size: 14px;
-  color: #b2eadf;
+  color: var(--orbit-green-200);
   border-top: 1px solid #ffffff22;
   padding-top: 18px;
 }
@@ -119,7 +119,7 @@
   width: 100%;
   min-height: 50px;
   background: var(--orbit-action);
-  color: #fff;
+  color: var(--orbit-on-action);
   margin-top: 12px;
 }
 #orbit-page .register-card .auth-success {

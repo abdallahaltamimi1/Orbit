@@ -38,9 +38,11 @@
   }
   function mayRead(post) {
     const active = user();
+    // Owners retain review access; moderation and deletion block every student read path.
     return (
       (active.role === "teacher" && active.email === owner(post)) ||
-      (active.role === "student" && enrolled(post))
+      (active.role === "student" && post.moderationStatus !== "hidden" &&
+        !OrbitAuth.get("orbit.deleted.posts", []).includes(post.id) && enrolled(post))
     );
   }
   const visible = () => published().filter(mayRead);
@@ -236,8 +238,12 @@
       fail("Submission unavailable.", "التسليم غير متاح.");
     return blob;
   }
-  const notifications = () =>
-    data().notifications.filter((item) => item.recipient === user().email);
+  const notifications = () => {
+    const active = user();
+    const accessible = active.role === "student" ? new Set(visible().map((post) => post.id)) : null;
+    return data().notifications.filter((item) => item.recipient === active.email &&
+      (!accessible || accessible.has(item.assignmentId)));
+  };
   function markRead(id) {
     const db = data(),
       note = db.notifications.find((item) => item.id === id && item.recipient === user().email);

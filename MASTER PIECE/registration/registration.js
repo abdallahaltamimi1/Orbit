@@ -4,7 +4,7 @@ const O = ORBIT,
   { t, esc } = O;
 O.shell(
   t("Create your account", "أنشئ حسابك"),
-  `<div class="onboarding-layout"><aside class="onboarding-story"><span class="onboarding-orbit" aria-hidden="true"></span><h2>${t("A space for your next discovery.", "مساحة لاكتشافك الجاي.")}</h2><p>${t("Learn with curiosity. Teach with purpose. Find the right people.", "تعلّم بفضول، علّم بهدف، ووصل للناس المناسبين.")}</p><ul><li>${t("Student · a journey of learning and experiments", "طالب · رحلة تعلّم وتجارب")}</li><li>${t("Teacher · your lessons and professional presence", "معلم · دروسك وحضورك المهني")}</li><li>${t("School · your next teaching team", "مدرسة · فريقك التعليمي القادم")}</li></ul><a href="../login/login.html">${t("Already in ORBIT? Sign in", "عندك حساب؟ ارجع لتسجيل الدخول")} ↗</a></aside><div class="register-card"><h2>${t("Enter your learning universe", "ادخل عالمك التعليمي")}</h2><form id="registration-form"><label>${t("Account role", "نوع الحساب")}<select id="account-role" name="role"><option value="student">${t("Student", "طالب")}</option><option value="teacher">${t("Teacher", "معلم")}</option><option value="school">${t("School", "مدرسة")}</option></select></label><label>${t("Full name / school name", "الاسم الكامل / اسم المدرسة")}<input name="name" required maxlength="100" autocomplete="name"></label><label>${t("Email address", "البريد الإلكتروني")}<input name="email" type="email" required autocomplete="username"></label><label>${t("Password · 10+ characters, letters and digits", "كلمة المرور · 10 أحرف على الأقل، مع حروف وأرقام")}<input name="password" type="password" required minlength="10" autocomplete="new-password"></label><label>${t("Confirm password", "تأكيد كلمة المرور")}<input name="confirm" type="password" required minlength="10" autocomplete="new-password"></label><div id="student-fields" hidden></div><div id="teacher-fields" hidden><label>${t("Teaching subject", "تخصص التدريس")}<select name="subject"><option value="physics">${t("Physics", "فيزياء")}</option><option value="math">${t("Math", "رياضيات")}</option><option value="arabic">${t("Arabic", "عربي")}</option><option value="english">${t("English", "إنجليزي")}</option><option value="biology">${t("Biology", "أحياء")}</option><option value="chemistry">${t("Chemistry", "كيمياء")}</option></select></label><label>${t("Qualifications", "المؤهلات")}<input name="qualification" maxlength="1000"></label><label>${t("Experience (years)", "سنوات الخبرة")}<input name="experience" type="number" min="0" max="60" step="1" value="0"></label><label>${t("City", "المدينة")}<input name="teacherLocation" maxlength="200"></label></div><div id="school-fields" hidden><label>${t("School location", "موقع المدرسة")}<input name="location"></label><label>${t("Public contact", "التواصل العام")}<input name="contact"></label><label>${t("School type", "نوع المدرسة")}<select name="type"><option value="private">${t("Private", "خاصة")}</option><option value="public">${t("Public", "حكومية")}</option><option value="international">${t("International", "دولية")}</option></select></label><label>${t("Education levels", "المراحل التعليمية")}<input name="levels"></label><label>${t("Subjects / specializations", "المواد / التخصصات")}<input name="subjects"></label></div><p id="registration-status" role="status"></p><button class="btn">${t("Create account", "إنشاء الحساب")}</button></form><p>${t("Already have an account?", "عندك حساب؟")} <a class="btn soft" href="../login/login.html">${t("Log in", "تسجيل الدخول")}</a></p><div id="registration-google"></div></div></div>`,
+  `<div class="onboarding-layout"><aside class="onboarding-story"><span class="onboarding-orbit" aria-hidden="true"></span><h2>${t("A space for your next discovery.", "مساحة لاكتشافك الجاي.")}</h2><p>${t("Learn with curiosity. Teach with purpose. Find the right people.", "تعلّم بفضول، علّم بهدف، ووصل للناس المناسبين.")}</p><ul><li>${t("Student · a journey of learning and experiments", "طالب · رحلة تعلّم وتجارب")}</li><li>${t("Teacher · your lessons and professional presence", "معلم · دروسك وحضورك المهني")}</li><li>${t("School · your next teaching team", "مدرسة · فريقك التعليمي القادم")}</li></ul><a href="../login/login.html">${t("Already in ORBIT? Sign in", "عندك حساب؟ ارجع لتسجيل الدخول")} ↗</a></aside><div class="register-card"><h2>${t("Enter your learning universe", "ادخل عالمك التعليمي")}</h2><form id="registration-form"><label>${t("Account role", "نوع الحساب")}<select id="account-role" name="role"><option value="student">${t("Student", "طالب")}</option><option value="teacher">${t("Teacher", "معلم")}</option><option value="school">${t("School", "مدرسة")}</option></select></label><label>${t("Full name / school name", "الاسم الكامل / اسم المدرسة")}<input name="name" required maxlength="100" autocomplete="name"></label><label>${t("Email address", "البريد الإلكتروني")}<input name="email" type="email" required autocomplete="username"></label><label>${t("Password · 10+ characters, letters and digits", "كلمة المرور · 10 أحرف على الأقل، مع حروف وأرقام")}<input name="password" type="password" required minlength="10" autocomplete="new-password"></label><label>${t("Confirm password", "تأكيد كلمة المرور")}<input name="confirm" type="password" required minlength="10" autocomplete="new-password"></label><div id="student-fields" hidden></div><div id="teacher-fields" hidden><label>${t("Teaching subject", "تخصص التدريس")}<select name="subject"><option value="physics">${t("Physics", "فيزياء")}</option><option value="math">${t("Math", "رياضيات")}</option><option value="arabic">${t("Arabic", "عربي")}</option><option value="english">${t("English", "إنجليزي")}</option><option value="biology">${t("Biology", "أحياء")}</option><option value="chemistry">${t("Chemistry", "كيمياء")}</option></select></label><label>${t("Qualifications", "المؤهلات")}<input name="qualification" maxlength="1000"></label><label>${t("Experience (years)", "سنوات الخبرة")}<input name="experience" type="number" min="0" max="60" step="1" value="0"></label><label>${t("City", "المدينة")}<input name="teacherLocation" maxlength="200"></label></div><div id="school-fields" hidden><label>${t("School location", "موقع المدرسة")}<input name="location"></label><label>${t("Public contact", "التواصل العام")}<input name="contact"></label><label>${t("School type", "نوع المدرسة")}<select name="type" required><option value="private">${t("Private School", "مدرسة خاصة")}</option><option value="international">${t("International School", "مدرسة دولية")}</option></select></label><label>${t("Education levels", "المراحل التعليمية")}<input name="levels"></label></div><p id="registration-status" role="status"></p><button class="btn">${t("Create account", "إنشاء الحساب")}</button></form><p>${t("Already have an account?", "عندك حساب؟")} <a class="btn soft" href="../login/login.html">${t("Log in", "تسجيل الدخول")}</a></p><div id="registration-google"></div></div></div>`,
 );
 document.querySelector(".bar nav").innerHTML =
   '<a href="../login/login.html">' + t("Log in", "تسجيل الدخول") + "</a>";
@@ -13,7 +13,7 @@ const form = document.getElementById("registration-form");
 document.getElementById("account-role").onchange = (e) => {
   for (const role of ["student", "teacher", "school"])
     document.getElementById(role + "-fields").hidden = e.target.value !== role;
-  for (const n of ["location", "contact", "levels", "subjects"])
+  for (const n of ["location", "contact", "levels"])
     form.elements[n].required = e.target.value === "school";
 };
 const requestedRole = new URLSearchParams(location.search).get("role");
@@ -34,6 +34,13 @@ form.onsubmit = async (e) => {
     status.textContent = t("Include letters and digits.", "أضف حروفًا وأرقامًا لكلمة المرور.");
     return;
   }
+  if (v.role === "school" && !["private", "international"].includes(v.type)) {
+    const schoolType = form.elements.type;
+    schoolType.setCustomValidity(t("Choose a supported school type.", "اختر نوع مدرسة مدعومًا."));
+    schoolType.reportValidity();
+    schoolType.setCustomValidity("");
+    return;
+  }
   button.disabled = true;
   button.setAttribute("aria-busy", "true");
   button.textContent = t("Creating account…", "جاري إنشاء الحساب…");
@@ -52,9 +59,14 @@ form.onsubmit = async (e) => {
       teacher: "../teacher-dashboard/teacher-dashboard.html",
       school: "../school-dashboard/school-dashboard.html",
     };
-    location.href =
-      window.OrbitSubscriptions?.nextDestination(registeredUser) ||
-      destinations[registeredUser.role];
+    const opportunity = new URLSearchParams(location.search).get("opportunity"),
+      validOpportunity =
+        /^[A-Za-z0-9_-]{1,128}$/.test(opportunity || "") &&
+        window.OrbitRecruitment?.listJobs().some((job) => job.id === opportunity);
+    location.href = validOpportunity
+      ? `../jobs/jobs.html?id=${encodeURIComponent(opportunity)}`
+      : window.OrbitSubscriptions?.nextDestination(registeredUser) ||
+        destinations[registeredUser.role];
   } catch (ex) {
     window.OrbitSatellite?.error();
     status.textContent =
@@ -72,3 +84,5 @@ form.onsubmit = async (e) => {
     button.textContent = t("Create account", "إنشاء الحساب");
   }
 };
+
+;(() => { const opportunity = new URLSearchParams(location.search).get('opportunity'); if (!/^[A-Za-z0-9_-]{1,128}$/.test(opportunity || '')) return; document.querySelectorAll('a[href]').forEach(a => { const url = new URL(a.href, location.href); if (url.origin !== location.origin || !/\/(login|registration)\/\1\.html$/.test(url.pathname)) return; url.searchParams.set('opportunity', opportunity); if (url.pathname.includes('/registration/')) url.searchParams.set('role', 'teacher'); a.href = url.href; }); })();

@@ -292,8 +292,8 @@
   font-display: swap;
 }
 #orbit-page[data-orbit-page="applications"] {
-  --orbit-accent: #0d9488;
-  --orbit-action: #0d9488;
+  --orbit-accent: var(--orbit-green-800);
+  --orbit-action: var(--orbit-green-800);
   font-family: ApplicationArabic,sans-serif;
 }
 html[lang="en"] #orbit-page[data-orbit-page="applications"] {
@@ -326,7 +326,7 @@ html[lang="en"] #orbit-page[data-orbit-page="applications"] :is(h1, h2, h3) {
 }
 #orbit-page[data-orbit-page="applications"] .application-workspace-heading .btn {
   flex-shrink: 0;
-  background: #0f766e;
+  background: var(--orbit-green-800);
   color: #fff;
   font-size: 14px;
   min-height: 44px;
@@ -395,9 +395,19 @@ html[lang="en"] #orbit-page[data-orbit-page="applications"] :is(h1, h2, h3) {
   white-space: nowrap;
 }
 .application-status:is(.accepted, .shortlisted) {
-  color: #0f766e;
-  background: #ccfbf1;
-  border-color: #b9eadd;
+  color: var(--orbit-accent);
+  background: var(--orbit-green-100);
+  border-color: var(--orbit-green-200);
+}
+.application-status.interview_scheduled {
+  color: var(--orbit-accent);
+  background: var(--orbit-green-50);
+  border-color: var(--orbit-green-200);
+}
+body[data-theme="dark"] .application-status.interview_scheduled {
+  color: var(--orbit-green-200);
+  background: var(--orbit-green-900);
+  border-color: var(--orbit-green-800);
 }
 .application-status:is(.pending, .review) {
   color: var(--orbit-ink);
@@ -442,7 +452,7 @@ html[lang="en"] #orbit-page[data-orbit-page="applications"] :is(h1, h2, h3) {
   border-block: 1px solid var(--orbit-border);
 }
 #orbit-page[data-orbit-page="applications"] :is(button, a, select):focus-visible {
-  outline: 2px solid #14b8a6;
+  outline: 2px solid var(--orbit-green-700);
   outline-offset: 3px;
 }
 @media (max-width:780px) {

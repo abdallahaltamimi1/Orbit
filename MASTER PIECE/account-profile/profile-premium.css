@@ -16,33 +16,33 @@
   src: url('../student-dashboard/assets/Inter.ttf');
 }
 body.unified-profile {
-  background: #f5fafb;
-  --orbit-accent: #0d9488;
-  --orbit-action: #0d9488;
+  background: var(--orbit-green-50);
+  --orbit-accent: var(--orbit-green-800);
+  --orbit-action: var(--orbit-green-800);
   --orbit-on-action: #fff;
-  --orbit-ink: #102238;
-  --orbit-muted: #526e89;
+  --orbit-ink: var(--orbit-green-900);
+  --orbit-muted: var(--orbit-green-600);
   --orbit-surface: #fff;
-  --orbit-border: #e2ecef;
-  --orbit-soft: #ccfbf1;
+  --orbit-border: var(--orbit-green-100);
+  --orbit-soft: var(--orbit-green-100);
 }
 body.unified-profile[data-theme="dark"] {
-  background: #0d1c2c;
-  --orbit-ink: #e5f3fc;
-  --orbit-muted: #adc2d5;
-  --orbit-surface: #152b3f;
-  --orbit-border: #30485d;
-  --orbit-soft: #164b49;
+  background: var(--orbit-green-925);
+  --orbit-ink: var(--orbit-green-50);
+  --orbit-muted: var(--orbit-green-300);
+  --orbit-surface: var(--orbit-green-900);
+  --orbit-border: var(--orbit-green-800);
+  --orbit-soft: var(--orbit-green-900);
 }
 body.unified-profile #orbit-page[data-orbit-page="account-profile"] {
   font-family: ProfileArabic,ProfileEnglish,sans-serif;
-  --orbit-accent: #0d9488;
-  --orbit-action: #0d9488;
+  --orbit-accent: var(--orbit-green-800);
+  --orbit-action: var(--orbit-green-800);
   --orbit-on-action: #fff;
-  --orbit-soft: #e2f7f5;
+  --orbit-soft: var(--orbit-green-100);
 }
 body.unified-profile[data-theme="dark"] #orbit-page[data-orbit-page="account-profile"] {
-  --orbit-soft: #164b49;
+  --orbit-soft: var(--orbit-green-900);
 }
 body.unified-profile #orbit-page :is(p, a, button, input, select, textarea, label, dt, dd, h3) {
   font-family: ProfileArabic,ProfileEnglish,sans-serif;
@@ -76,11 +76,11 @@ body.unified-profile #orbit-page .profile-banner h2 {
   font:
     600 32px ProfileHeading,ProfileEnglish,sans-serif;
   margin: 0 0 10px;
-  color: #102c50;
+  color: var(--orbit-green-900);
 }
 body.unified-profile #orbit-page .profile-banner p {
   font-size: 18px;
-  color: #496c8a;
+  color: var(--orbit-accent);
   margin: 0;
 }
 body.unified-profile #orbit-page .profile-workspace {
@@ -101,7 +101,7 @@ body.unified-profile #orbit-page .profile-overview {
   border: 0;
   border-radius: 24px;
   background: var(--orbit-surface);
-  box-shadow: 0 8px 25px #0f789407;
+  box-shadow: 0 8px 25px color-mix(in srgb, var(--orbit-green-800) 2.75%, transparent);
   min-height: 170px;
   box-sizing: border-box;
 }
@@ -111,12 +111,12 @@ body.unified-profile #orbit-page .profile-portrait {
   flex-shrink: 0;
   border-radius: 50%;
   border: 6px solid var(--orbit-soft);
-  background: #bcebe7;
-  color: #0f766e;
+  background: var(--orbit-green-200);
+  color: var(--identity-deep);
   object-fit: cover;
   font:
     600 34px ProfileHeading,sans-serif;
-  box-shadow: 0 6px 20px #149c9c12;
+  box-shadow: 0 6px 20px color-mix(in srgb, var(--orbit-green-700) 7.06%, transparent);
 }
 body.unified-profile #orbit-page .profile-overview h2 {
   font:
@@ -133,13 +133,13 @@ body.unified-profile #orbit-page .profile-overview p {
 body.unified-profile #orbit-page .profile-member {
   display: inline-block;
   background: var(--orbit-soft);
-  color: #0f766e;
+  color: var(--orbit-accent);
   border-radius: 24px;
   padding: 7px 17px;
   font-size: 14px;
 }
 body.unified-profile[data-theme="dark"] #orbit-page .profile-member {
-  color: #81e9d4;
+  color: var(--orbit-green-300);
 }
 body.unified-profile #orbit-page .profile-quote {
   margin: 0;
@@ -168,7 +168,7 @@ body.unified-profile #orbit-page .profile-editor {
   border: 0;
   border-radius: 24px;
   background: var(--orbit-surface);
-  box-shadow: 0 5px 22px #0f789405;
+  box-shadow: 0 5px 22px color-mix(in srgb, var(--orbit-green-800) 1.96%, transparent);
 }
 body.unified-profile #orbit-page .profile-editor > h2 {
   font:
@@ -189,7 +189,7 @@ body.unified-profile #orbit-page .profile-data > div {
   padding: 16px 22px;
   border: 1px solid var(--orbit-border);
   border-radius: 16px;
-  background: color-mix(in srgb,var(--orbit-surface) 83%,#dceff9);
+  background: color-mix(in srgb,var(--orbit-surface) 83%,var(--orbit-green-100));
   min-width: 0;
   display: flex;
   align-items: center;
@@ -230,7 +230,7 @@ body.unified-profile #orbit-page .profile-view-actions {
   padding: 0;
 }
 body.unified-profile #orbit-page[data-orbit-page="account-profile"] .btn {
-  background: #0d9488;
+  background: var(--orbit-green-800);
   color: white;
   min-height: 44px;
   border: 0;
@@ -253,7 +253,7 @@ body.unified-profile #orbit-page .profile-help {
   gap: 24px;
   color: var(--orbit-ink);
   font-size: 16px;
-  box-shadow: 0 5px 20px #0f789407;
+  box-shadow: 0 5px 20px color-mix(in srgb, var(--orbit-green-800) 2.75%, transparent);
 }
 body.unified-profile #orbit-page .profile-help > span {
   display: grid;
@@ -262,7 +262,7 @@ body.unified-profile #orbit-page .profile-help > span {
   height: 46px;
   border-radius: 50%;
   background: var(--orbit-soft);
-  color: #0d9488;
+  color: var(--orbit-accent);
   font:
     600 24px Georgia,serif;
   flex-shrink: 0;
@@ -295,22 +295,22 @@ body.unified-profile #orbit-page .student-profile-learning {
   padding-top: 20px;
 }
 body.unified-profile #orbit-page progress {
-  accent-color: #0d9488;
+  accent-color: var(--orbit-green-800);
   width: 100%;
   height: 9px;
 }
 body.unified-profile #orbit-rail {
-  --orbit-accent: #0d9488;
-  --orbit-action: #0d9488;
-  --orbit-soft: #e2f7f5;
+  --orbit-accent: var(--orbit-green-800);
+  --orbit-action: var(--orbit-green-800);
+  --orbit-soft: var(--orbit-green-100);
 }
 body.unified-profile :focus-visible {
-  outline: 3px solid #0d9488;
+  outline: 3px solid var(--orbit-green-800);
   outline-offset: 4px;
 }
 body.unified-profile ::selection {
-  background: #ccfbf1;
-  color: #102238;
+  background: var(--orbit-green-100);
+  color: var(--orbit-green-900);
 }
 @media (max-width:1200px) {
   body.unified-profile #orbit-page .profile-portrait {

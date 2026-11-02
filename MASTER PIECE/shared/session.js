@@ -4,7 +4,7 @@
     u = A.current(),
     here = location.pathname,
     publicPage =
-      /\/(hompage|login|school-login|registration|school-registration|pricing|lessons|lesson|lab|car-lab|channels|channel|teacher-directory|teacher-profile|lesson-planner|exchange)\//.test(
+      /\/(hompage|login|school-login|registration|school-registration|pricing|lessons|lesson|lab|car-lab|channels|channel|jobs|teacher-directory|teacher-profile|lesson-planner|exchange)\//.test(
         here,
       );
   if (publicPage) return;
@@ -38,7 +38,7 @@
       /\/(student-dashboard|school-tour|student-profile|exchange|achievements|quiz|result|practice)\//.test(
         here,
       ),
-    schoolOnly = here.includes("/school-dashboard/");
+    schoolOnly = /\/(school-dashboard|school-management)\//.test(here);
   if (
     (teacherOnly && u.role !== "teacher") ||
     (studentOnly && u.role !== "student") ||
@@ -49,6 +49,14 @@
     return;
   }
   const p = A.get("orbit.student.v1", {});
+  const appearance = A.get("orbit.settings.appearance", null);
+  if (["light", "dark", "auto"].includes(appearance)) {
+    p.theme = appearance === "auto"
+      ? matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
+      : appearance;
+    A.set("orbit.student.v1", p);
+    localStorage.setItem("orbitTheme", p.theme);
+  }
   p.mood = localStorage.getItem("orbit.motion.preference") || "fun";
   A.set("orbit.student.v1", p);
   localStorage.setItem("orbitMood", p.mood);

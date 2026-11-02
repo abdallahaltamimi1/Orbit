@@ -2,39 +2,27 @@
 name: The Learning Orbit
 description: Three recognizable educational experiences in one blue learning universe
 colors:
-  midnight: "#142b4a"
-  learning-blue: "#3b82f6"
-  action: "#2563eb"
-  student-turquoise: "#22c7a9"
-  student-yellow: "#ffd166"
-  student-coral: "#ff7a70"
-  teacher-teal: "#0f9d91"
-  teacher-action: "#08786f"
-  school-indigo: "#4355a5"
-  ink: "#17243a"
-  muted: "#64748b"
-  border: "#dce4ef"
-  surface: "#fff"
-  canvas: "#f6f8fc"
-  soft: "#eaf1ff"
-  error: "#b4233b"
-  student-soft: "#e2f7f3"
-  teacher-soft: "#e4f4f1"
-  school-soft: "#edf0fc"
-  dark-ink: "#edf4ff"
-  dark-muted: "#b4c3d8"
-  dark-border: "#304763"
-  dark-surface: "#162b43"
-  dark-canvas: "#0d1d30"
-  dark-soft: "#203b59"
-  dark-space: "#0b192a"
-  dark-accent: "#9ac3ff"
-  dark-error: "#ffacb5"
-  dark-teacher-accent: "#7cdecf"
-  dark-teacher-soft: "#173d41"
-  dark-school-accent: "#b8c5ff"
-  dark-school-soft: "#283955"
-  dark-student-soft: "#123b3b"
+  deep-green: "#064E3B"
+  primary-green: "#047857"
+  fresh-green: "#34D399"
+  soft-green: "#ECFDF5"
+  surface: "#FFFFFF"
+  action: "#34D399"
+  on-action: "#064E3B"
+  ink: "#064E3B"
+  muted: "#376556"
+  border: "#B5D9CA"
+  canvas: "#ECFDF5"
+  soft: "#ECFDF5"
+  error: "#B4233B"
+  dark-ink: "#ECFDF5"
+  dark-muted: "#BBD9CD"
+  dark-border: "#386658"
+  dark-surface: "#0C3027"
+  dark-canvas: "#06251D"
+  dark-soft: "#123D30"
+  dark-accent: "#34D399"
+  dark-error: "#FFACB5"
 typography:
   display:
     fontFamily: "Segoe UI, Tahoma, Arial, sans-serif"
@@ -81,12 +69,12 @@ spacing:
 components:
   button-primary:
     backgroundColor: "{colors.action}"
-    textColor: "{colors.surface}"
+    textColor: "{colors.on-action}"
     rounded: "{rounded.control}"
     padding: "11px 17px"
   button-soft:
     backgroundColor: "{colors.soft}"
-    textColor: "{colors.action}"
+    textColor: "{colors.primary-green}"
     rounded: "{rounded.control}"
     padding: "11px 17px"
   input:
@@ -109,43 +97,38 @@ components:
 
 # Design System: The Learning Orbit
 
+## Approved identity — 2 November 2026
+
+The user's approved green identity supersedes the historical blue and role-color guidance below. The implementation authority is shared/green-identity.css, imported by shared/tokens.css. Deep Green #064E3B, Primary Green #047857, Fresh Green #34D399, Soft Green #ECFDF5, and White #FFFFFF apply across public, student, teacher, and school interfaces. Primary actions use fresh green with deep-green text in both modes; links and focus use primary green in Light Mode and fresh green in Dark Mode. Semantic error/warning colors and instructional physics color coding retain their meaning.
+
+The existing Footer is an explicit exception: never recolor or restyle it. shared/footer-identity-boundary.css pins its original inherited values. Its component styles, assets, structure, hover effects, and spacing remain protected in both modes. Existing raster/video media and realistic scientific scenes retain their content colors. Compatibility names such as --purple and --blue resolve to green; they are not permission to restore the old palette.
+
+
 ## Overview
 
 **Creative North Star: "One learning universe, three recognizable experiences"**
 
-The user-pinned blue direction replaces the former violet platform identity. This is a code-led system extracted from shared tokens, role themes, cinematic presentation and registration source; no randomized concept seed or approved image composition exists.
+The approved green direction replaces the former blue and violet platform identity. This is a code-led system extracted from shared tokens, role themes, cinematic presentation and registration source; no randomized concept seed or approved image composition exists.
 
 Students explore colorful learning destinations, teachers work in a calm publishing studio, and schools use structured discovery and management surfaces. Neutral reading regions keep forms and real educational data legible. The protected homepage space hero retains its existing composition, renderer and local art palette; translations do not redesign its artwork.
 
 **Key Characteristics:**
-- Blue foundations and purposeful role accents.
+- Green foundations and a shared visual identity across roles.
 - Readable Arabic and English with native controls.
 - Quiet workspaces beside selected scientific imagery.
 - Finite motion and graceful decorative fallbacks.
 
 ## Colors
 
-The frontmatter captures the actual semantic palette from `shared/tokens.css` and `shared/role-themes.css`; these CSS files remain implementation authority.
+The frontmatter captures the approved palette. shared/green-identity.css is the semantic implementation authority; shared/tokens.css imports it across the frontend.
 
-### Primary
-- **Midnight:** scene foundations, student welcome panel and professional cover.
-- **Learning Blue:** expressive science and learning accent.
-- **Action Blue:** public/student white-label primary actions and light-theme focus.
+- Deep Green #064E3B: light-mode headings, strong reading text, constant dark feature surfaces, and primary-button labels.
+- Primary Green #047857: light-mode links, meaningful icons, and focus.
+- Fresh Green #34D399: primary actions in both modes and dark-mode links/focus.
+- Soft Green #ECFDF5 and White #FFFFFF: light canvas and reading surfaces.
+- Dark complementary canvas #06251D, surface #0C3027, elevated/soft #123D30, readable text #ECFDF5, muted text #BBD9CD, and borders #386658.
 
-### Secondary
-- **Student Turquoise, Yellow and Coral:** playful destinations and supported learning indicators. Pale destination backgrounds carry midnight text; the yellow hero action also carries midnight text.
-- **Teacher Teal:** expressive teacher identity; Teacher Action is the darker white-label action shade.
-
-### Tertiary
-- **School Indigo:** organized school identity, primary actions and light-theme focus.
-
-### Neutral
-- **Canvas / Surface / Soft:** page foundations, readable cards and quiet secondary regions.
-- **Ink / Muted / Border:** text hierarchy and structural separation.
-- **Error:** actual invalid states and validation messages.
-- **Dark variants:** body theme switches text, border, surfaces, focus and errors. Teacher/school dark accents lighten text and focus while their darker action colors remain in place with white labels. Student dark soft surfaces deepen. Some student destination tiles deliberately retain pale backgrounds and midnight text.
-
-**The Action Contrast Rule.** Bright learning blue, turquoise and teacher teal are expressive accents; white-label actions use the darker action tokens. Do not substitute bright accents into action backgrounds without checking contrast.
+Do not put white text on fresh green. Preserve distinct semantic error/warning indicators and instructional force/vector colors. The approved Footer keeps its original colors independently of these tokens.
 
 ## Typography
 
@@ -173,7 +156,7 @@ Controls are gently rounded; shared form fields use the 14px panel radius, while
 ## Components
 
 ### Buttons
-Primary actions use role-aware action backgrounds and white labels; soft actions use soft surfaces and accent text. Basic buttons have 11px 17px padding and 10px corners. Registration submission is full width and at least 50px high. Preserve busy, disabled, validation and permission states. Cinematic states use 160ms transitions and .98 active scale; eligible fine-pointer cards lift 2px. Visible focus uses a 2px outline with contextual offset.
+Primary actions use fresh-green backgrounds with deep-green labels in both modes; soft actions use theme-aware soft surfaces and readable accent text. Basic buttons have 11px 17px padding and 10px corners. Registration submission is full width and at least 50px high. Preserve busy, disabled, validation and permission states. Cinematic states use 160ms transitions and .98 active scale; eligible fine-pointer cards lift 2px. Visible focus uses a 2px outline with contextual offset.
 
 ### Inputs / Fields
 Shared forms use 12px 14px padding and semantic border/surface/ink tokens. Registration has at least 50px fields, invalid error borders and visible messages. Login fields are 56px high. Password eye buttons occupy 44px in a stable flex field, retain autocomplete, expose pressed state and an accessible label, and inherit keyboard focus. Do not remove useful browser password features globally.

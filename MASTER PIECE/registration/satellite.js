@@ -12,7 +12,7 @@
   back.href = "../hompage/hompage.html";
   back.textContent = text("← Return home", "← العودة للرئيسية");
   layout.before(back);
-  story.innerHTML = `<a class="education-brand" href="../hompage/hompage.html">ORBIT</a><div class="mission-copy"><h2>${text("Choose your journey.", "اختَر رحلتك.")}</h2><p>${text("Learn, teach, or connect your school with the right people.", "تعلّم، علّم، أو وصّل مدرستك بالأشخاص المناسبين.")}</p></div><div class="learning-universe education-stage" data-renderer="fallback" aria-hidden="true"><div class="education-fallback"><svg viewBox="0 0 100 80" fill="none" stroke="currentColor" stroke-width="2"><rect x="15" y="10" width="70" height="50" rx="5"/><path d="M30 68h40M50 60v8M25 25h50M25 35h30M25 45h40"/></svg><span>${text("Your learning workspace", "مساحتك التعليمية")}</span></div></div><div class="mission-indicator" role="status"></div><p class="education-caption">${text("An illustration of your ORBIT experience.", "تصوّر لتجربتك التعليمية في ORBIT.")}</p>`;
+  story.innerHTML = `<a class="education-brand" href="../hompage/hompage.html">ORBIT</a><div class="mission-copy"><h2>${text("Choose your journey.", "اختَر رحلتك.")}</h2><p>${text("Learn, teach, or connect your school with the right people.", "تعلّم، علّم، أو وصّل مدرستك بالأشخاص المناسبين.")}</p></div><div class="learning-universe education-stage" data-renderer="fallback" aria-hidden="true"><div class="education-fallback"><svg class="book-fallback" viewBox="0 0 360 250" fill="none" aria-hidden="true"><ellipse cx="180" cy="220" rx="142" ry="16" fill="#041b22" opacity=".25"/><path d="M180 190c-37-25-77-30-121-20V74c45-11 85-5 121 20v96Z" fill="#f5efe4" stroke="#c6ded6" stroke-width="4"/><path d="M180 190c37-25 77-30 121-20V74c-45-11-85-5-121 20v96Z" fill="#fffaf0" stroke="#c6ded6" stroke-width="4"/><path d="M180 94v98" stroke="#0d6661" stroke-width="8"/><path d="M76 94c32-7 61-2 86 13M76 119c30-6 58-2 84 12M76 145c28-5 55 0 82 13M284 94c-32-7-61-2-86 13m86 12c-30-6-58-2-84 12m84 14c-28-5-55 0-82 13" stroke="#7d9d95" stroke-width="4" stroke-linecap="round"/><path d="M48 69c49-16 94-9 132 18 38-27 83-34 132-18" stroke="#0d9488" stroke-width="4" stroke-linecap="round"/><path d="M53 69v105c47-11 89-4 127 20V87C142 60 98 53 53 69Zm254 0v105c-47-11-89-4-127 20V87c38-27 82-34 127-18Z" stroke="#0d514f" stroke-width="7" stroke-linejoin="round"/></svg><span>${text("A new chapter starts here", "يبدأ فصل جديد من هنا")}</span></div></div><div class="mission-indicator" role="status"></div><p class="education-caption">${text("A book opens onto a world of learning.", "كتاب يفتح أبواب عالم من التعلّم.")}</p>`;
   const host = story.querySelector(".learning-universe");
   const renderer = window.OrbitRegistrationUniverse?.create(host);
   const select = form.elements.role;
@@ -155,13 +155,13 @@
       el.setCustomValidity(text("Passwords do not match.", "كلمتا المرور غير متطابقتين."));
     if (
       form.elements.role.value === "school" &&
-      ["location", "contact", "levels", "subjects"].includes(el.name) &&
+      ["location", "contact", "levels"].includes(el.name) &&
       !el.value.trim()
     )
       el.setCustomValidity(text("Complete this field.", "أكمل هذا الحقل."));
     if (
       form.elements.role.value === "school" &&
-      ["levels", "subjects"].includes(el.name) &&
+      el.name === "levels" &&
       !el.value.split(/[,،\\n]/).some((part) => part.trim())
     )
       el.setCustomValidity(text("Enter at least one item.", "أدخل عنصرًا واحدًا على الأقل."));

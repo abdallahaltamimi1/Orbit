@@ -16,6 +16,58 @@
         /[&<>"']/g,
         (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c],
       );
+  const validAppearance = (value) => ["light", "dark", "auto"].includes(value);
+  function appearancePreference() {
+    const configured = get("orbit.settings.appearance", null),
+      storedPrefs = get("orbit.student.v1", {}),
+      legacy = localStorage.getItem("orbitTheme") || localStorage.getItem("theme") || "light",
+      preference = validAppearance(configured)
+        ? configured
+        : validAppearance(storedPrefs.theme)
+          ? storedPrefs.theme
+          : validAppearance(legacy)
+            ? legacy
+            : "light";
+    return {
+      preference,
+      theme: preference === "auto"
+        ? matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
+        : preference,
+    };
+  }
+  function applyAppearance() {
+    const { preference, theme } = appearancePreference();
+    document.documentElement.dataset.orbitAppearance = preference;
+    document.documentElement.dataset.theme = theme;
+    if (document.body) document.body.dataset.theme = theme;
+    return theme;
+  }
+  function saveAppearance(preference) {
+    if (!validAppearance(preference)) return applyAppearance();
+    const theme = preference === "auto"
+      ? matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
+      : preference;
+    set("orbit.settings.appearance", preference);
+    set("orbit.student.v1", { ...get("orbit.student.v1", {}), theme });
+    set("orbit.preferences", { ...get("orbit.preferences", {}), theme });
+    localStorage.setItem("orbitTheme", theme);
+    return applyAppearance();
+  }
+  window.OrbitThemePreference ||= { read: appearancePreference, apply: applyAppearance, save: saveAppearance };
+  const appearanceMedia = matchMedia("(prefers-color-scheme: dark)");
+  appearanceMedia.addEventListener?.("change", () => {
+    if (appearancePreference().preference === "auto") applyAppearance();
+  });
+  if (!window.__orbitThemeToggleCapture) {
+    window.__orbitThemeToggleCapture = true;
+    document.addEventListener("click", (event) => {
+      if (!event.target.closest?.('[data-action="theme"]')) return;
+      saveAppearance(applyAppearance() === "dark" ? "light" : "dark");
+    }, true);
+  }
+  window.addEventListener("storage", (event) => {
+    if (["orbit.settings.appearance", "orbit.student.v1", "orbitTheme", "theme"].includes(event.key)) applyAppearance();
+  });
   const seeds = [
     {
       id: "physics",
@@ -72,6 +124,20 @@
           (active.email === "teacher@orbit.com" && c.teacher === "khaled"))
       );
     };
+  function publicationSchool(channelId, previous = null) {
+    const matches = channels().filter((c) => c.id === channelId);
+    const c = matches[0];
+    if (matches.length !== 1 || !own(c))
+      throw Error(t("Only the channel owner can publish here.", "النشر هنا متاح لمالك القناة فقط."));
+    const schoolId = c.schoolId == null || c.schoolId === "" ? null : c.schoolId;
+    const original = previous && previous.channel !== channelId
+      ? channels().filter((item) => item.id === previous.channel) : null;
+    if ((schoolId !== null && (typeof schoolId !== "string" || !schoolId.trim() || schoolId !== schoolId.trim())) ||
+        (previous && previous.schoolId != null && previous.schoolId !== "" && previous.schoolId !== schoolId) ||
+        (original && (original.length !== 1 || !own(original[0]) || (original[0].schoolId || null) !== schoolId)))
+      throw Error(t("The post's school association conflicts with its channel. No changes were saved.", "ارتباط المنشور بالمدرسة يتعارض مع قناته. لم تُحفظ التغييرات."));
+    return schoolId;
+  }
   function memberships() {
     return user.email ? get("orbit.memberships.v3", {})[user.email] || [] : [];
   }
@@ -152,7 +218,7 @@
     cleanMedia();
     document.documentElement.lang = prefs.lang || "ar";
     document.documentElement.dir = prefs.lang === "en" ? "ltr" : "rtl";
-    document.body.dataset.theme = prefs.theme || "light";
+    applyAppearance();
     document.body.dataset.mood = localStorage.getItem("orbit.motion.preference") || "fun";
     document.getElementById("app").innerHTML =
       `<header class="bar"><a class="logo" href="../${user.role === "school" ? "school-dashboard/school-dashboard" : user.role === "teacher" ? "teacher-dashboard/teacher-dashboard" : "student-dashboard/student-dashboard"}.html">◉ ORBIT</a><nav><a href="../channels/channels.html">${t("Channels", "القنوات")}</a><a href="../lessons/lessons.html">${t("Topics", "الدروس")}</a><a href="../lab/lab.html">${t("Experiments", "المختبر")}</a><a href="../settings/settings.html">${t("Settings", "الإعدادات")}</a></nav></header><main class="wrap"><span class="eyebrow">ORBIT / ${t("EXPLORE · UNDERSTAND", "استكشف · افهم")}</span><h1>${title}</h1>${html}</main>`;
@@ -227,6 +293,7 @@
       button.disabled = true;
       const err = d.querySelector("#publish-error");
       try {
+        const schoolId = publicationSchool(c.id, old);
         let files = [...e.target.files.files];
         if (files.length > 5) throw Error(t("Maximum 5 files", "الحد الأقصى 5 ملفات"));
         let videoAsset = f.has("removeAttachments") ? "" : old?.videoAsset || "",
@@ -290,17 +357,28 @@
         if (!post.title || !post.body)
           throw Error(t("Complete title and text", "أكمل العنوان والنص"));
         if (!OrbitSubscriptions.allow("publishing")) throw Error("SUBSCRIPTION_BLOCKED");
-        const context = OrbitSubscriptions.effective();
+        if (publicationSchool(c.id, old) !== schoolId)
+          throw Error(t("Channel ownership changed. Reopen the editor before publishing.", "تغيرت ملكية القناة. أعد فتح المحرر قبل النشر."));
         post.authorId = user.email;
-        post.schoolId = old?.schoolId || context.schoolId || null;
+        // Existing associations are retained on explicit edits; no data migration.
+        if (!old) post.schoolId = schoolId;
         const resource =
           post.type === "lesson" ? "lessons" : post.type === "assignment" ? "assignments" : null;
         OrbitSubscriptions.perform(
           old?.type === post.type ? null : resource,
           () => {
-            if (old) data.posts = data.posts.map((p) => (p.id === old.id ? post : p));
-            else data.posts.unshift(post);
-            set("orbit.channels.v2", data);
+            const live = db(), current = old && live.posts.find((p) => p.id === old.id);
+            if ((old && !current) || publicationSchool(c.id, current || null) !== schoolId)
+              throw Error(t("Channel or post ownership changed. Reopen the editor before publishing.", "تغيرت ملكية القناة أو المنشور. أعد فتح المحرر قبل النشر."));
+            if (old) {
+              // Retain current moderation and ownership metadata while saving the edited content.
+              for (const key of ["schoolId", "moderationStatus", "moderatedAt"]) {
+                if (Object.hasOwn(current, key)) post[key] = current[key];
+                else delete post[key];
+              }
+              live.posts = live.posts.map((p) => p.id === old.id ? post : p);
+            } else live.posts.unshift(post);
+            set("orbit.channels.v2", live);
           },
           "post:" + post.id + ":" + resource,
         );
@@ -341,6 +419,7 @@
     label,
     teacher,
     own,
+    publicationSchool,
     memberships,
     join,
     media,

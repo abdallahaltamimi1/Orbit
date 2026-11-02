@@ -1,8 +1,31 @@
+const loginSystemAppearance = matchMedia("(prefers-color-scheme: dark)");
+function applyLoginAppearance() {
+  const preference = OrbitAuth.get("orbit.settings.appearance", null),
+    savedPrefs = OrbitAuth.get("orbit.student.v1", {}),
+    selected = ["light", "dark", "auto"].includes(preference)
+      ? preference
+      : ["light", "dark", "auto"].includes(savedPrefs.theme)
+        ? savedPrefs.theme
+        : localStorage.getItem("orbitTheme") || localStorage.getItem("theme") || "light",
+    theme = selected === "auto"
+      ? loginSystemAppearance.matches ? "dark" : "light"
+      : selected === "dark" ? "dark" : "light";
+  document.documentElement.dataset.orbitAppearance = selected;
+  document.documentElement.dataset.theme = theme;
+  document.body.dataset.theme = theme;
+}
+applyLoginAppearance();
+loginSystemAppearance.addEventListener?.("change", () => {
+  if (OrbitAuth.get("orbit.settings.appearance", null) === "auto") applyLoginAppearance();
+});
+window.addEventListener("storage", (event) => {
+  if (["orbit.settings.appearance", "orbit.student.v1", "orbitTheme", "theme"].includes(event.key)) applyLoginAppearance();
+});
+
 document.addEventListener("DOMContentLoaded", function () {
   const loginText = (en, ar) => (document.documentElement.lang === "ar" ? ar : en);
 
   const appearance = OrbitAuth.get("orbit.student.v1", {});
-  document.body.dataset.theme = appearance.theme === "dark" ? "dark" : "light";
   document.body.dataset.mood =
     localStorage.getItem("orbit.motion.preference") || appearance.mood || "fun";
   const schoolOnly =
@@ -295,7 +318,13 @@ document.addEventListener("DOMContentLoaded", function () {
       school: "../school-dashboard/school-dashboard.html",
     };
 
-    const destination = OrbitSubscriptions.nextDestination(user) || pages[user.role];
+    const opportunity = new URLSearchParams(location.search).get("opportunity"),
+      validOpportunity =
+        /^[A-Za-z0-9_-]{1,128}$/.test(opportunity || "") &&
+        window.OrbitRecruitment?.listJobs().some((job) => job.id === opportunity),
+      destination = validOpportunity
+        ? `../jobs/jobs.html?id=${encodeURIComponent(opportunity)}`
+        : OrbitSubscriptions.nextDestination(user) || pages[user.role];
 
     // The dashboard files will be added later.
 
@@ -512,3 +541,5 @@ document.addEventListener("DOMContentLoaded", function () {
 
   document.title = loginText("Login | ORBIT", "تسجيل الدخول | ORBIT");
 });
+
+;(() => { const opportunity = new URLSearchParams(location.search).get('opportunity'); if (!/^[A-Za-z0-9_-]{1,128}$/.test(opportunity || '')) return; document.querySelectorAll('a[href]').forEach(a => { const url = new URL(a.href, location.href); if (url.origin !== location.origin || !/\/(login|registration)\/\1\.html$/.test(url.pathname)) return; url.searchParams.set('opportunity', opportunity); if (url.pathname.includes('/registration/')) url.searchParams.set('role', 'teacher'); a.href = url.href; }); })();

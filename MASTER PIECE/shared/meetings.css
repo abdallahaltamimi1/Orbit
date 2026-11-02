@@ -1,4 +1,23 @@
 /* Scoped meeting components inherit the application's tokens and role palette. */
+.orbit-meetings,
+.meeting-dialog {
+  --orbit-accent: var(--orbit-green-800);
+  --orbit-action: var(--orbit-green-800);
+  --orbit-action-hover: var(--orbit-green-900);
+  --orbit-focus: var(--orbit-green-800);
+  --orbit-soft: var(--orbit-green-50);
+  --orbit-on-soft: var(--orbit-green-800);
+  --orbit-on-action: #fff;
+}
+body[data-theme="dark"] .orbit-meetings,
+body[data-theme="dark"] .meeting-dialog {
+  --orbit-accent: var(--orbit-green-400);
+  --orbit-action: var(--orbit-green-800);
+  --orbit-action-hover: var(--orbit-green-800);
+  --orbit-focus: var(--orbit-green-400);
+  --orbit-soft: var(--orbit-green-900);
+  --orbit-on-soft: var(--orbit-green-400);
+}
 .orbit-meetings {
   margin-block: 32px;
   color: var(--orbit-ink);
@@ -52,6 +71,13 @@
   background: var(--orbit-action);
   color: var(--orbit-on-action);
   border-color: var(--orbit-action);
+}
+.meeting-button:hover:not(:disabled) {
+  border-color: var(--orbit-accent);
+}
+.meeting-button.primary:hover:not(:disabled) {
+  background: var(--orbit-action-hover);
+  border-color: var(--orbit-action-hover);
 }
 #orbit-page .orbit-meetings a.meeting-button {
   color: var(--orbit-ink);
@@ -118,11 +144,51 @@
 .meeting-card .meeting-actions {
   margin-top: 18px;
 }
+.meeting-card .interview-kind {
+  margin-inline-start: 6px;
+  color: var(--orbit-on-soft);
+  background: var(--orbit-soft);
+}
+.interview-meeting-card > p a {
+  color: var(--orbit-accent);
+  overflow-wrap: anywhere;
+}
+.meeting-interview-context {
+  display: grid;
+  gap: 4px;
+  padding: 12px 14px;
+  border: 1px solid var(--orbit-border);
+  border-inline-start: 3px solid var(--orbit-accent);
+  border-radius: 10px;
+  background: var(--orbit-soft);
+}
+.meeting-interview-context span {
+  color: var(--orbit-muted);
+  overflow-wrap: anywhere;
+}
 .meeting-empty {
   padding: 28px;
   border: 1px dashed var(--orbit-border);
   border-radius: var(--orbit-radius);
   color: var(--orbit-muted);
+}
+.student-meetings-empty {
+  padding: 18px 20px;
+  background: var(--orbit-surface);
+}
+.student-meetings-empty strong {
+  display: block;
+  color: var(--orbit-ink);
+}
+.student-meetings-empty p {
+  margin: 4px 0 0;
+}
+.meeting-period + .meeting-period {
+  margin-top: 24px;
+}
+.meeting-period > h3 {
+  margin: 0 0 12px;
+  font-size: 17px;
 }
 .meeting-notifications {
   margin-top: 22px;
@@ -158,7 +224,7 @@
   font: inherit;
 }
 .meeting-dialog::backdrop {
-  background: rgb(10 25 42 / .55);
+  background: color-mix(in srgb, var(--orbit-green-925) 55.00%, transparent);
 }
 .meeting-dialog header {
   display: flex;
@@ -184,6 +250,9 @@
   gap: 6px;
   font-size: 14px;
   min-width: 0;
+}
+.meeting-dialog [hidden] {
+  display: none;
 }
 .meeting-dialog input:not([type="checkbox"]),
 .meeting-dialog select,
@@ -302,7 +371,7 @@
   color: var(--orbit-ink);
   border: 1px solid var(--orbit-border);
   border-radius: 12px;
-  box-shadow: 0 12px 35px rgb(10 25 42 / .18);
+  box-shadow: 0 12px 35px color-mix(in srgb, var(--orbit-green-925) 18.00%, transparent);
   z-index: 1000;
 }
 @media (max-width:600px) {

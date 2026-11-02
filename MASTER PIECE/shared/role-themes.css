@@ -1,37 +1,46 @@
 body[data-orbit-role="student"] {
   --orbit-role-accent: var(--orbit-turquoise);
-  --orbit-role-soft: #e2f7f3;
+  --orbit-role-soft: var(--orbit-green-100);
 }
 body[data-orbit-role="teacher"] {
-  --orbit-accent: #08786f;
-  --orbit-action: #08786f;
-  --orbit-focus: #08786f;
-  --orbit-soft: #e4f4f1;
+  --orbit-accent: var(--orbit-green-800);
+  --orbit-action: var(--orbit-green-800);
+  --orbit-focus: var(--orbit-green-800);
+  --orbit-soft: var(--orbit-green-100);
+  --orbit-on-soft: var(--orbit-green-800);
   --orbit-role-accent: var(--orbit-teal);
-  --orbit-role-soft: #e4f4f1;
+  --orbit-role-soft: var(--orbit-green-100);
 }
 body[data-orbit-role="school"] {
-  --orbit-accent: var(--orbit-indigo);
-  --orbit-action: var(--orbit-indigo);
-  --orbit-focus: var(--orbit-indigo);
-  --orbit-soft: #edf0fc;
-  --orbit-role-accent: var(--orbit-indigo);
-  --orbit-role-soft: #edf0fc;
+  --orbit-accent: var(--orbit-green-800);
+  --orbit-action: var(--orbit-green-800);
+  --orbit-action-hover: var(--orbit-green-900);
+  --orbit-focus: var(--orbit-green-800);
+  --orbit-soft: var(--orbit-green-50);
+  --orbit-on-soft: var(--orbit-green-800);
+  --orbit-role-accent: var(--orbit-green-800);
+  --orbit-role-soft: var(--orbit-green-50);
 }
 body[data-theme="dark"][data-orbit-role="teacher"] {
-  --orbit-accent: #7cdecf;
-  --orbit-focus: #7cdecf;
-  --orbit-soft: #173d41;
-  --orbit-role-soft: #173d41;
+  --orbit-accent: var(--orbit-green-400);
+  --orbit-focus: var(--orbit-green-400);
+  --orbit-soft: var(--orbit-green-900);
+  --orbit-on-soft: var(--orbit-green-400);
+  --orbit-role-soft: var(--orbit-green-900);
 }
 body[data-theme="dark"][data-orbit-role="school"] {
-  --orbit-accent: #b8c5ff;
-  --orbit-focus: #b8c5ff;
-  --orbit-soft: #283955;
-  --orbit-role-soft: #283955;
+  --orbit-accent: var(--orbit-green-400);
+  --orbit-action: var(--orbit-green-800);
+  --orbit-action-hover: var(--orbit-green-800);
+  --orbit-focus: var(--orbit-green-400);
+  --orbit-soft: var(--orbit-green-900);
+  --orbit-on-soft: var(--orbit-green-400);
+  --orbit-role-accent: var(--orbit-green-400);
+  --orbit-role-soft: var(--orbit-green-900);
 }
 body[data-theme="dark"][data-orbit-role="student"] {
-  --orbit-role-soft: #123b3b;
+  --orbit-role-soft: var(--orbit-green-900);
+  --orbit-on-soft: var(--orbit-green-400);
 }
 #orbit-page[data-orbit-page]:not([data-orbit-page="hompage"]) {
   --purple: var(--orbit-accent);
@@ -52,7 +61,7 @@ body[data-theme="dark"][data-orbit-role="student"] {
 }
 #orbit-page[data-orbit-page] .btn.soft {
   background: var(--orbit-soft);
-  color: var(--orbit-accent);
+  color: var(--orbit-on-soft, var(--orbit-action));
 }
 #orbit-page[data-orbit-page] :is(input, textarea, select) {
   border-color: var(--orbit-border);
@@ -70,14 +79,14 @@ body[data-theme="dark"][data-orbit-role="student"] {
   background: var(--orbit-midnight);
   border-radius: 24px;
   color: #fff;
-  box-shadow: 0 20px 48px #142b4a18;
+  box-shadow: 0 20px 48px color-mix(in srgb, var(--orbit-green-900) 9.41%, transparent);
 }
 #orbit-page[data-orbit-page="student-dashboard"] .hero-text h2 {
   color: #fff;
   font-size: clamp(30px,3.6vw,46px);
 }
 #orbit-page[data-orbit-page="student-dashboard"] .hero-text > p {
-  color: #d4e3f7;
+  color: var(--orbit-green-100);
   font-size: 15px;
 }
 #orbit-page[data-orbit-page="student-dashboard"] .hero-text .orbital-button {
@@ -112,7 +121,7 @@ body[data-orbit-role="student"] #orbit-page[data-orbit-page="student-dashboard"]
   min-height: 100px;
 }
 #orbit-page[data-orbit-page="student-dashboard"] .quick-destination:nth-child(2) {
-  background: #ddf7ef;
+  background: var(--orbit-green-100);
 }
 #orbit-page[data-orbit-page="student-dashboard"] .quick-destination:nth-child(3) {
   background: #fff3d4;
@@ -121,7 +130,7 @@ body[data-orbit-role="student"] #orbit-page[data-orbit-page="student-dashboard"]
   background: #ffebe8;
 }
 #orbit-page[data-orbit-page="student-dashboard"] .quick-destination:nth-child(5) {
-  background: #e7eeff;
+  background: var(--orbit-green-50);
 }
 #orbit-page[data-orbit-page="student-dashboard"] .continue-panel {
   background: var(--orbit-soft);
@@ -424,7 +433,7 @@ body[data-theme="dark"] #orbit-page[data-orbit-page="student-dashboard"] .hero-t
 #orbit-page[data-orbit-page="teacher-profile"] .profile-cover > span:first-child svg {
   width: 76px;
   height: 76px;
-  color: #d4e3f7;
+  color: var(--orbit-green-100);
 }
 #orbit-page[data-orbit-page="teacher-profile"] .portfolio-empty > span svg {
   width: 48px;

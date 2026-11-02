@@ -62,14 +62,19 @@
   min-height: 42px;
   font: 500 14px/1.5 var(--orbit-font);
   cursor: pointer;
+  transition: color 160ms ease, background-color 160ms ease, box-shadow 160ms ease;
 }
 #orbit-page[data-orbit-page="pricing"] [data-plan-audience][aria-pressed="true"] {
-  background: var(--orbit-soft);
-  color: var(--orbit-focus);
+  background: var(--orbit-action);
+  color: var(--orbit-on-action);
+}
+#orbit-page[data-orbit-page="pricing"] [data-plan-audience]:hover:not([aria-pressed="true"]) {
+  background: var(--orbit-hover);
+  color: var(--orbit-accent);
 }
 #orbit-page[data-orbit-page="pricing"] .orbit-pricing-grid {
   display: grid;
-  grid-template-columns: repeat(4,minmax(0,1fr));
+  grid-template-columns: repeat(2,minmax(0,1fr));
   gap: 16px;
   align-items: stretch;
 }
@@ -85,6 +90,13 @@
   box-shadow: none;
   margin: 0;
   animation: none;
+}
+#orbit-page[data-orbit-page="pricing"] .orbit-plan-card:not([hidden]) {
+  animation: pricing-card-enter 180ms ease both;
+}
+@keyframes pricing-card-enter {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 #orbit-page[data-orbit-page="pricing"]
   .orbit-plan-card:is(.pricing-recommended, .pricing-selected) {
@@ -192,15 +204,6 @@
   border: 1px solid var(--orbit-border);
   border-radius: 10px;
   background: var(--orbit-canvas);
-}
-#orbit-page[data-orbit-page="pricing"] .pricing-student-info {
-  padding: 28px;
-  border: 1px solid var(--orbit-border);
-  border-radius: 16px;
-  background: var(--orbit-surface);
-}
-#orbit-page[data-orbit-page="pricing"] .pricing-student-info h3 {
-  margin-top: 0;
 }
 #orbit-page[data-orbit-page="pricing"] .pricing-checkout {
   margin-top: 32px;
@@ -424,5 +427,13 @@
   }
   #orbit-page[data-orbit-page="pricing"] .pricing-card-option {
     flex-wrap: wrap;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  #orbit-page[data-orbit-page="pricing"] .orbit-plan-card:not([hidden]) {
+    animation: none;
+  }
+  #orbit-page[data-orbit-page="pricing"] [data-plan-audience] {
+    transition: none;
   }
 }

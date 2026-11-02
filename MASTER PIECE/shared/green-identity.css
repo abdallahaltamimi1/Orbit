@@ -1,0 +1,148 @@
+/* Approved ORBIT identity. Presentation only; routes and workflows stay intact. */
+:root {
+  --orbit-green-950: #06251D;
+  --orbit-green-925: #0C3027;
+  --orbit-green-900: #064E3B;
+  --orbit-green-800: #065F46;
+  --orbit-green-700: #047857;
+  --orbit-green-600: #059669;
+  --orbit-green-500: #10B981;
+  --orbit-green-400: #34D399;
+  --orbit-green-300: #6EE7B7;
+  --orbit-green-200: #A7F3D0;
+  --orbit-green-100: #D1FAE5;
+  --orbit-green-50: #ECFDF5;
+  --identity-deep: #064E3B;
+  --identity-primary: #047857;
+  --identity-fresh: #34D399;
+  --identity-soft: #ECFDF5;
+  --identity-white: #FFFFFF;
+  --identity-canvas: var(--identity-soft);
+  --identity-surface: var(--identity-white);
+  --identity-elevated: var(--identity-white);
+  --identity-ink: var(--identity-deep);
+  --identity-muted: #376556;
+  --identity-border: #B5D9CA;
+  --identity-input-border: #5F8272;
+  --identity-accent: var(--identity-primary);
+  --identity-focus: var(--identity-primary);
+  --identity-hover: #D1FAE5;
+  --identity-active: #A7F3D0;
+  --identity-soft-surface: var(--identity-soft);
+  --identity-action-hover: #6EE7B7;
+}
+body[data-theme="dark"] {
+  --identity-canvas: #06251D;
+  --identity-surface: #0C3027;
+  --identity-elevated: #123D30;
+  --identity-ink: #ECFDF5;
+  --identity-muted: #BBD9CD;
+  --identity-border: #386658;
+  --identity-input-border: #739B89;
+  --identity-accent: var(--identity-fresh);
+  --identity-focus: var(--identity-fresh);
+  --identity-hover: #174C3A;
+  --identity-active: #205E47;
+  --identity-soft-surface: #123D30;
+}
+/* Legacy pages also set these tokens locally. The boundary makes the approved
+   semantic contract authoritative, independent of role or stylesheet order. */
+:root, body, #orbit-page[data-orbit-page], #orbit-page #hero, #orbit-rail {
+  --orbit-midnight: var(--identity-deep) !important;
+  --orbit-blue: var(--identity-primary) !important;
+  --orbit-turquoise: var(--identity-fresh) !important;
+  --orbit-teal: var(--identity-primary) !important;
+  --orbit-indigo: var(--identity-deep) !important;
+  --orbit-brand: var(--identity-accent) !important;
+  --premium-accent: var(--identity-accent) !important;
+  --orbit-ink: var(--identity-ink) !important;
+  --orbit-muted: var(--identity-muted) !important;
+  --orbit-accent: var(--identity-accent) !important;
+  --orbit-action: var(--identity-fresh) !important;
+  --orbit-action-hover: var(--identity-action-hover) !important;
+  --orbit-on-action: var(--identity-deep) !important;
+  --orbit-focus: var(--identity-focus) !important;
+  --orbit-hover: var(--identity-hover) !important;
+  --orbit-active: var(--identity-active) !important;
+  --orbit-border: var(--identity-border) !important;
+  --orbit-input-border: var(--identity-input-border) !important;
+  --orbit-surface: var(--identity-surface) !important;
+  --orbit-canvas: var(--identity-canvas) !important;
+  --orbit-elevated: var(--identity-elevated) !important;
+  --orbit-input: var(--identity-surface) !important;
+  --orbit-input-ink: var(--identity-ink) !important;
+  --orbit-placeholder: var(--identity-muted) !important;
+  --orbit-soft: var(--identity-soft-surface) !important;
+  --orbit-on-soft: var(--identity-accent) !important;
+  --orbit-space: var(--identity-deep) !important;
+  --orbit-role-accent: var(--identity-accent) !important;
+  --orbit-role-soft: var(--identity-soft-surface) !important;
+  --orbit-selection: var(--identity-fresh) !important;
+  --orbit-selection-ink: var(--identity-deep) !important;
+}
+body, #orbit-page[data-orbit-page] {
+  --bg: var(--orbit-canvas); --panel: var(--orbit-surface); --surface: var(--orbit-surface);
+  --surface-soft: var(--orbit-elevated); --side: var(--orbit-surface);
+  --text: var(--orbit-ink); --ink: var(--orbit-ink); --muted: var(--orbit-muted);
+  --line: var(--orbit-border); --soft: var(--orbit-soft);
+  --purple: var(--orbit-accent); --purple-deep: var(--orbit-action); --blue: var(--orbit-accent);
+}
+#orbit-page[data-orbit-page="hompage"] {
+  --home-canvas: var(--identity-canvas) !important;
+  --home-surface: var(--identity-surface) !important;
+  --home-raised: var(--identity-elevated) !important;
+  --home-ink: var(--identity-ink) !important;
+  --home-muted: var(--identity-muted) !important;
+  --home-border: var(--identity-border) !important;
+  --home-teal: var(--identity-accent) !important;
+  --home-teal-deep: var(--identity-accent) !important;
+  --home-soft: var(--identity-soft-surface) !important;
+}
+/* Footer descendants are deliberately excluded from every component rule. */
+#orbit-page[data-orbit-page] :is(.btn:not(.soft):not(.danger), .button.primary, .primary-action, .btn-primary, .login-button, .orbital-button, .u-primary, .m-nav__cta, .m-btn--primary, .m-btn--blue, .orbit-next, button[type="submit"]):not(footer, footer *, .secondary, .danger, .soft) {
+  background: var(--orbit-action) !important;
+  background-image: none !important;
+  border-color: var(--orbit-action) !important;
+  color: var(--orbit-on-action) !important;
+  -webkit-text-fill-color: currentColor;
+}
+#orbit-page[data-orbit-page] :is(.btn:not(.soft):not(.danger), .button.primary, .primary-action, .btn-primary, .login-button, .orbital-button, .u-primary, .m-nav__cta, .m-btn--primary, .m-btn--blue, .orbit-next, button[type="submit"]):not(footer, footer *, .secondary, .danger, .soft):hover:not(:disabled) {
+  background: var(--orbit-action-hover) !important;
+  border-color: var(--orbit-action-hover) !important;
+  color: var(--orbit-on-action) !important;
+}
+#orbit-page[data-orbit-page] :is(.btn.soft, .button.secondary):not(footer, footer *) {
+  background: var(--orbit-soft); color: var(--orbit-on-soft); border-color: var(--orbit-border);
+}
+#orbit-page[data-orbit-page] :is(input,select,textarea):not(footer, footer *, [type="checkbox"], [type="radio"], [type="range"]) {
+  background-color: var(--orbit-input); color: var(--orbit-input-ink); border-color: var(--orbit-input-border);
+}
+#orbit-page[data-orbit-page] :is(input,textarea)::placeholder { color:var(--orbit-placeholder); opacity:1; }
+#orbit-page[data-orbit-page] :is(input[type="checkbox"],input[type="radio"],input[type="range"]):not(footer, footer *) { accent-color:var(--orbit-accent); }
+#orbit-page[data-orbit-page] :is(a,button,input,select,textarea,summary,[tabindex]):not(footer,footer *):focus-visible {
+  outline:2px solid var(--orbit-focus); outline-offset:3px;
+}
+#orbit-page[data-orbit-page="student-dashboard"] .quick-destination { background:var(--orbit-soft); color:var(--orbit-ink); }
+#orbit-page[data-orbit-page="student-dashboard"] .hero-status { background:var(--identity-fresh); color:var(--identity-deep); }
+/* Foreground pairs for surfaces whose tone remains constant across modes. */
+:root { --orbit-on-dark: #ECFDF5; }
+#orbit-page[data-orbit-page] :is(.btn.soft,.button.secondary):not(footer,footer *) {
+  color:var(--orbit-on-soft) !important;
+}
+#orbit-page[data-orbit-page="hompage"] #hero .u-h1 em { color:var(--identity-fresh); }
+#orbit-page[data-orbit-page="hompage"] .m-btn--blue { background:var(--orbit-action); color:var(--orbit-on-action); }
+#orbit-page[data-orbit-page="about"] .m-nav { background:var(--orbit-surface); }
+#orbit-page[data-orbit-page="teacher-dashboard"] :is(.channel-title,.public-note) { color:var(--orbit-ink); }
+#orbit-page[data-orbit-page] .avatar:not(img,footer *) { background:var(--identity-primary); color:var(--identity-white); }
+#orbit-page[data-orbit-page="teacher-directory"] :is(.teacher-cover,.profile-avatar) { background:var(--orbit-soft); color:var(--orbit-accent); }
+#orbit-page[data-orbit-page="account-profile"] .profile-hint > span { color:var(--orbit-accent); }
+body[data-theme="dark"] #orbit-page[data-orbit-page="student-dashboard"] :is(.stat-icon,.stat-card .icon) { color:var(--identity-fresh); }
+
+#orbit-page[data-orbit-page] .google-g { color:var(--orbit-accent); }
+
+#orbit-page[data-orbit-page] .google-unconfigured { background:var(--orbit-surface); color:var(--orbit-ink); border-color:var(--orbit-input-border); }
+#orbit-rail .orbit-avatar { color:var(--identity-deep) !important; }
+#orbit-page[data-orbit-page="teacher-dashboard"] .code-copy :is(span,b) { color:var(--orbit-ink) !important; }
+
+#orbit-page[data-orbit-page="jobs"] .jobs-hero { background:var(--identity-deep); color:var(--orbit-on-dark); }
+#orbit-page[data-orbit-page="jobs"] .jobs-hero p { color:var(--orbit-on-dark); }

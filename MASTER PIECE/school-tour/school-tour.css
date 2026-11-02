@@ -1,6 +1,6 @@
 html {
-  scrollbar-color: #809a9a #dce4db;
-  background: #dbe9ee;
+  scrollbar-color: var(--orbit-green-500) #dce4db;
+  background: var(--orbit-green-100);
 }
 * {
   box-sizing: border-box;
@@ -38,7 +38,7 @@ a {
   top: 8px;
   inset-inline-start: 20px;
   z-index: 100;
-  background: white;
+  background: var(--orbit-surface);
   padding: 12px;
   transform: translateY(-150%);
 }
@@ -48,7 +48,7 @@ a {
 #tour-scene {
   position: fixed;
   inset: 0;
-  background: #dbe9ee;
+  background: var(--orbit-green-100);
   overflow: hidden;
 }
 #tour-canvas {
@@ -68,13 +68,13 @@ a {
   inset-inline-start: 0;
   top: 0;
   direction: inherit;
-  background: #fff;
-  color: #17243a;
+  background: var(--orbit-surface);
+  color: var(--orbit-ink);
   padding: 9px 12px;
   min-height: 44px;
   border: 0;
   border-radius: 10px;
-  box-shadow: 0 6px 16px #142b4a26;
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--orbit-green-900) 14.90%, transparent);
   pointer-events: auto;
   font-size: .8125rem;
   font-weight: 650;
@@ -92,7 +92,7 @@ html[dir="rtl"] .tour-hotspot {
   left: calc(50% - 6px);
   width: 12px;
   height: 12px;
-  background: #fff;
+  background: var(--orbit-surface);
   transform: rotate(45deg);
   z-index: -1;
 }
@@ -199,7 +199,7 @@ html[dir="rtl"] .tour-hotspot {
   padding: 10px;
   border-radius: 14px;
   background: var(--orbit-surface);
-  box-shadow: 0 10px 28px #142b4a21;
+  box-shadow: 0 10px 28px color-mix(in srgb, var(--orbit-green-900) 12.94%, transparent);
   max-height: calc(100dvh - 125px);
   overflow: auto;
 }
@@ -225,10 +225,10 @@ html[dir="rtl"] .tour-hotspot {
 }
 .tour-destination[aria-current="location"] {
   background: var(--orbit-action);
-  color: #fff;
+  color: var(--orbit-on-action);
 }
 .tour-destination[aria-current="location"] span:first-child {
-  color: #dbeafe;
+  color: var(--orbit-on-action);
 }
 .tour-controls {
   position: fixed;
@@ -250,7 +250,7 @@ html[dir="rtl"] .tour-hotspot {
   padding: 22px;
   border-radius: 14px;
   background: var(--orbit-surface);
-  box-shadow: 0 10px 28px #142b4a26;
+  box-shadow: 0 10px 28px color-mix(in srgb, var(--orbit-green-900) 14.90%, transparent);
   max-height: calc(100dvh - 230px);
   overflow: auto;
 }
@@ -283,7 +283,7 @@ html[lang="ar"] .tour-info h1 {
   justify-content: center;
   min-height: 44px;
   background: var(--orbit-action);
-  color: #fff;
+  color: var(--orbit-on-action);
   border-radius: 10px;
   margin-top: 16px;
   padding: 10px 16px;
@@ -325,23 +325,23 @@ html[lang="ar"] .tour-info h1 {
   width: 64px;
   height: 64px;
   fill: none;
-  stroke: #167d77;
+  stroke: var(--orbit-green-800);
   stroke-width: 1.2;
 }
 .tour-loading h2 {
   font-size: 1.7rem;
-  color: #17243a;
+  color: var(--orbit-ink);
   margin: 16px 0 8px;
 }
 .tour-loading p {
   font-size: .9375rem;
-  color: #435570;
+  color: var(--orbit-accent);
   line-height: 1.6;
 }
 .tour-loading progress {
   width: 100%;
   height: 8px;
-  accent-color: #08786f;
+  accent-color: var(--orbit-green-800);
   margin-top: 12px;
 }
 .tour-fallback {
@@ -399,11 +399,11 @@ body[data-tour-state="fallback"] .tour-route {
     background: var(--orbit-soft);
   }
   .tour-hotspot:hover {
-    color: #08786f;
+    color: var(--orbit-accent);
     background: #f1fbf5;
   }
   .tour-content-link:hover {
-    background: #1d4ed8;
+    background: var(--orbit-green-600);
   }
 }
 @media (max-width:1000px) {

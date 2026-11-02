@@ -193,25 +193,6 @@
           url: link(post),
         });
     }
-    const accounts = A.get("orbit.recruitment.v1", {}).accounts || [];
-    for (const teacher of OrbitRecruitment.allTeachers().filter(
-      (p) =>
-        p.available &&
-        p.shareWithSchools &&
-        !accounts.some((a) => a.email === p.id && ["suspended", "deleted"].includes(a.status)),
-    ))
-      list.push({
-        name: teacher.name,
-        category: "teacher",
-        detail: t("Professional profile", "الملف المهني"),
-        keywords:
-          teacher.name +
-          " " +
-          (teacher.subjects || []).join(" ") +
-          " " +
-          (teacher.skills || []).join(" "),
-        url: "../teacher-profile/teacher-profile.html?id=" + encodeURIComponent(teacher.id),
-      });
     return [
       ...new Map(
         list.map((item) => [item.category + "|" + item.url + "|" + item.name, item]),

@@ -3,7 +3,8 @@ const O = ORBIT,
   C = OrbitChannels,
   { t, esc } = O;
 const channelId = new URLSearchParams(location.search).get("id");
-let section = new URLSearchParams(location.search).has("post") ? "lessons" : "overview",
+let section = "content",
+  contentFilter = "all",
   notice = "",
   previousSeats = [],
   change = null;
@@ -18,10 +19,10 @@ if (sessionStorage.getItem("orbit.channel.joined") === channelId) {
   );
 }
 const tabs = [
-  ["overview", "Overview", "نظرة عامة"],
-  ["lessons", "Lessons & videos", "الدروس والفيديوهات"],
+  ["content", "Content", "المحتوى"],
   ["assignments", "Assignments", "الواجبات"],
-  ["resources", "Resources", "المصادر"],
+  ["discussions", "Discussions", "النقاشات"],
+  ["meetings", "Meetings", "الاجتماعات"],
   ["members", "Members", "الأعضاء"],
 ];
 const subjects = {
@@ -131,9 +132,9 @@ function memberList(c) {
 
 function chairFigure(member) {
   return (
-    '<span class="seat-illustration" aria-hidden="true"><svg class="chair-art" viewBox="0 0 96 108"><ellipse cx="48" cy="99" rx="32" ry="7" fill="#141421" opacity=".6"/><path d="M24 61v30l7 5V68M69 64v29l7-5V63" fill="#716780"/><path d="M24 21q0-8 8-8h32q8 0 8 8v38H24Z" fill="#574d6d" stroke="#9a87b8" stroke-width="1.5"/><path d="M30 23h36v27H30Z" fill="#716184"/><path d="m20 58 28-7 29 8v12l-29 8-28-9Z" fill="#4b405d" stroke="#9a87b8" stroke-width="1.3"/><path d="m20 58 28-7 29 8-29 9Z" fill="#8a77a3"/>' +
+    '<span class="seat-illustration" aria-hidden="true"><svg class="chair-art" viewBox="0 0 96 108"><ellipse cx="48" cy="99" rx="32" ry="7" fill="#141421" opacity=".6"/><path d="M24 61v30l7 5V68M69 64v29l7-5V63" fill="#047857"/><path d="M24 21q0-8 8-8h32q8 0 8 8v38H24Z" fill="#047857" stroke="#34D399" stroke-width="1.5"/><path d="M30 23h36v27H30Z" fill="#047857"/><path d="m20 58 28-7 29 8v12l-29 8-28-9Z" fill="#047857" stroke="#34D399" stroke-width="1.3"/><path d="m20 58 28-7 29 8-29 9Z" fill="#047857"/>' +
     (member
-      ? '<g class="sitting-student"><g class="student-feet"><path d="m37 68 2 18-8 8M58 69l3 17 11 5" fill="none" stroke="#a797c8" stroke-width="9" stroke-linecap="round"/><path d="m32 92-5 5h14M68 90l10 4" fill="none" stroke="#e2d8f2" stroke-width="6" stroke-linecap="round"/></g><path d="M33 42q2-8 14-8t16 8l-3 28H35Z" fill="#8a58ee" stroke="#c4a4ff" stroke-width="1.2"/><path d="m34 45-6 15 13 5M61 45l8 15-12 6" fill="none" stroke="#b193ed" stroke-width="7" stroke-linecap="round"/><path d="m35 62 7 3M58 63l-6 3" stroke="#f1cebb" stroke-width="5" stroke-linecap="round"/><rect x="43" y="28" width="10" height="10" rx="4" fill="#e1b89f"/><circle cx="48" cy="22" r="13" fill="#f1cebb"/><path d="M35 22q-2-17 12-17t14 18l-6-9q-8 7-18 3Z" fill="#292334"/><circle cx="43" cy="23" r="1" fill="#4a3346"/><circle cx="53" cy="23" r="1" fill="#4a3346"/><path d="M44 29q4 3 8 0" fill="none" stroke="#ac786c" stroke-linecap="round"/></g>'
+      ? '<g class="sitting-student"><g class="student-feet"><path d="m37 68 2 18-8 8M58 69l3 17 11 5" fill="none" stroke="#34D399" stroke-width="9" stroke-linecap="round"/><path d="m32 92-5 5h14M68 90l10 4" fill="none" stroke="#ECFDF5" stroke-width="6" stroke-linecap="round"/></g><path d="M33 42q2-8 14-8t16 8l-3 28H35Z" fill="#34D399" stroke="#A7F3D0" stroke-width="1.2"/><path d="m34 45-6 15 13 5M61 45l8 15-12 6" fill="none" stroke="#34D399" stroke-width="7" stroke-linecap="round"/><path d="m35 62 7 3M58 63l-6 3" stroke="#f1cebb" stroke-width="5" stroke-linecap="round"/><rect x="43" y="28" width="10" height="10" rx="4" fill="#e1b89f"/><circle cx="48" cy="22" r="13" fill="#f1cebb"/><path d="M35 22q-2-17 12-17t14 18l-6-9q-8 7-18 3Z" fill="#292334"/><circle cx="43" cy="23" r="1" fill="#4a3346"/><circle cx="53" cy="23" r="1" fill="#4a3346"/><path d="M44 29q4 3 8 0" fill="none" stroke="#ac786c" stroke-linecap="round"/></g>'
       : "") +
     "</svg>" +
     (member ? walkingFigure() : "") +
@@ -141,11 +142,11 @@ function chairFigure(member) {
   );
 }
 function walkingFigure() {
-  return '<svg class="walking-student" viewBox="0 0 96 108" aria-hidden="true"><ellipse cx="48" cy="101" rx="20" ry="5" fill="#141421" opacity=".4"/><g class="walking-legs"><path d="m42 64-4 31M54 64l8 29" stroke="#a797c8" stroke-width="8" stroke-linecap="round"/><path d="m37 95-7 4h13M61 94l9 4" stroke="#e2d8f2" stroke-width="6" stroke-linecap="round"/></g><path d="M33 38q3-7 15-7t15 7l-5 28H37Z" fill="#8a58ee" stroke="#c4a4ff" stroke-width="1.2"/><path d="m34 39-8 20M62 39l8 19" stroke="#b193ed" stroke-width="7" stroke-linecap="round"/><circle cx="25" cy="62" r="4" fill="#f1cebb"/><circle cx="71" cy="61" r="4" fill="#f1cebb"/><rect x="43" y="26" width="10" height="10" rx="4" fill="#e1b89f"/><circle cx="48" cy="19" r="13" fill="#f1cebb"/><path d="M35 19q-2-17 12-17t14 18l-6-9q-8 7-18 3Z" fill="#292334"/><circle cx="43" cy="20" r="1" fill="#4a3346"/><circle cx="53" cy="20" r="1" fill="#4a3346"/></svg>';
+  return '<svg class="walking-student" viewBox="0 0 96 108" aria-hidden="true"><ellipse cx="48" cy="101" rx="20" ry="5" fill="#141421" opacity=".4"/><g class="walking-legs"><path d="m42 64-4 31M54 64l8 29" stroke="#34D399" stroke-width="8" stroke-linecap="round"/><path d="m37 95-7 4h13M61 94l9 4" stroke="#ECFDF5" stroke-width="6" stroke-linecap="round"/></g><path d="M33 38q3-7 15-7t15 7l-5 28H37Z" fill="#34D399" stroke="#A7F3D0" stroke-width="1.2"/><path d="m34 39-8 20M62 39l8 19" stroke="#34D399" stroke-width="7" stroke-linecap="round"/><circle cx="25" cy="62" r="4" fill="#f1cebb"/><circle cx="71" cy="61" r="4" fill="#f1cebb"/><rect x="43" y="26" width="10" height="10" rx="4" fill="#e1b89f"/><circle cx="48" cy="19" r="13" fill="#f1cebb"/><path d="M35 19q-2-17 12-17t14 18l-6-9q-8 7-18 3Z" fill="#292334"/><circle cx="43" cy="20" r="1" fill="#4a3346"/><circle cx="53" cy="20" r="1" fill="#4a3346"/></svg>';
 }
 
 function teacherFigure() {
-  return '<svg class="teacher-figure" viewBox="0 0 160 155" aria-hidden="true"><ellipse cx="80" cy="142" rx="61" ry="10" fill="#151522" opacity=".55"/><path d="M69 91v39M87 91l7 39" stroke="#9687b2" stroke-width="11" stroke-linecap="round"/><path d="M65 130h14M91 130h13" stroke="#e8def6" stroke-width="7" stroke-linecap="round"/><g class="teacher-body"><path d="M60 55q2-12 20-12t19 12l-7 42H66Z" fill="#7951bd" stroke="#b699e4"/><path d="m75 45 5 12 6-12" fill="#eadff8"/><path d="m79 57-3 20 5 5 4-5-3-20Z" fill="#322841"/><path d="m61 57-14 19 18 7" fill="none" stroke="#9879c5" stroke-width="9" stroke-linecap="round"/><path d="m64 83 8-2" stroke="#eec9b1" stroke-width="6" stroke-linecap="round"/><g class="teacher-gesture"><path d="m97 58 13 11 11-20" fill="none" stroke="#9879c5" stroke-width="9" stroke-linecap="round"/><circle cx="122" cy="46" r="4" fill="#eec9b1"/><path d="m124 44 9-20" stroke="#d2c3e9" stroke-width="2" stroke-linecap="round"/></g><rect x="75" y="35" width="11" height="12" rx="4" fill="#d5a68b"/><circle cx="80" cy="28" r="15" fill="#eec9b1"/><path d="M65 29q-4-20 15-20t15 21l-5-14q-9 6-22 4Z" fill="#262134"/><g fill="none" stroke="#53415f" stroke-width="1.5"><rect x="69" y="26" width="9" height="7" rx="2"/><rect x="82" y="26" width="9" height="7" rx="2"/><path d="M78 28h4"/></g><path d="M75 37q5 3 10 0" fill="none" stroke="#ad7768" stroke-linecap="round"/></g><path d="m29 102 53-10 52 10-53 12Z" fill="#8e78ab" stroke="#b4a0cc"/><path d="m29 102 52 12 53-12v10l-53 13-52-12Z" fill="#625171"/><path d="M40 115v20M123 115v20" stroke="#a38ab7" stroke-width="5"/><path d="m48 101 19-4 12 3-19 4Z" fill="#e7dcf7"/></svg>';
+  return '<svg class="teacher-figure" viewBox="0 0 160 155" aria-hidden="true"><ellipse cx="80" cy="142" rx="61" ry="10" fill="#151522" opacity=".55"/><path d="M69 91v39M87 91l7 39" stroke="#34D399" stroke-width="11" stroke-linecap="round"/><path d="M65 130h14M91 130h13" stroke="#ECFDF5" stroke-width="7" stroke-linecap="round"/><g class="teacher-body"><path d="M60 55q2-12 20-12t19 12l-7 42H66Z" fill="#047857" stroke="#34D399"/><path d="m75 45 5 12 6-12" fill="#ECFDF5"/><path d="m79 57-3 20 5 5 4-5-3-20Z" fill="#064E3B"/><path d="m61 57-14 19 18 7" fill="none" stroke="#34D399" stroke-width="9" stroke-linecap="round"/><path d="m64 83 8-2" stroke="#eec9b1" stroke-width="6" stroke-linecap="round"/><g class="teacher-gesture"><path d="m97 58 13 11 11-20" fill="none" stroke="#34D399" stroke-width="9" stroke-linecap="round"/><circle cx="122" cy="46" r="4" fill="#eec9b1"/><path d="m124 44 9-20" stroke="#A7F3D0" stroke-width="2" stroke-linecap="round"/></g><rect x="75" y="35" width="11" height="12" rx="4" fill="#d5a68b"/><circle cx="80" cy="28" r="15" fill="#eec9b1"/><path d="M65 29q-4-20 15-20t15 21l-5-14q-9 6-22 4Z" fill="#262134"/><g fill="none" stroke="#047857" stroke-width="1.5"><rect x="69" y="26" width="9" height="7" rx="2"/><rect x="82" y="26" width="9" height="7" rx="2"/><path d="M78 28h4"/></g><path d="M75 37q5 3 10 0" fill="none" stroke="#ad7768" stroke-linecap="round"/></g><path d="m29 102 53-10 52 10-53 12Z" fill="#047857" stroke="#34D399"/><path d="m29 102 52 12 53-12v10l-53 13-52-12Z" fill="#047857"/><path d="M40 115v20M123 115v20" stroke="#34D399" stroke-width="5"/><path d="m48 101 19-4 12 3-19 4Z" fill="#ECFDF5"/></svg>';
 }
 function studentSeat(member, index) {
   if (!member)
@@ -354,7 +355,7 @@ function bindSeatChoice() {
             oldRect = oldFigure?.getBoundingClientRect(),
             from = oldRect ? { x: oldRect.left + scrollX, y: oldRect.top + scrollY } : null;
           if (C.selectSeat(channelId, index) !== true) return;
-          section = "overview";
+          section = "content";
           roomPage = Math.floor(index / 12);
           highlightSeat = index;
           change = { kind: "join", id: O.user.email, from, fromSeat: oldSeat?.index };
@@ -525,13 +526,30 @@ function postCard(p, c) {
   const data = O.db(),
     liked = data.likes.includes(p.id),
     saved = data.saved.includes(p.id),
-    participate = C.admitted(c);
+    participate = C.admitted(c),
+    postBody = body(p),
+    authorName = p.authorId
+      ? OrbitProfiles.read(p.authorId).name || t("Channel member", "عضو القناة")
+      : O.teacher(c.teacher) || t("Channel teacher", "معلم القناة"),
+    comments = data.comments[p.id] || [],
+    likeLabel = t(
+      liked ? "Unlike this post" : "Like this post",
+      liked ? "إلغاء الإعجاب بهذا المنشور" : "أعجبني هذا المنشور",
+    );
   return (
-    '<article class="card post" data-post="' +
+    '<article class="card post post--' +
+    esc(p.type) +
+    '" data-post="' +
     esc(p.id) +
-    '"><header><span class="post-type">' +
+    '"><header class="post-header"><div class="post-headline"><span class="post-type">' +
     (types[p.type] ? t(...types[p.type]) : esc(p.type)) +
     (p.sample ? " · " + t("Demo sample", "مثال تجريبي") : "") +
+    "</span><h2>" +
+    esc(title(p)) +
+    '</h2></div><div class="post-meta"><span class="post-author">' +
+    t("By", "بواسطة") +
+    " " +
+    esc(authorName) +
     "</span>" +
     (p.createdAt
       ? "<time>" +
@@ -542,38 +560,60 @@ function postCard(p, c) {
         ) +
         "</time>"
       : "") +
-    "</header><h2>" +
-    esc(title(p)) +
-    '</h2><p class="post-body">' +
-    esc(body(p)) +
-    "</p>" +
+    "</div></header>" +
+    (postBody ? '<p class="post-body">' + esc(postBody) + "</p>" : "") +
     O.attachment(p) +
-    (p.dueDate ? "<p>" + t("Due: ", "موعد التسليم: ") + esc(p.dueDate) + "</p>" : "") +
-    (O.own(c)
-      ? '<div class="post-actions"><button class="btn soft" data-edit="' +
-        esc(p.id) +
-        '">' +
-        t("Edit", "تعديل") +
-        '</button><button class="btn danger" data-delete="' +
-        esc(p.id) +
-        '">' +
-        t("Delete", "حذف") +
-        "</button></div>"
+    (p.type === "assignment" && p.dueDate
+      ? '<p class="post-deadline"><span>' +
+        t("Deadline", "موعد التسليم") +
+        '</span><bdi dir="ltr">' +
+        esc(p.dueDate) +
+        "</bdi></p>"
       : "") +
-    (p.type === "assignment" ? '<div data-assignment-slot="' + esc(p.id) + '"></div>' : "") +
+    '<footer class="post-footer">' +
+    (p.type === "assignment"
+      ? '<div class="post-assignment" data-assignment-slot="' + esc(p.id) + '"></div>'
+      : "") +
+    (O.own(c) || participate
+      ? '<div class="post-actions">' +
+        (participate
+          ? '<div class="post-action-group post-engagement"><button class="btn soft" type="button" data-like="' +
+            esc(p.id) +
+            '" aria-label="' +
+            likeLabel +
+            '" title="' +
+            t("Like", "إعجاب") +
+            '">' +
+            (liked ? "♥" : "♡") +
+            " " +
+            Number(liked) +
+            '</button><button class="btn soft" type="button" data-save="' +
+            esc(p.id) +
+            '">' +
+            (saved ? t("Saved", "محفوظ") : t("Save", "حفظ")) +
+            "</button></div>"
+          : "") +
+        (O.own(c)
+          ? '<div class="post-action-group post-owner-actions"><button class="btn soft" type="button" data-edit="' +
+            esc(p.id) +
+            '">' +
+            t("Edit", "تعديل") +
+            '</button><button class="btn danger" type="button" data-delete="' +
+            esc(p.id) +
+            '">' +
+            t("Delete", "حذف") +
+            "</button></div>"
+          : "") +
+        "</div>"
+      : "") +
+    "</footer>" +
     (participate
-      ? '<div class="post-actions"><button class="btn soft" data-like="' +
-        esc(p.id) +
-        '">' +
-        (liked ? "♥" : "♡") +
-        " " +
-        Number(liked) +
-        '</button><button class="btn soft" data-save="' +
-        esc(p.id) +
-        '">' +
-        (saved ? t("Saved", "محفوظ") : t("Save", "حفظ")) +
-        '</button></div><div class="comments">' +
-        (data.comments[p.id] || [])
+      ? '<section class="post-discussion" aria-label="' +
+        t("Class discussion", "نقاش الصف") +
+        '"><h3 class="post-discussion-title">' +
+        t("Class discussion", "نقاش الصف") +
+        '</h3><div class="comments">' +
+        comments
           .map(
             (m) =>
               "<p><b>" +
@@ -587,27 +627,27 @@ function postCard(p, c) {
               "</p>",
           )
           .join("") +
-        '</div><form data-comment="' +
+        '</div><form class="post-comment-form" data-comment="' +
         esc(p.id) +
-        '"><label>' +
-        t("Class discussion", "نقاش الصف") +
-        '<input name="text" required maxlength="300"></label><button class="btn soft">' +
-        t("Comment", "تعليق") +
-        "</button></form>"
+        '"><label class="post-comment-field"><span>' +
+        t("Your comment", "تعليقك") +
+        '</span><input name="text" required maxlength="300" placeholder="' +
+        t("Write a comment…", "اكتب تعليقك…") +
+        '"></label><button class="post-comment-submit" type="submit">' +
+        t("Send", "إرسال") +
+        "</button></form></section>"
       : "") +
     "</article>"
   );
 }
 function content(c) {
   const list = posts(c),
-    filtered =
-      section === "lessons"
-        ? list.filter((p) => ["lesson", "video"].includes(p.type))
-        : section === "assignments"
-          ? list.filter((p) => p.type === "assignment")
-          : section === "resources"
-            ? list.filter((p) => (p.attachments || []).length)
-            : list.filter((p) => ["announcement", "discussion"].includes(p.type));
+    filtered = list.filter((p) => section === "assignments"
+      ? p.type === "assignment"
+      : section === "discussions"
+        ? p.type === "discussion"
+        : !["assignment", "discussion"].includes(p.type) &&
+          (contentFilter !== "resources" || (p.attachments || []).length || p.videoAsset || p.url));
   return (
     '<div class="panel-heading"><h2>' +
     t(...tabs.find((x) => x[0] === section).slice(1)) +
@@ -616,6 +656,7 @@ function content(c) {
     " " +
     t("posts", "منشورات") +
     "</span></div>" +
+    (section === "content" ? '<div class="channel-content-filters"><button type="button" data-content-filter="all" aria-pressed="' + (contentFilter === "all") + '">' + t("All content", "كل المحتوى") + '</button><button type="button" data-content-filter="resources" aria-pressed="' + (contentFilter === "resources") + '">' + t("Resources & attachments", "المصادر والمرفقات") + "</button></div>" : "") +
     (filtered.map((p) => postCard(p, c)).join("") ||
       '<div class="content-empty"><span>◇</span><h3>' +
         t("Nothing published here yet", "لم يُنشر محتوى هنا بعد") +
@@ -643,7 +684,7 @@ function renderChannel() {
   const owner = O.own(c),
     admitted = C.admitted(c),
     read = C.canRead(c);
-  if (!admitted && section === "members") section = "overview";
+  if (!admitted && section === "members") section = "content";
   O.shell(
     esc(O.label(c)),
     '<div class="channel-top"><a href="../channels/channels.html">← ' +
@@ -713,7 +754,7 @@ function renderChannel() {
             )
             .join("") +
           '</nav><div class="channel-layout"><div class="channel-main">' +
-          (section === "overview" && admitted ? classroom(c) : "") +
+          (section === "members" && admitted ? classroom(c) : "") +
           (section === "members"
             ? '<section class="members-panel"><div class="panel-heading"><h2>' +
               t("Class members", "أعضاء الصف") +
@@ -722,7 +763,9 @@ function renderChannel() {
               "</span></div>" +
               memberList(c) +
               "</section>"
-            : '<section class="content-panel">' + content(c) + "</section>") +
+            : section === "meetings"
+              ? '<section id="meetings-section" class="orbit-meetings" data-channel-id="' + esc(c.id) + '" aria-labelledby="meeting-section-title"></section>'
+              : '<section class="content-panel">' + content(c) + "</section>") +
           '</div><aside class="channel-aside"><section><span class="section-kicker">' +
           t("ABOUT THIS CHANNEL", "عن هذه القناة") +
           "</span><h3>" +
@@ -890,7 +933,7 @@ function joinCode() {
         throw Error(t("Invalid code for this channel.", "الكود غير صحيح لهذه القناة."));
       if (C.join(c.id, false, code) === false) return;
       d.close();
-      section = "overview";
+      section = "content";
       feedback(
         t(
           "You joined successfully. Choose an empty chair.",
@@ -1037,10 +1080,21 @@ function bind(c) {
     (b) =>
       (b.onclick = () => {
         section = b.dataset.section;
+        const url = new URL(location.href);
+        url.searchParams.set("tab", section);
+        url.searchParams.delete("post");
+        history.pushState(null, "", url);
         renderChannel();
         document.querySelector('[data-section="' + section + '"]').focus();
       }),
   );
+  document.querySelectorAll("[data-content-filter]").forEach((button) => {
+    button.onclick = () => {
+      contentFilter = button.dataset.contentFilter;
+      renderChannel();
+      document.querySelector('[data-content-filter="' + contentFilter + '"]')?.focus();
+    };
+  });
   document.getElementById("open-members")?.addEventListener("click", () => {
     section = "members";
     renderChannel();
@@ -1071,7 +1125,7 @@ function bind(c) {
     else
       try {
         if (C.join(c.id) === false) return;
-        section = "overview";
+        section = "content";
         feedback(
           t(
             "You joined successfully. Choose an empty chair.",
@@ -1121,7 +1175,7 @@ function bind(c) {
           () => {
             const seat = previousSeats.find((s) => s.member?.id === b.dataset.remove);
             C.remove(c.id, b.dataset.remove);
-            section = "overview";
+            section = "content";
             change = { kind: "remove", seat: seat?.index };
             feedback(
               t("Student removed. The seat is available.", "تمت إزالة الطالب. المقعد متاح الآن."),
@@ -1222,21 +1276,21 @@ window.addEventListener("storage", (e) => {
     renderChannel();
   }
 });
-renderChannel();
-const selectedPost = new URLSearchParams(location.search).get("post");
-if (selectedPost) {
-  const c = C.find(channelId),
-    p = posts(c).find((p) => p.id === selectedPost);
-  if (p && C.canRead(c)) {
-    section =
-      p.type === "assignment"
-        ? "assignments"
-        : ["lesson", "video"].includes(p.type)
-          ? "lessons"
-          : "overview";
-    renderChannel();
-    [...document.querySelectorAll("[data-post]")]
-      .find((el) => el.dataset.post === selectedPost)
-      ?.scrollIntoView({ block: "start" });
-  }
+function restoreChannelLocation() {
+  const params = new URLSearchParams(location.search);
+  section = params.get("tab") || "content";
+  if (!tabs.some((tab) => tab[0] === section)) section = "content";
+  contentFilter = "all";
+  const selectedPost = params.get("post");
+  let post;
+  try {
+    const channel = C.find(channelId);
+    if (C.canRead(channel)) post = posts(channel).find((item) => item.id === selectedPost);
+  } catch {}
+  if (post) section = post.type === "assignment" ? "assignments" : post.type === "discussion" ? "discussions" : "content";
+  renderChannel();
+  if (post) [...document.querySelectorAll("[data-post]")]
+    .find((element) => element.dataset.post === selectedPost)?.scrollIntoView({ block: "start" });
 }
+window.addEventListener("popstate", restoreChannelLocation);
+restoreChannelLocation();
