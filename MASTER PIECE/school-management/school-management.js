@@ -5,6 +5,7 @@
   const t = (en, ar) => english ? en : ar;
   const sections = [
     ["overview", "Overview", "نظرة عامة", ""],
+    ["years", "Academic Years", "السنوات الدراسية"],
     ["students", "Students", "الطلاب"],
     ["teachers", "Teachers", "المعلمون"],
     ["classes", "Classes", "الصفوف"],
@@ -34,7 +35,9 @@
     document.querySelector(".sm-nav").innerHTML = sections.map(([id, en, ar]) => `<a class="btn${section[0] === id ? "" : " soft"}" href="?section=${id}" ${section[0] === id ? 'aria-current="page"' : ""}>${t(en, ar)}</a>`).join("");
     const host = document.getElementById("sm-content");
     host.onclick = null;
-    if (["students", "teachers", "classes", "subjects"].includes(section[0])) {
+    if (section[0] === "years") {
+      OrbitSchoolYearUI.mount(host, t);
+    } else if (["students", "teachers", "classes", "subjects"].includes(section[0])) {
       OrbitSchoolAcademicUI.mount(host, section[0], t);
     } else if (section[0] === "monitoring") {
       OrbitSchoolMonitoringUI.mount(host, t);

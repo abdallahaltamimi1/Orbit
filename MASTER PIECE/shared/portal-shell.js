@@ -198,6 +198,7 @@
             ]
           : [
               ["school-management", "home", "Academic Dashboard", "لوحة الإدارة الأكاديمية", "", "", "section=overview"],
+              ["school-management", "planner", "Academic Years", "السنوات الدراسية", "", "", "section=years"],
               ["school-management", "channel", "Classes & Sections", "الصفوف والشعب", "", "", "section=classes"],
               ["school-management", "profile", "Students", "الطلاب", "", "", "section=students"],
               ["school-management", "profile", "Teachers", "المعلمون", "", "", "section=teachers"],
@@ -289,7 +290,7 @@
             const params = new URLSearchParams(location.search);
             if (l[0] === "school-management") {
               const requested = params.get("section");
-              const section = ["overview", "classes", "students", "teachers", "subjects", "timetable", "monitoring", "events"].includes(requested) ? requested : "overview";
+              const section = ["overview", "years", "classes", "students", "teachers", "subjects", "timetable", "monitoring", "events"].includes(requested) ? requested : "overview";
               schoolActive = same && target.searchParams.get("section") === section &&
                 (l[4] ? location.hash === "#" + l[4] : location.hash !== "#teaching-assignments");
             } else {
@@ -304,7 +305,7 @@
               (l[0] === "lab" && location.pathname.includes("/car-lab/"));
           const heading =
             u.role === "school"
-              ? { 0: t("Academic Management", "الإدارة الأكاديمية"), 9: t("Recruitment Management", "إدارة التوظيف"), 13: t("General", "عام") }[index] || ""
+              ? { 0: t("Academic Management", "الإدارة الأكاديمية"), 10: t("Recruitment Management", "إدارة التوظيف"), 14: t("General", "عام") }[index] || ""
               : u.role === "student"
               ? { 0: t("Learning", "تعلّم"), 5: t("Channels", "قنواتي"), 9: t("General", "عام") }[
                   index

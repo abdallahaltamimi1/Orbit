@@ -126,3 +126,12 @@ body[data-theme="dark"] .sm-schedule-dialog { color-scheme: dark; }
   .sm-list li { gap: 12px; }
   .sm-nav { gap: 8px; }
 }
+
+/* Year state remains readable without relying on color alone. */
+.sm-status[data-year-status="active"] { outline: 1px solid var(--orbit-accent); font-weight: 750; }
+.sm-status[data-year-status="archived"] { background: var(--orbit-surface); color: var(--orbit-muted); border: 1px solid var(--orbit-border); }
+.sm-year-confirm { display: flex; align-items: start; gap: 10px; margin-block: 20px; }
+.sm-year-confirm input[type="checkbox"] { width: 20px; height: 20px; flex-shrink: 0; accent-color: var(--orbit-accent); }
+[data-year-list] time { white-space: nowrap; }
+.sm-year-dialog { color-scheme: light; }
+body[data-theme="dark"] .sm-year-dialog { color-scheme: dark; }

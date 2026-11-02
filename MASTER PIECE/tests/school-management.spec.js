@@ -134,8 +134,8 @@ test("overview supports bilingual directions, themes and responsive navigation",
 
 test("school grouped navigation reuses academic anchors and recruitment views", async ({ page }) => {
   await signIn(page);
-  await expect(page.locator("#orbit-rail .orbit-nav-link")).toHaveCount(17);
-  await expect(page.locator('#orbit-rail a[href*="academic-year"]')).toHaveCount(0);
+  await expect(page.locator("#orbit-rail .orbit-nav-link")).toHaveCount(18);
+  await expect(page.locator('#orbit-rail a[href$="?section=years"]')).toHaveCount(1);
   await page.locator('#orbit-rail a[href$="?section=subjects#teaching-assignments"]').click();
   await expect(page.locator("#teaching-assignments")).toBeInViewport();
   await expect(page.locator("[data-allocations-table]")).toHaveCount(1);
