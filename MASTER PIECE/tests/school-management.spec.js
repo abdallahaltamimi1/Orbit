@@ -26,11 +26,11 @@ test("school management frontend route rejects guests, teachers and students", a
 
 test("school sidebar preserves active states and all academic sections", async ({ page }) => {
   await signIn(page);
-  const management = page.locator('#orbit-rail a[href*="school-management"]');
+  const management = page.locator('#orbit-rail a[href$="?section=overview"]');
   await expect(management).toBeVisible();
   await management.click();
   await expect(management).toHaveAttribute("aria-current", "page");
-  const recruitment = page.locator('#orbit-rail nav a[href="../school-dashboard/school-dashboard.html"]');
+  const recruitment = page.locator('#orbit-rail nav a[href="../school-dashboard/school-dashboard.html?tab=jobs"]');
   await expect(recruitment).not.toHaveAttribute("aria-current", "page");
   for (const section of ["students", "teachers", "classes", "subjects", "timetable", "monitoring", "events"]) {
     await page.locator(`.sm-nav a[href="?section=${section}"]`).click();
@@ -43,7 +43,8 @@ test("school sidebar preserves active states and all academic sections", async (
       await expect(page.locator(`[data-schedule-root="${section}"]`)).toBeVisible();
       await expect(page.locator("[data-schedule-add]")).toBeVisible();
     }
-    await expect(management).toHaveAttribute("aria-current", "page");
+    await expect(page.locator(`#orbit-rail a[href$="?section=${section}"]`)).toHaveAttribute("aria-current", "page");
+    await expect(page.locator("#orbit-rail [aria-current=page]")).toHaveCount(1);
   }
   await page.locator('.sm-nav a[href="?section=overview"]').click();
   await expect(page.locator(".sm-totals dd")).toHaveCount(4);
@@ -105,7 +106,9 @@ test("overview supports bilingual directions, themes and responsive navigation",
         if (width === 390) {
           await page.locator("#orbit-mobile-toggle").click();
           await expect(page.locator("#orbit-mobile-toggle")).toHaveAttribute("aria-expanded", "true");
-          await expect(page.locator('#orbit-rail a[href*="school-management"]')).toBeVisible();
+          await expect(page.locator('#orbit-rail a[href$="?section=overview"]')).toBeVisible();
+          await expect(page.locator("#orbit-rail .orbit-nav-heading")).toHaveText(language === "en" ? ["Academic Management", "Recruitment Management", "General"] : ["الإدارة الأكاديمية", "إدارة التوظيف", "عام"]);
+          await page.screenshot({ path: path.join(os.tmpdir(), `orbit-school-navigation-${language}-${theme}-${width}.png`), animations: "disabled" });
           await page.keyboard.press("Escape");
           await expect(page.locator("#orbit-mobile-toggle")).toHaveAttribute("aria-expanded", "false");
         }
@@ -127,4 +130,42 @@ test("overview supports bilingual directions, themes and responsive navigation",
   await page.reload();
   await expect(page.locator("body")).toHaveAttribute("data-theme", "light");
   expect(errors).toEqual([]);
+});
+
+test("school grouped navigation reuses academic anchors and recruitment views", async ({ page }) => {
+  await signIn(page);
+  await expect(page.locator("#orbit-rail .orbit-nav-link")).toHaveCount(17);
+  await expect(page.locator('#orbit-rail a[href*="academic-year"]')).toHaveCount(0);
+  await page.locator('#orbit-rail a[href$="?section=subjects#teaching-assignments"]').click();
+  await expect(page.locator("#teaching-assignments")).toBeInViewport();
+  await expect(page.locator("[data-allocations-table]")).toHaveCount(1);
+  await expect(page.locator('#orbit-rail [aria-current="page"]')).toHaveText(/توزيع التدريس|Teacher Assignments/);
+  await page.reload();
+  await expect(page.locator("#teaching-assignments")).toBeInViewport();
+  await page.locator('#orbit-rail a[href$="?section=subjects"]').click();
+  await expect(page.locator('#orbit-rail [aria-current="page"]')).toHaveText(/المواد|Subjects/);
+  for (const tab of ["jobs", "applications", "discover", "interviews"]) {
+    await page.locator('#orbit-rail a[href$="?tab=' + tab + '"]').click();
+    await expect(page.locator('[data-tab="' + tab + '"]')).toHaveAttribute("aria-current", "page");
+    await expect(page.locator('#orbit-rail [aria-current="page"]')).toHaveAttribute("href", new RegExp("tab=" + tab + "$"));
+  }
+  await page.locator('[data-tab="applications"]').click();
+  await expect(page.locator('#orbit-rail [aria-current="page"]')).toHaveAttribute("href", /tab=applications$/);
+  await page.goto("/school-dashboard/school-dashboard.html?tab=interviews#meetings-section");
+  await expect(page.locator("#meetings-section")).toBeVisible();
+  await expect(page.locator('#orbit-rail [aria-current="page"]')).toHaveAttribute("href", /tab=interviews$/);
+  await expect(page.locator("[data-meeting-nav] span")).toHaveText(/المقابلات والاجتماعات|Interviews \/ Meetings/);
+  await page.goto("/school-dashboard/school-dashboard.html#meetings-section");
+  await expect(page.locator('#orbit-rail [aria-current="page"]')).toHaveAttribute("href", /tab=interviews$/);
+  await page.locator("#orbit-rail-collapse").click();
+  await expect(page.locator("body")).toHaveClass(/orbit-sidebar-collapsed/);
+  await expect(page.locator('#orbit-rail a[href$="?tab=jobs"]')).toBeVisible();
+  await page.locator("#orbit-rail-collapse").click();
+  await expect(page.locator("#orbit-rail .orbit-nav-heading").first()).toBeVisible();
+  await page.setViewportSize({ width: 390, height: 900 });
+  await page.locator("#orbit-mobile-toggle").click();
+  await page.locator('#orbit-rail a[href$="?section=students"]').click();
+  await expect(page.locator("body")).not.toHaveClass(/orbit-menu-open/);
+  await expect(page.locator("[data-academic-table]")).toBeVisible();
+  await expect(page.locator('#orbit-rail [aria-current="page"]')).toHaveAttribute("href", /section=students$/);
 });

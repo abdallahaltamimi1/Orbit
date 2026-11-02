@@ -197,8 +197,19 @@
               ["settings", "settings", "Settings", "الإعدادات"],
             ]
           : [
-              ["school-management", "home", "School Management", "إدارة المدرسة"],
-              ["school-dashboard", "jobs", "School recruitment", "توظيف المدرسة"],
+              ["school-management", "home", "Academic Dashboard", "لوحة الإدارة الأكاديمية", "", "", "section=overview"],
+              ["school-management", "channel", "Classes & Sections", "الصفوف والشعب", "", "", "section=classes"],
+              ["school-management", "profile", "Students", "الطلاب", "", "", "section=students"],
+              ["school-management", "profile", "Teachers", "المعلمون", "", "", "section=teachers"],
+              ["school-management", "planner", "Teacher Assignments", "توزيع التدريس", "teaching-assignments", "", "section=subjects"],
+              ["school-management", "planner", "Timetables", "الجداول الدراسية", "", "", "section=timetable"],
+              ["school-management", "learn", "Academic Monitoring", "المتابعة الأكاديمية", "", "", "section=monitoring"],
+              ["school-management", "learn", "Subjects", "المواد", "", "", "section=subjects"],
+              ["school-management", "bell", "Events & Announcements", "الفعاليات والإعلانات", "", "", "section=events"],
+              ["school-dashboard", "jobs", "Opportunities", "الفرص الوظيفية", "", "", "tab=jobs"],
+              ["school-dashboard", "jobs", "Applications", "طلبات التوظيف", "", "", "tab=applications"],
+              ["school-dashboard", "profile", "Teacher Discovery", "اكتشاف المعلمين", "", "", "tab=discover"],
+              ["school-dashboard", "video", "Interviews / Meetings", "المقابلات والاجتماعات", "", "meeting", "tab=interviews"],
               ["account-profile", "profile", "School profile", "ملف المدرسة"],
               ["notifications", "bell", "Notifications", "الإشعارات"],
               ["settings", "settings", "Settings", "الإعدادات"],
@@ -220,10 +231,15 @@
         ["account-profile", "profile", "My profile", "ملفي"],
         ["settings", "settings", "Settings", "الإعدادات"],
       );
-    } else {
-      const dashboard = u.role === "teacher" ? "teacher-dashboard" : "school-dashboard";
+    } else if (u.role === "teacher") {
+      const dashboard = "teacher-dashboard";
       links.push([dashboard, "video", "Meetings", "الاجتماعات", "meetings-section", "meeting"]);
     }
+    // Recruitment tabs also change in place (including the existing applicants shortcut).
+    const schoolTab = u.role === "school" && location.pathname.includes("/school-dashboard/")
+      ? location.hash === "#meetings-section" ? "interviews"
+        : document.querySelector('[data-tab][aria-current="page"]')?.dataset.tab || "jobs"
+      : "";
     const sig = JSON.stringify([
       u.role,
       name,
@@ -233,7 +249,9 @@
       prefs.theme,
       count,
       location.pathname,
+      location.search,
       location.hash,
+      schoolTab,
     ]);
     let rail = document.getElementById("orbit-rail");
     if (sig !== signature || !rail) {
@@ -244,6 +262,7 @@
         rail.className = "orbit-rail";
         document.body.append(rail);
       }
+      rail.dataset.workspace = u.role;
       const home = links.find((l) =>
         ["student-dashboard", "teacher-dashboard", "school-dashboard"].includes(l[0]),
       )[0];
@@ -253,7 +272,7 @@
           .map((x) => x[0])
           .slice(0, 2)
           .join(""),
-      )}</span><div><strong>${esc(name)}</strong><small>${u.role === "student" ? esc({ primary: t("Primary", "أساسي"), secondary: t("Secondary", "ثانوي"), university: t("University", "جامعي") }[p.level] || t("Student", "طالب")) : u.role === "teacher" ? t("Teacher", "معلم") : t("School", "مدرسة")}</small></div></div><nav aria-label="${t("Main navigation", "التنقل الرئيسي")}">${links
+      )}</span><div><strong>${esc(name)}</strong><small>${u.role === "student" ? esc({ primary: t("Primary", "أساسي"), secondary: t("Secondary", "ثانوي"), university: t("University", "جامعي") }[p.level] || t("Student", "طالب")) : u.role === "teacher" ? t("Teacher", "معلم") : t("School Workspace", "مساحة المدرسة")}</small></div></div><nav aria-label="${t("Main navigation", "التنقل الرئيسي")}">${links
         .map((l, index) => {
           const destination =
             "../" +
@@ -261,25 +280,39 @@
             "/" +
             l[0] +
             ".html" +
-            (l[0] === "teacher-profile" ? "?id=" + encodeURIComponent(u.email) : "") +
+            (l[0] === "teacher-profile" ? "?id=" + encodeURIComponent(u.email) : l[6] ? "?" + l[6] : "") +
             (l[4] ? "#" + l[4] : "");
           const target = new URL(destination, location.href),
             same = target.pathname === location.pathname;
-          const active = l[4]
+          let schoolActive;
+          if (u.role === "school" && l[6]) {
+            const params = new URLSearchParams(location.search);
+            if (l[0] === "school-management") {
+              const requested = params.get("section");
+              const section = ["overview", "classes", "students", "teachers", "subjects", "timetable", "monitoring", "events"].includes(requested) ? requested : "overview";
+              schoolActive = same && target.searchParams.get("section") === section &&
+                (l[4] ? location.hash === "#" + l[4] : location.hash !== "#teaching-assignments");
+            } else {
+              schoolActive = same && target.searchParams.get("tab") === schoolTab;
+            }
+          }
+          const active = schoolActive !== undefined ? schoolActive : l[4]
             ? same && location.hash === "#" + l[4]
             : (same && !location.hash) ||
               (l[0] === "channels" && location.pathname.includes("/channel/")) ||
               (l[0] === "lessons" && /\/(lesson|practice)\//.test(location.pathname)) ||
               (l[0] === "lab" && location.pathname.includes("/car-lab/"));
           const heading =
-            u.role === "student"
+            u.role === "school"
+              ? { 0: t("Academic Management", "الإدارة الأكاديمية"), 9: t("Recruitment Management", "إدارة التوظيف"), 13: t("General", "عام") }[index] || ""
+              : u.role === "student"
               ? { 0: t("Learning", "تعلّم"), 5: t("Channels", "قنواتي"), 9: t("General", "عام") }[
                   index
                 ]
               : index === 0
                 ? t("Your workspace", "مساحة عملك")
                 : "";
-          return `${heading ? `<p class="orbit-nav-heading">${heading}</p>` : ""}<a href="${esc(same && l[4] ? "#" + l[4] : destination)}" class="orbit-nav-link ${active ? "is-current" : ""}" ${active ? 'aria-current="page"' : ""} ${l[5] ? "data-" + l[5] + "-nav" : ""} aria-label="${t(l[2], l[3])}" title="${t(l[2], l[3])}">${svg(l[1])}<span>${t(l[2], l[3])}</span>${l[0] === "notifications" && count ? `<small class="notification-badge">${count}</small>` : ""}</a>`;
+          return `${heading ? `<p class="orbit-nav-heading">${heading}</p>` : ""}<a href="${esc(same && l[4] && !l[6] ? "#" + l[4] : destination)}" class="orbit-nav-link ${active ? "is-current" : ""}" ${active ? 'aria-current="page"' : ""} ${l[5] ? "data-" + l[5] + "-nav" : ""} aria-label="${t(l[2], l[3])}" title="${t(l[2], l[3])}">${svg(l[1])}<span>${t(l[2], l[3])}</span>${l[0] === "notifications" && count ? `<small class="notification-badge">${count}</small>` : ""}</a>`;
         })
         .join(
           "",

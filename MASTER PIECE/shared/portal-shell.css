@@ -589,3 +589,12 @@ body.orbit-shell-mounted #orbit-rail.orbit-rail #orbit-back {
     background: var(--orbit-green-800);
   }
 }
+
+/* School groups share the existing sidebar scroll and collapsed/mobile behavior. */
+body.orbit-shell-mounted #orbit-rail[data-workspace="school"] .orbit-nav-heading {
+  font-weight: 600;
+  flex-shrink: 0;
+}
+.school-management #teaching-assignments {
+  scroll-margin-block-start: 90px;
+}

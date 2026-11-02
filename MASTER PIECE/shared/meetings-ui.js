@@ -185,8 +185,10 @@
       });
     }
     const navLink = nav?.querySelector("[data-meeting-nav] span");
-    if (navLink && navLink.textContent !== t("Meetings", "الاجتماعات"))
-      navLink.textContent = t("Meetings", "الاجتماعات");
+    const navLabel = active().role === "school"
+      ? t("Interviews / Meetings", "المقابلات والاجتماعات")
+      : t("Meetings", "الاجتماعات");
+    if (navLink && navLink.textContent !== navLabel) navLink.textContent = navLabel;
   }
   function options(channels, current) {
     return channels
