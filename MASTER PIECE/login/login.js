@@ -400,6 +400,25 @@ document.addEventListener("DOMContentLoaded", function () {
         passwordInput.focus();
         return;
       }
+      if (OrbitRecruitment.data().accounts.find(a => a.email === user.email)?.mustChangePassword) {
+        const updated = await new Promise(resolve => {
+          const d = document.createElement("dialog"); d.className = "orbit-first-login";
+          const title = loginText("Choose your own password", "اختر كلمة مرور خاصة بك");
+          d.innerHTML = '<form><h2>' + title + '</h2><p>' + loginText("Use at least 10 characters, including a letter and a number. Your temporary password will stop working.", "استخدم 10 أحرف على الأقل تشمل حرفًا ورقمًا. ستتوقف كلمة المرور المؤقتة.") + '</p><label>' + loginText("New password", "كلمة المرور الجديدة") + '<input name="password" type="password" autocomplete="new-password" required minlength="10"></label><label>' + loginText("Confirm password", "تأكيد كلمة المرور") + '<input name="confirm" type="password" autocomplete="new-password" required minlength="10"></label><p role="alert"></p><button type="submit">' + loginText("Save password and continue", "حفظ كلمة المرور والمتابعة") + '</button><button type="button" data-cancel>' + loginText("Cancel", "إلغاء") + '</button></form>';
+          d.setAttribute("aria-label", title); document.body.append(d);
+          d.querySelector('[data-cancel]').onclick = () => d.close();
+          d.onclose = () => { d.remove(); resolve(null); };
+          d.querySelector('form').onsubmit = async e => {
+            e.preventDefault(); const form = e.target, button = form.querySelector('[type=submit]');
+            if (form.elements.password.value !== form.elements.confirm.value) { form.querySelector('[role=alert]').textContent = loginText("Passwords do not match.", "كلمتا المرور غير متطابقتين."); return; }
+            button.disabled = true;
+            try { const next = await OrbitRecruitment.changeInitialPassword(user.email, password, form.elements.password.value); resolve(next); d.close(); }
+            catch { form.querySelector('[role=alert]').textContent = loginText("Use a new password with at least 10 characters, a letter and a number.", "استخدم كلمة جديدة من 10 أحرف على الأقل تشمل حرفًا ورقمًا."); button.disabled = false; }
+          }; d.showModal();
+        });
+        if (!updated) return;
+        user = updated;
+      }
       try {
         OrbitAuth.startSession(user);
       } catch {

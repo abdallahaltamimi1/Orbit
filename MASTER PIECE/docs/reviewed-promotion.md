@@ -1,0 +1,7 @@
+# Reviewed student promotion
+
+The existing Promotion Preview uses the school academic-year catalog to select an Active source and an Upcoming destination. Its saved progression and draft choices use the promotion-preview store. Reviewed legacy class-year links remain available for those drafts. Annual enrollment and identity reviews live in separate school-scoped stores. Sections have explicit year and grade IDs, which are also used by teacher assignments, timetables and Academic Monitoring.
+
+Phase 3C.2-C uses the existing preview page and year controls. For annual placements, it reads verified source enrollment and identity data and requires an explicit B1 destination section. It does not derive a destination from a legacy class label or require the next grade in a progression. Preview validation stages changes in memory. Confirmation reruns the checks and commits destination enrollments, placements and an idempotent operation receipt in one enrollment-store write. The receipt records school, years, source and destination enrollment IDs, destination placements and the operation timestamp. Source enrollments and the identity audit are preserved.
+
+This browser-local workflow inherits the enrollment service's same-origin cross-school checks and optimistic revision checks. Local storage does not provide cross-tab transactions or cross-device authorization. Destination-year activation and channel membership are separate workflows.

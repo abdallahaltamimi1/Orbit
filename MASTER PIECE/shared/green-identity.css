@@ -17,7 +17,7 @@
   --identity-fresh: #34D399;
   --identity-soft: #ECFDF5;
   --identity-white: #FFFFFF;
-  --identity-canvas: var(--identity-soft);
+  --identity-canvas: #F6F8FB;
   --identity-surface: var(--identity-white);
   --identity-elevated: var(--identity-white);
   --identity-ink: var(--identity-deep);
@@ -32,18 +32,18 @@
   --identity-action-hover: #6EE7B7;
 }
 body[data-theme="dark"] {
-  --identity-canvas: #06251D;
-  --identity-surface: #0C3027;
-  --identity-elevated: #123D30;
-  --identity-ink: #ECFDF5;
-  --identity-muted: #BBD9CD;
-  --identity-border: #386658;
-  --identity-input-border: #739B89;
+  --identity-canvas: #111B30;
+  --identity-surface: #19263E;
+  --identity-elevated: #22314B;
+  --identity-ink: #EAF1FC;
+  --identity-muted: #B8C8E0;
+  --identity-border: #465C7A;
+  --identity-input-border: #8399B8;
   --identity-accent: var(--identity-fresh);
   --identity-focus: var(--identity-fresh);
-  --identity-hover: #174C3A;
-  --identity-active: #205E47;
-  --identity-soft-surface: #123D30;
+  --identity-hover: #263C59;
+  --identity-active: #2A4862;
+  --identity-soft-surface: #20354C;
 }
 /* Legacy pages also set these tokens locally. The boundary makes the approved
    semantic contract authoritative, independent of role or stylesheet order. */
@@ -86,6 +86,13 @@ body, #orbit-page[data-orbit-page] {
   --text: var(--orbit-ink); --ink: var(--orbit-ink); --muted: var(--orbit-muted);
   --line: var(--orbit-border); --soft: var(--orbit-soft);
   --purple: var(--orbit-accent); --purple-deep: var(--orbit-action); --blue: var(--orbit-accent);
+}
+/* Midnight layers belong to the theme; raw green values remain brand accents.
+   Footer owns its legacy tokens through footer-identity-boundary.css. */
+body[data-theme="dark"], body[data-theme="dark"] :is(#orbit-page[data-orbit-page], #orbit-page #hero, #orbit-rail) {
+  --orbit-midnight: var(--identity-canvas) !important;
+  --orbit-indigo: var(--identity-elevated) !important;
+  --orbit-space: var(--identity-canvas) !important;
 }
 #orbit-page[data-orbit-page="hompage"] {
   --home-canvas: var(--identity-canvas) !important;
@@ -144,5 +151,5 @@ body[data-theme="dark"] #orbit-page[data-orbit-page="student-dashboard"] :is(.st
 #orbit-rail .orbit-avatar { color:var(--identity-deep) !important; }
 #orbit-page[data-orbit-page="teacher-dashboard"] .code-copy :is(span,b) { color:var(--orbit-ink) !important; }
 
-#orbit-page[data-orbit-page="jobs"] .jobs-hero { background:var(--identity-deep); color:var(--orbit-on-dark); }
+#orbit-page[data-orbit-page="jobs"] .jobs-hero { background:var(--orbit-space); color:var(--orbit-on-dark); }
 #orbit-page[data-orbit-page="jobs"] .jobs-hero p { color:var(--orbit-on-dark); }

@@ -22,7 +22,7 @@
       if (!row || row.schoolId !== schoolId || typeof row.id !== "string" || !row.id || ids.has(row.id) || !["upcoming", "active", "archived"].includes(row.status)) fail("INVALID_DATA");
       fields(row);
       if (names.has(norm(row.name))) fail("DUPLICATE_YEAR");
-      if (![row.createdAt, row.updatedAt].every((v) => typeof v === "string" && Number.isFinite(Date.parse(v)))) fail("INVALID_DATA");
+      if (![row.createdAt, row.updatedAt].every((v) => v === undefined || (typeof v === "string" && Number.isFinite(Date.parse(v))))) fail("INVALID_DATA");
       ids.add(row.id); names.add(norm(row.name));
     }
     const live = db.years.filter((r) => r.status !== "archived");
@@ -66,7 +66,7 @@
         if ((input.startDate !== old.startDate || input.endDate !== old.endDate) && confirmed !== true) fail("CONFIRMATION_REQUIRED");
       }
       const now = new Date().toISOString();
-      const row = { id: old?.id || crypto.randomUUID(), schoolId: db.schoolId, ...input, status: old?.status || "upcoming", createdAt: old?.createdAt || now, updatedAt: now };
+      const row = { id: old?.id || crypto.randomUUID(), schoolId: db.schoolId, ...input, status: old?.status || "upcoming", createdAt: old ? old.createdAt : now, updatedAt: now };
       db.years = old ? db.years.map((r) => r.id === id ? row : r) : [...db.years, row];
       return row;
     });

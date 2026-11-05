@@ -1,0 +1,24 @@
+[
+  {
+    "theme": "light",
+    "computed": {
+      "background": "radial-gradient(circle at 90% 20%, color(srgb 0.0509804 0.580392 0.533333 / 0.2667), rgba(0, 0, 0, 0) 35%) repeat scroll 0% 0% / auto padding-box border-box, rgb(9, 15, 39) radial-gradient(circle at 10% 75%, rgba(38, 71, 112, 0.2), rgba(0, 0, 0, 0) 28%) repeat scroll 0% 0% / auto padding-box border-box",
+      "color": "rgb(192, 201, 228)",
+      "border": "1px solid rgb(13, 148, 136)",
+      "pseudoBackground": "rgba(0, 0, 0, 0) radial-gradient(circle, rgb(160, 182, 236) 1px, rgba(0, 0, 0, 0) 1.5px) repeat scroll 0% 0% / 115px 95px padding-box border-box",
+      "pseudoOpacity": "0.2",
+      "font": "OrbitAuditEnglish, Arial, sans-serif"
+    }
+  },
+  {
+    "theme": "dark",
+    "computed": {
+      "background": "radial-gradient(circle at 90% 20%, color(srgb 0.482353 0.870588 0.827451 / 0.2667), rgba(0, 0, 0, 0) 35%) repeat scroll 0% 0% / auto padding-box border-box, rgb(9, 15, 39) radial-gradient(circle at 10% 75%, rgba(38, 71, 112, 0.2), rgba(0, 0, 0, 0) 28%) repeat scroll 0% 0% / auto padding-box border-box",
+      "color": "rgb(192, 201, 228)",
+      "border": "1px solid rgb(123, 222, 211)",
+      "pseudoBackground": "rgba(0, 0, 0, 0) radial-gradient(circle, rgb(160, 182, 236) 1px, rgba(0, 0, 0, 0) 1.5px) repeat scroll 0% 0% / 115px 95px padding-box border-box",
+      "pseudoOpacity": "0.2",
+      "font": "OrbitAuditEnglish, Arial, sans-serif"
+    }
+  }
+]

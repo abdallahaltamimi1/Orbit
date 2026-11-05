@@ -9,6 +9,21 @@
     if (typeof value !== "string" || !value.trim() || value.trim().length > max) fail("INVALID_FIELDS");
     return value.trim();
   };
+  const subjectCatalog=[
+    ['arabic','Languages','اللغات','Arabic Language','اللغة العربية',['Arabic','العربية']],
+    ['english','Languages','اللغات','English Language','اللغة الإنجليزية',['English','الإنجليزية','اللغة الانجليزية']],
+    ['islamic','Religious Education','التربية الدينية','Islamic Education','التربية الإسلامية',['التربية الاسلامية']],
+    ['science','Sciences','العلوم','General Science','العلوم العامة',['Science','العلوم','علوم']],
+    ['physics','Sciences','العلوم','Physics','الفيزياء',[]],['chemistry','Sciences','العلوم','Chemistry','الكيمياء',[]],
+    ['biology','Sciences','العلوم','Biology','الأحياء',['الاحياء','علم الأحياء']],['earth','Sciences','العلوم','Earth Science','علوم الأرض',['علوم الارض']],
+    ['social','Social Studies','الدراسات الاجتماعية','Social Studies','الدراسات الاجتماعية',[]],['history','Social Studies','الدراسات الاجتماعية','History','التاريخ',[]],
+    ['geography','Social Studies','الدراسات الاجتماعية','Geography','الجغرافيا',[]],['national','Social Studies','الدراسات الاجتماعية','National Education','التربية الوطنية',[]],
+    ['math','Mathematics','الرياضيات','Mathematics','الرياضيات',['Math','Maths']]
+  ].map(([id,categoryEn,categoryAr,en,ar,aliases])=>Object.freeze({id,categoryEn,categoryAr,en,ar,aliases:Object.freeze(aliases)}));
+  const subjectNorm=v=>norm(v).replace(/[\u064B-\u065F\u0670\u0640]/g,'').replace(/\s+/g,' ');
+  function subjectIdentity(value){const name=typeof value==='object'?value.name:value;const parts=String(name||'').split(/[·|/]/).map(subjectNorm);return subjectCatalog.find(c=>[c.en,c.ar,...c.aliases].some(a=>parts.includes(subjectNorm(a))))?.id||'custom:'+subjectNorm(name);}
+  function subjectLabel(row,lang=document.documentElement.lang){const c=subjectCatalog.find(c=>c.id===subjectIdentity(row));return c?(lang==='ar'?c.ar:c.en):row.name;}
+  function adoptSubjects(values,context){return commit(context,db=>{if(!Array.isArray(values)||!values.length)fail('INVALID_FIELDS');const seen=new Set(db.subjects.map(subjectIdentity)),now=new Date().toISOString(),added=[];for(const value of values){const c=subjectCatalog.find(c=>c.id===value.catalogId),name=c?c.en:text(value.name),identity=subjectIdentity(name);if(seen.has(identity))fail('DUPLICATE_SUBJECT');seen.add(identity);added.push({id:crypto.randomUUID(),schoolId:db.schoolId,name,status:'active',createdAt:now,updatedAt:now});}db.subjects.push(...added);return added;});}
   function school() {
     const user = window.OrbitAuth?.current();
     if (user?.role !== "school" || !user.email?.trim()) fail("ROLE_DENIED");
@@ -84,10 +99,21 @@
     return result;
   }
   const find = (db, kind, id) => db[kind].find((r) => r.id === id) || fail("NOT_FOUND");
+  function reviewedClassWritable(classId, schoolId) {
+    if (!classId || !window.OrbitSchoolYears) return;
+    const raw = localStorage.getItem("orbit.school.enrollments.demo.v1:" + encodeURIComponent(schoolId));
+    if (!raw) return;
+    let annual; try { annual = JSON.parse(raw); } catch { fail("INVALID_DATA"); }
+    if (!Array.isArray(annual.classYearLinks)) fail("INVALID_DATA");
+    const link = annual.classYearLinks.find(l => l.classId === classId);
+    if (link) { const year = OrbitSchoolYears.read().years.find(y=>y.id===link.academicYearId); if (!year || year.status === "archived") fail("ARCHIVED_RECORD"); }
+  }
   function save(kind, id, values, context) {
     if (!kinds.includes(kind)) fail("INVALID_FIELDS");
     return commit(context, (db) => {
       const old = id ? find(db, kind, id) : null;
+      if (kind === "classes" && old) reviewedClassWritable(old.id, db.schoolId);
+      if (kind === "allocations") { reviewedClassWritable(old?.classId, db.schoolId); reviewedClassWritable(values.classId, db.schoolId); }
       let fields;
       if (kind === "students" || kind === "teachers") {
         const code = kind === "students" ? "studentCode" : "teacherCode";
@@ -108,6 +134,7 @@
         if (db.classes.some((r) => r.id !== id && classKey(r) === classKey(fields))) fail("DUPLICATE_CLASS");
       } else if (kind === "subjects") {
         fields = { name: text(values.name), status: old?.status || "active" };
+        if(db.subjects.some(r=>r.id!==id&&subjectIdentity(r)===subjectIdentity(fields)))fail('DUPLICATE_SUBJECT');
       } else {
         const teacher = find(db, "teachers", values.teacherId);
         const subject = find(db, "subjects", values.subjectId);
@@ -116,7 +143,7 @@
         if (subject.status !== "active" || classroom.status !== "active") fail("ARCHIVED_RECORD");
         if (db.allocations.some((r) => r.id !== id && allocationKey(r) === allocationKey(fields))) fail("DUPLICATE_ALLOCATION");
       }
-      const row = { ...old, id: old?.id || crypto.randomUUID(), schoolId: db.schoolId, ...fields };
+      const row = { ...old, id: old?.id || crypto.randomUUID(), schoolId: db.schoolId, ...fields, createdAt: old ? old.createdAt : new Date().toISOString(), updatedAt: new Date().toISOString() };
       db[kind] = old ? db[kind].map((r) => r.id === id ? row : r) : [...db[kind], row];
       return row;
     });
@@ -125,13 +152,42 @@
     if (!["students", "teachers", "allocations"].includes(kind)) fail("INVALID_FIELDS");
     return commit(context, (db) => {
       const row = find(db, kind, id);
+      if (kind === "allocations") reviewedClassWritable(row.classId, db.schoolId);
+      if(kind==='teachers'){
+        if((db.allocationHistory||[]).some(h=>[...h.before,...h.after].some(a=>a.teacherId===id)))fail('LINKED_RECORD');
+        const contains=v=>v===id||(Array.isArray(v)?v.some(contains):v&&typeof v==='object'&&Object.values(v).some(contains));
+        for(const k of Object.keys(localStorage).filter(k=>k.startsWith('orbit.school.')&&k.endsWith(':'+encodeURIComponent(db.schoolId))&&k!==storageKey(db.schoolId))){let saved;try{saved=JSON.parse(localStorage.getItem(k));}catch{fail('INVALID_DATA');}if(contains(saved))fail('LINKED_RECORD');}
+        let accounts;try{accounts=JSON.parse(localStorage.getItem('orbit.recruitment.v1')||'{"accounts":[]}');}catch{fail('INVALID_DATA');}if(!Array.isArray(accounts.accounts))fail('INVALID_DATA');if(accounts.accounts.some(a=>a.schoolId===db.schoolId&&a.academicId===id))fail('LINKED_RECORD');
+        const raw=localStorage.getItem('orbit.school.teaching-assignments.demo.v1:'+encodeURIComponent(db.schoolId));
+        if(raw!==null){let teaching;try{teaching=JSON.parse(raw);}catch{fail('INVALID_DATA');}if(!teaching||!Array.isArray(teaching.assignments)||!Array.isArray(teaching.reviews))fail('INVALID_DATA');if([...teaching.assignments,...(teaching.removedAssignments||[])].some(a=>a.teacherId===id)||teaching.reviews.some(r=>r.teacherId===id))fail('LINKED_RECORD');}
+        const periodRaw=localStorage.getItem('orbit.school.period-timetables.demo.v1:'+encodeURIComponent(db.schoolId));
+        if(periodRaw!==null){let schedules;try{schedules=JSON.parse(periodRaw);}catch{fail('INVALID_DATA');}if(!schedules||!Array.isArray(schedules.tables))fail('INVALID_DATA');if(schedules.tables.some(t=>[...t.periods,...t.versions.flatMap(v=>v.periods),...t.history.flatMap(h=>h.periods)].some(p=>p.teacherId===id)))fail('LINKED_RECORD');}
+      }
+      if (kind === "students") { const annual = JSON.parse(localStorage.getItem("orbit.school.enrollments.demo.v1:" + encodeURIComponent(db.schoolId)) || '{"enrollments":[]}'); if (annual.enrollments.some(e => e.academicStudentId === id)) fail("LINKED_RECORD"); }
       if ((kind === "students" && row.classId) || (kind === "teachers" && db.allocations.some((r) => r.teacherId === id))) fail("LINKED_RECORD");
       db[kind] = db[kind].filter((r) => r.id !== id);
     });
   }
+  function saveLegacyTeaching(values,context,confirmed=false){return commit(context,db=>{
+    if(confirmed!==true)fail('CONFIRMATION_REQUIRED');const years=OrbitSchoolYears.read(),y=years.years.find(y=>y.id===values.academicYearId);
+    if(!y||y.status==='archived')fail('ARCHIVED_YEAR');if(OrbitSchoolYearContext.read().selectedYear?.id!==y.id)fail('STALE_DATA');
+    if(context.yearRevision!==undefined&&context.yearRevision!==years.revision)fail('STALE_DATA');
+    const annual=JSON.parse(localStorage.getItem('orbit.school.enrollments.demo.v1:'+encodeURIComponent(db.schoolId))||'{"classYearLinks":[]}');
+    if(!Array.isArray(annual.classYearLinks))fail('INVALID_DATA');
+    const {teacherId,subjectId,classIds,replaceIds=[]}=values;if(!Array.isArray(classIds)||new Set(classIds).size!==classIds.length||!Array.isArray(replaceIds)||new Set(replaceIds).size!==replaceIds.length||(!classIds.length&&!replaceIds.length))fail('INVALID_FIELDS');find(db,'teachers',teacherId);
+    const old=replaceIds.map(id=>db.allocations.find(a=>a.id===id&&a.teacherId===teacherId)||fail('NOT_FOUND'));
+    if(old.length&&!values.reason?.trim())fail('REASON_REQUIRED');
+    for(const a of old)if(!annual.classYearLinks.some(l=>l.classId===a.classId&&l.academicYearId===y.id))fail('YEAR_REVIEW_REQUIRED');
+    const planned=classIds.map(classId=>{const c=find(db,'classes',classId);if(!annual.classYearLinks.some(l=>l.classId===classId&&l.academicYearId===y.id))fail('YEAR_REVIEW_REQUIRED');if(c.status!=='active'||find(db,'subjects',subjectId).status!=='active')fail('ARCHIVED_RECORD');if(c.grade!==values.grade)fail('INVALID_SECTION');if(db.allocations.some(a=>!replaceIds.includes(a.id)&&a.classId===classId&&a.subjectId===subjectId))fail('DUPLICATE_ALLOCATION');return {...old.find(a=>a.classId===classId),id:old.find(a=>a.classId===classId)?.id||crypto.randomUUID(),schoolId:db.schoolId,teacherId,subjectId,classId};});
+    for(const a of old){const next=planned.find(r=>r.id===a.id);if(next&&next.subjectId===a.subjectId)continue;
+      const contains=v=>v===a.id||(Array.isArray(v)?v.some(contains):v&&typeof v==='object'&&(v.classId===a.classId&&v.subjectId===a.subjectId&&v.teacherId===a.teacherId||Object.values(v).some(contains)));
+      for(const k of Object.keys(localStorage).filter(k=>k.startsWith('orbit.school.')&&k.endsWith(':'+encodeURIComponent(db.schoolId))&&k!==storageKey(db.schoolId)).concat('orbit.channels.v2')){let saved;try{saved=JSON.parse(localStorage.getItem(k));}catch{fail('INVALID_DATA');}if(contains(saved))fail('ASSIGNMENT_IN_USE');}
+    }
+    db.allocationHistory||=[];db.allocationHistory.push({id:crypto.randomUUID(),academicYearId:y.id,before:old,after:planned,reason:values.reason||'',actorId:db.schoolId,createdAt:new Date().toISOString()});db.allocations=db.allocations.filter(a=>!replaceIds.includes(a.id));db.allocations.push(...planned);return {saved:planned.length};
+  });}
   function archive(kind, id, context) {
     if (!["classes", "subjects"].includes(kind)) fail("INVALID_FIELDS");
-    return commit(context, (db) => { find(db, kind, id).status = "archived"; });
+    return commit(context, (db) => { if (kind === "classes") reviewedClassWritable(id, db.schoolId); find(db, kind, id).status = "archived"; });
   }
-  window.OrbitSchoolAcademics = { read, save, remove, archive, storageKey, prefix };
+  window.OrbitSchoolAcademics = { read, save, remove, archive, saveLegacyTeaching, adoptSubjects, subjectCatalog:Object.freeze(subjectCatalog), subjectIdentity, subjectLabel, storageKey, prefix };
 })();

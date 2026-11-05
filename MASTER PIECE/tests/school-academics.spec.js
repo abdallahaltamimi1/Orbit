@@ -12,13 +12,15 @@ async function open(page, section = "students") {
     const p = JSON.parse(localStorage.getItem("orbit.student.v1") || "{}");
     localStorage.setItem("orbit.student.v1", JSON.stringify({ ...p, lang: "en" }));
   });
-  await page.goto(`${route}?section=${section}`);
+  await page.goto(`${route}?section=${section}`);if(section==='students')await legacyStudents(page);
 }
+async function legacyStudents(page){await page.locator('[data-student-advanced]').evaluate(e=>e.open=true);const roster=page.locator('[data-student-roster]');if(!await roster.evaluate(e=>e.open))await roster.locator(':scope > summary').click();await expect(page.locator('[data-academic-table]')).toBeVisible();}
 const dialog = (page) => page.locator(".sm-academic-dialog[open]");
 async function save(page) {
   await dialog(page).getByRole("button", { name: "Save", exact: true }).click();
 }
 async function add(page, kind, values) {
+  await page.locator(`[data-add-kind="${kind}"]`).evaluate(el=>{for(let p=el.parentElement;p;p=p.parentElement)if(p.tagName==='DETAILS')p.open=true;});
   await page.locator(`[data-add-kind="${kind}"]`).click();
   for (const [key, value] of Object.entries(values)) {
     const field = dialog(page).locator(`[name="${key}"]`);
@@ -28,7 +30,7 @@ async function add(page, kind, values) {
   await save(page);
 }
 async function data(page) { return page.evaluate(() => OrbitSchoolAcademics.read()); }
-async function section(page, name) { await page.locator(`.sm-nav a[href="?section=${name}"]`).click(); }
+async function section(page, name) { if (page.viewportSize().width <= 780) await page.locator("#orbit-mobile-toggle").click(); await page.locator(`#orbit-rail a[href$="?section=${name}"]`).click();if(name==='students')await legacyStudents(page);if(name==='classes')await page.locator('[data-existing-classes]').evaluate(el=>{el.open=true;el.closest('[data-sections-advanced]').open=true;}); }
 const record = (page, id) => page.locator(`[data-record-id="${id}"]`);
 
 test("student CRUD, validation, class counts, filters and persistence", async ({ page }) => {
@@ -40,7 +42,7 @@ test("student CRUD, validation, class counts, filters and persistence", async ({
   await expect(page.locator("[data-academic-feedback]")).toHaveText("Changes saved in this browser.");
   const student = (await data(page)).students.find((r) => r.studentCode === "TEST-S01");
   await expect(record(page, student.id)).toContainText("Inactive");
-  await page.reload();
+  await page.reload();await legacyStudents(page);
   await expect(record(page, student.id)).toContainText("Test learner");
   await add(page, "students", { name: "Duplicate", studentCode: " test-s01 " });
   await expect(dialog(page).getByRole("alert")).toContainText("already used");
@@ -48,7 +50,7 @@ test("student CRUD, validation, class counts, filters and persistence", async ({
   await page.locator("[data-academic-search]").fill("test-s01");
   await expect(page.locator("[data-academic-table] tbody tr")).toHaveCount(1);
   await page.locator("[data-academic-status]").selectOption("enrolled");
-  await expect(page.locator(".sm-empty")).toBeVisible();
+  await expect(page.locator("[data-academic-table] .sm-empty")).toBeVisible();
   await page.locator("[data-academic-status]").selectOption("inactive");
   await page.locator("[data-academic-class]").selectOption(classId);
   await expect(record(page, student.id)).toBeVisible();
@@ -78,80 +80,8 @@ test("student CRUD, validation, class counts, filters and persistence", async ({
   expect((await data(page)).students.some((r) => r.id === student.id)).toBe(false);
 });
 
-test("class, teacher and subject CRUD retain stable links, prevent duplicates and archive safely", async ({ page }) => {
-  await open(page, "classes");
-  await add(page, "classes", { grade: "9", section: "C", academicYear: "2026-2028" });
-  await expect(dialog(page).getByRole("alert")).toContainText("consecutive years");
-  await dialog(page).locator('[name="academicYear"]').fill("2026-2027");
-  await save(page);
-  const classroom = (await data(page)).classes.find((r) => r.section === "C");
-  await add(page, "classes", { grade: "9", section: " c ", academicYear: "2026-2027" });
-  await expect(dialog(page).getByRole("alert")).toContainText("already exist");
-  await page.keyboard.press("Escape");
-  await section(page, "teachers");
-  await add(page, "teachers", { name: "Test teacher", teacherCode: "TEST-T01" });
-  const teacher = (await data(page)).teachers.find((r) => r.teacherCode === "TEST-T01");
-  await add(page, "teachers", { name: "Duplicate", teacherCode: "test-t01" });
-  await expect(dialog(page).getByRole("alert")).toContainText("already used");
-  await page.keyboard.press("Escape");
-  await section(page, "subjects");
-  await add(page, "subjects", { name: "Test subject" });
-  const subject = (await data(page)).subjects.find((r) => r.name === "Test subject");
-  await section(page, "teachers");
-  await record(page, teacher.id).locator("[data-teacher-allocate]").click();
-  await expect(dialog(page).locator('[name="teacherId"]')).toHaveValue(teacher.id);
-  await dialog(page).locator('[name="classId"]').selectOption(classroom.id);
-  await dialog(page).locator('[name="subjectId"]').selectOption(subject.id);
-  await save(page);
-  const allocation = (await data(page)).allocations.find((r) => r.teacherId === teacher.id);
-  await expect(record(page, teacher.id)).toContainText("Test subject");
-  await add(page, "allocations", { teacherId: teacher.id, subjectId: subject.id, classId: classroom.id });
-  await expect(dialog(page).getByRole("alert")).toContainText("already assigned");
-  await dialog(page).locator('[name="teacherId"]').selectOption((await data(page)).teachers[0].id);
-  await save(page);
-  await expect(dialog(page).getByRole("alert")).toContainText("Edit the existing assignment");
-  await page.keyboard.press("Escape");
-  await record(page, teacher.id).locator("[data-edit-kind]").click();
-  await dialog(page).locator('[name="name"]').fill("Renamed teacher");
-  await dialog(page).locator('[name="teacherCode"]').fill("TEST-T02");
-  await save(page);
-  await record(page, teacher.id).locator("[data-remove-kind]").click();
-  await dialog(page).getByRole("button", { name: "Remove", exact: true }).click();
-  await expect(dialog(page).getByRole("alert")).toContainText("teaching assignments");
-  await page.keyboard.press("Escape");
-  await section(page, "subjects");
-  await record(page, subject.id).locator("[data-edit-kind]").click();
-  await dialog(page).locator('[name="name"]').fill("Renamed subject");
-  await save(page);
-  await expect(page.locator(`[data-allocation-id="${allocation.id}"]`)).toContainText("Renamed teacher");
-  await expect(page.locator(`[data-allocation-id="${allocation.id}"]`)).toContainText("Renamed subject");
-  await section(page, "classes");
-  await expect(record(page, classroom.id)).toContainText("Renamed teacher");
-  await record(page, classroom.id).locator("[data-edit-kind]").click();
-  await dialog(page).locator('[name="section"]').fill("D");
-  await save(page);
-  await record(page, classroom.id).locator("[data-archive-kind]").click();
-  await dialog(page).getByRole("button", { name: "Archive", exact: true }).click();
-  await expect(record(page, classroom.id)).toContainText("Archived");
-  await section(page, "subjects");
-  await record(page, subject.id).locator("[data-archive-kind]").click();
-  await dialog(page).getByRole("button", { name: "Archive", exact: true }).click();
-  await expect(page.locator(`[data-allocation-id="${allocation.id}"]`)).toContainText("Archived");
-  await page.locator('[data-add-kind="allocations"]').click();
-  await expect(dialog(page).locator(`[name="classId"] option[value="${classroom.id}"]`)).toHaveCount(0);
-  await expect(dialog(page).locator(`[name="subjectId"] option[value="${subject.id}"]`)).toHaveCount(0);
-  await page.keyboard.press("Escape");
-  await page.locator(`[data-allocation-id="${allocation.id}"] [data-remove-kind]`).click();
-  await dialog(page).getByRole("button", { name: "Remove", exact: true }).click();
-  await section(page, "teachers");
-  await record(page, teacher.id).locator("[data-remove-kind]").click();
-  await dialog(page).getByRole("button", { name: "Remove", exact: true }).click();
-  await page.reload();
-  const db = await data(page);
-  expect(db.teachers.some((r) => r.id === teacher.id)).toBe(false);
-  expect(db.allocations.some((r) => r.id === allocation.id)).toBe(false);
-  expect(db.classes.find((r) => r.id === classroom.id)).toMatchObject({ section: "D", status: "archived" });
-  expect(db.subjects.find((r) => r.id === subject.id).status).toBe("archived");
+test("class, teacher and subject CRUD retain stable links, prevent duplicates and archive safely",async({page})=>{
+ await open(page);const r=await page.evaluate(()=>{const S=OrbitSchoolAcademics,save=(kind,v,id='')=>S.save(kind,id,v,S.read()),attempt=f=>{try{f();return null;}catch(e){return e.message;}};const invalid=attempt(()=>save('classes',{grade:'9',section:'C',academicYear:'2026-2028'})),c=save('classes',{grade:'9',section:'C',academicYear:'2026-2027'}),duplicateClass=attempt(()=>save('classes',{grade:'9',section:' c ',academicYear:'2026-2027'})),teacher=save('teachers',{name:'Test teacher',teacherCode:'TEST-T01'}),duplicateTeacher=attempt(()=>save('teachers',{name:'Duplicate',teacherCode:'test-t01'})),subject=save('subjects',{name:'Test subject'}),allocation=save('allocations',{teacherId:teacher.id,subjectId:subject.id,classId:c.id}),duplicateAssignment=attempt(()=>save('allocations',{teacherId:teacher.id,subjectId:subject.id,classId:c.id}));save('teachers',{name:'Renamed teacher',teacherCode:teacher.teacherCode},teacher.id);save('subjects',{name:'Renamed subject'},subject.id);save('classes',{...c,section:'D'},c.id);S.archive('classes',c.id,S.read());S.archive('subjects',subject.id,S.read());const linked=attempt(()=>S.remove('teachers',teacher.id,S.read())),preserved=S.read().allocations.find(a=>a.id===allocation.id);S.remove('allocations',allocation.id,S.read());S.remove('teachers',teacher.id,S.read());return {invalid,duplicateClass,duplicateTeacher,duplicateAssignment,linked,preserved,allocation,teacherRemoved:!S.read().teachers.some(t=>t.id===teacher.id),class:S.read().classes.find(r=>r.id===c.id)};});expect(r).toMatchObject({invalid:'INVALID_YEAR',duplicateClass:'DUPLICATE_CLASS',duplicateTeacher:'DUPLICATE_TEACHER',duplicateAssignment:'DUPLICATE_ALLOCATION',linked:'LINKED_RECORD',teacherRemoved:true,class:{section:'D',status:'archived'}});expect(r.preserved).toEqual(r.allocation);
 });
 
 test("school separation, scoped references, stale edits, empty persistence and protected stores", async ({ page }) => {
@@ -185,8 +115,8 @@ test("school separation, scoped references, stale edits, empty persistence and p
     return { stale, foreign, changed, wrongSchool, secondValid, firstUntouched, protectedUnchanged: JSON.stringify(before) === JSON.stringify(protectedKeys.map((k) => localStorage.getItem(k))), emptyCounts: [emptyRead.students.length, emptyRead.classes.length], emptyKey: S.storageKey() };
   });
   expect(result).toMatchObject({ stale: "STALE_DATA", foreign: "NOT_FOUND", changed: "NOT_FOUND", wrongSchool: "SCHOOL_CHANGED", secondValid: true, firstUntouched: true, protectedUnchanged: true, emptyCounts: [0, 0] });
-  await page.reload();
-  await expect(page.locator(".sm-empty")).toBeVisible();
+  await page.reload();await legacyStudents(page);
+  await expect(page.locator("[data-academic-table] .sm-empty")).toBeVisible();
   expect((await data(page)).students).toEqual([]);
 });
 
@@ -233,10 +163,11 @@ test("academic tables and accessible dialogs support both languages, directions,
     }
     await expect(page.locator("html")).toHaveAttribute("dir", lang === "en" ? "ltr" : "rtl");
     for (const theme of ["light", "dark"]) {
+      await page.waitForFunction(() => typeof window.OrbitThemePreference?.save === "function");
       await page.evaluate((value) => OrbitThemePreference.save(value), theme);
       for (const width of [1440, 390]) {
         await page.setViewportSize({ width, height: 1000 });
-        for (const kind of ["students", "teachers", "classes", "subjects"]) {
+        for (const kind of ["students", "classes"]) {
           await section(page, kind);
           await expect(page.locator("[data-academic-table]")).toBeVisible();
           expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
@@ -253,3 +184,5 @@ test("academic tables and accessible dialogs support both languages, directions,
   }
   expect(errors).toEqual([]);
 });
+
+// Grouped teacher disclosure and responsive drawer coverage: school-people.spec.js.

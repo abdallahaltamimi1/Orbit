@@ -711,11 +711,11 @@ body.student-workspace #orbit-page #student-explore .student-discovery-tile:acti
   background: var(--orbit-soft);
 }
 body.student-workspace[data-theme="dark"] #orbit-page #student-explore .discovery-lessons {
-  background: linear-gradient(110deg,var(--orbit-surface),var(--orbit-green-900));
+  background: linear-gradient(110deg,var(--orbit-surface),var(--orbit-elevated));
 }
 body.student-workspace[data-theme="dark"] #orbit-page #student-explore .student-tile-icon {
-  background: var(--orbit-green-900);
-  color: var(--orbit-green-300);
+  background: var(--orbit-soft);
+  color: var(--orbit-accent);
 }
 body.student-workspace[data-theme="dark"] #orbit-page #student-explore .student-tile-arrow {
   color: var(--orbit-accent);

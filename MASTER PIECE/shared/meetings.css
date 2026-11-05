@@ -224,7 +224,7 @@ body[data-theme="dark"] .meeting-dialog {
   font: inherit;
 }
 .meeting-dialog::backdrop {
-  background: color-mix(in srgb, var(--orbit-green-925) 55.00%, transparent);
+  background: var(--orbit-overlay);
 }
 .meeting-dialog header {
   display: flex;

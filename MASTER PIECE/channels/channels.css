@@ -318,3 +318,22 @@ body[data-orbit-role="public"] #orbit-page .channel-card {
     animation: none;
   }
 }
+
+#new-channel [data-school-channel-sections] {
+  min-inline-size: 0;
+  border: 1px solid currentColor;
+  border-radius: .75rem;
+  padding: .5rem .75rem;
+}
+#new-channel [data-school-channel-sections] label {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  margin-block: .25rem;
+  overflow-wrap: anywhere;
+}
+#new-channel [data-school-channel-sections] input[type="checkbox"] {
+  flex: 0 0 auto;
+  inline-size: 1rem;
+  accent-color: #047857;
+}

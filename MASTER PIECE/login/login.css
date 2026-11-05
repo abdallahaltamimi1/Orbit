@@ -676,3 +676,10 @@ body {
     transition-duration: .01ms !important;
   }
 }
+
+.orbit-first-login { box-sizing: border-box; width: min(480px, calc(100% - 32px)); max-height: calc(100dvh - 32px); overflow: auto; padding: 24px; background: var(--orbit-surface, #fff); color: var(--orbit-ink, #064E3B); border: 1px solid var(--orbit-border); border-radius: 14px; }
+.orbit-first-login::backdrop { background: #0009; }
+.orbit-first-login label { display: block; margin-block: 16px; }
+.orbit-first-login input { box-sizing: border-box; width: 100%; padding: 12px; font: inherit; border: 1px solid var(--orbit-input-border); border-radius: 10px; background: var(--orbit-surface); color: var(--orbit-ink); }
+.orbit-first-login button { min-height: 44px; padding: 10px 16px; margin: 6px; border: 0; border-radius: 10px; background: #34D399; color: #064E3B; font: inherit; cursor: pointer; }
+.orbit-first-login :focus-visible { outline: 2px solid var(--orbit-focus); outline-offset: 3px; }

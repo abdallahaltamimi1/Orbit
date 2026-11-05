@@ -108,12 +108,13 @@ test("archived and removed references retain records, require repair and stay of
     try { S.save("timetable", "", lesson, S.snapshot("timetable").context); } catch (e) { blocked = e.message; }
     A.remove("allocations", allocation.id, A.read());
     const changed = S.snapshot("timetable").records[0].status;
-    A.remove("teachers", allocation.teacherId, A.read());
+    let teacherRemoval;
+    try { A.remove("teachers", allocation.teacherId, A.read()); } catch(e) { teacherRemoval=e.message; }
     const removed = S.snapshot("timetable").records[0].status;
     const dashboard = S.dashboard();
-    return { reassigned, subjectStatus, eventStatus, changed, removed, blocked, today: dashboard.today, upcoming: dashboard.upcoming, needsRepair: dashboard.needsRepair, preserved: raw === localStorage.getItem(S.storageKey("timetable")) && eventsRaw === localStorage.getItem(S.storageKey("events")) };
+    return { reassigned, subjectStatus, eventStatus, changed, removed, teacherRemoval, blocked, today: dashboard.today, upcoming: dashboard.upcoming, needsRepair: dashboard.needsRepair, preserved: raw === localStorage.getItem(S.storageKey("timetable")) && eventsRaw === localStorage.getItem(S.storageKey("events")) };
   });
-  expect(result).toMatchObject({ reassigned: "changed-allocation", subjectStatus: "archived-reference", eventStatus: "archived-reference", removed: "missing-reference", blocked: "INACTIVE_REFERENCE", today: [], upcoming: [], needsRepair: 2, preserved: true });
+  expect(result).toMatchObject({ reassigned: "changed-allocation", subjectStatus: "archived-reference", eventStatus: "archived-reference", removed: "archived-reference", teacherRemoval:"LINKED_RECORD", blocked: "INACTIVE_REFERENCE", today: [], upcoming: [], needsRepair: 2, preserved: true });
   await page.reload();
   await expect(page.locator(".sm-reference-warning")).toContainText("Needs repair");
   await expect(page.locator("[data-schedule-record]")).toHaveCount(1);
@@ -152,32 +153,12 @@ test("stale context, corrupt data, failed persistence and role changes never rep
   expect(await page.evaluate(() => localStorage.getItem(OrbitSchoolSchedule.storageKey("timetable")))).toBe("corrupt");
 });
 
-test("accessible timetable and event forms support CRUD, filtering, validation and real dashboard cards", async ({ page }) => {
+test("legacy schedules remain readable and event forms support CRUD, filtering, validation and dashboard cards", async ({ page }) => {
   const a = await setup(page);
-  await expect(page.locator(".sm-empty")).toContainText("No lessons match");
-  await page.locator("[data-schedule-add]").click();
-  const modal = page.locator(".sm-academic-dialog[open]");
-  await expect(modal).toHaveAccessibleName("Add lesson");
-  await modal.locator('[name="allocationId"]').selectOption(a.allocations[0].id);
-  await modal.locator('[name="day"]').selectOption(String(new Date().getDay()));
-  await modal.locator('[name="startTime"]').fill("08:17");
-  await modal.locator('[name="endTime"]').fill("08:10");
-  await modal.getByRole("button", { name: "Save", exact: true }).click();
-  await expect(modal.locator("[role=alert]")).toContainText("End time must");
-  await modal.locator('[name="endTime"]').fill("09:03");
-  await modal.locator('[name="room"]').fill("Studio 8");
-  await modal.getByRole("button", { name: "Save", exact: true }).click();
-  await expect(page.locator("[data-schedule-record]")).toHaveCount(1);
-  await page.locator('[data-schedule-filter="classId"]').selectOption(a.classes[1].id);
-  await expect(page.locator("[data-schedule-record]")).toHaveCount(0);
-  await page.locator('[data-schedule-filter="classId"]').selectOption(a.classes[0].id);
-  await page.locator('[data-schedule-filter="teacherId"]').selectOption(a.teachers[0].id);
-  await page.locator('[data-schedule-filter="day"]').selectOption(String(new Date().getDay()));
-  await expect(page.locator("[data-schedule-record]")).toHaveCount(1);
-  await page.locator("[data-schedule-edit]").click();
-  await modal.locator('[name="room"]').fill("Studio 9");
-  await modal.getByRole("button", { name: "Save", exact: true }).click();
-  await page.locator('.sm-nav a[href="?section=events"]').click();
+  await page.evaluate(()=>{const S=OrbitSchoolSchedule,v=S.snapshot('timetable'),r=S.save('timetable','',{...v.academic.allocations[0],day:new Date().getDay(),startTime:'08:17',endTime:'09:03',room:'Studio 8'},v.context);S.save('timetable',r.id,{...r,room:'Studio 9'},S.snapshot('timetable').context);});
+  await page.reload();await expect(page.locator('[data-legacy-period]')).toHaveCount(1);await expect(page.locator('input[type=time]')).toHaveCount(0);
+  const modal = page.locator('.sm-academic-dialog[open]');
+  await page.locator('#orbit-rail a[href$="?section=events"]').click();
   await page.locator("[data-schedule-add]").click();
   await modal.locator('[name="type"]').selectOption("announcement");
   await modal.locator('[name="title"]').fill("Project day <safe>");
@@ -194,10 +175,10 @@ test("accessible timetable and event forms support CRUD, filtering, validation a
   await modal.getByRole("button", { name: "Save", exact: true }).click();
   await page.reload();
   await expect(page.locator(".sm-event-list")).toContainText("Updated notice");
-  await page.locator('.sm-nav a[href="?section=overview"]').click();
+  await page.locator('#orbit-rail a[href$="?section=overview"]').click();
   await expect(page.locator("[data-overview-schedule]")).toContainText("Studio 9");
   await expect(page.locator("[data-overview-events]")).toContainText("Project day <safe>");
-  await expect(page.locator(".sm-totals")).toContainText("See monitoring");
+  await expect(page.locator(".ad-monitor a")).toContainText("Open monitoring");
   await expect(page.locator("#sm-content")).not.toContainText("Weekly class plan prepared");
   await page.locator('[data-overview-events] a').click();
   await page.locator("[data-schedule-delete]").click();
@@ -205,12 +186,11 @@ test("accessible timetable and event forms support CRUD, filtering, validation a
   await expect(page.locator("[data-schedule-record]")).toHaveCount(1);
   await page.locator("[data-schedule-delete]").click();
   await modal.getByRole("button", { name: "Delete", exact: true }).click();
-  await page.locator('.sm-nav a[href="?section=timetable"]').click();
-  await page.locator("[data-schedule-delete]").click();
-  await modal.getByRole("button", { name: "Delete", exact: true }).click();
+  await page.locator('#orbit-rail a[href$="?section=timetable"]').click();
+  await page.evaluate(()=>{const S=OrbitSchoolSchedule,v=S.snapshot('timetable');S.remove('timetable',v.records[0].id,v.context);});
   await page.reload();
   await expect(page.locator("[data-schedule-record]")).toHaveCount(0);
-  await page.locator('.sm-nav a[href="?section=overview"]').click();
+  await page.locator('#orbit-rail a[href$="?section=overview"]').click();
   await expect(page.locator("[data-overview-schedule]")).toContainText("No lessons scheduled today");
   await expect(page.locator("[data-overview-events]")).toContainText("No upcoming events");
 });
@@ -231,9 +211,11 @@ test("schedule pages and dialogs support both languages, directions, themes and 
       for (const width of [1440, 390]) {
         await page.setViewportSize({ width, height: 1000 });
         for (const section of ["timetable", "events"]) {
-          await page.locator(`.sm-nav a[href="?section=${section}"]`).click();
+          if (page.viewportSize().width <= 780) await page.locator("#orbit-mobile-toggle").click();
+          await page.locator(`#orbit-rail a[href$="?section=${section}"]`).click();
           expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
           await page.screenshot({ path: path.join(os.tmpdir(), `orbit-phase5-${section}-${lang}-${theme}-${width}.png`), fullPage: true });
+          if(section==='timetable'){await expect(page.locator('input[type=time]')).toHaveCount(0);continue;}
           await page.locator("[data-schedule-add]").click();
           const modal = page.locator(".sm-academic-dialog[open]");
           expect(await modal.evaluate((el) => el.contains(document.activeElement))).toBe(true);

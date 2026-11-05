@@ -56,7 +56,7 @@ for(const theme of ['light','dark'])test(`administrator identity honors saved ${
   for(const width of [1440,390]){
     await page.setViewportSize({width,height:950});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
     const colors=await page.locator('.admin-topbar').evaluate(e=>({background:getComputedStyle(e).backgroundColor,color:getComputedStyle(e).color}));
-    expect(colors.background).toBe(theme==='dark'?'rgb(12, 48, 39)':'rgb(255, 255, 255)');expect(contrast(colors.color,colors.background)).toBeGreaterThanOrEqual(4.5);
+    expect(colors.background).toBe(theme==='dark'?'rgb(25, 38, 62)':'rgb(255, 255, 255)');expect(contrast(colors.color,colors.background)).toBeGreaterThanOrEqual(4.5);
   }
   // Access remains guarded when the existing proof is removed.
   await page.evaluate(()=>sessionStorage.removeItem('orbit.admin.session'));await page.reload();await expect(page.locator('.admin-content')).toHaveCount(0);

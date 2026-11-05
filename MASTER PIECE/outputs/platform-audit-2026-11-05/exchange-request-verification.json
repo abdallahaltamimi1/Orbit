@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "fixture": "Isolated listing/accounts; session switches use OrbitAuth.startSession; request/consent/duplicate/owner views use actual UI.",
+  "verified": [
+    "non-owner cannot edit/delete",
+    "consented local request saved",
+    "reload retry does not duplicate",
+    "owner sees actual request message"
+  ],
+  "externalDelivery": false
+}

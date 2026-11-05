@@ -66,9 +66,10 @@ const samplePosts = [
 ];
 function posts(c) {
   const stored = O.db().posts;
-  return [...stored, ...samplePosts.filter((p) => !stored.some((x) => x.id === p.id))].filter(
+  return (window.OrbitRecordOrder?.newest([...stored, ...samplePosts.filter((p) => !stored.some((x) => x.id === p.id))]) || stored).filter(
     (p) =>
       p.channel === c.id &&
+      (O.user.role !== "student" || !OrbitAuth.managedChannel(c) || OrbitAuth.schoolChannelStudent(c, O.user.email, p)) &&
       p.moderationStatus !== "hidden" &&
       !O.get("orbit.deleted.posts", []).includes(p.id),
   );
@@ -696,7 +697,7 @@ function renderChannel() {
         ? '<img class="channel-cover-image" data-asset="' + esc(c.coverAsset) + '" alt="">'
         : "") +
       '<div><span class="channel-badge">' +
-      (c.private ? t("Private classroom", "صف خاص") : t("Public channel", "قناة عامة")) +
+      (OrbitAuth.managedChannel(c) ? t("School enrollment", "التسجيل المدرسي") : c.private ? t("Private classroom", "صف خاص") : t("Public channel", "قناة عامة")) +
       " · " +
       esc(subject(c)) +
       '</span><p class="summary-description">' +
@@ -715,7 +716,7 @@ function renderChannel() {
           t("Channel settings", "إعدادات القناة") +
           "</button>"
         : !O.user.email || O.user.role === "student"
-          ? '<button class="btn" id="membership">' +
+          && !OrbitAuth.managedChannel(c) ? '<button class="btn" id="membership">' +
             (admitted
               ? t("Leave channel", "مغادرة القناة")
               : c.private
@@ -788,7 +789,7 @@ function renderChannel() {
           "</dt><dd>" +
           (c.private ? t("By code", "بكود") : t("Public", "عام")) +
           "</dd></div></dl></section>" +
-          (owner && c.private
+          (owner && c.private && !OrbitAuth.managedChannel(c)
             ? '<section class="invite-panel"><span class="section-kicker">' +
               t("INVITE YOUR CLASS", "ادعُ طلابك") +
               "</span><h3>" +
@@ -1222,7 +1223,8 @@ function bind(c) {
       (b) =>
         (b.onclick = () => {
           try {
-            guard(c, true);
+            const live = guard(c, true);
+            if (OrbitAuth.managedChannel(live) && !posts(live).some(p => p.id === b.dataset[action])) return;
             const data = O.db(),
               key = action === "like" ? "likes" : "saved",
               id = b.dataset[action];
@@ -1241,7 +1243,8 @@ function bind(c) {
       (form.onsubmit = (e) => {
         e.preventDefault();
         try {
-          guard(c, true);
+          const live = guard(c, true);
+          if (OrbitAuth.managedChannel(live) && !posts(live).some(p => p.id === form.dataset.comment)) return;
           const text = new FormData(form).get("text").trim();
           if (!text) return;
           const data = O.db();

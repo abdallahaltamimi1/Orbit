@@ -70,6 +70,12 @@
       if (!["teachers", "students"].includes(role) || !s.academic[role].some((r) => r.id === academicId) || !s.candidates[role].includes(accountId)) fail("INVALID_MAPPING");
       if (s.db.mappings.some((m) => m.role === role && m.accountId === accountId && m.academicId !== academicId)) fail("DUPLICATE_MAPPING");
       const old = s.db.mappings.find((m) => m.role === role && m.academicId === academicId);
+      if(role==='teachers'){
+        if(old&&old.accountId!==accountId)fail('TEACHER_CONSENT_REQUIRED');
+        const reviews=JSON.parse(localStorage.getItem('orbit.school.teaching-assignments.demo.v1:'+encodeURIComponent(s.schoolId))||'{"reviews":[]}').reviews||[];
+        const accounts=JSON.parse(localStorage.getItem('orbit.recruitment.v1')||'{"accounts":[]}').accounts||[];
+        if(!old&&!reviews.some(r=>r.schoolId===s.schoolId&&r.teacherId===academicId&&r.accountId===accountId)&&!accounts.some(a=>a.email===accountId&&a.role==='teacher'&&a.schoolId===s.schoolId&&a.academicId===academicId))fail('TEACHER_CONSENT_REQUIRED');
+      }
       const row = { id: old?.id || crypto.randomUUID(), schoolId: s.schoolId, role, academicId, accountId };
       s.db.mappings = [...s.db.mappings.filter((m) => m.id !== old?.id), row];
     });
@@ -170,7 +176,8 @@
         assignments: assignments.length, rosterSize: roster.length, submitted, reviewed, missing, overdue,
       };
     });
-    const visible = rows.filter((r) => (!filters.classId || r.classId === filters.classId) && (!filters.subjectId || r.subjectId === filters.subjectId) && (!filters.teacherId || r.teacherId === filters.teacherId) && (!filters.channelId || r.channelId === filters.channelId));
+    const scope = window.OrbitSchoolYearScope?.read();
+    const visible = rows.filter((r) => (!scope || !r.classId || scope.matches(r.classId)) && (!filters.classId || r.classId === filters.classId) && (!filters.subjectId || r.subjectId === filters.subjectId) && (!filters.teacherId || r.teacherId === filters.teacherId) && (!filters.channelId || r.channelId === filters.channelId));
     const sum = (key) => visible.some((r) => r[key] === null) ? null : visible.reduce((n, r) => n + r[key], 0);
     return {
       context: context(s), rows: visible,
@@ -179,5 +186,18 @@
       mappings: s.db.mappings.map((m) => ({ ...m, recordName: s.academic[m.role].find((r) => r.id === m.academicId)?.name || "", missingRecord: !s.academic[m.role].some((r) => r.id === m.academicId) })),
     };
   }
-  window.OrbitSchoolMonitoring = { report, saveMapping, saveLink, remove, storageKey, prefix };
+  function activity(channelId) {
+    const s = sources(), row = report().rows.find(r=>r.channelId===channelId);
+    if (!row || row.status !== "linked") fail("CHANNEL_SCOPE");
+    const posts = s.education.posts.filter(p=>p.channel===channelId && p.type==="assignment" && !p.sample && p.moderationStatus!=="hidden" && (!p.schoolId||p.schoolId===s.schoolId));
+    const students = s.academic.students.filter(r=>r.classId===row.classId && r.status==="enrolled");
+    return posts.flatMap(p=>students.map(student=>{
+      const accountId = s.db.mappings.find(m=>m.role==="students"&&m.academicId===student.id)?.accountId;
+      if (!accountId || !s.membership[accountId]?.includes(channelId)) return {student:student.name,assignment:p.title||p.titleEn||p.titleAr||p.id,state:"needs-review",submittedAt:null,reviewedAt:null};
+      const record = s.submissions.submissions.filter(r=>r.channelId===channelId&&r.assignmentId===p.id&&r.studentId===accountId&&(!r.schoolId||r.schoolId===s.schoolId)).sort((a,b)=>b.revision-a.revision)[0];
+      if (row.progress === "unreliable-submissions" || (record && (!Number.isInteger(record.revision) || record.revision < 1 || !Number.isFinite(Date.parse(record.submittedAt))))) return {student:student.name,assignment:p.title||p.titleEn||p.titleAr||p.id,state:"needs-review",submittedAt:null,reviewedAt:null};
+      return {student:student.name,assignment:p.title||p.titleEn||p.titleAr||p.id,state:!record?"missing":record.review?.teacherId===row.ownerId?"reviewed":"submitted",submittedAt:record?.submittedAt||null,reviewedAt:record?.review?.teacherId===row.ownerId?record.review.reviewedAt:null};
+    }));
+  }
+  window.OrbitSchoolMonitoring = { activity, report, saveMapping, saveLink, remove, storageKey, prefix };
 })();

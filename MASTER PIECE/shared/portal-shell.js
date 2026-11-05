@@ -169,7 +169,7 @@
       p = OrbitProfiles.current() || {},
       name = p.name || u.name,
       avatar = p.photo || p.logo || "",
-      count = (A.get("orbit.recruitment.v1", {}).notifications || []).filter(
+      count = (["school","teacher"].includes(u.role) && window.OrbitRecruitment ? OrbitRecruitment.notifications() : A.get("orbit.recruitment.v1", {}).notifications || []).filter(
         (n) => n.recipient === u.email && !n.read,
       ).length;
     const links =
@@ -201,16 +201,16 @@
               ["school-management", "planner", "Academic Years", "السنوات الدراسية", "", "", "section=years"],
               ["school-management", "channel", "Classes & Sections", "الصفوف والشعب", "", "", "section=classes"],
               ["school-management", "profile", "Students", "الطلاب", "", "", "section=students"],
+              ["school-management", "profile", "Promotion Preview", "معاينة ترقية الطلاب", "", "", "section=students&view=promotions"],
               ["school-management", "profile", "Teachers", "المعلمون", "", "", "section=teachers"],
-              ["school-management", "planner", "Teacher Assignments", "توزيع التدريس", "teaching-assignments", "", "section=subjects"],
               ["school-management", "planner", "Timetables", "الجداول الدراسية", "", "", "section=timetable"],
               ["school-management", "learn", "Academic Monitoring", "المتابعة الأكاديمية", "", "", "section=monitoring"],
               ["school-management", "learn", "Subjects", "المواد", "", "", "section=subjects"],
               ["school-management", "bell", "Events & Announcements", "الفعاليات والإعلانات", "", "", "section=events"],
-              ["school-dashboard", "jobs", "Opportunities", "الفرص الوظيفية", "", "", "tab=jobs"],
-              ["school-dashboard", "jobs", "Applications", "طلبات التوظيف", "", "", "tab=applications"],
+              ["school-dashboard", "jobs", "Job Opportunities", "الفرص الوظيفية", "", "", "tab=jobs"],
+              ["school-dashboard", "jobs", "Job Applications", "طلبات التوظيف", "", "", "tab=applications"],
               ["school-dashboard", "profile", "Teacher Discovery", "اكتشاف المعلمين", "", "", "tab=discover"],
-              ["school-dashboard", "video", "Interviews / Meetings", "المقابلات والاجتماعات", "", "meeting", "tab=interviews"],
+              ["school-dashboard", "video", "Interviews", "المقابلات", "", "meeting", "tab=interviews"],
               ["account-profile", "profile", "School profile", "ملف المدرسة"],
               ["notifications", "bell", "Notifications", "الإشعارات"],
               ["settings", "settings", "Settings", "الإعدادات"],
@@ -237,6 +237,13 @@
       links.push([dashboard, "video", "Meetings", "الاجتماعات", "meetings-section", "meeting"]);
     }
     // Recruitment tabs also change in place (including the existing applicants shortcut).
+    if (["teacher", "student"].includes(u.role)) {
+      try {
+        if (window.OrbitSchoolPeriods?.memberTimetables().length) links.push([
+          u.role + "-dashboard", "planner", "My Timetable", "جدولي الدراسي", "school-timetable", "school-timetable"
+        ]);
+      } catch { /* Unverified data cannot add school navigation. */ }
+    }
     const schoolTab = u.role === "school" && location.pathname.includes("/school-dashboard/")
       ? location.hash === "#meetings-section" ? "interviews"
         : document.querySelector('[data-tab][aria-current="page"]')?.dataset.tab || "jobs"
@@ -253,6 +260,7 @@
       location.search,
       location.hash,
       schoolTab,
+      links.some(link => link[5] === "school-timetable"),
     ]);
     let rail = document.getElementById("orbit-rail");
     if (sig !== signature || !rail) {
@@ -292,7 +300,8 @@
               const requested = params.get("section");
               const section = ["overview", "years", "classes", "students", "teachers", "subjects", "timetable", "monitoring", "events"].includes(requested) ? requested : "overview";
               schoolActive = same && target.searchParams.get("section") === section &&
-                (l[4] ? location.hash === "#" + l[4] : location.hash !== "#teaching-assignments");
+                (section !== "students" || (target.searchParams.get("view") || "") === (params.get("view") === "promotions" ? "promotions" : "")) &&
+                (l[4] ? location.hash === "#" + l[4] : true);
             } else {
               schoolActive = same && target.searchParams.get("tab") === schoolTab;
             }
@@ -304,8 +313,8 @@
               (l[0] === "lessons" && /\/(lesson|practice)\//.test(location.pathname)) ||
               (l[0] === "lab" && location.pathname.includes("/car-lab/"));
           const heading =
-            u.role === "school"
-              ? { 0: t("Academic Management", "الإدارة الأكاديمية"), 10: t("Recruitment Management", "إدارة التوظيف"), 14: t("General", "عام") }[index] || ""
+            l[5] === "school-timetable" ? t("School workspace", "مساحة المدرسة") : u.role === "school"
+              ? { 0: t("Academic Management", "الإدارة الأكاديمية"), 14: t("General", "عام") }[index] || ""
               : u.role === "student"
               ? { 0: t("Learning", "تعلّم"), 5: t("Channels", "قنواتي"), 9: t("General", "عام") }[
                   index
@@ -313,11 +322,13 @@
               : index === 0
                 ? t("Your workspace", "مساحة عملك")
                 : "";
-          return `${heading ? `<p class="orbit-nav-heading">${heading}</p>` : ""}<a href="${esc(same && l[4] && !l[6] ? "#" + l[4] : destination)}" class="orbit-nav-link ${active ? "is-current" : ""}" ${active ? 'aria-current="page"' : ""} ${l[5] ? "data-" + l[5] + "-nav" : ""} aria-label="${t(l[2], l[3])}" title="${t(l[2], l[3])}">${svg(l[1])}<span>${t(l[2], l[3])}</span>${l[0] === "notifications" && count ? `<small class="notification-badge">${count}</small>` : ""}</a>`;
+          const groupStart=u.role==='school'&&l[6]==='tab=jobs' ? '<details class="orbit-recruitment-nav" '+(sessionStorage.getItem('orbit.recruitment-nav.open')!=='false'?'open':'')+'><summary>'+t('Recruitment Management','إدارة التوظيف')+'</summary>' : '';
+          return `${groupStart}${heading ? `<p class="orbit-nav-heading">${heading}</p>` : ""}<a href="${esc(same && l[4] && !l[6] ? "#" + l[4] : destination)}" class="orbit-nav-link ${active ? "is-current" : ""}" ${active ? 'aria-current="page"' : ""} ${l[5] ? "data-" + l[5] + "-nav" : ""} aria-label="${t(l[2], l[3])}" title="${t(l[2], l[3])}">${svg(l[1])}<span>${t(l[2], l[3])}</span>${l[0] === "notifications" && count ? `<small class="notification-badge">${count}</small>` : ""}</a>${u.role==='school'&&l[6]==='tab=interviews'?'</details>':''}`;
         })
         .join(
           "",
         )}</nav><div class="orbit-rail-foot"><button class="orbit-back" id="orbit-back">${svg("back")}${t("Back", "رجوع")}</button><button type="button" id="orbit-logout" title="${t("Log out", "تسجيل الخروج")}" aria-label="${t("Log out", "تسجيل الخروج")}">${svg("logout")}<span>${t("Log out", "تسجيل الخروج")}</span></button></div>`;
+      const recruitmentNav=rail.querySelector(".orbit-recruitment-nav");if(recruitmentNav)recruitmentNav.ontoggle=()=>sessionStorage.setItem("orbit.recruitment-nav.open",String(recruitmentNav.open));
       rail.querySelector("#orbit-back").onclick = back;
       rail.querySelector("#orbit-logout").onclick = () => {
         sessionStorage.removeItem(historyKey);

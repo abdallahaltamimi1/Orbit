@@ -109,14 +109,13 @@
   }
   const channels = () => {
       const stored = db().channels;
-      return [
-        ...seeds.map((c) => ({ ...c, ...stored.find((x) => x.id === c.id) })),
-        ...stored.filter((c) => !seeds.some((s) => s.id === c.id)),
-      ];
+      const result = [...seeds.map(c=>({...c,...stored.find(x=>x.id===c.id)})),...stored.filter(c=>!seeds.some(s=>s.id===c.id))];
+      return window.OrbitRecordOrder?.newest(result) || result;
     },
     label = (c) => (prefs.lang === "en" ? c.en || c.ar : c.ar || c.en),
     own = (c) => {
       const active = get("orbitUser", {});
+      if (window.OrbitAuth?.managedChannel(c)) return active.role === "teacher" && OrbitAuth.schoolChannelTeacher(c, active.email);
       return (
         !!c &&
         active.role === "teacher" &&
@@ -129,6 +128,8 @@
     const c = matches[0];
     if (matches.length !== 1 || !own(c))
       throw Error(t("Only the channel owner can publish here.", "النشر هنا متاح لمالك القناة فقط."));
+    if (previous && previous.channel !== channelId && (OrbitAuth.managedChannel(c) || channels().some(item => item.id === previous.channel && OrbitAuth.managedChannel(item))))
+      throw Error(t("School posts stay in their original channel.", "تبقى المنشورات المدرسية في قناتها الأصلية."));
     const schoolId = c.schoolId == null || c.schoolId === "" ? null : c.schoolId;
     const original = previous && previous.channel !== channelId
       ? channels().filter((item) => item.id === previous.channel) : null;
@@ -139,18 +140,26 @@
     return schoolId;
   }
   function memberships() {
-    return user.email ? get("orbit.memberships.v3", {})[user.email] || [] : [];
+    if (!user.email) return [];
+    const stored = get("orbit.memberships.v3", {})[user.email] || [];
+    if (user.role !== "student") return stored;
+    const available = channels();
+    return [...new Set([...stored.filter(id => {
+      const channel = available.find(c => c.id === id);
+      return !OrbitAuth.managedChannel(channel) && OrbitAuth.schoolStudentAccess(channel, user.email) !== false;
+    }), ...available.filter(c => OrbitAuth.schoolChannelStudent(c, user.email, null, true)).map(c => c.id)])];
   }
   function join(id, leave = false) {
     if (!OrbitSubscriptions.requireAccount("student")) return false;
     const channel = channels().find((c) => c.id === id);
-    if (!channel) return false;
+    if (!channel || OrbitAuth.managedChannel(channel)) return false;
+    if(!leave && OrbitAuth.schoolStudentAccess(channel,user.email,{requireMembership:false})===false)return false;
     if (!leave && !memberships().includes(id) && channel.private) {
       if (!OrbitSubscriptions.canJoinClass(id)) return false;
     }
     const m = get("orbit.memberships.v3", {}),
       key = user.email || "guest";
-    m[key] = leave ? memberships().filter((x) => x !== id) : [...new Set([...memberships(), id])];
+    m[key] = leave ? (m[key]||[]).filter((x) => x !== id) : [...new Set([...(m[key]||[]), id])];
     set("orbit.memberships.v3", m);
     const d = db();
     d.joined = m[key];
@@ -284,7 +293,22 @@
     const d = dialog(
       `<h2>${old ? t("Edit post", "تعديل المنشور") : t("Publish to your channel", "انشر في قناتك")}</h2><form id="publish-form"><label>${t("Channel", "القناة")}<select name="channel">${options.map((c) => `<option value="${esc(c.id)}" ${c.id === (old?.channel || channelId) ? "selected" : ""}>${esc(label(c))}</option>`).join("")}</select></label><label>${t("Type", "النوع")}<select name="type">${["lesson", "video", "assignment", "announcement", "discussion"].map((x) => `<option value="${x}" ${x === old?.type ? "selected" : ""}>${{ lesson: t("Lesson", "شرح"), video: t("Video", "فيديو"), assignment: t("Assignment", "واجب"), announcement: t("Announcement", "إعلان"), discussion: t("Discussion", "نقاش") }[x]}</option>`).join("")}</select></label><label>${t("Title", "العنوان")}<input name="title" required maxlength="150" value="${esc(old?.title || "")}"></label><label>${t("Instructions / explanation", "التعليمات / الشرح")}<textarea name="body" required maxlength="3000">${esc(old?.body || "")}</textarea></label><label>${t("Topic for suggested lessons", "موضوع لربط الفيديو بالدروس")}<select name="topic"><option value="">${t("General", "عام")}</option>${["forces", "energy", "waves", "circuits"].map((x) => `<option ${old?.topic === x ? "selected" : ""}>${x}</option>`).join("")}</select></label><label>${t("Upload video, PDF or images", "ارفع فيديو أو PDF أو صورًا")}<input name="files" type="file" multiple accept="video/mp4,video/webm,application/pdf,image/png,image/jpeg,image/webp"></label><p class="muted">${t("Video: 3 minutes / 50 MB. PDF / images: 10 MB each. Stored in this browser.", "الفيديو: 3 دقائق / 50 MB. PDF والصورة: 10 MB للملف. تُحفظ في هذا المتصفح.")}</p>${old && (old.videoAsset || (old.attachments || []).length) ? `<label><input type="checkbox" name="removeAttachments"> ${t("Remove existing attachments", "إزالة المرفقات الحالية")}</label>` : ""}<label>${t("Optional direct HTTPS video link", "رابط فيديو HTTPS مباشر اختياري")}<input name="url" type="url" value="${esc(old?.url || "")}"></label><label>${t("Due date (assignment)", "موعد تسليم الواجب")}<input name="dueDate" type="date" value="${esc(old?.dueDate || "")}"></label><p id="publish-error" role="status"></p><button class="btn">${t("Save post", "حفظ المنشور")}</button></form>`,
     );
-    d.querySelector("form").onsubmit = async (e) => {
+    const publishForm = d.querySelector("form");
+    const targeting = document.createElement("fieldset");
+    publishForm.elements.channel.closest("label").after(targeting);
+    function renderTargeting() {
+      const channel = options.find(item => item.id === publishForm.elements.channel.value);
+      targeting.hidden = !OrbitAuth.managedChannel(channel);
+      if (targeting.hidden) { targeting.replaceChildren(); return; }
+      const assignments = OrbitAuth.schoolChannelOptions(channel.schoolId);
+      targeting.innerHTML = `<legend>${t("Target sections", "الشعب المستهدفة")}</legend>${channel.sectionIds.map(id => {
+        const assignment = assignments.find(row => row.sectionId === id && row.subjectId === channel.subjectId);
+        return `<label><input type="checkbox" name="schoolSection" value="${esc(id)}" ${!old?.sectionIds || old.sectionIds.includes(id) ? "checked" : ""}>${esc(assignment?.gradeName)} · ${esc(assignment?.sectionName)}</label>`;
+      }).join("")}`;
+    }
+    publishForm.elements.channel.addEventListener("change", renderTargeting);
+    renderTargeting();
+    publishForm.onsubmit = async (e) => {
       e.preventDefault();
       const f = new FormData(e.target),
         c = channels().find((c) => c.id === f.get("channel"));
@@ -335,10 +359,14 @@
         }
         if (f.get("type") === "video" && !videoAsset && !url)
           throw Error(t("Upload a video or add its URL", "ارفع فيديو أو أضف رابطه"));
+        const targetSections = OrbitAuth.managedChannel(c) ? [...new Set(f.getAll("schoolSection"))] : null;
+        if (targetSections && old?.sectionIds && get("orbit.assignments.v1", {}).submissions?.some(row => row.assignmentId === old.id) && old.sectionIds.some(id => !targetSections.includes(id))) throw Error(t("Keep sections with existing submissions.", "احتفظ بالشعب التي لها تسليمات."));
+        if (targetSections && (!targetSections.length || targetSections.some(id => !c.sectionIds.includes(id)))) throw Error(t("Choose authorized sections.", "اختر الشعب المصرح بها."));
         const post = {
           ...old,
           id: old?.id || "post-" + crypto.randomUUID(),
           channel: c.id,
+          ...(targetSections ? { sectionIds: targetSections, academicYearId: c.academicYearId } : {}),
           type: f.get("type"),
           title: f.get("title").trim(),
           body: f.get("body").trim(),

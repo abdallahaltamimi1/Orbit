@@ -12,7 +12,7 @@ let tab = params.get("tab") || "jobs",
   experienceFilter = "",
   gradeFilter = "",
   qualificationFilter = "",
-  statusFilter = "",
+  statusFilter = params.get("status") || "",
   matchesOnly = false;
 const subjectNames = {
     physics: ["Physics", "الفيزياء"],
@@ -252,7 +252,7 @@ async function imageAsset(file) {
   await O.media(key, file);
   return key;
 }
-let hubSearch = "";
+let hubSearch = params.get("query") || "";
 function hubDate(value) {
   const d = new Date(value);
   return value && !Number.isNaN(+d)
@@ -283,35 +283,20 @@ function schoolDashboard() {
     }</tbody></table></div>`;
   }
   if (tab === "applications") {
-    const filtered = apps.filter(
-      (a) =>
-        (!selectedJob || a.jobId === selectedJob) &&
-        (!statusFilter || a.status === statusFilter) &&
-        R.norm(
-          (a.profile?.name || "") + " " + (jobs.find((j) => j.id === a.jobId)?.title || ""),
-        ).includes(R.norm(hubSearch)),
-    );
-    content = `<form id="hub-search" class="filters"><label>${t("Teacher or opportunity", "المعلم أو الفرصة")}<input name="query" type="search" value="${esc(hubSearch)}"></label><label>${t("Opportunity", "الفرصة")}<select id="application-job"><option value="">${t("All opportunities", "كل الفرص")}</option>${jobs.map((j) => `<option value="${esc(j.id)}" ${selectedJob === j.id ? "selected" : ""}>${esc(j.title)}</option>`).join("")}</select></label><label>${t("Application status", "حالة الطلب")}<select id="application-status">${statusOptions(statusFilter)}</select></label><button class="btn soft">${t("Search", "بحث")}</button></form><div class="hub-applicants">${
+    const filtered = apps;
+    content = `<form id="hub-search" class="filters recruitment-application-toolbar"><label>${t("Teacher or opportunity", "المعلم أو الفرصة")}<input name="query" type="search" value="${esc(hubSearch)}"></label><label>${t("Opportunity", "الفرصة")}<select id="application-job"><option value="">${t("All opportunities", "كل الفرص")}</option>${jobs.map((j) => `<option value="${esc(j.id)}" ${selectedJob === j.id ? "selected" : ""}>${esc(j.title)}</option>`).join("")}</select></label><label>${t("Application status", "حالة الطلب")}<select id="application-status">${statusOptions(statusFilter)}</select></label><button type="button" class="btn soft" data-reset-app-filters hidden>${t("Reset Filters", "إعادة ضبط الفلاتر")}</button></form><p class="recruitment-result-count" role="status" data-app-result-count></p><div class="hub-applicants">${
       filtered
         .map((a) => {
           const p = a.profile || a.submittedProfile || {},
             j = jobs.find((j) => j.id === a.jobId);
-          return `<article class="hub-applicant"><div class="teacher-mini">${photo(p)}<div><h2>${esc(p.name || t("Teacher", "معلم"))}</h2><p>${esc(subject(p.subject || ""))} · ${p.experience ?? t("Not stated", "غير مذكورة")} ${t("years", "سنوات")}</p></div></div><div><strong>${esc(j?.title || t("Opportunity unavailable", "الفرصة غير متاحة"))}</strong><small>${hubDate(a.createdAt)}</small></div><span class="pill ${a.status}">${state(a.status)}</span><a class="hub-link" href="${profileURL(a.id, a.teacherId)}">${t("View profile", "عرض الملف")}</a><button class="btn soft" data-review="${esc(a.id)}">${t("Review application", "مراجعة الطلب")}</button></article>`;
+          return `<article class="hub-applicant" data-app-record="${esc(a.id)}"><div class="teacher-mini">${photo(p)}<div><h2>${esc(p.name || t("Teacher", "معلم"))}</h2><p>${esc(subject(p.subject || ""))} · ${p.experience ?? t("Not stated", "غير مذكورة")} ${t("years", "سنوات")}</p></div></div><div><strong>${esc(j?.title || t("Opportunity unavailable", "الفرصة غير متاحة"))}</strong><small>${hubDate(a.createdAt)}</small></div><span class="pill ${a.status}">${state(a.status)}</span><a class="hub-link" href="${profileURL(a.id, a.teacherId)}">${t("View profile", "عرض الملف")}</a><button class="btn soft" data-review="${esc(a.id)}">${t("Review application", "مراجعة الطلب")}</button></article>`;
         })
         .join("") ||
       `<p class="empty">${t("No matching applications. Try another search or filter.", "لا توجد طلبات مطابقة. جرّب بحثًا أو فلترًا آخر.")}</p>`
-    }</div>`;
+    }</div><p class="empty" data-app-empty hidden>${t("No matching applications. Try another search or filter.","لا توجد طلبات مطابقة. جرّب بحثًا أو فلترًا آخر.")}</p>`;
   }
   if (tab === "interviews") {
-    const interviews = M.recruitmentInterviews(),
-      meetingApplications = new Set(interviews.map((meeting) => meeting.applicationId)),
-      legacyInterviews = R.interviews()
-        .filter((interview) => !meetingApplications.has(interview.applicationId))
-        .map((interview) => ({ ...interview, legacy: true })),
-      allInterviews = [...interviews, ...legacyInterviews].sort(
-        (a, b) => Date.parse(a.startAt) - Date.parse(b.startAt),
-      );
-    content = `<section id="interviews"><header class="hub-heading"><h2>${t("Interviews", "المقابلات")}</h2><a class="btn" href="#meetings-section">${t("Open Meetings", "فتح الاجتماعات")}</a></header><p>${t("Interview details appear in the selected teacher’s Meetings list on this browser. Email invitations are not sent. Times use this device’s time zone.", "تظهر تفاصيل المقابلة في قائمة اجتماعات المعلم المحدد على هذا المتصفح. لا تُرسل دعوات عبر البريد الإلكتروني. الأوقات حسب المنطقة الزمنية لهذا الجهاز.")}</p>${allInterviews.map((x) => { const start = Date.parse(x.startAt), duration = x.legacy ? x.duration : Math.round((Date.parse(x.endAt) - start) / 60000), teacherName = x.teacherName || R.teacher(x.teacherId).name, jobTitle = x.channelName || jobs.find((j) => j.id === x.jobId)?.title || "", url = x.externalUrl || x.url || "", statusLabel = x.status === "cancelled" ? t("Cancelled", "ملغاة") : Date.parse(x.endAt) < Date.now() ? t("Past appointment", "موعد سابق") : t("Scheduled", "مجدولة"); return `<article class="hub-applicant"><div><strong>${esc(teacherName)}</strong><small>${esc(jobTitle)}</small></div><div><time>${Number.isFinite(start) ? esc(new Date(start).toLocaleString(O.prefs.lang === "en" ? "en-GB" : "ar-JO")) : t("Not available", "غير متاح")}</time><small>${duration} ${t("minutes", "دقيقة")}</small></div><span>${statusLabel}${x.legacy ? ` · ${t("Historical record", "سجل سابق")}` : ""}</span><div>${x.type ? `${x.type === "interview-in-person" ? t("In-person", "حضوري") : t("Online", "عن بُعد")} · ` : ""}${esc(x.location || "")}${x.status === "scheduled" && url ? `<a class="hub-link" href="${esc(url)}" target="_blank" rel="noopener noreferrer">${t("Open meeting link", "فتح رابط المقابلة")} ↗</a>` : ""}</div>${x.status === "scheduled" ? `<button class="btn soft" data-cancel-interview="${esc(x.id)}" data-interview-source="${x.legacy ? "legacy" : "meetings"}">${t("Cancel", "إلغاء")}</button>` : ""}</article>`; }).join("") || `<p class="empty">${t("No interviews scheduled. Select an applicant to create an appointment.", "لا توجد مقابلات مجدولة. اختر متقدمًا وحدد موعده.")}</p>`}</section>`;
+    content = `<section id="interviews" data-recruitment-interviews></section>`;
   }
   if (tab === "discover") {
     const teachers = R.discover(selectedJob).filter(
@@ -326,8 +311,8 @@ function schoolDashboard() {
   }
   document.body.classList.add("recruitment-hub");
   O.shell(
-    t("Recruitment Hub", "مركز التوظيف"),
-    `<header class="hub-heading"><p>${t("Publish opportunities, review applications and find your next teacher.", "انشر فرصك، راجع الطلبات، واعثر على المعلم المناسب لمدرستك.")}</p><button class="btn" id="new-job">${t("Create opportunity", "إنشاء فرصة تدريس")}</button></header><div class="recruit-stats"><article><strong>${jobs.filter((j) => j.status === "published").length}</strong><span>${t("Open opportunities", "فرص مفتوحة")}</span></article><article><strong>${apps.filter((a) => a.status === "pending").length}</strong><span>${t("Awaiting review", "بانتظار المراجعة")}</span></article><article><strong>${(M?.visible() || []).filter((meeting) => meeting.kind === "recruitment-interview" && meeting.status === "scheduled" && Date.parse(meeting.startAt) > Date.now()).length}</strong><span>${t("Upcoming interviews", "المقابلات القادمة")}</span></article></div><nav class="recruit-tabs" aria-label="${t("Recruitment sections", "أقسام التوظيف")}">${[
+    ({jobs:t("Job Opportunities","الفرص الوظيفية"),applications:t("Job Applications","طلبات التوظيف"),discover:t("Teacher Discovery","اكتشاف المعلمين"),interviews:t("Interviews","المقابلات")})[tab],
+    `<header class="hub-heading"><p>${t("Publish opportunities, review applications and find your next teacher.", "انشر فرصك، راجع الطلبات، واعثر على المعلم المناسب لمدرستك.")}</p>${tab==='jobs'?`<button class="btn" id="new-job">${t("Create opportunity", "إنشاء فرصة تدريس")}</button>`:''}</header><div class="recruit-stats"><article><strong>${jobs.filter((j) => j.status === "published").length}</strong><span>${t("Open opportunities", "فرص مفتوحة")}</span></article><article><strong>${apps.filter((a) => a.status === "pending").length}</strong><span>${t("Awaiting review", "بانتظار المراجعة")}</span></article><article><strong>${(M?.visible() || []).filter((meeting) => meeting.kind === "recruitment-interview" && meeting.status === "scheduled" && Date.parse(meeting.startAt) > Date.now()).length}</strong><span>${t("Upcoming interviews", "المقابلات القادمة")}</span></article></div><nav class="recruit-tabs" aria-label="${t("Recruitment sections", "أقسام التوظيف")}">${[
       ["jobs", t("Opportunities", "الفرص")],
       ["applications", t("Applicants", "المتقدمون")],
       ["discover", t("Discover teachers", "اكتشاف المعلمين")],
@@ -348,42 +333,12 @@ function schoolDashboard() {
           schoolDashboard();
         })),
   );
-  document.getElementById("hub-search")?.addEventListener("submit", (e) => {
-    e.preventDefault();
-    hubSearch = new FormData(e.target).get("query") || "";
-    schoolDashboard();
-  });
-  document.querySelectorAll("[data-review]").forEach(
-    (b) =>
-      (b.onclick = () => {
-        const a = apps.find((a) => a.id === b.dataset.review);
-        const d = O.dialog(
-          `<h2>${t("Review application", "مراجعة الطلب")}</h2><p>${esc(a.profile?.name || "")}</p><p>${esc(a.message || t("No cover message supplied.", "لم تُرفق رسالة تقديم."))}</p><p>${esc(a.profile?.qualification || "")}</p><a class="hub-link" href="${profileURL(a.id, a.teacherId)}">${t("Professional profile", "الملف المهني")}</a><label>${t("Application status", "حالة الطلب")}<select id="hub-review-status">${statusOptions(a.status, false, true)}</select></label><p role="status" class="error"></p><button class="btn" id="hub-save-status" ${a.status === "withdrawn" ? "disabled" : ""}>${t("Save status", "حفظ الحالة")}</button><button class="btn soft" id="schedule-from-review" ${!["pending", "interview_scheduled"].includes(a.status) ? "disabled" : ""}>${a.status === "interview_scheduled" ? t("Edit / reschedule interview", "تعديل / إعادة جدولة المقابلة") : t("Schedule interview", "جدولة مقابلة")}</button>`,
-        );
-        d.querySelector('#hub-review-status option[value="withdrawn"]')?.remove();
-        d.querySelector("#schedule-from-review").onclick = () => {
-          d.close();
-          try {
-            window.OrbitMeetingsUI.openInterview(a.id);
-          } catch (error) {
-            report(error);
-          }
-        };
-        d.querySelector("#hub-save-status").onclick = () => {
-          try {
-            R.updateApplication(a.id, d.querySelector("select").value);
-            d.close();
-            schoolDashboard();
-            document.getElementById("recruit-errors").textContent = t(
-              "Application status saved.",
-              "تم حفظ حالة الطلب.",
-            );
-          } catch (e) {
-            report(e, d.querySelector(".error"));
-          }
-        };
-      }),
-  );
+
+  document.querySelectorAll('.hub-table').forEach(table=>{const labels=[...table.querySelectorAll('thead th')].map(x=>x.textContent);table.querySelectorAll('tbody tr').forEach(row=>[...row.children].forEach((cell,i)=>cell.dataset.label=labels[i]||''));});
+  function filterApplications(){const f=document.getElementById('hub-search');if(!f)return;hubSearch=f.querySelector('[name=query]').value;selectedJob=f.querySelector('#application-job').value;statusFilter=f.querySelector('#application-status').value;let count=0;document.querySelectorAll('[data-app-record]').forEach(row=>{const a=apps.find(x=>x.id===row.dataset.appRecord),title=jobs.find(j=>j.id===a.jobId)?.title||'';const match=(!selectedJob||a.jobId===selectedJob)&&(!statusFilter||a.status===statusFilter)&&R.norm((a.profile?.name||'')+' '+title).includes(R.norm(hubSearch));row.hidden=!match;if(match)count++;});f.querySelector('[data-reset-app-filters]').hidden=!(hubSearch||selectedJob||statusFilter);document.querySelector('[data-app-result-count]').textContent=count+' / '+apps.length+' '+t('applications','طلبات');const empty=document.querySelector('[data-app-empty]');if(empty)empty.hidden=count>0||!apps.length;const url=new URL(location.href);for(const [key,value]of [['job',selectedJob],['status',statusFilter],['query',hubSearch]])value?url.searchParams.set(key,value):url.searchParams.delete(key);history.replaceState(null,'',url);}
+  const applicationToolbar=document.getElementById('hub-search');if(applicationToolbar){applicationToolbar.onsubmit=ev=>ev.preventDefault();applicationToolbar.querySelector('[name=query]').oninput=filterApplications;applicationToolbar.querySelector('[data-reset-app-filters]').onclick=()=>{applicationToolbar.querySelector('[name=query]').value='';applicationToolbar.querySelector('#application-job').value='';applicationToolbar.querySelector('#application-status').value='';filterApplications();applicationToolbar.querySelector('[name=query]').focus();};filterApplications();}
+  OrbitRecruitmentWorkspace.mount(document.querySelector('[data-recruitment-interviews]'),schoolDashboard);
+  document.querySelectorAll('[data-review]').forEach(b=>b.onclick=()=>OrbitRecruitmentWorkspace.review(b.dataset.review,b,schoolDashboard));
   document.querySelectorAll("[data-tab]").forEach(
     (b) =>
       (b.onclick = () => {
@@ -427,11 +382,11 @@ function schoolDashboard() {
   );
   document.getElementById("application-job")?.addEventListener("change", (e) => {
     selectedJob = e.target.value;
-    schoolDashboard();
+    filterApplications();
   });
   document.getElementById("application-status")?.addEventListener("change", (e) => {
     statusFilter = e.target.value;
-    schoolDashboard();
+    filterApplications();
   });
   document.querySelectorAll("[data-app-status]").forEach(
     (b) =>

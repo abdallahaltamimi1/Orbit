@@ -154,7 +154,7 @@
     const db = A.get("orbit.channels.v2", {}),
       joined = A.get("orbit.memberships.v3", {})[A.current().email] || [],
       channels = (db.channels || []).filter(
-        (c) => !c.deleted && (!c.private || joined.includes(c.id)),
+        (c) => !c.deleted && (A.managedChannel(c) ? A.schoolChannelStudent(c, A.current().email, null, true) : (!c.private || joined.includes(c.id))),
       );
     const subjects = new Map([
       [
@@ -180,7 +180,7 @@
       if (
         !c.subject ||
         subjects.has(c.subject) ||
-        !(db.posts || []).some((p) => p.channel === c.id && p.type === "lesson" && !p.deleted)
+        !(db.posts || []).some((p) => p.channel === c.id && p.type === "lesson" && !p.deleted && p.moderationStatus !== "hidden" && (!A.managedChannel(c) || A.schoolChannelStudent(c, A.current().email, p)))
       )
         continue;
       const n = names[c.subject] || [c.subject, c.subject];

@@ -77,8 +77,15 @@
   function files(id, record, items = record.attachments || []) {
     return `<div class="assignment-files">${items.map((file) => `<button class="assignment-button" type="button" data-assignment-file="${esc(file.key)}" data-assignment-id="${esc(id)}" data-student-id="${esc(record.studentId)}" data-filename="${esc(file.name)}"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M5 17v4h14v-4"/></svg><bdi>${esc(file.name)}</bdi></button>`).join("")}</div>`;
   }
-  const enrolledStudents = (post) =>
-    Object.entries(OrbitAuth.get("orbit.memberships.v3", {}))
+  const enrolledStudents = (post) => {
+    const channel = ORBIT.channels().find(c => c.id === post.channel);
+    if (OrbitAuth.managedChannel(channel)) {
+      const accounts = OrbitAuth.get("orbit.recruitment.v1", {}).accounts || [];
+      return [...new Set([...accounts.map(account => account.email), "student@orbit.com"])]
+        .filter(email => OrbitAuth.schoolChannelStudent(channel, email, post))
+        .map(id => ({ id, profile: OrbitProfiles.read(id, "student") }));
+    }
+    return Object.entries(OrbitAuth.get("orbit.memberships.v3", {}))
       .filter(
         ([email, ids]) =>
           email !== "guest" &&
@@ -93,6 +100,7 @@
           document.documentElement.lang,
         ),
       );
+  };
   function inline(post) {
     const records = A.records(post.id);
     let content;
@@ -103,7 +111,7 @@
     } else {
       const record = records[0],
         state = A.state(record);
-      content = `<div class="assignment-inline"><span class="assignment-status ${state}">${statuses()[state]}</span>${record ? `<p class="assignment-note">${t("Last submitted:", "آخر تسليم:")} ${esc(date(record.submittedAt))}${record.late ? " · " + t("Late", "متأخر") : ""}</p>` : ""}${result(record)}<div class="assignment-actions"><button class="assignment-button primary" data-assignment-submit="${esc(post.id)}">${record ? t("Edit and resubmit", "تعديل وإعادة التسليم") : t("Submit answer", "سلّم إجابتك")}</button>${record ? `<button class="assignment-button" data-assignment-own="${esc(post.id)}">${t("View my answer", "عرض إجابتي")}</button>` : ""}</div></div>`;
+      content = `<div class="assignment-inline"><span class="assignment-status ${state}">${statuses()[state]}</span>${record ? `<p class="assignment-note">${t("Last submitted:", "آخر تسليم:")} ${esc(date(record.submittedAt))}${record.late ? " · " + t("Late", "متأخر") : ""}</p>` : ""}${result(record)}<div class="assignment-actions">${A.canWrite(post) ? `<button class="assignment-button primary" data-assignment-submit="${esc(post.id)}">${record ? t("Edit and resubmit", "تعديل وإعادة التسليم") : t("Submit answer", "سلّم إجابتك")}</button>` : ""}${record ? `<button class="assignment-button" data-assignment-own="${esc(post.id)}">${t("View my answer", "عرض إجابتي")}</button>` : ""}</div></div>`;
     }
     const notifications = A.notifications().filter((note) => note.assignmentId === post.id);
     return content + notifications.map(
@@ -211,6 +219,7 @@
       `<button class="assignment-back" type="button" data-assignment-review-list="${esc(id)}">${t("Back to submissions", "العودة للتسليمات")}</button><div class="assignment-review-layout"><section class="assignment-response"><h3>${t("Student answer", "إجابة الطالب")}</h3>${answerHTML(id, record)}</section><form class="assignment-review-form"><h3>${t("Your review", "مراجعتك")}</h3><label>${t("Teacher feedback", "ملاحظات المعلم")}<textarea name="feedback" maxlength="3000">${esc(record.review?.feedback || "")}</textarea></label><label>${t("Optional grade / 100", "درجة اختيارية / 100")}<input name="grade" type="number" min="0" max="100" step="0.1" value="${record.review?.grade ?? ""}"></label><p class="assignment-error" role="alert"></p><button class="assignment-button primary" type="submit">${t("Save review", "حفظ المراجعة")}</button></form></div>`,
     );
     node.classList.add("assignment-review-dialog");
+    if (!A.canWrite(post)) { node.querySelector("form").remove(); return; }
     node.querySelector("form").onsubmit = (event) => {
       event.preventDefault();
       try {

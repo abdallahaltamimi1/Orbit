@@ -69,7 +69,7 @@ small {
   inset-block: 0;
   inset-inline-start: 0;
   width: 250px;
-  background: radial-gradient(ellipse at 0 0,var(--orbit-green-900),transparent 65%),var(--navy);
+  background: var(--orbit-space);
   color: var(--orbit-green-300);
   display: flex;
   flex-direction: column;

@@ -125,7 +125,7 @@ const samplePosts = [
   },
 ];
 const posts = () =>
-    [...db.posts, ...samplePosts.filter((p) => !db.posts.some((x) => x.id === p.id))].filter(
+    (window.OrbitRecordOrder?.newest([...db.posts, ...samplePosts.filter((p) => !db.posts.some((x) => x.id === p.id))]) || db.posts).filter(
       (p) => channel(p.channel) && !read("orbit.deleted.posts")?.includes(p.id),
     ),
   postTitle = (p) => esc(p.title || t(p.titleEn, p.titleAr)),
@@ -388,7 +388,7 @@ function render() {
       )
       .join(
         "",
-      )}</div><div class="workspace-grid"><div><section id="my-channels"><div class="section-head"><div><h2>${t("Your teaching channels", "قنواتك التعليمية")}</h2><p>${t("Your classroom. Your audience. Your voice.", "صفك، جمهورك، وصوتك.")}</p></div><button class="text-link" data-action="create">＋ ${t("Create channel", "إنشاء قناة")}</button></div><div class="tabs" aria-label="${t("Filter channels", "فلترة القنوات")}">${[
+      )}</div><div class="workspace-grid"><div><section id="my-channels"><div class="section-head"><div><h2>${t("Your teaching channels", "قنواتك التعليمية")}</h2><a class="text-link" href="../channels/channels.html?create=school">${t("Create school channel", "إنشاء قناة مدرسية")}</a><p>${t("Your classroom. Your audience. Your voice.", "صفك، جمهورك، وصوتك.")}</p></div><button class="text-link" data-action="create">＋ ${t("Create channel", "إنشاء قناة")}</button></div><div class="tabs" aria-label="${t("Filter channels", "فلترة القنوات")}">${[
       ["all", t("All", "الكل")],
       ["public", t("Public", "عامة")],
       ["private", t("Private", "خاصة")],
@@ -573,7 +573,7 @@ function createDialog() {
       color: form.get("visibility") === "private" ? "blue" : "purple",
       createdAt: new Date().toISOString(),
     };
-    c.schoolId = OrbitSubscriptions.effective().schoolId || null;
+    c.schoolId = null;
     try {
       OrbitSubscriptions.perform(
         c.private ? "classes" : null,
@@ -629,6 +629,7 @@ function composeDialog(selected) {
       duration = 0;
     try {
       const schoolId = ORBIT.publicationSchool(data.get("channel"));
+      const selectedChannel = channel(data.get("channel"));
       if (type === "video") {
         if (file && file.size) {
           if (file.size > 50 * 1024 * 1024)
@@ -706,6 +707,7 @@ function composeDialog(selected) {
         createdAt: new Date().toISOString(),
         likes: 0,
         schoolId,
+        ...(OrbitAuth.managedChannel(selectedChannel) ? { sectionIds: [...selectedChannel.sectionIds], academicYearId: selectedChannel.academicYearId, authorId: OrbitAuth.current().email } : {}),
       };
       if (ORBIT.publicationSchool(row.channel) !== schoolId)
         throw Error(t("Channel ownership changed. Reopen the editor before publishing.", "تغيرت ملكية القناة. أعد فتح المحرر قبل النشر."));

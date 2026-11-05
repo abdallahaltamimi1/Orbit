@@ -212,8 +212,9 @@
       }
     }
   }
+  const newest = rows => window.OrbitRecordOrder?.newest(rows) || rows;
   function listJobs() {
-    return data().jobs.filter((j) => j.status === "published");
+    return newest(data().jobs.filter((j) => j.status === "published"));
   }
   function publicSchool(id) {
     const s = OrbitProfiles.read(id, "school");
@@ -241,7 +242,7 @@
   }
   function ownJobs() {
     const u = requireRole("school");
-    return data().jobs.filter((j) => j.schoolId === u.email);
+    return newest(data().jobs.filter((j) => j.schoolId === u.email));
   }
   function putJob(values, jobId) {
     const u = requireRole("school"),
@@ -344,7 +345,7 @@
     if (u.role === "school")
       return data()
         .applications.filter((a) => a.schoolId === u.email && (!jobId || a.jobId === jobId))
-        .map((a) => ({ ...a, submittedProfile: a.profile, profile: teacher(a.teacherId) }));
+        .map((a) => ({ ...a, submittedProfile: a.profile, profile: teacher(a.teacherId) })).sort((a,b)=>(Date.parse(b.createdAt)||0)-(Date.parse(a.createdAt)||0));
     if (u.role === "teacher")
       return data()
         .applications.filter((a) => a.teacherId === u.email && (!jobId || a.jobId === jobId))
@@ -371,6 +372,9 @@
         throw Error("ROLE_DENIED");
     } else throw Error("ROLE_DENIED");
     if (a.status === status) return;
+    if (["accepted","rejected"].includes(a.status)) throw Error("FINAL_DECISION_RECORDED");
+    if (["accepted","rejected"].includes(status)) {const modern=get('orbit.meetings.v1',{meetings:[]}).meetings||[],ids=new Set(modern.map(m=>m.id)),interviews=[...modern,...(d.interviews||[]).filter(m=>!ids.has(m.id))];if(interviews.some(m=>m.applicationId===a.id&&m.schoolId===a.schoolId&&m.teacherId===a.teacherId&&m.status==='scheduled'))throw Error("INTERVIEW_PENDING_COMPLETION");}
+    a.history = [...(a.history || []), {from:a.status,to:status,actorId:u.email,at:new Date().toISOString()}];
     a.status = status;
     a.updatedAt = new Date().toISOString();
     notify(
@@ -407,7 +411,8 @@
   function notifications() {
     const u = current();
     if (!["teacher", "school"].includes(u.role)) throw Error("ROLE_DENIED");
-    return data().notifications.filter((n) => n.recipient === u.email);
+    const meetings=window.OrbitMeetings,ids=new Set(meetings?.recruitmentInterviews().map(m=>m.id)||[]),interviews=(meetings?.notifications()||[]).filter(n=>ids.has(n.meetingId)).map(n=>({...n,url:(u.role==='school'?'../school-dashboard/school-dashboard.html?tab=interviews&interview=':'../applications/applications.html?interview=')+encodeURIComponent(n.meetingId)+'#interviews'}));
+    return newest([...data().notifications.filter((n) => n.recipient === u.email),...interviews]);
   }
   function readNotification(id) {
     const u = current(),
@@ -416,6 +421,7 @@
       .filter((n) => n.recipient === u.email && (!id || n.id === id))
       .forEach((n) => (n.read = true));
     save(d);
+    const meetings=window.OrbitMeetings,ids=new Set(meetings?.recruitmentInterviews().map(m=>m.id)||[]);if(meetings)meetings.markRead(meetings.notifications().filter(n=>ids.has(n.meetingId)&&(!id||n.id===id)).map(n=>n.id));
   }
   function interest(teacherId) {
     const u = requireRole("school"),
@@ -770,79 +776,22 @@
       .sort((a, b) => Date.parse(a.startAt) - Date.parse(b.startAt));
   }
   function scheduleInterview(values) {
-    const u = requireRole("school"),
-      d = data(),
-      a = d.applications.find((a) => a.id === values.applicationId && a.schoolId === u.email);
-    if (!a || ["withdrawn", "rejected"].includes(a.status)) throw Error("INVALID_APPLICATION");
-    const start = new Date(values.startAt),
-      duration = Number(values.duration),
-      location = String(values.location || "")
-        .trim()
-        .slice(0, 500),
-      url = String(values.url || "").trim();
-    if (
-      !Number.isFinite(+start) ||
-      +start <= Date.now() ||
-      !Number.isInteger(duration) ||
-      duration < 15 ||
-      duration > 180 ||
-      (!location && !url)
-    )
-      throw Error("INVALID_INTERVIEW");
-    if (url) {
-      let parsed;
-      try {
-        parsed = new URL(url);
-      } catch {
-        throw Error("HTTPS_REQUIRED");
-      }
-      if (parsed.protocol !== "https:" || parsed.username || parsed.password)
-        throw Error("HTTPS_REQUIRED");
-    }
-    const end = +start + duration * 60000;
-    d.interviews ||= [];
-    if (
-      d.interviews.some(
-        (x) =>
-          x.status === "scheduled" &&
-          (x.schoolId === u.email || x.teacherId === a.teacherId) &&
-          Date.parse(x.startAt) < end &&
-          Date.parse(x.endAt) > +start,
-      )
-    )
-      throw Error("INTERVIEW_CONFLICT");
-    const record = {
-      id: id(),
-      applicationId: a.id,
-      jobId: a.jobId,
-      schoolId: u.email,
-      teacherId: a.teacherId,
-      startAt: start.toISOString(),
-      endAt: new Date(end).toISOString(),
-      duration,
-      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-      location,
-      url,
-      notes: String(values.notes || "")
-        .trim()
-        .slice(0, 1500),
-      status: "scheduled",
-      createdAt: new Date().toISOString(),
-    };
-    d.interviews.push(record);
-    notify(
-      d,
-      a.teacherId,
-      "interview",
-      "interview:" + record.id,
-      "Interview invitation: " + start.toLocaleString("en-GB"),
-      "دعوة مقابلة: " + start.toLocaleString("ar-JO"),
-      "../applications/applications.html#interviews",
-    );
-    save(d);
-    return record;
+    requireRole("school");
+    if (!window.OrbitMeetings) throw Error("INTERVIEW_SERVICE_UNAVAILABLE");
+    const job = getJob(data().applications.find(a => a.id === values.applicationId)?.jobId);
+    return window.OrbitMeetings.putInterview({
+      title: values.title || job?.title || "Interview",
+      subject: job?.subject || "",
+      description: String(values.notes || "").trim() || "Recruitment interview",
+      startAt: values.startAt,
+      endAt: new Date(Date.parse(values.startAt) + Number(values.duration) * 60000).toISOString(),
+      type: values.url ? "interview-online" : "interview-in-person",
+      externalUrl: values.url || "",
+      location: values.url ? "" : values.location || "",
+    }, values.applicationId);
   }
   function cancelInterview(interviewId) {
+    if (window.OrbitMeetings) return window.OrbitMeetings.cancel(interviewId);
     const u = requireRole("school"),
       d = data(),
       record = (d.interviews || []).find((x) => x.id === interviewId && x.schoolId === u.email);
@@ -868,11 +817,12 @@
     if (
       !a ||
       !meetingId ||
-      !["pending", "interview_scheduled"].includes(a.status) ||
-      (a.interviewMeetingId && a.interviewMeetingId !== meetingId)
+      !["pending", "review", "shortlisted", "interview_scheduled"].includes(a.status)
     )
       throw Error("INVALID_APPLICATION");
     if (a.status !== "interview_scheduled") a.interviewPreviousStatus = a.status;
+    a.interviewMeetingIds = [...new Set([...(a.interviewMeetingIds || []), ...(a.interviewMeetingId ? [a.interviewMeetingId] : []), meetingId])];
+    a.history = [...(a.history || []), {from:a.status,to:"interview_scheduled",interviewId:meetingId,actorId:u.email,at:new Date().toISOString()}];
     a.interviewMeetingId = meetingId;
     a.status = "interview_scheduled";
     a.updatedAt = new Date().toISOString();
@@ -880,20 +830,167 @@
     window.dispatchEvent(new CustomEvent("orbit:recruitment-change"));
     return a;
   }
-  function clearInterviewMeeting(applicationId, meetingId) {
+  function clearInterviewMeeting(applicationId, meetingId, completed = false) {
     const u = requireRole("school"),
       d = data(),
       a = d.applications.find((item) => item.id === applicationId && item.schoolId === u.email);
     if (!a || a.interviewMeetingId !== meetingId) return false;
     delete a.interviewMeetingId;
-    if (a.status === "interview_scheduled") a.status = a.interviewPreviousStatus || "pending";
+    if (a.status === "interview_scheduled") {const previous=a.status;a.status=completed?"review":a.interviewPreviousStatus||"pending";a.history=[...(a.history||[]),{from:previous,to:a.status,interviewId:meetingId,actorId:u.email,at:new Date().toISOString()}];}
     delete a.interviewPreviousStatus;
     a.updatedAt = new Date().toISOString();
     save(d);
     window.dispatchEvent(new CustomEvent("orbit:recruitment-change"));
     return true;
   }
+
+  async function issueSchoolAccount(values, password) {
+    const actor = requireRole("school"), role = values.role;
+    if (!["student", "teacher"].includes(role)) throw Error("INVALID_ROLE");
+    const academic = get("orbit.school.academics.demo.v1:" + encodeURIComponent(actor.email), null);
+    const record = academic?.[role === "student" ? "students" : "teachers"]?.find(r => r.id === values.academicId && r.schoolId === actor.email);
+    if (!record) throw Error("NOT_FOUND");
+    const email = norm(values.email);
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || password.length < 10 || !/[a-zA-Z]/.test(password) || !/[0-9]/.test(password)) throw Error("INVALID_CREDENTIALS");
+    const salt = encode(crypto.getRandomValues(new Uint8Array(16))), digest = await hash(password, salt);
+    if (current().email !== actor.email || current().role !== "school") throw Error("ROLE_DENIED");
+    if(window.OrbitAuth?.current()?.email!==actor.email)throw Error('ROLE_DENIED');
+    for (const storage of ["orbit.profiles.v1", key]) {
+      const raw = localStorage.getItem(storage);
+      if (raw !== null) { let value; try { value = JSON.parse(raw); } catch { throw Error("INVALID_DATA"); }
+        if (!value || typeof value !== "object" || Array.isArray(value) || (storage === key && value.accounts !== undefined && !Array.isArray(value.accounts)) || (storage !== key && (!value.records || typeof value.records !== "object" || Array.isArray(value.records)))) throw Error("INVALID_DATA");
+        if(role==='teacher'&&storage!==key&&Object.keys(value.records).some(id=>norm(id)===email))throw Error("EMAIL_EXISTS");
+      }
+    }
+    const d = data(), latest = get("orbit.school.academics.demo.v1:" + encodeURIComponent(actor.email), null);
+    if (!latest?.[role === "student" ? "students" : "teachers"]?.some(r => r.id === record.id && r.name === record.name)) throw Error("STALE_DATA");
+    if (d.accounts.some(a => norm(a.email) === email) || ["teacher@orbit.com", "student@orbit.com", "school@orbit.com"].includes(email)) throw Error("EMAIL_EXISTS");
+    if (d.accounts.some(a => a.schoolId === actor.email && a.academicId === record.id)) throw Error("ACCOUNT_EXISTS");
+    if(role==='student') {
+      const raw=localStorage.getItem('orbit.school.enrollment-identities.demo.v1:'+encodeURIComponent(actor.email));
+      let mappings;try{mappings=raw===null?{mappings:[]}:JSON.parse(raw);}catch{throw Error('INVALID_DATA');}
+      if(!mappings||!Array.isArray(mappings.mappings))throw Error('INVALID_DATA');
+      if(mappings.mappings.some(m=>m.academicStudentId===record.id&&m.status==='confirmed'))throw Error('ACCOUNT_EXISTS');
+    }
+    if(role==='teacher'){
+      const teaching=get('orbit.school.teaching-assignments.demo.v1:'+encodeURIComponent(actor.email),{linkInvitations:[]});if(teaching.linkInvitations?.some(r=>r.teacherId===record.id&&r.status==='pending'))throw Error('ACCOUNT_EXISTS');
+      for(const [prefix,field]of [['orbit.school.teaching-assignments.demo.v1:','reviews'],['orbit.school.education.links.v1:','mappings']]){
+        const raw=localStorage.getItem(prefix+encodeURIComponent(actor.email));let db;try{db=raw===null?{[field]:[]}:JSON.parse(raw);}catch{throw Error('INVALID_DATA');}
+        if(!db||!Array.isArray(db[field]))throw Error('INVALID_DATA');
+        if(db[field].some(r=>field==='reviews'?r.teacherId===record.id:r.role==='teachers'&&r.academicId===record.id))throw Error('ACCOUNT_EXISTS');
+      }
+    }
+    d.accounts.push({ email, name: record.name, role, status: "active", createdAt: new Date().toISOString(), salt, digest, schoolId: actor.email, academicId: record.id, mustChangePassword: true });
+    commitRegistration(d, { id: email, role, name: record.name, ...(role === "student" ? { level: "secondary" } : { subject: String(values.subject || "general").slice(0, 100), experience: 0 }) });
+    return { email, role, name: record.name };
+  }
+  // Hash before the synchronous multi-store demo transaction; never persist plaintext.
+  async function createSchoolStudent(values, expected, confirmed = false) {
+    const actor = requireRole("school"), E = OrbitSchoolEnrollments;
+    if (confirmed !== true) throw Error("CONFIRMATION_REQUIRED");
+    const name = String(values.name || "").trim(), email = norm(values.email);
+    if (!name || name.length > 160 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw Error("INVALID_FIELDS");
+    const password = OrbitSchoolCredentials.temporary();
+    const salt = encode(crypto.getRandomValues(new Uint8Array(16))), digest = await hash(password, salt);
+    // Recheck live authority and all snapshots after hashing. No await during writes.
+    if (requireRole("school").email !== actor.email || OrbitAuth.current()?.email !== actor.email) throw Error("ROLE_DENIED");
+    const context = E.read().context;
+    if (Object.keys(context).some(k => context[k] !== expected?.[k])) throw Error("STALE_DATA");
+    for (const storage of [key, "orbit.profiles.v1"]) {
+      const raw = localStorage.getItem(storage);
+      if (raw !== null) {
+        let parsed; try { parsed = JSON.parse(raw); } catch { throw Error("INVALID_DATA"); }
+        if (!parsed || typeof parsed !== "object" || Array.isArray(parsed) || (storage === key && !Array.isArray(parsed.accounts))) throw Error("INVALID_DATA");
+      }
+    }
+    const academic = OrbitSchoolAcademics.read(), d = data();
+    const profiles = get("orbit.profiles.v1", {records:{}});
+    if (!profiles?.records || typeof profiles.records !== "object" || Array.isArray(profiles.records)) throw Error("INVALID_DATA");
+    if (d.accounts.some(a => norm(a.email) === email) || Object.keys(profiles.records).some(k => norm(k) === email) || ["student@orbit.com", "teacher@orbit.com", "school@orbit.com"].includes(email)) throw Error("EMAIL_EXISTS");
+    const comparable = v => String(v || "").normalize("NFKC").trim().replace(/\s+/g, " ").toLocaleLowerCase();
+    const matches = [...academic.students, ...d.accounts, ...Object.values(profiles.records)].some(r => comparable(r.name) === comparable(name));
+    if (matches && values.reviewedDistinctIdentity !== true) throw Error("IDENTITY_REVIEW_REQUIRED");
+    const year = OrbitSchoolYears.read().years.find(y => y.id === values.academicYearId);
+    if (!year || year.status === "archived" || window.OrbitSchoolYearContext?.readOnly()) throw Error("ARCHIVED_YEAR");
+    const structure = OrbitSchoolSections.view(year.id);
+    if (!structure.sections.some(s => s.id === values.sectionId && s.gradeId === values.gradeId) || !structure.grades.some(g => g.id === values.gradeId)) throw Error("INVALID_SECTION");
+    const keys = [OrbitSchoolAcademics.storageKey(), "orbit.profiles.v1", key, E.mappingKey(), E.storageKey()];
+    const before = keys.map(k => localStorage.getItem(k));
+    try {
+      const student = OrbitSchoolAcademics.save("students", null, {name, studentCode:"S-" + crypto.randomUUID(), status:"enrolled", classId:null}, academic);
+      d.accounts.push({email, name, role:"student", status:"active", schoolId:actor.email, academicId:student.id, salt, digest, mustChangePassword:true, createdAt:new Date().toISOString(), identityReview:matches ? {actorId:actor.email, confirmedDistinct:true, confirmedAt:new Date().toISOString()} : undefined});
+      commitRegistration(d, {id:email, role:"student", name, level:"secondary"});
+      const op = crypto.randomUUID(), mapping = E.requestMapping(student.id, E.read().context, op + "-request");
+      E.confirmMapping(mapping.id, email, E.read().context, op + "-confirm", true);
+      const enrollment = E.enrollSection({academicStudentId:student.id, academicYearId:year.id, gradeId:values.gradeId, sectionId:values.sectionId}, E.read().context, op + "-enroll", true);
+      return {email, password, student, enrollment};
+    } catch (error) {
+      let failed = false;
+      keys.forEach((k,i) => {try {if(localStorage.getItem(k)!==before[i]) {if(before[i]===null)localStorage.removeItem(k);else localStorage.setItem(k,before[i]);}} catch {failed=true;}});
+      window.dispatchEvent(new Event("orbit:school-enrollments-change"));
+      if (failed) throw Error("ROLLBACK_FAILED");
+      throw error;
+    }
+  }
+  // Teacher onboarding reuses the academic registry, account hashing and annual teaching store.
+  async function createSchoolTeacher(values, expected, confirmed = false) {
+    const actor=requireRole('school'),T=OrbitSchoolTeaching;
+    if(confirmed!==true)throw Error('CONFIRMATION_REQUIRED');
+    const name=String(values.name||'').trim(),email=norm(values.email),yearId=values.academicYearId;
+    if(!name||name.length>100||email.length>254||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))throw Error('INVALID_FIELDS');
+    const profileKey='orbit.profiles.v1',profileSnapshot=localStorage.getItem(profileKey);
+    const existing=data().accounts.filter(a=>norm(a.email)===email);
+    if(existing.length>1)throw Error('IDENTITY_CONFLICT');
+    if(existing.length)throw Error('EMAIL_EXISTS');
+    if(existing.length&&(existing[0].role!=='teacher'||existing[0].status!=='active'))throw Error('INVALID_ACCOUNT');
+    const password=existing.length?null:OrbitSchoolCredentials.temporary();
+    const salt=password?encode(crypto.getRandomValues(new Uint8Array(16))):null,digest=password?await hash(password,salt):null;
+    if(requireRole('school').email!==actor.email||OrbitAuth.current()?.email!==actor.email)throw Error('ROLE_DENIED');
+    const view=T.read(yearId);
+    if(expected?.snapshot!==view.context.snapshot||expected?.schoolId!==actor.email||profileSnapshot!==localStorage.getItem(profileKey))throw Error('STALE_DATA');
+    const year=OrbitSchoolYearContext.read().selectedYear;
+    if(year?.id!==yearId)throw Error('STALE_DATA');
+    if(!view.selectedYear||year.status==='archived')throw Error('ARCHIVED_YEAR');
+    const assignments=values.assignments||[];
+    if(!Array.isArray(assignments))throw Error('INVALID_FIELDS');
+    const slots=new Set();
+    for(const a of assignments){
+      if(!view.subjects.some(q=>q.id===a.subjectId&&q.status==='active'))throw Error('INVALID_SUBJECT');
+      if(!view.sections.some(q=>q.id===a.sectionId&&q.gradeId===a.gradeId))throw Error('INVALID_SECTION');
+      const slot=JSON.stringify([a.sectionId,a.subjectId]);if(slots.has(slot))throw Error('DUPLICATE_ASSIGNMENT');slots.add(slot);
+      if(view.assignments.some(q=>q.sectionId===a.sectionId&&q.subjectId===a.subjectId))throw Error('PRIMARY_TEACHER_EXISTS');
+    }
+    const profiles=get(profileKey,{records:{}});
+    if(!profiles?.records||typeof profiles.records!=='object'||Array.isArray(profiles.records))throw Error('INVALID_DATA');
+    const d=data(),live=d.accounts.filter(a=>norm(a.email)===email);
+    if(!existing.length&&(live.length||Object.keys(profiles.records).some(k=>norm(k)===email)||['teacher@orbit.com','student@orbit.com','school@orbit.com'].includes(email)))throw Error('EMAIL_EXISTS');
+    if(existing.length&&(live.length!==1||JSON.stringify(live[0])!==JSON.stringify(existing[0])))throw Error('STALE_DATA');
+    if(view.accounts.some(a=>a.accountId&&norm(a.accountId)===email)||live.some(a=>a.schoolId===actor.email&&a.academicId))throw Error('ACCOUNT_ALREADY_LINKED');
+    const keys=[OrbitSchoolAcademics.storageKey(),profileKey,key,T.storageKey()],before=keys.map(k=>localStorage.getItem(k));
+    try{
+      const teacher=values.teacherId?view.teachers.find(t=>t.id===values.teacherId):OrbitSchoolAcademics.save('teachers',null,{name,teacherCode:'T-'+crypto.randomUUID()},OrbitSchoolAcademics.read());if(!teacher)throw Error('INVALID_TEACHER');if(values.teacherId&&(view.accounts.find(a=>a.teacherId===teacher.id)?.accountId||view.linkInvitations?.some(r=>r.teacherId===teacher.id&&r.status==='pending')))throw Error('ACCOUNT_ALREADY_LINKED');
+      if(!existing.length){d.accounts.push({email,name,role:'teacher',status:'active',schoolId:actor.email,academicId:teacher.id,salt,digest,mustChangePassword:true,createdAt:new Date().toISOString()});commitRegistration(d,{id:email,role:'teacher',name,subject:'general',experience:0});}
+      T.confirmTeacher(teacher.id,email,T.read(yearId).context,true);
+      for(const a of assignments)T.save('',{...a,teacherId:teacher.id,academicYearId:yearId},T.read(yearId).context,true);
+      return {teacher,email,password,linkedExisting:!!existing.length,assignmentCount:assignments.length};
+    }catch(error){
+      let failed=false;keys.forEach((k,i)=>{try{if(localStorage.getItem(k)!==before[i]){if(before[i]===null)localStorage.removeItem(k);else localStorage.setItem(k,before[i]);}}catch{failed=true;}});
+      window.dispatchEvent(new Event('orbit:school-teaching-change'));if(failed)throw Error('ROLLBACK_FAILED');throw error;
+    }
+  }
+  async function changeInitialPassword(email, temporary, password) {
+    const identity = await authenticate(email, temporary);
+    if (!identity || password === temporary || password.length < 10 || !/[a-zA-Z]/.test(password) || !/[0-9]/.test(password)) throw Error("INVALID_CREDENTIALS");
+    const d = data(), account = d.accounts.find(a => a.email === identity.email);
+    if (!account?.mustChangePassword) throw Error("INVALID_TRANSITION");
+    const expected = account.digest, salt = encode(crypto.getRandomValues(new Uint8Array(16))), digest = await hash(password, salt);
+    const latest = data(), live = latest.accounts.find(a => a.email === identity.email);
+    if (!live?.mustChangePassword || live.digest !== expected) throw Error("STALE_DATA");
+    Object.assign(live, { salt, digest, mustChangePassword: false, passwordChangedAt: new Date().toISOString() }); save(latest); return identity;
+  }
+
   window.OrbitRecruitment = {
+    issueSchoolAccount, createSchoolStudent, createSchoolTeacher, changeInitialPassword,
     interviews,
     scheduleInterview,
     cancelInterview,

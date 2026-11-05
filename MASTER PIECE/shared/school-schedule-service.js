@@ -66,19 +66,29 @@
     return result;
   }
   const roomKey = (v) => v.normalize("NFKC").trim().replace(/\s+/g, " ").toLowerCase();
+  function reviewedClassWritable(classId, schoolId) {
+    if (!classId || !window.OrbitSchoolYears) return;
+    const annual = JSON.parse(localStorage.getItem("orbit.school.enrollments.demo.v1:" + encodeURIComponent(schoolId)) || '{"classYearLinks":[]}');
+    const link = annual.classYearLinks.find(l=>l.classId===classId);
+    if(link){const year=OrbitSchoolYears.read().years.find(y=>y.id===link.academicYearId);if(!year||year.status==='archived')fail('ARCHIVED_YEAR');}
+  }
   function save(kind, id, values, expected) {
     return commit(kind, expected, (db, academic) => {
       const old = id ? db.records.find((r) => r.id === id) : null;
       if (id && !old) fail("NOT_FOUND");
       let fields;
       if (kind === "timetable") {
+        reviewedClassWritable(old?.classId, db.schoolId); reviewedClassWritable(values.classId, db.schoolId);
         const allocation = academic.allocations.find((a) => a.classId === values.classId && a.subjectId === values.subjectId && a.teacherId === values.teacherId);
         if (!allocation) fail("INVALID_ALLOCATION");
         if (!academic.classes.some((c) => c.id === values.classId && c.status === "active") || !academic.subjects.some((s) => s.id === values.subjectId && s.status === "active") || !academic.teachers.some((t) => t.id === values.teacherId)) fail("INACTIVE_REFERENCE");
         if (values.day === "" || values.day === null || values.day === undefined || !Number.isInteger(Number(values.day)) || Number(values.day) < 0 || Number(values.day) > 6) fail("INVALID_DAY");
         if (!timeOK(values.startTime) || !timeOK(values.endTime) || values.startTime >= values.endTime) fail("INVALID_TIME");
         fields = { classId: allocation.classId, subjectId: allocation.subjectId, teacherId: allocation.teacherId, allocationId: allocation.id, day: Number(values.day), startTime: values.startTime, endTime: values.endTime, room: text(values.room ?? "", 100, true) };
+        const yearLinks = JSON.parse(localStorage.getItem("orbit.school.enrollments.demo.v1:" + encodeURIComponent(db.schoolId)) || '{"classYearLinks":[]}').classYearLinks;
         for (const r of db.records) {
+          const sourceYear = yearLinks.find(l=>l.classId===fields.classId)?.academicYearId, otherYear = yearLinks.find(l=>l.classId===r.classId)?.academicYearId;
+          if (sourceYear && otherYear && sourceYear !== otherYear) continue;
           // Retained entries, even those needing repair, reserve their original slot until explicitly changed.
           if (r.id === id || r.day !== fields.day || fields.startTime >= r.endTime || fields.endTime <= r.startTime) continue;
           if (r.classId === fields.classId) fail("CLASS_CONFLICT");
@@ -86,12 +96,14 @@
           if (fields.room && roomKey(r.room) === roomKey(fields.room)) fail("ROOM_CONFLICT");
         }
       } else {
+        if (old?.academicYearId && window.OrbitSchoolYears?.read().years.find(y=>y.id===old.academicYearId)?.status === "archived") fail("ARCHIVED_YEAR");
         const classIds = values.audience === "classes" ? values.classIds : [];
         if (!Array.isArray(classIds) || (values.audience === "classes" && !classIds.length) || new Set(classIds).size !== classIds.length || !classIds.every((id) => academic.classes.some((c) => c.id === id && c.status === "active"))) fail("INVALID_AUDIENCE");
         fields = { type: values.type, title: text(values.title, 160), description: text(values.description, 4000), dateTime: values.dateTime, audience: values.audience, classIds: [...classIds], location: text(values.location ?? "", 160, true) };
         if (!localDate(fields.dateTime)) fail("INVALID_DATE");
+        if (values.academicYearId) { const year = window.OrbitSchoolYears?.read().years.find(y=>y.id===values.academicYearId); if (!year || year.status === "archived") fail("ARCHIVED_YEAR"); fields.academicYearId = year.id; }
       }
-      const row = { id: old?.id || crypto.randomUUID(), schoolId: db.schoolId, ...fields };
+      const row = { ...old, id: old?.id || crypto.randomUUID(), schoolId: db.schoolId, ...fields, createdAt: old ? old.createdAt : new Date().toISOString(), updatedAt: new Date().toISOString() };
       if (!validRow(kind, row)) fail("INVALID_FIELDS");
       db.records = old ? db.records.map((r) => r.id === id ? row : r) : [...db.records, row];
       return row;
@@ -100,6 +112,7 @@
   function remove(kind, id, expected) {
     return commit(kind, expected, (db) => {
       if (!db.records.some((r) => r.id === id)) fail("NOT_FOUND");
+      if(kind === "timetable") reviewedClassWritable(db.records.find(r=>r.id===id).classId, db.schoolId);
       db.records = db.records.filter((r) => r.id !== id);
     });
   }

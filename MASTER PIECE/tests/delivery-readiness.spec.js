@@ -242,6 +242,7 @@ test("representative role pages have no mobile horizontal overflow", async ({ pa
       await page.setViewportSize({ width: 1440, height: 844 });
       await switchLanguage(page, language);
       for (const theme of ["light", "dark"]) {
+        await page.waitForFunction(() => typeof window.OrbitThemePreference?.save === "function");
         await page.evaluate((appearance) => window.OrbitThemePreference.save(appearance), theme);
         await expect(page.locator("html")).toHaveAttribute("data-theme", theme);
         for (const width of [1440, 1024, 768, 390, 320]) {
@@ -258,13 +259,16 @@ test("representative role pages have no mobile horizontal overflow", async ({ pa
     }
     await page.goto(roles.find(([item]) => item === role)[1]);
     await switchLanguage(page, "ar");
+    await page.waitForFunction(() => typeof window.OrbitThemePreference?.save === "function");
     await page.evaluate(() => window.OrbitThemePreference.save("light"));
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.screenshot({ path: path.join(os.tmpdir(), `orbit-${role}-desktop.png`), fullPage: true });
     await switchLanguage(page, "en");
+    await page.waitForFunction(() => typeof window.OrbitThemePreference?.save === "function");
     await page.evaluate(() => window.OrbitThemePreference.save("dark"));
     await page.setViewportSize({ width: 390, height: 844 });
     await page.screenshot({ path: path.join(os.tmpdir(), `orbit-${role}-mobile-dark.png`), fullPage: true });
+    await page.waitForFunction(() => typeof window.OrbitThemePreference?.save === "function");
     await page.evaluate(() => window.OrbitThemePreference.save("light"));
     await page.setViewportSize({ width: 1440, height: 900 });
     await signOut(page);
@@ -336,7 +340,7 @@ test("school, teacher, and student navigation remain role separated", async ({ p
   await signOut(page);
 
   await signIn(page, "school");
-  await expect(page.locator("#orbit-page")).toContainText("مركز التوظيف");
+  await expect(page.locator("#orbit-page")).toContainText("الفرص الوظيفية");
   await expect(page.locator("#orbit-page")).toContainText("اكتشاف المعلمين");
   await signOut(page);
 
@@ -475,12 +479,12 @@ test("School opportunity application interview and decision flow uses linked rec
   await expect(page.locator("#orbit-page")).toContainText(title);
   const applicant = page.locator(`[data-review="${application.id}"]`);
   await applicant.click();
-  await page.locator("#schedule-from-review").click();
-  const interviewForm = page.locator("#meeting-form");
+  await page.locator("[data-schedule]").click();
+  const interviewForm = page.locator("[data-recruit-schedule]");
   const date = localDate(3);
   await interviewForm.locator('[name="date"]').fill(date);
-  await interviewForm.locator('[name="start"]').fill("10:00");
-  await interviewForm.locator('[name="end"]').fill("10:30");
+  await interviewForm.locator('[name="time"]').fill("10:00");
+  await interviewForm.locator('[name="externalUrl"]').fill("https://example.com/interview");
   await interviewForm.locator('button[type="submit"]').click();
   await expect.poll(() => page.evaluate((id) => JSON.parse(localStorage.getItem("orbit.recruitment.v1") || "{}").applications?.find((item) => item.id === id)?.status, application.id)).toBe("interview_scheduled");
   const interview = await page.evaluate((appId) => JSON.parse(localStorage.getItem("orbit.meetings.v1") || "{}").meetings?.find((item) => item.applicationId === appId), application.id);
@@ -518,18 +522,25 @@ test("School opportunity application interview and decision flow uses linked rec
 
   await signIn(page, "teacher");
   await page.goto("/applications/applications.html");
-  await expect(page.locator("#orbit-page")).toContainText("ORBIT QA interview room");
+  await page.locator("[data-interview-open]").first().click();
+  await expect(page.locator(".recruit-dialog")).toContainText("ORBIT QA interview room");
+  await page.keyboard.press("Escape");
+  await expect(page.locator(".recruit-dialog")).toHaveCount(0);
   await signOut(page);
 
   await signIn(page, "school");
   await page.goto("/school-dashboard/school-dashboard.html?tab=interviews");
-  await page.locator(`[data-cancel-interview="${interview.id}"]`).click();
-  await page.locator("#confirm-action").click();
+  await page.locator(`[data-interview-open="${interview.id}"]`).click();
+  await page.locator(".recruit-dialog [data-cancel]").click();
+  await page.locator(".recruit-dialog [name=confirmed]").check();
+  await page.locator(".recruit-dialog [type=submit]").click();
   await expect.poll(() => page.evaluate((id) => JSON.parse(localStorage.getItem("orbit.recruitment.v1") || "{}").applications?.find((item) => item.id === id)?.status, application.id)).toBe("pending");
   await page.goto("/school-dashboard/school-dashboard.html?tab=applications");
   await page.locator(`[data-review="${application.id}"]`).click();
-  await page.locator("#hub-review-status").selectOption("accepted");
-  await page.locator("#hub-save-status").click();
+  await page.locator("[data-final=accepted]").click();
+  await page.locator(".recruit-dialog [name=confirmed]").check();
+  await page.locator(".recruit-dialog [type=submit]").click();
+  await expect(page.locator(".recruit-dialog")).toHaveCount(0);
   await signOut(page);
 
   await signIn(page, "teacher");
@@ -579,7 +590,7 @@ test("School Recruitment colors and opportunity modal remain usable in both them
         });
         expect(tokens.noOverflow, `${language}/${theme}/${width}px`).toBe(true);
         expect(tokens.direction).toBe(language === "ar" ? "rtl" : "ltr");
-        expect(tokens.emptyBackground).toBe(theme === "dark" ? "rgb(18, 61, 48)" : "rgb(236, 253, 245)");
+        expect(tokens.emptyBackground).toBe(theme === "dark" ? "rgb(32, 53, 76)" : "rgb(236, 253, 245)");
         expect(tokens.emptyBackground).toBe(tokens.soft);
         expect(tokens.tabs).toHaveLength(4);
         for (const tab of tokens.tabs) {

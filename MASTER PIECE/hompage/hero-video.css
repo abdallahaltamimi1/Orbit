@@ -46,17 +46,17 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg,color-mix(in srgb,var(--orbit-midnight) 55%,transparent),transparent 22%);
+  background: linear-gradient(180deg,rgb(0 0 0 / 45%),transparent 22%);
 }
 #hero .hero-film-shade {
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg,color-mix(in srgb,var(--orbit-midnight) 88%,transparent),color-mix(in srgb,var(--orbit-midnight) 70%,transparent) 24%,transparent 63%);
+  background: linear-gradient(90deg,rgb(0 0 0 / 76%),rgb(0 0 0 / 55%) 24%,transparent 63%);
   opacity: 1;
   transition: opacity 320ms ease-out;
 }
 html[dir="rtl"] #hero .hero-film-shade {
-  background: linear-gradient(270deg,color-mix(in srgb,var(--orbit-midnight) 88%,transparent),color-mix(in srgb,var(--orbit-midnight) 70%,transparent) 24%,transparent 63%);
+  background: linear-gradient(270deg,rgb(0 0 0 / 76%),rgb(0 0 0 / 55%) 24%,transparent 63%);
 }
 #orbit-page #hero[data-hero-media="cinematic"] :is(#sky, .u-vig, .u-scrim, .u-label, .u-cue) {
   visibility: hidden;

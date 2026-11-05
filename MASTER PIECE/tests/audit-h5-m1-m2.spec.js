@@ -62,7 +62,7 @@ for (const theme of ["light", "dark"]) for (const lang of ["en", "ar"]) for (con
     expect(await contrast(page.locator(".input-box").first(), "borderTopColor")).toBeGreaterThanOrEqual(3);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     const background = await page.locator(".login-area").evaluate(e => getComputedStyle(e).backgroundColor);
-    expect(background).toBe(theme === "dark" ? "rgb(6, 37, 29)" : "rgb(236, 253, 245)");
+    expect(background).toBe(theme === "dark" ? "rgb(17, 27, 48)" : "rgb(246, 248, 251)");
     await page.reload();
     await expect(page.locator("body")).toHaveAttribute("data-theme", theme);
     await page.screenshot({ path: path.join(os.tmpdir(), `orbit-batch3-school-${theme}-${lang}-${width}.png`), fullPage: true });

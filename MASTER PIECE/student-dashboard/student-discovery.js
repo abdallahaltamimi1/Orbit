@@ -131,9 +131,9 @@
       deleted = A.get("orbit.deleted.posts", []),
       posts = (A.get("orbit.channels.v2", {}).posts || []).filter(
         (p) =>
-          !p.sample &&
+          !p.sample && p.moderationStatus !== "hidden" &&
           !deleted.includes(p.id) &&
-          channels.some((c) => c.id === p.channel && (!c.private || memberships.includes(c.id))),
+          channels.some((c) => c.id === p.channel && (A.managedChannel(c) ? A.schoolChannelStudent(c, user.email, p) : (!c.private || memberships.includes(c.id)))),
       );
     const indexedSubjects = new Set(["physics"]);
     const subjectNames = {

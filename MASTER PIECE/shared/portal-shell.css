@@ -454,9 +454,9 @@ html[lang="en"] body.orbit-shell-mounted #orbit-rail.orbit-rail {
   --orbit-font: OrbitAuditEnglish,'Segoe UI',sans-serif;
 }
 body.orbit-shell-mounted[data-theme="dark"] #orbit-rail.orbit-rail {
-  background: var(--orbit-green-925);
-  color: var(--orbit-green-50);
-  border-color: var(--orbit-green-900);
+  background: var(--orbit-canvas);
+  color: var(--orbit-ink);
+  border-color: var(--orbit-border);
   --orbit-muted: var(--orbit-green-300);
   --orbit-border: var(--orbit-green-900);
   --orbit-soft: var(--orbit-green-900);
@@ -598,3 +598,4 @@ body.orbit-shell-mounted #orbit-rail[data-workspace="school"] .orbit-nav-heading
 .school-management #teaching-assignments {
   scroll-margin-block-start: 90px;
 }
+.orbit-recruitment-nav{margin-block:14px;border-block:1px solid var(--orbit-border);padding-block:8px}.orbit-recruitment-nav summary{padding:12px;font-size:13px;font-weight:650;color:var(--orbit-ink);cursor:pointer}.orbit-recruitment-nav summary:focus-visible{outline:2px solid var(--orbit-focus);outline-offset:2px}.orbit-recruitment-nav .orbit-nav-link{margin-inline:4px}

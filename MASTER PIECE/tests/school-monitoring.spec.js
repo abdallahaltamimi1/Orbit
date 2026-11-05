@@ -48,6 +48,8 @@ async function fixture(page) {
   await page.goto(route);
   return page.evaluate(() => {
     const A = OrbitSchoolAcademics, db = A.read();
+    const R=OrbitRecruitment,data=R.data();data.accounts.push({email:'owner-a@demo.test',name:'Mapped Teacher',role:'teacher',status:'active'});localStorage.setItem('orbit.recruitment.v1',JSON.stringify(data));
+    const T=OrbitSchoolTeaching,actor=localStorage.getItem('orbitUser'),request=T.inviteTeacher(db.teachers[0].id,'owner-a@demo.test',T.read().context);localStorage.setItem('orbitUser',JSON.stringify({role:'teacher',email:'owner-a@demo.test'}));T.respondInvitation(db.schoolId,request.id,true);localStorage.setItem('orbitUser',actor);
     const student = A.save("students", "", { name: "Second class learner", studentCode: "S-EXTRA", status: "enrolled", classId: db.classes[0].id }, db);
     return { classroom: db.classes[0], subject: db.subjects[0], teacher: db.teachers[0], students: [db.students[0], student] };
   });
@@ -102,15 +104,17 @@ test("strict school isolation, explicit identity mapping and protected education
 
 test("monitoring UI explicitly maps IDs, links channel and reports deduplicated progress with filters", async ({ page }) => {
   const ids = await fixture(page);
+  await page.locator('.am-advanced').evaluate(el=>el.open=true);
+  await page.locator('[data-links]').last().click();
   await page.locator(".sm-mapping-panel summary").click();
   await page.locator("[data-monitor-map]").click();
-  let modal = page.locator(".sm-academic-dialog[open]");
+  let modal = page.locator(".sm-academic-dialog[open]:not(.am-dialog)");
   await expect(modal).toHaveAccessibleName("Map an account ID");
   await modal.locator('[name="academicId"]').selectOption(ids.teacher.id);
   await modal.locator('[name="accountId"]').selectOption("owner-a@demo.test");
   await modal.getByRole("button", { name: "Save link" }).click();
   await page.locator('[data-monitor-link="a"]').click();
-  modal = page.locator(".sm-academic-dialog[open]");
+  modal = page.locator(".sm-academic-dialog[open]:not(.am-dialog)");
   await modal.locator('[name="classId"]').selectOption(ids.classroom.id);
   await modal.locator('[name="subjectId"]').selectOption(ids.subject.id);
   await modal.getByRole("button", { name: "Save link" }).click();
@@ -131,6 +135,8 @@ test("monitoring UI explicitly maps IDs, links channel and reports deduplicated 
   expect(JSON.stringify(report)).not.toMatch(/PRIVATE|"grade":99|feedback|attachments|history|answer/);
   await expect(page.locator("main")).not.toContainText("PRIVATE");
   await page.reload();
+  await page.locator('.am-advanced').evaluate(el=>el.open=true);
+  await page.locator('[data-links]').last().click();
   await expect(page.locator('[data-monitor-channel="a"]')).toContainText("Current mapped roster");
   await page.addScriptTag({ url: "/shared/assignment-service.js" });
   expect(await page.evaluate(() => OrbitAssignments.visible())).toEqual([]);
@@ -204,6 +210,8 @@ test("mapping integrity, revisions and storage failures preserve saved links", a
   expect(result).toEqual({ duplicate: "DUPLICATE_MAPPING", invalid: "INVALID_MAPPING", stale: "STALE_DATA", quota: "STORAGE_FAILED", preserved: true });
   await page.evaluate(() => localStorage.setItem(OrbitSchoolMonitoring.storageKey(), "invalid-json"));
   await page.reload();
+  await page.locator('.am-advanced').evaluate(el=>el.open=true);
+  await page.locator('[data-links]').last().click();
   await expect(page.getByRole("alert")).toContainText("has not been replaced");
   expect(await page.evaluate(() => localStorage.getItem(OrbitSchoolMonitoring.storageKey()))).toBe("invalid-json");
 });
@@ -223,19 +231,27 @@ test("monitoring empty states, bilingual layouts, themes and responsive dialogs"
       for (const width of [1440, 390]) {
         await page.setViewportSize({ width, height: 1000 });
         expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
+        if (!await page.locator('.am-dialog[open]').count()) { await page.locator('.am-advanced').evaluate(el=>el.open=true); await page.locator('[data-links]').last().click(); }
         await page.locator('[data-monitor-link="a"]').click();
-        const modal = page.locator(".sm-academic-dialog[open]");
+        const modal = page.locator(".sm-academic-dialog[open]:not(.am-dialog)");
         await expect(modal).toHaveAccessibleName(lang === "en" ? "Link channel to academics" : "ربط القناة بالسجلات الأكاديمية");
         expect(await modal.evaluate((el) => el.contains(document.activeElement))).toBe(true);
         await page.screenshot({ path: path.join(os.tmpdir(), `orbit-monitoring-${lang}-${theme}-${width}.png`), fullPage: true });
         await page.keyboard.press("Escape");
+        await expect(modal).toHaveCount(0);
+        await page.keyboard.press("Escape");
+        await expect(page.locator(".am-dialog")).toHaveCount(0);
       }
     }
   }
+  await page.locator(".am-advanced").evaluate(el=>el.open=true);
+  await page.locator("[data-links]").last().click();
   await page.locator('[data-monitor-filter="channelId"]').selectOption("a2");
   await expect(page.locator('[data-monitor-total="assignments"]')).toHaveText("٠");
   await page.evaluate(() => localStorage.setItem("orbit.channels.v2", JSON.stringify({ role: "school", joined: [] })));
   await page.reload();
+  await page.locator(".am-advanced").evaluate(el=>el.open=true);
+  await page.locator("[data-links]").last().click();
   await expect(page.locator(".sm-empty")).toBeVisible();
   expect(errors).toEqual([]);
 });
