@@ -1,0 +1,78 @@
+%%{init: {"startOnLoad":false,"htmlLabels":false,"flowchart":{"htmlLabels":false},"theme":"base","securityLevel":"strict","maxTextSize":1000000,"maxEdges":2000,"fontFamily":"Arial, sans-serif","themeCSS":".edgeLabel rect.background{fill:#ffffff!important;stroke:none!important}.edgeLabel text,.edgeLabel tspan{fill:#111111!important}","themeVariables":{"fontFamily":"Arial, sans-serif","fontSize":"16px","primaryColor":"#ffffff","primaryTextColor":"#111111","primaryBorderColor":"#374151","lineColor":"#374151","secondaryColor":"#ffffff","tertiaryColor":"#ffffff","mainBkg":"#ffffff","textColor":"#111111","nodeBorder":"#374151","edgeLabelBackground":"#ffffff","attributeBackgroundColorOdd":"#ffffff","attributeBackgroundColorEven":"#f3f4f6"},"er":{"useMaxWidth":false,"diagramPadding":45,"entityPadding":12,"minEntityWidth":150,"minEntityHeight":55,"nodeSpacing":90,"rankSpacing":180,"fontSize":16,"layoutDirection":"LR"}}}%%
+erDiagram
+  direction LR
+  accTitle: ORBIT ER — Events & delivery
+  accDescr: White background. External entities are marked external. Business relationship labels and stable FK IDs map to ordered source and referenced columns in the accompanying Markdown.
+  SchoolEvents["SchoolEvents"]
+  SchoolEventSections["SchoolEventSections"]
+  LearningMeetings["LearningMeetings"]
+  MeetingGroups["MeetingGroups"]
+  MeetingGroupMembers["MeetingGroupMembers"]
+  MeetingRecipients["MeetingRecipients"]
+  MeetingResources["MeetingResources"]
+  Notifications["Notifications"]
+  AuditEvents["AuditEvents"]
+  OperationReceipts["OperationReceipts"]
+  OutboxMessages["OutboxMessages"]
+  Schools["Schools (external)"]
+  AcademicYears["AcademicYears (external)"]
+  AspNetUsers["AspNetUsers (external)"]
+  Sections["Sections (external)"]
+  Channels["Channels (external)"]
+  Posts["Posts (external)"]
+  Applications["Applications (external)"]
+  Interviews["Interviews (external)"]
+  %% FK220 FK_SchoolEvents_Schools_1: SchoolEvents (SchoolId) -> Schools (Id)
+  Schools ||..o{ SchoolEvents : "hosts [FK220]"
+  %% FK221 FK_SchoolEvents_AcademicYears_2: SchoolEvents (SchoolId, AcademicYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears |o..o{ SchoolEvents : "scopes year [FK221] (2 cols)"
+  %% FK222 FK_SchoolEvents_AspNetUsers_3: SchoolEvents (CreatedById) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ SchoolEvents : "creates [FK222]"
+  %% FK223 FK_SchoolEventSections_Schools_1: SchoolEventSections (SchoolId) -> Schools (Id)
+  Schools ||--o{ SchoolEventSections : "owns [FK223]"
+  %% FK224 FK_SchoolEventSections_AcademicYears_2: SchoolEventSections (SchoolId, AcademicYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears ||--o{ SchoolEventSections : "scopes year [FK224] (2 cols)"
+  %% FK225 FK_SchoolEventSections_SchoolEvents_3: SchoolEventSections (SchoolId, AcademicYearId, EventId) -> SchoolEvents (SchoolId, AcademicYearId, Id)
+  SchoolEvents ||--o{ SchoolEventSections : "targets audience [FK225] (3 cols)"
+  %% FK226 FK_SchoolEventSections_Sections_4: SchoolEventSections (SchoolId, AcademicYearId, SectionId) -> Sections (SchoolId, AcademicYearId, Id)
+  Sections ||--o{ SchoolEventSections : "groups section [FK226] (3 cols)"
+  %% FK227 FK_LearningMeetings_AspNetUsers_1: LearningMeetings (OrganizerId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ LearningMeetings : "organizes [FK227]"
+  %% FK228 FK_LearningMeetings_Channels_2: LearningMeetings (ChannelId) -> Channels (Id)
+  Channels ||..o{ LearningMeetings : "contains activity [FK228]"
+  %% FK229 FK_LearningMeetings_MeetingGroups_3: LearningMeetings (ChannelId, GroupId) -> MeetingGroups (ChannelId, Id)
+  MeetingGroups |o..o{ LearningMeetings : "selects audience [FK229] (2 cols)"
+  %% FK230 FK_MeetingGroups_AspNetUsers_1: MeetingGroups (OwnerUserId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ MeetingGroups : "owns [FK230]"
+  %% FK231 FK_MeetingGroups_Channels_2: MeetingGroups (ChannelId) -> Channels (Id)
+  Channels ||..o{ MeetingGroups : "contains activity [FK231]"
+  %% FK232 FK_MeetingGroupMembers_AspNetUsers_1: MeetingGroupMembers (UserId) -> AspNetUsers (Id)
+  AspNetUsers ||--o{ MeetingGroupMembers : "identifies [FK232]"
+  %% FK233 FK_MeetingGroupMembers_MeetingGroups_2: MeetingGroupMembers (GroupId) -> MeetingGroups (Id)
+  MeetingGroups ||--o{ MeetingGroupMembers : "selects audience [FK233]"
+  %% FK234 FK_MeetingRecipients_AspNetUsers_1: MeetingRecipients (UserId) -> AspNetUsers (Id)
+  AspNetUsers ||--o{ MeetingRecipients : "identifies [FK234]"
+  %% FK235 FK_MeetingRecipients_LearningMeetings_2: MeetingRecipients (MeetingId) -> LearningMeetings (Id)
+  LearningMeetings ||--o{ MeetingRecipients : "invites audience [FK235]"
+  %% FK236 FK_MeetingResources_LearningMeetings_1: MeetingResources (MeetingId) -> LearningMeetings (Id)
+  LearningMeetings ||--o{ MeetingResources : "invites audience [FK236]"
+  %% FK237 FK_Notifications_Schools_1: Notifications (SchoolId) -> Schools (Id)
+  Schools |o..o{ Notifications : "owns [FK237]"
+  %% FK238 FK_Notifications_AspNetUsers_2: Notifications (RecipientId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ Notifications : "receives [FK238]"
+  %% FK239 FK_Notifications_Posts_3: Notifications (PostId) -> Posts (Id)
+  Posts |o..o{ Notifications : "targets content [FK239]"
+  %% FK240 FK_Notifications_LearningMeetings_4: Notifications (LearningMeetingId) -> LearningMeetings (Id)
+  LearningMeetings |o..o{ Notifications : "invites audience [FK240]"
+  %% FK241 FK_Notifications_Applications_5: Notifications (SchoolId, ApplicationId) -> Applications (SchoolId, Id)
+  Applications |o..o{ Notifications : "records application [FK241] (2 cols)"
+  %% FK242 FK_Notifications_Interviews_6: Notifications (SchoolId, InterviewId) -> Interviews (SchoolId, Id)
+  Interviews |o..o{ Notifications : "receives proposals [FK242] (2 cols)"
+  %% FK243 FK_Notifications_SchoolEvents_7: Notifications (SchoolId, SchoolEventId) -> SchoolEvents (SchoolId, Id)
+  SchoolEvents |o..o{ Notifications : "targets audience [FK243] (2 cols)"
+  %% FK244 FK_AuditEvents_Schools_1: AuditEvents (SchoolId) -> Schools (Id)
+  Schools |o..o{ AuditEvents : "owns [FK244]"
+  %% FK245 FK_AuditEvents_AspNetUsers_2: AuditEvents (ActorId) -> AspNetUsers (Id)
+  AspNetUsers |o..o{ AuditEvents : "performs [FK245]"
+  %% FK246 FK_OperationReceipts_AspNetUsers_1: OperationReceipts (ActorId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ OperationReceipts : "performs [FK246]"

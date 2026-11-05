@@ -1,0 +1,112 @@
+%%{init: {"startOnLoad":false,"htmlLabels":false,"flowchart":{"htmlLabels":false},"theme":"base","securityLevel":"strict","maxTextSize":1000000,"maxEdges":2000,"fontFamily":"Arial, sans-serif","themeCSS":".edgeLabel rect.background{fill:#ffffff!important;stroke:none!important}.edgeLabel text,.edgeLabel tspan{fill:#111111!important}","themeVariables":{"fontFamily":"Arial, sans-serif","fontSize":"16px","primaryColor":"#ffffff","primaryTextColor":"#111111","primaryBorderColor":"#374151","lineColor":"#374151","secondaryColor":"#ffffff","tertiaryColor":"#ffffff","mainBkg":"#ffffff","textColor":"#111111","nodeBorder":"#374151","edgeLabelBackground":"#ffffff","attributeBackgroundColorOdd":"#ffffff","attributeBackgroundColorEven":"#f3f4f6"},"er":{"useMaxWidth":false,"diagramPadding":45,"entityPadding":12,"minEntityWidth":150,"minEntityHeight":55,"nodeSpacing":90,"rankSpacing":180,"fontSize":16,"layoutDirection":"LR"}}}%%
+erDiagram
+  direction LR
+  accTitle: ORBIT schema — Teaching & timetables — part 1
+  accDescr: White background. External entities are marked external. Business relationship labels and stable FK IDs map to ordered source and referenced columns in the accompanying Markdown.
+  TeachingAssignments["TeachingAssignments"] {
+    uniqueidentifier Id PK, UK "NOT NULL; default NEWSEQUENTIALID()"
+    uniqueidentifier SchoolId FK, UK "NOT NULL"
+    uniqueidentifier AcademicYearId FK, UK "NOT NULL"
+    uniqueidentifier SectionId FK, UK "NOT NULL"
+    uniqueidentifier SubjectId FK, UK "NOT NULL"
+    uniqueidentifier SchoolTeacherId FK, UK "NOT NULL"
+    varchar(12) Status "NOT NULL; default 'Active'"
+    datetime2(3) CreatedAt "NOT NULL; default SYSUTCDATETIME()"
+    datetime2(3) UpdatedAt "NOT NULL; default SYSUTCDATETIME()"
+    rowversion Version "NOT NULL"
+  }
+  TeachingAssignmentHistory["TeachingAssignmentHistory"] {
+    uniqueidentifier Id PK, UK "NOT NULL; default NEWSEQUENTIALID()"
+    uniqueidentifier SchoolId FK, UK "NOT NULL"
+    uniqueidentifier AcademicYearId FK, UK "NOT NULL"
+    uniqueidentifier AssignmentId FK, UK "NOT NULL"
+    uniqueidentifier ReplacesAssignmentId FK "NULL"
+    varchar(12) Action "NOT NULL"
+    nvarchar(500) Reason "NULL"
+    uniqueidentifier ActorId FK "NOT NULL"
+    datetime2(3) CreatedAt UK "NOT NULL; default SYSUTCDATETIME()"
+  }
+  WeeklySubjectRequirements["WeeklySubjectRequirements"] {
+    uniqueidentifier SchoolId PK, FK "NOT NULL"
+    uniqueidentifier AcademicYearId PK, FK "NOT NULL"
+    uniqueidentifier GradeId PK, FK "NOT NULL"
+    uniqueidentifier SubjectId PK, FK "NOT NULL"
+    tinyint WeeklyPeriods "NOT NULL"
+    uniqueidentifier UpdatedById FK "NOT NULL"
+    datetime2(3) UpdatedAt "NOT NULL; default SYSUTCDATETIME()"
+    rowversion Version "NOT NULL"
+  }
+  TeacherUnavailableSlots["TeacherUnavailableSlots"] {
+    uniqueidentifier SchoolId PK, FK "NOT NULL"
+    uniqueidentifier AcademicYearId PK, FK "NOT NULL"
+    uniqueidentifier SchoolTeacherId PK, FK "NOT NULL"
+    tinyint DayNumber PK "NOT NULL"
+    tinyint PeriodNumber PK "NOT NULL"
+    uniqueidentifier UpdatedById FK "NOT NULL"
+    datetime2(3) UpdatedAt "NOT NULL; default SYSUTCDATETIME()"
+  }
+  Schools["Schools (external)"] {
+    uniqueidentifier Id PK "NOT NULL; default NEWSEQUENTIALID(); referenced key columns only"
+  }
+  AcademicYears["AcademicYears (external)"] {
+    uniqueidentifier Id PK, UK "NOT NULL; default NEWSEQUENTIALID(); referenced key columns only"
+    uniqueidentifier SchoolId FK, UK "NOT NULL; referenced key columns only"
+  }
+  Sections["Sections (external)"] {
+    uniqueidentifier Id PK, UK "NOT NULL; default NEWSEQUENTIALID(); referenced key columns only"
+    uniqueidentifier SchoolId FK, UK "NOT NULL; referenced key columns only"
+    uniqueidentifier AcademicYearId FK, UK "NOT NULL; referenced key columns only"
+  }
+  SchoolSubjects["SchoolSubjects (external)"] {
+    uniqueidentifier Id PK, UK "NOT NULL; default NEWSEQUENTIALID(); referenced key columns only"
+    uniqueidentifier SchoolId FK, UK "NOT NULL; referenced key columns only"
+  }
+  SchoolTeachers["SchoolTeachers (external)"] {
+    uniqueidentifier Id PK, UK "NOT NULL; default NEWSEQUENTIALID(); referenced key columns only"
+    uniqueidentifier SchoolId FK, UK "NOT NULL; referenced key columns only"
+  }
+  AspNetUsers["AspNetUsers (external)"] {
+    uniqueidentifier Id PK "NOT NULL; referenced key columns only"
+  }
+  Grades["Grades (external)"] {
+    uniqueidentifier Id PK, UK "NOT NULL; default NEWSEQUENTIALID(); referenced key columns only"
+    uniqueidentifier SchoolId FK, UK "NOT NULL; referenced key columns only"
+  }
+  %% FK080 FK_TeachingAssignments_Schools_1: TeachingAssignments (SchoolId) -> Schools (Id)
+  Schools ||..o{ TeachingAssignments : "owns [FK080]"
+  %% FK081 FK_TeachingAssignments_AcademicYears_2: TeachingAssignments (SchoolId, AcademicYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears ||..o{ TeachingAssignments : "scopes year [FK081] (2 cols)"
+  %% FK082 FK_TeachingAssignments_Sections_3: TeachingAssignments (SchoolId, AcademicYearId, SectionId) -> Sections (SchoolId, AcademicYearId, Id)
+  Sections ||..o{ TeachingAssignments : "groups section [FK082] (3 cols)"
+  %% FK083 FK_TeachingAssignments_SchoolSubjects_4: TeachingAssignments (SchoolId, SubjectId) -> SchoolSubjects (SchoolId, Id)
+  SchoolSubjects ||..o{ TeachingAssignments : "teaches subject [FK083] (2 cols)"
+  %% FK084 FK_TeachingAssignments_SchoolTeachers_5: TeachingAssignments (SchoolId, SchoolTeacherId) -> SchoolTeachers (SchoolId, Id)
+  SchoolTeachers ||..o{ TeachingAssignments : "assigns teacher [FK084] (2 cols)"
+  %% FK085 FK_TeachingAssignmentHistory_Schools_1: TeachingAssignmentHistory (SchoolId) -> Schools (Id)
+  Schools ||..o{ TeachingAssignmentHistory : "owns [FK085]"
+  %% FK086 FK_TeachingAssignmentHistory_AcademicYears_2: TeachingAssignmentHistory (SchoolId, AcademicYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears ||..o{ TeachingAssignmentHistory : "scopes year [FK086] (2 cols)"
+  %% FK087 FK_TeachingAssignmentHistory_AspNetUsers_3: TeachingAssignmentHistory (ActorId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ TeachingAssignmentHistory : "performs [FK087]"
+  %% FK088 FK_TeachingAssignmentHistory_TeachingAssignments_4: TeachingAssignmentHistory (SchoolId, AcademicYearId, AssignmentId) -> TeachingAssignments (SchoolId, AcademicYearId, Id)
+  TeachingAssignments ||..o{ TeachingAssignmentHistory : "records allocation [FK088] (3 cols)"
+  %% FK089 FK_TeachingAssignmentHistory_TeachingAssignments_5: TeachingAssignmentHistory (SchoolId, AcademicYearId, ReplacesAssignmentId) -> TeachingAssignments (SchoolId, AcademicYearId, Id)
+  TeachingAssignments |o..o{ TeachingAssignmentHistory : "replaces allocation [FK089] (3 cols)"
+  %% FK090 FK_WeeklySubjectRequirements_Schools_1: WeeklySubjectRequirements (SchoolId) -> Schools (Id)
+  Schools ||--o{ WeeklySubjectRequirements : "owns [FK090]"
+  %% FK091 FK_WeeklySubjectRequirements_AcademicYears_2: WeeklySubjectRequirements (SchoolId, AcademicYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears ||--o{ WeeklySubjectRequirements : "scopes year [FK091] (2 cols)"
+  %% FK092 FK_WeeklySubjectRequirements_AspNetUsers_3: WeeklySubjectRequirements (UpdatedById) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ WeeklySubjectRequirements : "updates [FK092]"
+  %% FK093 FK_WeeklySubjectRequirements_Grades_4: WeeklySubjectRequirements (SchoolId, GradeId) -> Grades (SchoolId, Id)
+  Grades ||--o{ WeeklySubjectRequirements : "groups grade [FK093] (2 cols)"
+  %% FK094 FK_WeeklySubjectRequirements_SchoolSubjects_5: WeeklySubjectRequirements (SchoolId, SubjectId) -> SchoolSubjects (SchoolId, Id)
+  SchoolSubjects ||--o{ WeeklySubjectRequirements : "teaches subject [FK094] (2 cols)"
+  %% FK095 FK_TeacherUnavailableSlots_Schools_1: TeacherUnavailableSlots (SchoolId) -> Schools (Id)
+  Schools ||--o{ TeacherUnavailableSlots : "owns [FK095]"
+  %% FK096 FK_TeacherUnavailableSlots_AcademicYears_2: TeacherUnavailableSlots (SchoolId, AcademicYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears ||--o{ TeacherUnavailableSlots : "scopes year [FK096] (2 cols)"
+  %% FK097 FK_TeacherUnavailableSlots_AspNetUsers_3: TeacherUnavailableSlots (UpdatedById) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ TeacherUnavailableSlots : "updates [FK097]"
+  %% FK098 FK_TeacherUnavailableSlots_SchoolTeachers_4: TeacherUnavailableSlots (SchoolId, SchoolTeacherId) -> SchoolTeachers (SchoolId, Id)
+  SchoolTeachers ||--o{ TeacherUnavailableSlots : "assigns teacher [FK098] (2 cols)"

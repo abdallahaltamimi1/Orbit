@@ -1,0 +1,111 @@
+%%{init: {"startOnLoad":false,"htmlLabels":false,"flowchart":{"htmlLabels":false},"theme":"base","securityLevel":"strict","maxTextSize":1000000,"maxEdges":2000,"fontFamily":"Arial, sans-serif","themeCSS":".edgeLabel rect.background{fill:#ffffff!important;stroke:none!important}.edgeLabel text,.edgeLabel tspan{fill:#111111!important}","themeVariables":{"fontFamily":"Arial, sans-serif","fontSize":"16px","primaryColor":"#ffffff","primaryTextColor":"#111111","primaryBorderColor":"#374151","lineColor":"#374151","secondaryColor":"#ffffff","tertiaryColor":"#ffffff","mainBkg":"#ffffff","textColor":"#111111","nodeBorder":"#374151","edgeLabelBackground":"#ffffff","attributeBackgroundColorOdd":"#ffffff","attributeBackgroundColorEven":"#f3f4f6"},"er":{"useMaxWidth":false,"diagramPadding":45,"entityPadding":12,"minEntityWidth":150,"minEntityHeight":55,"nodeSpacing":90,"rankSpacing":180,"fontSize":16,"layoutDirection":"LR"}}}%%
+erDiagram
+  direction LR
+  accTitle: ORBIT schema — Recruitment — part 2
+  accDescr: White background. External entities are marked external. Business relationship labels and stable FK IDs map to ordered source and referenced columns in the accompanying Markdown.
+  Applications["Applications"] {
+    uniqueidentifier Id PK, UK "NOT NULL; default NEWSEQUENTIALID()"
+    uniqueidentifier SchoolId FK, UK "NOT NULL"
+    uniqueidentifier OpportunityId FK, UK "NOT NULL"
+    uniqueidentifier TeacherId FK, UK "NOT NULL"
+    nvarchar(2000) Message "NULL"
+    varchar(24) Status "NOT NULL; default 'Pending'"
+    nvarchar(max) ProfileSnapshot "NOT NULL"
+    smallint ProfileSnapshotVersion "NOT NULL; default 1"
+    datetime2(3) ConsentedAt "NOT NULL"
+    uniqueidentifier ConsentedById FK "NOT NULL"
+    nvarchar(40) ConsentVersion "NOT NULL"
+    datetime2(3) CreatedAt "NOT NULL; default SYSUTCDATETIME()"
+    datetime2(3) UpdatedAt "NOT NULL; default SYSUTCDATETIME()"
+    rowversion Version "NOT NULL"
+  }
+  ApplicationFiles["ApplicationFiles"] {
+    uniqueidentifier SchoolId PK, FK "NOT NULL"
+    uniqueidentifier ApplicationId PK, FK "NOT NULL"
+    uniqueidentifier FileId PK, FK "NOT NULL"
+    varchar(12) Kind "NOT NULL"
+    nvarchar(200) Label "NULL"
+  }
+  ApplicationStatusHistory["ApplicationStatusHistory"] {
+    uniqueidentifier Id PK, UK "NOT NULL; default NEWSEQUENTIALID()"
+    uniqueidentifier SchoolId FK, UK "NOT NULL"
+    uniqueidentifier ApplicationId FK, UK "NOT NULL"
+    varchar(24) FromStatus "NULL"
+    varchar(24) ToStatus "NOT NULL"
+    uniqueidentifier InterviewId FK "NULL"
+    nvarchar(1000) Reason "NULL"
+    uniqueidentifier ActorId FK "NOT NULL"
+    datetime2(3) CreatedAt UK "NOT NULL; default SYSUTCDATETIME()"
+  }
+  Interviews["Interviews"] {
+    uniqueidentifier Id PK, UK "NOT NULL; default NEWSEQUENTIALID()"
+    uniqueidentifier SchoolId FK, UK "NOT NULL"
+    uniqueidentifier ApplicationId FK, UK "NOT NULL"
+    uniqueidentifier TeacherId FK "NOT NULL"
+    int SequenceNumber UK "NOT NULL"
+    nvarchar(150) Title "NOT NULL"
+    nvarchar(3000) Description "NOT NULL"
+    varchar(12) Mode "NOT NULL"
+    nvarchar(500) Location "NULL"
+    nvarchar(2000) ExternalUrl "NULL"
+    datetime2(3) StartAt "NOT NULL"
+    datetime2(3) EndAt "NOT NULL"
+    nvarchar(100) TimeZoneId "NOT NULL; default 'Asia/Amman'"
+    varchar(12) Status "NOT NULL; default 'Scheduled'"
+    datetime2(3) CompletedAt "NULL"
+    uniqueidentifier CompletedById FK "NULL"
+    datetime2(3) CancelledAt "NULL"
+    uniqueidentifier CancelledById FK "NULL"
+    uniqueidentifier CreatedById FK "NOT NULL"
+    datetime2(3) CreatedAt "NOT NULL; default SYSUTCDATETIME()"
+    datetime2(3) UpdatedAt "NOT NULL; default SYSUTCDATETIME()"
+    rowversion Version "NOT NULL"
+  }
+  Schools["Schools (external)"] {
+    uniqueidentifier Id PK "NOT NULL; default NEWSEQUENTIALID(); referenced key columns only"
+  }
+  AspNetUsers["AspNetUsers (external)"] {
+    uniqueidentifier Id PK "NOT NULL; referenced key columns only"
+  }
+  Opportunities["Opportunities (external)"] {
+    uniqueidentifier Id PK, UK "NOT NULL; default NEWSEQUENTIALID(); referenced key columns only"
+    uniqueidentifier SchoolId FK, UK "NOT NULL; referenced key columns only"
+  }
+  Teachers["Teachers (external)"] {
+    uniqueidentifier Id PK "NOT NULL; default NEWSEQUENTIALID(); referenced key columns only"
+  }
+  Files["Files (external)"] {
+    uniqueidentifier Id PK "NOT NULL; default NEWSEQUENTIALID(); referenced key columns only"
+  }
+  %% FK196 FK_Applications_Schools_1: Applications (SchoolId) -> Schools (Id)
+  Schools ||..o{ Applications : "owns [FK196]"
+  %% FK197 FK_Applications_AspNetUsers_2: Applications (ConsentedById) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ Applications : "consents [FK197]"
+  %% FK198 FK_Applications_Opportunities_3: Applications (SchoolId, OpportunityId) -> Opportunities (SchoolId, Id)
+  Opportunities ||..o{ Applications : "receives applications [FK198] (2 cols)"
+  %% FK199 FK_Applications_Teachers_4: Applications (TeacherId) -> Teachers (Id)
+  Teachers ||..o{ Applications : "applies [FK199]"
+  %% FK200 FK_ApplicationFiles_Schools_1: ApplicationFiles (SchoolId) -> Schools (Id)
+  Schools ||--o{ ApplicationFiles : "owns [FK200]"
+  %% FK201 FK_ApplicationFiles_Applications_2: ApplicationFiles (SchoolId, ApplicationId) -> Applications (SchoolId, Id)
+  Applications ||--o{ ApplicationFiles : "records application [FK201] (2 cols)"
+  %% FK202 FK_ApplicationFiles_Files_3: ApplicationFiles (FileId) -> Files (Id)
+  Files ||--o{ ApplicationFiles : "attaches file [FK202]"
+  %% FK203 FK_ApplicationStatusHistory_Schools_1: ApplicationStatusHistory (SchoolId) -> Schools (Id)
+  Schools ||..o{ ApplicationStatusHistory : "owns [FK203]"
+  %% FK204 FK_ApplicationStatusHistory_AspNetUsers_2: ApplicationStatusHistory (ActorId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ ApplicationStatusHistory : "performs [FK204]"
+  %% FK205 FK_ApplicationStatusHistory_Applications_3: ApplicationStatusHistory (SchoolId, ApplicationId) -> Applications (SchoolId, Id)
+  Applications ||..o{ ApplicationStatusHistory : "records application [FK205] (2 cols)"
+  %% FK206 FK_ApplicationStatusHistory_Interviews_4: ApplicationStatusHistory (SchoolId, ApplicationId, InterviewId) -> Interviews (SchoolId, ApplicationId, Id)
+  Interviews |o..o{ ApplicationStatusHistory : "supports decision [FK206] (3 cols)"
+  %% FK207 FK_Interviews_Schools_1: Interviews (SchoolId) -> Schools (Id)
+  Schools ||..o{ Interviews : "owns [FK207]"
+  %% FK208 FK_Interviews_AspNetUsers_2: Interviews (CompletedById) -> AspNetUsers (Id)
+  AspNetUsers |o..o{ Interviews : "completes [FK208]"
+  %% FK209 FK_Interviews_AspNetUsers_3: Interviews (CancelledById) -> AspNetUsers (Id)
+  AspNetUsers |o..o{ Interviews : "cancels [FK209]"
+  %% FK210 FK_Interviews_AspNetUsers_4: Interviews (CreatedById) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ Interviews : "creates [FK210]"
+  %% FK211 FK_Interviews_Applications_5: Interviews (SchoolId, ApplicationId, TeacherId) -> Applications (SchoolId, Id, TeacherId)
+  Applications ||..o{ Interviews : "schedules attempts [FK211] (3 cols)"

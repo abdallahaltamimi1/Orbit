@@ -1,0 +1,44 @@
+%%{init: {"startOnLoad":false,"htmlLabels":false,"flowchart":{"htmlLabels":false},"theme":"base","securityLevel":"strict","maxTextSize":1000000,"maxEdges":2000,"fontFamily":"Arial, sans-serif","themeCSS":".edgeLabel rect.background{fill:#ffffff!important;stroke:none!important}.edgeLabel text,.edgeLabel tspan{fill:#111111!important}","themeVariables":{"fontFamily":"Arial, sans-serif","fontSize":"16px","primaryColor":"#ffffff","primaryTextColor":"#111111","primaryBorderColor":"#374151","lineColor":"#374151","secondaryColor":"#ffffff","tertiaryColor":"#ffffff","mainBkg":"#ffffff","textColor":"#111111","nodeBorder":"#374151","edgeLabelBackground":"#ffffff","attributeBackgroundColorOdd":"#ffffff","attributeBackgroundColorEven":"#f3f4f6"},"er":{"useMaxWidth":false,"diagramPadding":45,"entityPadding":12,"minEntityWidth":150,"minEntityHeight":55,"nodeSpacing":90,"rankSpacing":180,"fontSize":16,"layoutDirection":"LR"}}}%%
+erDiagram
+  direction LR
+  accTitle: ORBIT ER — Channels & learning — detail 1
+  accDescr: White background. External entities are marked external. Business relationship labels and stable FK IDs map to ordered source and referenced columns in the accompanying Markdown.
+  Channels["Channels"]
+  ChannelSections["ChannelSections"]
+  ChannelMemberships["ChannelMemberships"]
+  ChannelInvitations["ChannelInvitations"]
+  Schools["Schools (external)"]
+  AcademicYears["AcademicYears (external)"]
+  AspNetUsers["AspNetUsers (external)"]
+  SchoolSubjects["SchoolSubjects (external)"]
+  SubjectCatalog["SubjectCatalog (external)"]
+  Files["Files (external)"]
+  Sections["Sections (external)"]
+  %% FK124 FK_Channels_Schools_1: Channels (SchoolId) -> Schools (Id)
+  Schools |o..o{ Channels : "owns [FK124]"
+  %% FK125 FK_Channels_AcademicYears_2: Channels (SchoolId, AcademicYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears |o..o{ Channels : "scopes year [FK125] (2 cols)"
+  %% FK126 FK_Channels_AspNetUsers_3: Channels (OwnerUserId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ Channels : "owns [FK126]"
+  %% FK127 FK_Channels_SchoolSubjects_4: Channels (SchoolId, SubjectId) -> SchoolSubjects (SchoolId, Id)
+  SchoolSubjects |o..o{ Channels : "teaches subject [FK127] (2 cols)"
+  %% FK128 FK_Channels_SubjectCatalog_5: Channels (StandaloneSubjectId) -> SubjectCatalog (Id)
+  SubjectCatalog |o..o{ Channels : "classifies subject [FK128]"
+  %% FK129 FK_Channels_Files_6: Channels (CoverFileId) -> Files (Id)
+  Files |o..o{ Channels : "attaches file [FK129]"
+  %% FK130 FK_ChannelSections_Schools_1: ChannelSections (SchoolId) -> Schools (Id)
+  Schools ||--o{ ChannelSections : "owns [FK130]"
+  %% FK131 FK_ChannelSections_AcademicYears_2: ChannelSections (SchoolId, AcademicYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears ||--o{ ChannelSections : "scopes year [FK131] (2 cols)"
+  %% FK132 FK_ChannelSections_Channels_3: ChannelSections (SchoolId, AcademicYearId, ChannelId, SubjectId) -> Channels (SchoolId, AcademicYearId, Id, SubjectId)
+  Channels ||..o{ ChannelSections : "contains activity [FK132] (4 cols)"
+  %% FK133 FK_ChannelSections_Sections_4: ChannelSections (SchoolId, AcademicYearId, SectionId) -> Sections (SchoolId, AcademicYearId, Id)
+  Sections ||--o{ ChannelSections : "groups section [FK133] (3 cols)"
+  %% FK134 FK_ChannelMemberships_AspNetUsers_1: ChannelMemberships (UserId) -> AspNetUsers (Id)
+  AspNetUsers ||--o{ ChannelMemberships : "identifies [FK134]"
+  %% FK135 FK_ChannelMemberships_Channels_2: ChannelMemberships (ChannelId) -> Channels (Id)
+  Channels ||--o{ ChannelMemberships : "contains activity [FK135]"
+  %% FK136 FK_ChannelInvitations_AspNetUsers_1: ChannelInvitations (CreatedById) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ ChannelInvitations : "creates [FK136]"
+  %% FK137 FK_ChannelInvitations_Channels_2: ChannelInvitations (ChannelId) -> Channels (Id)
+  Channels ||..o{ ChannelInvitations : "contains activity [FK137]"

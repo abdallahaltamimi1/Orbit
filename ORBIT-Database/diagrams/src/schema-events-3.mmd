@@ -1,0 +1,50 @@
+%%{init: {"startOnLoad":false,"htmlLabels":false,"flowchart":{"htmlLabels":false},"theme":"base","securityLevel":"strict","maxTextSize":1000000,"maxEdges":2000,"fontFamily":"Arial, sans-serif","themeCSS":".edgeLabel rect.background{fill:#ffffff!important;stroke:none!important}.edgeLabel text,.edgeLabel tspan{fill:#111111!important}","themeVariables":{"fontFamily":"Arial, sans-serif","fontSize":"16px","primaryColor":"#ffffff","primaryTextColor":"#111111","primaryBorderColor":"#374151","lineColor":"#374151","secondaryColor":"#ffffff","tertiaryColor":"#ffffff","mainBkg":"#ffffff","textColor":"#111111","nodeBorder":"#374151","edgeLabelBackground":"#ffffff","attributeBackgroundColorOdd":"#ffffff","attributeBackgroundColorEven":"#f3f4f6"},"er":{"useMaxWidth":false,"diagramPadding":45,"entityPadding":12,"minEntityWidth":150,"minEntityHeight":55,"nodeSpacing":90,"rankSpacing":180,"fontSize":16,"layoutDirection":"LR"}}}%%
+erDiagram
+  direction LR
+  accTitle: ORBIT schema — Events & delivery — part 3
+  accDescr: White background. External entities are marked external. Business relationship labels and stable FK IDs map to ordered source and referenced columns in the accompanying Markdown.
+  AuditEvents["AuditEvents"] {
+    uniqueidentifier Id PK, UK "NOT NULL; default NEWSEQUENTIALID()"
+    uniqueidentifier SchoolId FK, UK "NULL"
+    uniqueidentifier ActorId FK "NULL"
+    varchar(100) Action "NOT NULL"
+    varchar(80) EntityType "NOT NULL"
+    nvarchar(160) EntityId "NOT NULL"
+    uniqueidentifier CorrelationId "NOT NULL"
+    nvarchar(max) DetailJson "NULL"
+    datetime2(3) CreatedAt UK "NOT NULL; default SYSUTCDATETIME()"
+  }
+  OperationReceipts["OperationReceipts"] {
+    uniqueidentifier Id PK "NOT NULL; default NEWSEQUENTIALID()"
+    nvarchar(100) ScopeKey UK "NOT NULL"
+    uniqueidentifier ActorId FK, UK "NOT NULL"
+    uniqueidentifier ClientOperationId UK "NOT NULL"
+    varchar(80) Command "NOT NULL"
+    binary(32) RequestHash "NOT NULL"
+    nvarchar(max) ResultJson "NOT NULL"
+    datetime2(3) CreatedAt "NOT NULL; default SYSUTCDATETIME()"
+  }
+  OutboxMessages["OutboxMessages"] {
+    uniqueidentifier Id PK "NOT NULL; default NEWSEQUENTIALID()"
+    nvarchar(200) EventKey UK "NOT NULL"
+    varchar(100) Type "NOT NULL"
+    nvarchar(max) PayloadJson "NOT NULL"
+    datetime2(3) OccurredAt "NOT NULL; default SYSUTCDATETIME()"
+    datetime2(3) AvailableAt "NOT NULL; default SYSUTCDATETIME()"
+    datetime2(3) ProcessedAt "NULL"
+    int Attempts "NOT NULL; default 0"
+    nvarchar(1000) LastError "NULL"
+    rowversion Version "NOT NULL"
+  }
+  Schools["Schools (external)"] {
+    uniqueidentifier Id PK "NOT NULL; default NEWSEQUENTIALID(); referenced key columns only"
+  }
+  AspNetUsers["AspNetUsers (external)"] {
+    uniqueidentifier Id PK "NOT NULL; referenced key columns only"
+  }
+  %% FK244 FK_AuditEvents_Schools_1: AuditEvents (SchoolId) -> Schools (Id)
+  Schools |o..o{ AuditEvents : "owns [FK244]"
+  %% FK245 FK_AuditEvents_AspNetUsers_2: AuditEvents (ActorId) -> AspNetUsers (Id)
+  AspNetUsers |o..o{ AuditEvents : "performs [FK245]"
+  %% FK246 FK_OperationReceipts_AspNetUsers_1: OperationReceipts (ActorId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ OperationReceipts : "performs [FK246]"

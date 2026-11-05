@@ -1,0 +1,106 @@
+%%{init: {"startOnLoad":false,"htmlLabels":false,"flowchart":{"htmlLabels":false},"theme":"base","securityLevel":"strict","maxTextSize":1000000,"maxEdges":2000,"fontFamily":"Arial, sans-serif","themeCSS":".edgeLabel rect.background{fill:#ffffff!important;stroke:none!important}.edgeLabel text,.edgeLabel tspan{fill:#111111!important}","themeVariables":{"fontFamily":"Arial, sans-serif","fontSize":"16px","primaryColor":"#ffffff","primaryTextColor":"#111111","primaryBorderColor":"#374151","lineColor":"#374151","secondaryColor":"#ffffff","tertiaryColor":"#ffffff","mainBkg":"#ffffff","textColor":"#111111","nodeBorder":"#374151","edgeLabelBackground":"#ffffff","attributeBackgroundColorOdd":"#ffffff","attributeBackgroundColorEven":"#f3f4f6"},"er":{"useMaxWidth":false,"diagramPadding":45,"entityPadding":12,"minEntityWidth":150,"minEntityHeight":55,"nodeSpacing":90,"rankSpacing":180,"fontSize":16,"layoutDirection":"LR"}}}%%
+erDiagram
+  direction LR
+  accTitle: ORBIT ER — People & schools
+  accDescr: White background. External entities are marked external. Business relationship labels and stable FK IDs map to ordered source and referenced columns in the accompanying Markdown.
+  UserProfiles["UserProfiles"]
+  Students["Students"]
+  Teachers["Teachers"]
+  SubjectCatalog["SubjectCatalog"]
+  TeacherSubjects["TeacherSubjects"]
+  TeacherGradeLevels["TeacherGradeLevels"]
+  TeacherFacets["TeacherFacets"]
+  Schools["Schools"]
+  SchoolLevels["SchoolLevels"]
+  SchoolSubjects["SchoolSubjects"]
+  SchoolRegistrationReviews["SchoolRegistrationReviews"]
+  SchoolMemberships["SchoolMemberships"]
+  MembershipPermissions["MembershipPermissions"]
+  SchoolStudents["SchoolStudents"]
+  SchoolTeachers["SchoolTeachers"]
+  AccountLinkRequests["AccountLinkRequests"]
+  AccountLinkHistory["AccountLinkHistory"]
+  AspNetUsers["AspNetUsers (external)"]
+  Files["Files (external)"]
+  %% FK009 FK_UserProfiles_AspNetUsers_1: UserProfiles (UserId) -> AspNetUsers (Id)
+  AspNetUsers ||--o| UserProfiles : "identifies [FK009]"
+  %% FK010 FK_UserProfiles_Files_2: UserProfiles (PhotoFileId) -> Files (Id)
+  Files |o..o{ UserProfiles : "attaches file [FK010]"
+  %% FK011 FK_Students_AspNetUsers_1: Students (UserId) -> AspNetUsers (Id)
+  AspNetUsers |o..o| Students : "identifies [FK011]"
+  %% FK012 FK_Teachers_AspNetUsers_1: Teachers (UserId) -> AspNetUsers (Id)
+  AspNetUsers |o..o| Teachers : "identifies [FK012]"
+  %% FK013 FK_Teachers_SubjectCatalog_2: Teachers (PrimarySubjectId) -> SubjectCatalog (Id)
+  SubjectCatalog |o..o{ Teachers : "classifies subject [FK013]"
+  %% FK014 FK_Teachers_Files_3: Teachers (CvFileId) -> Files (Id)
+  Files |o..o{ Teachers : "attaches file [FK014]"
+  %% FK015 FK_TeacherSubjects_Teachers_1: TeacherSubjects (TeacherId) -> Teachers (Id)
+  Teachers ||--o{ TeacherSubjects : "describes teacher [FK015]"
+  %% FK016 FK_TeacherSubjects_SubjectCatalog_2: TeacherSubjects (SubjectCatalogId) -> SubjectCatalog (Id)
+  SubjectCatalog ||--o{ TeacherSubjects : "classifies subject [FK016]"
+  %% FK017 FK_TeacherGradeLevels_Teachers_1: TeacherGradeLevels (TeacherId) -> Teachers (Id)
+  Teachers ||--o{ TeacherGradeLevels : "describes teacher [FK017]"
+  %% FK018 FK_TeacherFacets_Teachers_1: TeacherFacets (TeacherId) -> Teachers (Id)
+  Teachers ||..o{ TeacherFacets : "describes teacher [FK018]"
+  %% FK019 FK_TeacherFacets_Files_2: TeacherFacets (FileId) -> Files (Id)
+  Files |o..o{ TeacherFacets : "attaches file [FK019]"
+  %% FK020 FK_Schools_Files_1: Schools (LogoFileId) -> Files (Id)
+  Files |o..o{ Schools : "attaches file [FK020]"
+  %% FK021 FK_SchoolLevels_Schools_1: SchoolLevels (SchoolId) -> Schools (Id)
+  Schools ||--o{ SchoolLevels : "owns [FK021]"
+  %% FK022 FK_SchoolSubjects_Schools_1: SchoolSubjects (SchoolId) -> Schools (Id)
+  Schools ||..o{ SchoolSubjects : "offers subjects [FK022]"
+  %% FK023 FK_SchoolSubjects_SubjectCatalog_2: SchoolSubjects (CatalogSubjectId) -> SubjectCatalog (Id)
+  SubjectCatalog |o..o{ SchoolSubjects : "classifies subject [FK023]"
+  %% FK024 FK_SchoolRegistrationReviews_Schools_1: SchoolRegistrationReviews (SchoolId) -> Schools (Id)
+  Schools ||..o{ SchoolRegistrationReviews : "owns [FK024]"
+  %% FK025 FK_SchoolRegistrationReviews_AspNetUsers_2: SchoolRegistrationReviews (RequestedById) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ SchoolRegistrationReviews : "requests [FK025]"
+  %% FK026 FK_SchoolRegistrationReviews_AspNetUsers_3: SchoolRegistrationReviews (DecidedById) -> AspNetUsers (Id)
+  AspNetUsers |o..o{ SchoolRegistrationReviews : "decides [FK026]"
+  %% FK027 FK_SchoolMemberships_Schools_1: SchoolMemberships (SchoolId) -> Schools (Id)
+  Schools ||..o{ SchoolMemberships : "has members [FK027]"
+  %% FK028 FK_SchoolMemberships_AspNetUsers_2: SchoolMemberships (UserId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ SchoolMemberships : "identifies [FK028]"
+  %% FK029 FK_MembershipPermissions_Schools_1: MembershipPermissions (SchoolId) -> Schools (Id)
+  Schools ||--o{ MembershipPermissions : "owns [FK029]"
+  %% FK030 FK_MembershipPermissions_AspNetUsers_2: MembershipPermissions (GrantedById) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ MembershipPermissions : "grants [FK030]"
+  %% FK031 FK_MembershipPermissions_SchoolMemberships_3: MembershipPermissions (SchoolId, MembershipId) -> SchoolMemberships (SchoolId, Id)
+  SchoolMemberships ||--o{ MembershipPermissions : "grants permission [FK031] (2 cols)"
+  %% FK032 FK_SchoolStudents_Schools_1: SchoolStudents (SchoolId) -> Schools (Id)
+  Schools ||..o{ SchoolStudents : "registers students [FK032]"
+  %% FK033 FK_SchoolStudents_Students_2: SchoolStudents (StudentId) -> Students (Id)
+  Students ||..o{ SchoolStudents : "identifies student [FK033]"
+  %% FK034 FK_SchoolTeachers_Schools_1: SchoolTeachers (SchoolId) -> Schools (Id)
+  Schools ||..o{ SchoolTeachers : "lists teachers [FK034]"
+  %% FK035 FK_SchoolTeachers_Teachers_2: SchoolTeachers (TeacherId) -> Teachers (Id)
+  Teachers ||..o{ SchoolTeachers : "describes teacher [FK035]"
+  %% FK036 FK_AccountLinkRequests_Schools_1: AccountLinkRequests (SchoolId) -> Schools (Id)
+  Schools ||..o{ AccountLinkRequests : "requests linking [FK036]"
+  %% FK037 FK_AccountLinkRequests_AspNetUsers_2: AccountLinkRequests (TargetUserId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ AccountLinkRequests : "invited account [FK037]"
+  %% FK038 FK_AccountLinkRequests_AspNetUsers_3: AccountLinkRequests (RequestedById) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ AccountLinkRequests : "requests [FK038]"
+  %% FK039 FK_AccountLinkRequests_AspNetUsers_4: AccountLinkRequests (VerifiedById) -> AspNetUsers (Id)
+  AspNetUsers |o..o{ AccountLinkRequests : "verifies [FK039]"
+  %% FK040 FK_AccountLinkRequests_AspNetUsers_5: AccountLinkRequests (SchoolApprovedById) -> AspNetUsers (Id)
+  AspNetUsers |o..o{ AccountLinkRequests : "approves link [FK040]"
+  %% FK041 FK_AccountLinkRequests_SchoolStudents_6: AccountLinkRequests (SchoolId, SchoolStudentId) -> SchoolStudents (SchoolId, Id)
+  SchoolStudents |o..o{ AccountLinkRequests : "enrolls student [FK041] (2 cols)"
+  %% FK042 FK_AccountLinkRequests_SchoolTeachers_7: AccountLinkRequests (SchoolId, SchoolTeacherId) -> SchoolTeachers (SchoolId, Id)
+  SchoolTeachers |o..o{ AccountLinkRequests : "assigns teacher [FK042] (2 cols)"
+  %% FK043 FK_AccountLinkHistory_Schools_1: AccountLinkHistory (SchoolId) -> Schools (Id)
+  Schools ||..o{ AccountLinkHistory : "owns [FK043]"
+  %% FK044 FK_AccountLinkHistory_AspNetUsers_2: AccountLinkHistory (FromUserId) -> AspNetUsers (Id)
+  AspNetUsers |o..o{ AccountLinkHistory : "previous account [FK044]"
+  %% FK045 FK_AccountLinkHistory_AspNetUsers_3: AccountLinkHistory (ToUserId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ AccountLinkHistory : "linked account [FK045]"
+  %% FK046 FK_AccountLinkHistory_AspNetUsers_4: AccountLinkHistory (ActorId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ AccountLinkHistory : "performs [FK046]"
+  %% FK047 FK_AccountLinkHistory_SchoolStudents_5: AccountLinkHistory (SchoolId, SchoolStudentId) -> SchoolStudents (SchoolId, Id)
+  SchoolStudents |o..o{ AccountLinkHistory : "enrolls student [FK047] (2 cols)"
+  %% FK048 FK_AccountLinkHistory_SchoolTeachers_6: AccountLinkHistory (SchoolId, SchoolTeacherId) -> SchoolTeachers (SchoolId, Id)
+  SchoolTeachers |o..o{ AccountLinkHistory : "assigns teacher [FK048] (2 cols)"
+  %% FK049 FK_AccountLinkHistory_AccountLinkRequests_7: AccountLinkHistory (SchoolId, RequestId) -> AccountLinkRequests (SchoolId, Id)
+  AccountLinkRequests |o..o{ AccountLinkHistory : "records link [FK049] (2 cols)"

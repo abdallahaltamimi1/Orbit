@@ -1,0 +1,98 @@
+%%{init: {"startOnLoad":false,"htmlLabels":false,"flowchart":{"htmlLabels":false},"theme":"base","securityLevel":"strict","maxTextSize":1000000,"maxEdges":2000,"fontFamily":"Arial, sans-serif","themeCSS":".edgeLabel rect.background{fill:#ffffff!important;stroke:none!important}.edgeLabel text,.edgeLabel tspan{fill:#111111!important}","themeVariables":{"fontFamily":"Arial, sans-serif","fontSize":"16px","primaryColor":"#ffffff","primaryTextColor":"#111111","primaryBorderColor":"#374151","lineColor":"#374151","secondaryColor":"#ffffff","tertiaryColor":"#ffffff","mainBkg":"#ffffff","textColor":"#111111","nodeBorder":"#374151","edgeLabelBackground":"#ffffff","attributeBackgroundColorOdd":"#ffffff","attributeBackgroundColorEven":"#f3f4f6"},"er":{"useMaxWidth":false,"diagramPadding":45,"entityPadding":12,"minEntityWidth":150,"minEntityHeight":55,"nodeSpacing":90,"rankSpacing":180,"fontSize":16,"layoutDirection":"LR"}}}%%
+erDiagram
+  direction LR
+  accTitle: ORBIT schema — Events & delivery — part 1
+  accDescr: White background. External entities are marked external. Business relationship labels and stable FK IDs map to ordered source and referenced columns in the accompanying Markdown.
+  SchoolEvents["SchoolEvents"] {
+    uniqueidentifier Id PK, UK "NOT NULL; default NEWSEQUENTIALID()"
+    uniqueidentifier SchoolId FK, UK "NOT NULL"
+    uniqueidentifier AcademicYearId FK, UK "NULL"
+    varchar(16) Type "NOT NULL"
+    nvarchar(160) Title "NOT NULL"
+    nvarchar(4000) Description "NOT NULL"
+    datetime2(3) OccursAt "NOT NULL"
+    nvarchar(100) TimeZoneId "NOT NULL; default 'Asia/Amman'"
+    nvarchar(160) Location "NULL"
+    varchar(12) Audience "NOT NULL"
+    varchar(12) Status "NOT NULL; default 'Published'"
+    uniqueidentifier CreatedById FK "NOT NULL"
+    datetime2(3) CreatedAt "NOT NULL; default SYSUTCDATETIME()"
+    datetime2(3) UpdatedAt "NOT NULL; default SYSUTCDATETIME()"
+    rowversion Version "NOT NULL"
+  }
+  SchoolEventSections["SchoolEventSections"] {
+    uniqueidentifier SchoolId PK, FK "NOT NULL"
+    uniqueidentifier AcademicYearId PK, FK "NOT NULL"
+    uniqueidentifier EventId PK, FK "NOT NULL"
+    uniqueidentifier SectionId PK, FK "NOT NULL"
+  }
+  LearningMeetings["LearningMeetings"] {
+    uniqueidentifier Id PK "NOT NULL; default NEWSEQUENTIALID()"
+    uniqueidentifier ChannelId FK "NOT NULL"
+    uniqueidentifier OrganizerId FK "NOT NULL"
+    uniqueidentifier GroupId FK "NULL"
+    nvarchar(150) Title "NOT NULL"
+    nvarchar(100) Subject "NOT NULL"
+    nvarchar(3000) Description "NOT NULL"
+    varchar(16) Type "NOT NULL"
+    varchar(12) Audience "NOT NULL"
+    datetime2(3) StartAt "NOT NULL"
+    datetime2(3) EndAt "NOT NULL"
+    nvarchar(100) TimeZoneId "NOT NULL; default 'Asia/Amman'"
+    nvarchar(100) RoomKey UK "NOT NULL"
+    varchar(12) Status "NOT NULL; default 'Scheduled'"
+    datetime2(3) CreatedAt "NOT NULL; default SYSUTCDATETIME()"
+    datetime2(3) UpdatedAt "NOT NULL; default SYSUTCDATETIME()"
+    rowversion Version "NOT NULL"
+  }
+  MeetingGroups["MeetingGroups"] {
+    uniqueidentifier Id PK, UK "NOT NULL; default NEWSEQUENTIALID()"
+    uniqueidentifier ChannelId FK, UK "NOT NULL"
+    uniqueidentifier OwnerUserId FK "NOT NULL"
+    nvarchar(100) Name "NOT NULL"
+    datetime2(3) CreatedAt "NOT NULL; default SYSUTCDATETIME()"
+    datetime2(3) UpdatedAt "NOT NULL; default SYSUTCDATETIME()"
+    rowversion Version "NOT NULL"
+  }
+  Schools["Schools (external)"] {
+    uniqueidentifier Id PK "NOT NULL; default NEWSEQUENTIALID(); referenced key columns only"
+  }
+  AcademicYears["AcademicYears (external)"] {
+    uniqueidentifier Id PK, UK "NOT NULL; default NEWSEQUENTIALID(); referenced key columns only"
+    uniqueidentifier SchoolId FK, UK "NOT NULL; referenced key columns only"
+  }
+  AspNetUsers["AspNetUsers (external)"] {
+    uniqueidentifier Id PK "NOT NULL; referenced key columns only"
+  }
+  Sections["Sections (external)"] {
+    uniqueidentifier Id PK, UK "NOT NULL; default NEWSEQUENTIALID(); referenced key columns only"
+    uniqueidentifier SchoolId FK, UK "NOT NULL; referenced key columns only"
+    uniqueidentifier AcademicYearId FK, UK "NOT NULL; referenced key columns only"
+  }
+  Channels["Channels (external)"] {
+    uniqueidentifier Id PK, UK "NOT NULL; default NEWSEQUENTIALID(); referenced key columns only"
+  }
+  %% FK220 FK_SchoolEvents_Schools_1: SchoolEvents (SchoolId) -> Schools (Id)
+  Schools ||..o{ SchoolEvents : "hosts [FK220]"
+  %% FK221 FK_SchoolEvents_AcademicYears_2: SchoolEvents (SchoolId, AcademicYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears |o..o{ SchoolEvents : "scopes year [FK221] (2 cols)"
+  %% FK222 FK_SchoolEvents_AspNetUsers_3: SchoolEvents (CreatedById) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ SchoolEvents : "creates [FK222]"
+  %% FK223 FK_SchoolEventSections_Schools_1: SchoolEventSections (SchoolId) -> Schools (Id)
+  Schools ||--o{ SchoolEventSections : "owns [FK223]"
+  %% FK224 FK_SchoolEventSections_AcademicYears_2: SchoolEventSections (SchoolId, AcademicYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears ||--o{ SchoolEventSections : "scopes year [FK224] (2 cols)"
+  %% FK225 FK_SchoolEventSections_SchoolEvents_3: SchoolEventSections (SchoolId, AcademicYearId, EventId) -> SchoolEvents (SchoolId, AcademicYearId, Id)
+  SchoolEvents ||--o{ SchoolEventSections : "targets audience [FK225] (3 cols)"
+  %% FK226 FK_SchoolEventSections_Sections_4: SchoolEventSections (SchoolId, AcademicYearId, SectionId) -> Sections (SchoolId, AcademicYearId, Id)
+  Sections ||--o{ SchoolEventSections : "groups section [FK226] (3 cols)"
+  %% FK227 FK_LearningMeetings_AspNetUsers_1: LearningMeetings (OrganizerId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ LearningMeetings : "organizes [FK227]"
+  %% FK228 FK_LearningMeetings_Channels_2: LearningMeetings (ChannelId) -> Channels (Id)
+  Channels ||..o{ LearningMeetings : "contains activity [FK228]"
+  %% FK229 FK_LearningMeetings_MeetingGroups_3: LearningMeetings (ChannelId, GroupId) -> MeetingGroups (ChannelId, Id)
+  MeetingGroups |o..o{ LearningMeetings : "selects audience [FK229] (2 cols)"
+  %% FK230 FK_MeetingGroups_AspNetUsers_1: MeetingGroups (OwnerUserId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ MeetingGroups : "owns [FK230]"
+  %% FK231 FK_MeetingGroups_Channels_2: MeetingGroups (ChannelId) -> Channels (Id)
+  Channels ||..o{ MeetingGroups : "contains activity [FK231]"

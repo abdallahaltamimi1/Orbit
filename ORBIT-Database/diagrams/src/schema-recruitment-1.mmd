@@ -1,0 +1,74 @@
+%%{init: {"startOnLoad":false,"htmlLabels":false,"flowchart":{"htmlLabels":false},"theme":"base","securityLevel":"strict","maxTextSize":1000000,"maxEdges":2000,"fontFamily":"Arial, sans-serif","themeCSS":".edgeLabel rect.background{fill:#ffffff!important;stroke:none!important}.edgeLabel text,.edgeLabel tspan{fill:#111111!important}","themeVariables":{"fontFamily":"Arial, sans-serif","fontSize":"16px","primaryColor":"#ffffff","primaryTextColor":"#111111","primaryBorderColor":"#374151","lineColor":"#374151","secondaryColor":"#ffffff","tertiaryColor":"#ffffff","mainBkg":"#ffffff","textColor":"#111111","nodeBorder":"#374151","edgeLabelBackground":"#ffffff","attributeBackgroundColorOdd":"#ffffff","attributeBackgroundColorEven":"#f3f4f6"},"er":{"useMaxWidth":false,"diagramPadding":45,"entityPadding":12,"minEntityWidth":150,"minEntityHeight":55,"nodeSpacing":90,"rankSpacing":180,"fontSize":16,"layoutDirection":"LR"}}}%%
+erDiagram
+  direction LR
+  accTitle: ORBIT schema — Recruitment — part 1
+  accDescr: White background. External entities are marked external. Business relationship labels and stable FK IDs map to ordered source and referenced columns in the accompanying Markdown.
+  Opportunities["Opportunities"] {
+    uniqueidentifier Id PK, UK "NOT NULL; default NEWSEQUENTIALID()"
+    uniqueidentifier SchoolId FK, UK "NOT NULL"
+    nvarchar(150) Title "NOT NULL"
+    uniqueidentifier SubjectCatalogId FK "NOT NULL"
+    nvarchar(100) Location "NOT NULL"
+    varchar(8) EmploymentType "NOT NULL"
+    tinyint MinimumExperience "NOT NULL; default 0"
+    nvarchar(800) QualificationText "NULL"
+    nvarchar(3000) Description "NULL"
+    bit IsRemote "NOT NULL; default 0"
+    varchar(12) Status "NOT NULL; default 'Draft'"
+    datetime2(3) PublishedAt "NULL"
+    datetime2(3) ClosedAt "NULL"
+    uniqueidentifier CreatedById FK "NOT NULL"
+    datetime2(3) CreatedAt "NOT NULL; default SYSUTCDATETIME()"
+    datetime2(3) UpdatedAt "NOT NULL; default SYSUTCDATETIME()"
+    rowversion Version "NOT NULL"
+  }
+  OpportunityGradeLevels["OpportunityGradeLevels"] {
+    uniqueidentifier SchoolId PK, FK "NOT NULL"
+    uniqueidentifier OpportunityId PK, FK "NOT NULL"
+    nvarchar(40) GradeCode PK "NOT NULL"
+  }
+  OpportunitySkills["OpportunitySkills"] {
+    uniqueidentifier SchoolId PK, FK "NOT NULL"
+    uniqueidentifier OpportunityId PK, FK "NOT NULL"
+    nvarchar(200) Skill "NOT NULL"
+    nvarchar(200) NormalizedSkill PK "NOT NULL"
+  }
+  OpportunityStatusHistory["OpportunityStatusHistory"] {
+    uniqueidentifier Id PK, UK "NOT NULL; default NEWSEQUENTIALID()"
+    uniqueidentifier SchoolId FK, UK "NOT NULL"
+    uniqueidentifier OpportunityId FK, UK "NOT NULL"
+    varchar(12) FromStatus "NULL"
+    varchar(12) ToStatus "NOT NULL"
+    nvarchar(500) Reason "NULL"
+    uniqueidentifier ActorId FK "NOT NULL"
+    datetime2(3) CreatedAt UK "NOT NULL; default SYSUTCDATETIME()"
+  }
+  Schools["Schools (external)"] {
+    uniqueidentifier Id PK "NOT NULL; default NEWSEQUENTIALID(); referenced key columns only"
+  }
+  AspNetUsers["AspNetUsers (external)"] {
+    uniqueidentifier Id PK "NOT NULL; referenced key columns only"
+  }
+  SubjectCatalog["SubjectCatalog (external)"] {
+    uniqueidentifier Id PK "NOT NULL; default NEWSEQUENTIALID(); referenced key columns only"
+  }
+  %% FK186 FK_Opportunities_Schools_1: Opportunities (SchoolId) -> Schools (Id)
+  Schools ||..o{ Opportunities : "advertises [FK186]"
+  %% FK187 FK_Opportunities_AspNetUsers_2: Opportunities (CreatedById) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ Opportunities : "creates [FK187]"
+  %% FK188 FK_Opportunities_SubjectCatalog_3: Opportunities (SubjectCatalogId) -> SubjectCatalog (Id)
+  SubjectCatalog ||..o{ Opportunities : "classifies subject [FK188]"
+  %% FK189 FK_OpportunityGradeLevels_Schools_1: OpportunityGradeLevels (SchoolId) -> Schools (Id)
+  Schools ||--o{ OpportunityGradeLevels : "owns [FK189]"
+  %% FK190 FK_OpportunityGradeLevels_Opportunities_2: OpportunityGradeLevels (SchoolId, OpportunityId) -> Opportunities (SchoolId, Id)
+  Opportunities ||--o{ OpportunityGradeLevels : "receives applications [FK190] (2 cols)"
+  %% FK191 FK_OpportunitySkills_Schools_1: OpportunitySkills (SchoolId) -> Schools (Id)
+  Schools ||--o{ OpportunitySkills : "owns [FK191]"
+  %% FK192 FK_OpportunitySkills_Opportunities_2: OpportunitySkills (SchoolId, OpportunityId) -> Opportunities (SchoolId, Id)
+  Opportunities ||--o{ OpportunitySkills : "receives applications [FK192] (2 cols)"
+  %% FK193 FK_OpportunityStatusHistory_Schools_1: OpportunityStatusHistory (SchoolId) -> Schools (Id)
+  Schools ||..o{ OpportunityStatusHistory : "owns [FK193]"
+  %% FK194 FK_OpportunityStatusHistory_AspNetUsers_2: OpportunityStatusHistory (ActorId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ OpportunityStatusHistory : "performs [FK194]"
+  %% FK195 FK_OpportunityStatusHistory_Opportunities_3: OpportunityStatusHistory (SchoolId, OpportunityId) -> Opportunities (SchoolId, Id)
+  Opportunities ||..o{ OpportunityStatusHistory : "receives applications [FK195] (2 cols)"

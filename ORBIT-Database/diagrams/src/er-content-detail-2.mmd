@@ -1,0 +1,40 @@
+%%{init: {"startOnLoad":false,"htmlLabels":false,"flowchart":{"htmlLabels":false},"theme":"base","securityLevel":"strict","maxTextSize":1000000,"maxEdges":2000,"fontFamily":"Arial, sans-serif","themeCSS":".edgeLabel rect.background{fill:#ffffff!important;stroke:none!important}.edgeLabel text,.edgeLabel tspan{fill:#111111!important}","themeVariables":{"fontFamily":"Arial, sans-serif","fontSize":"16px","primaryColor":"#ffffff","primaryTextColor":"#111111","primaryBorderColor":"#374151","lineColor":"#374151","secondaryColor":"#ffffff","tertiaryColor":"#ffffff","mainBkg":"#ffffff","textColor":"#111111","nodeBorder":"#374151","edgeLabelBackground":"#ffffff","attributeBackgroundColorOdd":"#ffffff","attributeBackgroundColorEven":"#f3f4f6"},"er":{"useMaxWidth":false,"diagramPadding":45,"entityPadding":12,"minEntityWidth":150,"minEntityHeight":55,"nodeSpacing":90,"rankSpacing":180,"fontSize":16,"layoutDirection":"LR"}}}%%
+erDiagram
+  direction LR
+  accTitle: ORBIT ER — Channels & learning — detail 2
+  accDescr: White background. External entities are marked external. Business relationship labels and stable FK IDs map to ordered source and referenced columns in the accompanying Markdown.
+  ChannelOwnershipHistory["ChannelOwnershipHistory"]
+  Posts["Posts"]
+  PostSections["PostSections"]
+  Files["Files"]
+  AspNetUsers["AspNetUsers (external)"]
+  Channels["Channels (external)"]
+  Schools["Schools (external)"]
+  AcademicYears["AcademicYears (external)"]
+  ChannelSections["ChannelSections (external)"]
+  %% FK138 FK_ChannelOwnershipHistory_AspNetUsers_1: ChannelOwnershipHistory (FromUserId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ ChannelOwnershipHistory : "previous account [FK138]"
+  %% FK139 FK_ChannelOwnershipHistory_AspNetUsers_2: ChannelOwnershipHistory (ToUserId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ ChannelOwnershipHistory : "linked account [FK139]"
+  %% FK140 FK_ChannelOwnershipHistory_AspNetUsers_3: ChannelOwnershipHistory (ActorId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ ChannelOwnershipHistory : "performs [FK140]"
+  %% FK141 FK_ChannelOwnershipHistory_Channels_4: ChannelOwnershipHistory (ChannelId) -> Channels (Id)
+  Channels ||..o{ ChannelOwnershipHistory : "contains activity [FK141]"
+  %% FK142 FK_Posts_AspNetUsers_1: Posts (AuthorId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ Posts : "authors [FK142]"
+  %% FK143 FK_Posts_AspNetUsers_2: Posts (DeletedById) -> AspNetUsers (Id)
+  AspNetUsers |o..o{ Posts : "removes access [FK143]"
+  %% FK144 FK_Posts_Channels_3: Posts (ChannelId) -> Channels (Id)
+  Channels ||..o{ Posts : "contains activity [FK144]"
+  %% FK145 FK_Posts_Files_4: Posts (VideoFileId) -> Files (Id)
+  Files |o..o{ Posts : "attaches file [FK145]"
+  %% FK146 FK_PostSections_Schools_1: PostSections (SchoolId) -> Schools (Id)
+  Schools ||..o{ PostSections : "owns [FK146]"
+  %% FK147 FK_PostSections_AcademicYears_2: PostSections (SchoolId, AcademicYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears ||..o{ PostSections : "scopes year [FK147] (2 cols)"
+  %% FK148 FK_PostSections_Posts_3: PostSections (ChannelId, PostId) -> Posts (ChannelId, Id)
+  Posts ||..o{ PostSections : "targets content [FK148] (2 cols)"
+  %% FK149 FK_PostSections_ChannelSections_4: PostSections (SchoolId, AcademicYearId, ChannelId, SectionId, SubjectId) -> ChannelSections (SchoolId, AcademicYearId, ChannelId, SectionId, SubjectId)
+  ChannelSections ||..o{ PostSections : "targets section [FK149] (5 cols)"
+  %% FK150 FK_Files_AspNetUsers_1: Files (UploadedById) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ Files : "uploads [FK150]"
