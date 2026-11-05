@@ -131,9 +131,9 @@
       deleted = A.get("orbit.deleted.posts", []),
       posts = (A.get("orbit.channels.v2", {}).posts || []).filter(
         (p) =>
-          !p.sample &&
+          !p.sample && p.moderationStatus !== "hidden" &&
           !deleted.includes(p.id) &&
-          channels.some((c) => c.id === p.channel && (!c.private || memberships.includes(c.id))),
+          channels.some((c) => c.id === p.channel && (A.managedChannel(c) ? A.schoolChannelStudent(c, user.email, p) : (!c.private || memberships.includes(c.id)))),
       );
     const indexedSubjects = new Set(["physics"]);
     const subjectNames = {
@@ -193,25 +193,6 @@
           url: link(post),
         });
     }
-    const accounts = A.get("orbit.recruitment.v1", {}).accounts || [];
-    for (const teacher of OrbitRecruitment.allTeachers().filter(
-      (p) =>
-        p.available &&
-        p.shareWithSchools &&
-        !accounts.some((a) => a.email === p.id && ["suspended", "deleted"].includes(a.status)),
-    ))
-      list.push({
-        name: teacher.name,
-        category: "teacher",
-        detail: t("Professional profile", "الملف المهني"),
-        keywords:
-          teacher.name +
-          " " +
-          (teacher.subjects || []).join(" ") +
-          " " +
-          (teacher.skills || []).join(" "),
-        url: "../teacher-profile/teacher-profile.html?id=" + encodeURIComponent(teacher.id),
-      });
     return [
       ...new Map(
         list.map((item) => [item.category + "|" + item.url + "|" + item.name, item]),

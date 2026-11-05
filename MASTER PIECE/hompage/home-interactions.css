@@ -8,12 +8,12 @@
 }
 #orbit-page .orbit-feature-link:hover {
   transform: translateY(-4px);
-  border-color: #9c7cff;
-  box-shadow: 0 14px 40px #7352c322;
+  border-color: var(--orbit-accent);
+  box-shadow: 0 14px 40px color-mix(in srgb, var(--orbit-accent) 18%, transparent);
 }
 #orbit-page .orbit-feature-link:focus-visible,
 #orbit-page .orbit-journey-stages button:focus-visible {
-  outline: 3px solid #8969ed;
+  outline: 3px solid var(--orbit-focus);
   outline-offset: 5px;
 }
 #orbit-page #features {
@@ -26,23 +26,25 @@
   margin-top: 18px;
 }
 #orbit-page .orbit-journey-stages button {
-  border: 1px solid #b7a2ed70;
-  background: #ffffffc9;
+  border: 1px solid var(--orbit-border);
+  background: var(--orbit-surface);
   border-radius: 18px;
   padding: 8px 12px;
-  color: #5b4385;
+  color: var(--orbit-accent);
   font: inherit;
   cursor: pointer;
 }
 #orbit-page .orbit-journey-stages [aria-current="step"] {
-  background: #8062d9;
-  color: white;
+  background: var(--orbit-action);
+  color: var(--orbit-on-action);
 }
 #orbit-page .orbit-home-mobile {
   padding: 16px;
   display: grid;
   gap: 12px;
-  background: #ffffffee;
+  background: var(--orbit-surface);
+  color: var(--orbit-ink);
+  border: 1px solid var(--orbit-border);
   border-radius: 16px;
   margin: 8px 16px;
 }
@@ -51,7 +53,7 @@
 }
 #orbit-page .orbit-home-mobile a {
   padding: 8px;
-  color: #514377;
+  color: var(--orbit-ink);
   text-decoration: none;
 }
 #orbit-page .u-focus.on {

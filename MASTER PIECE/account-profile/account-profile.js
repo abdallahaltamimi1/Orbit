@@ -61,7 +61,7 @@ function render(edit = false, message = "") {
     personal = [
       [t("Name", "الاسم"), p.name],
       [t("Email", "البريد"), p.email],
-      [t("Address", "العنوان"), p.address || p.location],
+      [t("Address", "العنوان"), p.address || (!teacher ? p.location : "")],
       [t("Contact", "التواصل"), p.contact || p.phone],
     ];
   if (!teacher && !school)
@@ -81,26 +81,22 @@ function render(edit = false, message = "") {
           t("Subjects", "المواد"),
           [...new Set([p.subject, ...(p.subjects || [])].filter(Boolean))].map(readableSubject),
         ],
-        [t("Location", "الموقع"), p.location],
-        [
-          t("Recruitment discovery", "اكتشاف المدارس"),
-          p.shareWithSchools ? t("Allowed", "مفعّل") : t("Private", "غير مفعّل"),
-        ],
+        [t("Certificates", "الشهادات"), p.certificates],
+        [t("Teaching work samples", "نماذج من أعمالك التعليمية"), p.workSamples],
       ]
     : school
       ? [
           [t("Description", "نبذة المدرسة"), p.description],
           [t("Website", "الموقع الإلكتروني"), p.website],
           [t("Phone", "الهاتف"), p.phone],
-          [t("Subjects", "المواد"), p.subjects],
           [t("Levels", "المراحل"), p.levels],
         ]
       : [];
   let inputs = "";
   if (edit) {
-    inputs = `<fieldset class="profile-section" id="profile-identity"><legend>${t("Identity and contact", "بياناتك الأساسية")}</legend><div class="profile-upload">${photo ? `<img id="profile-image-preview" data-asset="${esc(photo)}" alt="${t("Profile preview", "معاينة الصورة")}">` : `<img id="profile-image-preview" hidden alt="${t("Profile preview", "معاينة الصورة")}">`}<label>${school ? t("School logo", "شعار المدرسة") : t("Your picture", "صورتك")}<input id="profile-image" type="file" accept="image/png,image/jpeg,image/webp"><small>${t("PNG, JPEG or WebP · up to 5 MB", "PNG أو JPEG أو WebP · حتى 5 MB")}</small></label></div><div class="profile-fields">${field("name", school ? t("School name", "اسم المدرسة") : t("Full name", "الاسم الكامل"), p.name, "text", 'required maxlength="100" autocomplete="name"')}${field("email", t("Account email", "بريد الحساب"), p.email, "email", 'readonly aria-describedby="email-note"')}${field("address", t("Address", "العنوان"), p.address || "", "text", 'maxlength="300"')}${field("contact", t("Contact information", "وسيلة التواصل"), p.contact || "", "text", school ? 'required maxlength="200"' : 'maxlength="200"')}${!teacher && !school ? option("level", t("Educational level", "المستوى"), levelItems, p.level || "primary") : field("location", t("City / location", "المدينة / الموقع"), p.location || "", "text", school ? 'required maxlength="200"' : 'maxlength="200"')}</div><p id="email-note" class="email-note">${t("Email changes require a verified account service. This connection is not configured.", "تغيير بريد الحساب يحتاج خدمة تحقق عبر الخادم، وهي غير مربوطة حاليًا.")}</p></fieldset>`;
+    inputs = `<fieldset class="profile-section" id="profile-identity"><legend>${t("Identity and contact", "بياناتك الأساسية")}</legend><div class="profile-upload">${photo ? `<img id="profile-image-preview" data-asset="${esc(photo)}" alt="${t("Profile preview", "معاينة الصورة")}">` : `<img id="profile-image-preview" hidden alt="${t("Profile preview", "معاينة الصورة")}">`}<label>${school ? t("School logo", "شعار المدرسة") : t("Your picture", "صورتك")}<input id="profile-image" type="file" accept="image/png,image/jpeg,image/webp"><small>${t("PNG, JPEG or WebP · up to 5 MB", "PNG أو JPEG أو WebP · حتى 5 MB")}</small></label></div><div class="profile-fields">${field("name", school ? t("School name", "اسم المدرسة") : t("Full name", "الاسم الكامل"), p.name, "text", 'required maxlength="100" autocomplete="name"')}${field("email", t("Account email", "بريد الحساب"), p.email, "email", 'readonly aria-describedby="email-note"')}${field("address", t("Address", "العنوان"), p.address || "", "text", 'maxlength="300"')}${field("contact", t("Contact information", "وسيلة التواصل"), p.contact || "", "text", school ? 'required maxlength="200"' : 'maxlength="200"')}${!teacher && !school ? option("level", t("Educational level", "المستوى"), levelItems, p.level || "primary") : school ? field("location", t("City / location", "المدينة / الموقع"), p.location || "", "text", 'required maxlength="200"') : ""}</div><p id="email-note" class="email-note">${t("Email changes require a verified account service. This connection is not configured.", "تغيير بريد الحساب يحتاج خدمة تحقق عبر الخادم، وهي غير مربوطة حاليًا.")}</p></fieldset>`;
     if (teacher)
-      inputs += `<fieldset class="profile-section" id="profile-professional"><legend>${t("Your teaching experience", "حضورك المهني")}</legend><div class="profile-fields">${option("subject", t("Primary subject", "المادة الأساسية"), subjectItems, p.subject || "physics")}${field("experience", t("Years of experience", "سنوات الخبرة"), p.experience ?? 0, "number", 'required min="0" max="60" step="1"')}${field("qualification", t("Qualifications", "المؤهلات"), p.qualification || "", "text", 'maxlength="1000"')}${field("subjects", t("Additional subjects · comma-separated", "مواد إضافية · افصل بفواصل"), (p.subjects || []).filter((subject) => subject !== p.subject).join(", "))}${field("grades", t("Grades · comma-separated", "الصفوف · افصل بفواصل"), (p.grades || []).join(", "))}${field("skills", t("Skills · comma-separated", "المهارات · افصل بفواصل"), (p.skills || []).join(", "))}${field("methods", t("Teaching strategies", "استراتيجيات التدريس"), (p.methods || []).join(", "))}${field("cv", t("CV / portfolio link · HTTPS", "رابط السيرة / البورتفوليو · HTTPS"), p.cv || "", "url")}${area("bio", t("Professional biography", "نبذة مهنية"), p.bio || "", 'maxlength="3000"')}${area("positions", t("Previous teaching positions", "خبرات التدريس السابقة"), p.positions || "", 'maxlength="2000"')}</div></fieldset><fieldset class="profile-section" id="profile-privacy"><legend>${t("Opportunities and privacy", "الفرص والخصوصية")}</legend><p class="privacy-intro">${t("Choose what schools can discover. These preferences do not publish private classroom content.", "اختَر شو ممكن المدارس تكتشف عنك. هالخيارات ما بتنشر محتوى الصف الخاص.")}</p>${[
+      inputs += `<fieldset class="profile-section" id="profile-professional"><legend>${t("Your teaching experience", "حضورك المهني")}</legend><div class="profile-fields">${option("subject", t("Primary subject", "المادة الأساسية"), subjectItems, p.subject || "physics")}${field("experience", t("Years of experience", "سنوات الخبرة"), p.experience ?? 0, "number", 'required min="0" max="60" step="1"')}${field("qualification", t("Qualifications", "المؤهلات"), p.qualification || "", "text", 'maxlength="1000"')}${field("subjects", t("Additional subjects · comma-separated", "مواد إضافية · افصل بفواصل"), (p.subjects || []).filter((subject) => subject !== p.subject).join(", "))}${field("grades", t("Grades · comma-separated", "الصفوف · افصل بفواصل"), (p.grades || []).join(", "))}${field("skills", t("Professional skills · comma-separated", "المهارات المهنية · افصل بفواصل"), (p.skills || []).join(", "))}${field("methods", t("Teaching strategies", "استراتيجيات التدريس"), (p.methods || []).join(", "))}${field("cv", t("CV / portfolio link · HTTPS", "رابط السيرة / البورتفوليو · HTTPS"), p.cv || "", "url")}${area("bio", t("Professional introduction", "نبذة مهنية"), p.bio || "", 'maxlength="3000"')}${area("positions", t("Teaching experience", "الخبرات التعليمية"), p.positions || "", 'maxlength="2000"')}${area("certificates", t("Certificates · one per line", "الشهادات · شهادة في كل سطر"), (p.certificates || []).join("\n"), 'maxlength="2000"')}${area("workSamples", t("Optional teaching work sample links · HTTPS, one per line", "روابط اختيارية لنماذج أعمالك التعليمية · HTTPS، رابط في كل سطر"), (p.workSamples || []).join("\n"), 'maxlength="2000"')}</div></fieldset><fieldset class="profile-section" id="profile-privacy"><legend>${t("Opportunities and privacy", "الفرص والخصوصية")}</legend><p class="privacy-intro">${t("Choose what schools can discover. These preferences do not publish private classroom content.", "اختَر شو ممكن المدارس تكتشف عنك. هالخيارات ما بتنشر محتوى الصف الخاص.")}</p>${[
         ["available", "Available for opportunities", "متاح لفرص التدريس"],
         ["shareWithSchools", "Allow schools to discover my profile", "أسمح للمدارس باكتشاف ملفي"],
         ["shareCV", "Share my CV with schools", "مشاركة رابط السيرة مع المدارس"],
@@ -121,7 +117,7 @@ function render(edit = false, message = "") {
           ["international", "International", "دولية"],
         ],
         p.type || "private",
-      )}${field("levels", t("Education levels · comma-separated", "المراحل · افصل بفواصل"), (p.levels || []).join(", "))}${field("subjects", t("Subjects · comma-separated", "المواد · افصل بفواصل"), (p.subjects || []).join(", "))}${area("description", t("School description", "نبذة المدرسة"), p.description || "", 'maxlength="3000"')}</div></fieldset>`;
+      )}${field("levels", t("Education levels · comma-separated", "المراحل · افصل بفواصل"), (p.levels || []).join(", "))}${area("description", t("School description", "نبذة المدرسة"), p.description || "", 'maxlength="3000"')}</div></fieldset>`;
   }
   document.body.classList.add("unified-profile");
   O.shell(
@@ -215,7 +211,7 @@ function render(edit = false, message = "") {
     try {
       const patch = Object.fromEntries(new FormData(form));
       delete patch.email;
-      for (const name of ["subjects", "grades", "skills", "methods", "levels"])
+      for (const name of ["subjects", "grades", "skills", "methods", "levels", "certificates", "workSamples"])
         if (Object.hasOwn(patch, name)) patch[name] = split(patch[name]);
       if (teacher) {
         patch.experience = +patch.experience;
@@ -275,4 +271,7 @@ document.addEventListener("click", (e) => {
 window.addEventListener("orbit:profile-change", (e) => {
   if (e.detail.external && !dirty) render(editing);
 });
-render();
+render(
+  P.current()?.role === "teacher" &&
+    new URLSearchParams(location.hash.slice(1)).has("profile-professional"),
+);

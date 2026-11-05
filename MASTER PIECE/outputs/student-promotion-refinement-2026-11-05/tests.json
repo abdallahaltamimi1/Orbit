@@ -1,0 +1,62 @@
+{
+  "uniqueFocusedScenarios": 94,
+  "passed": 94,
+  "outstanding": [],
+  "runs": [
+    {
+      "name": "orbit-promotion-refinement",
+      "stats": {
+        "startTime": "2026-11-04T22:37:51.478Z",
+        "duration": 122111.242,
+        "expected": 70,
+        "skipped": 0,
+        "unexpected": 2,
+        "flaky": 0
+      }
+    },
+    {
+      "name": "orbit-promotion-final",
+      "stats": {
+        "startTime": "2026-11-04T22:40:19.872Z",
+        "duration": 99441.041,
+        "expected": 32,
+        "skipped": 0,
+        "unexpected": 1,
+        "flaky": 0
+      }
+    },
+    {
+      "name": "orbit-promotion-verified",
+      "stats": {
+        "startTime": "2026-11-04T22:42:19.812Z",
+        "duration": 36854.568,
+        "expected": 14,
+        "skipped": 0,
+        "unexpected": 2,
+        "flaky": 0
+      }
+    },
+    {
+      "name": "orbit-promotion-ux-final",
+      "stats": {
+        "startTime": "2026-11-04T22:43:25.114Z",
+        "duration": 8277.025,
+        "expected": 2,
+        "skipped": 0,
+        "unexpected": 1,
+        "flaky": 0
+      }
+    },
+    {
+      "name": "orbit-promotion-visual-confirmed",
+      "stats": {
+        "startTime": "2026-11-04T22:44:22.201Z",
+        "duration": 4317.161,
+        "expected": 1,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      }
+    }
+  ]
+}

@@ -20,11 +20,6 @@
       ? post.bodyEn || post.bodyAr
       : post.bodyAr || post.bodyEn) ||
     "";
-  const url = (post) =>
-    "../channel/channel.html?id=" +
-    encodeURIComponent(post.channel) +
-    "&post=" +
-    encodeURIComponent(post.id);
   const date = (iso) =>
     new Intl.DateTimeFormat(document.documentElement.lang === "en" ? "en" : "ar", {
       dateStyle: "medium",
@@ -40,43 +35,6 @@
     localeObserver,
     queued = false,
     toastTimer;
-  let query = "",
-    filter = "all";
-  const channelName = (post) => {
-    const c = ORBIT.channels().find((c) => c.id === post.channel);
-    return c ? (document.documentElement.lang === "en" ? c.en || c.ar : c.ar || c.en) || "" : "";
-  };
-  const waiting = (post) => A.records(post.id).filter((r) => !r.review).length;
-  const matches = (post) => {
-    const text = (title(post) + " " + body(post) + " " + channelName(post)).toLocaleLowerCase();
-    const state = A.state(A.records(post.id)[0]);
-    return (
-      text.includes(query.toLocaleLowerCase()) &&
-      (filter === "all" ||
-        (user().role === "teacher"
-          ? filter === "pending"
-            ? waiting(post) > 0
-            : A.records(post.id).some((r) => r.review)
-          : filter === "pending"
-            ? state === "missing"
-            : filter === "reviewed"
-              ? state === "reviewed"
-              : state === "submitted" || state === "late"))
-    );
-  };
-  function applyFilters(section) {
-    const posts = A.visible();
-    let count = 0;
-    section.querySelectorAll("[data-assignment-card]").forEach((card) => {
-      const post = posts.find((p) => p.id === card.dataset.assignmentCard);
-      card.hidden = !post || !matches(post);
-      if (!card.hidden) count++;
-    });
-    const empty = section.querySelector("[data-assignment-no-match]");
-    if (empty) empty.hidden = count > 0 || posts.length === 0;
-    const countNode = section.querySelector("[data-assignment-count]");
-    if (countNode) countNode.textContent = count + " " + t("assignments shown", "واجبات معروضة");
-  }
   const objectURLs = new Set();
   function notify(message, type = "success") {
     if (window.OrbitMotion) {
@@ -119,8 +77,15 @@
   function files(id, record, items = record.attachments || []) {
     return `<div class="assignment-files">${items.map((file) => `<button class="assignment-button" type="button" data-assignment-file="${esc(file.key)}" data-assignment-id="${esc(id)}" data-student-id="${esc(record.studentId)}" data-filename="${esc(file.name)}"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M5 17v4h14v-4"/></svg><bdi>${esc(file.name)}</bdi></button>`).join("")}</div>`;
   }
-  const enrolledStudents = (post) =>
-    Object.entries(OrbitAuth.get("orbit.memberships.v3", {}))
+  const enrolledStudents = (post) => {
+    const channel = ORBIT.channels().find(c => c.id === post.channel);
+    if (OrbitAuth.managedChannel(channel)) {
+      const accounts = OrbitAuth.get("orbit.recruitment.v1", {}).accounts || [];
+      return [...new Set([...accounts.map(account => account.email), "student@orbit.com"])]
+        .filter(email => OrbitAuth.schoolChannelStudent(channel, email, post))
+        .map(id => ({ id, profile: OrbitProfiles.read(id, "student") }));
+    }
+    return Object.entries(OrbitAuth.get("orbit.memberships.v3", {}))
       .filter(
         ([email, ids]) =>
           email !== "guest" &&
@@ -135,63 +100,28 @@
           document.documentElement.lang,
         ),
       );
+  };
   function inline(post) {
     const records = A.records(post.id);
+    let content;
     if (user().role === "teacher") {
       const members = enrolledStudents(post),
         submitted = members.filter((m) => records.some((r) => r.studentId === m.id)).length;
-      return `<div class="assignment-inline"><p class="assignment-tally">${submitted} / ${members.length} ${t("students submitted", "طلاب سلّموا")} · ${members.length - submitted} ${t("not submitted", "لم يسلّموا")}</p><p class="assignment-note">${records.filter((record) => !record.review).length} ${t("awaiting review", "بانتظار المراجعة")}</p><button class="assignment-button primary" data-assignment-review-list="${esc(post.id)}">${t("Students and submissions", "الطلاب والتسليمات")}</button></div>`;
+      content = `<div class="assignment-inline"><p class="assignment-tally">${submitted} / ${members.length} ${t("students submitted", "طلاب سلّموا")} · ${members.length - submitted} ${t("not submitted", "لم يسلّموا")}</p><p class="assignment-note">${records.filter((record) => !record.review).length} ${t("awaiting review", "بانتظار المراجعة")}</p><button class="assignment-button primary" data-assignment-review-list="${esc(post.id)}">${t("Students and submissions", "الطلاب والتسليمات")}</button></div>`;
+    } else {
+      const record = records[0],
+        state = A.state(record);
+      content = `<div class="assignment-inline"><span class="assignment-status ${state}">${statuses()[state]}</span>${record ? `<p class="assignment-note">${t("Last submitted:", "آخر تسليم:")} ${esc(date(record.submittedAt))}${record.late ? " · " + t("Late", "متأخر") : ""}</p>` : ""}${result(record)}<div class="assignment-actions">${A.canWrite(post) ? `<button class="assignment-button primary" data-assignment-submit="${esc(post.id)}">${record ? t("Edit and resubmit", "تعديل وإعادة التسليم") : t("Submit answer", "سلّم إجابتك")}</button>` : ""}${record ? `<button class="assignment-button" data-assignment-own="${esc(post.id)}">${t("View my answer", "عرض إجابتي")}</button>` : ""}</div></div>`;
     }
-    const record = records[0],
-      state = A.state(record);
-    return `<div class="assignment-inline"><span class="assignment-status ${state}">${statuses()[state]}</span>${record ? `<p class="assignment-note">${t("Last submitted:", "آخر تسليم:")} ${esc(date(record.submittedAt))}${record.late ? " · " + t("Late", "متأخر") : ""}</p>` : ""}${result(record)}<div class="assignment-actions"><button class="assignment-button primary" data-assignment-submit="${esc(post.id)}">${record ? t("Edit and resubmit", "تعديل وإعادة التسليم") : t("Submit answer", "سلّم إجابتك")}</button>${record ? `<button class="assignment-button" data-assignment-own="${esc(post.id)}">${t("View my answer", "عرض إجابتي")}</button>` : ""}</div></div>`;
-  }
-  function render(section) {
-    const list = A.visible(),
-      notes = A.notifications(),
-      opened = section.querySelector("details")?.open,
-      teacher = user().role === "teacher";
-    const pending = teacher
-      ? list.reduce((n, p) => n + waiting(p), 0)
-      : list.filter((p) => !A.records(p.id).length).length;
-    section.dataset.lang = document.documentElement.lang;
-    section.innerHTML = `<div class="assignment-heading"><div><h2 id="assignment-section-title">${t("Assignments and submissions", "الواجبات والتسليمات")}</h2><p class="assignment-summary">${teacher ? t("Awaiting your review:", "بانتظار مراجعتك:") : t("Not submitted yet:", "لم تسلّم بعد:")} <strong>${pending}</strong> · ${list.length} ${t("published assignments", "واجبات منشورة")}</p></div>${teacher ? `<button class="assignment-button primary" data-assignment-publish>${t("Publish assignment", "نشر واجب")}</button>` : ""}</div><p class="assignment-note assignment-storage">${t("Answers, files and reviews stay in this browser. They do not synchronize across devices.", "الإجابات والملفات والمراجعات محفوظة في هذا المتصفح، ولا تتزامن بين الأجهزة.")}</p>${list.length ? `<div class="assignment-toolbar"><label>${t("Search assignments", "ابحث عن واجب")}<input data-assignment-search type="search" value="${esc(query)}" placeholder="${t("Title or channel name", "عنوان الواجب أو اسم القناة")}"></label><label>${t("Status", "الحالة")}<select data-assignment-filter><option value="all">${t("All assignments", "كل الواجبات")}</option><option value="pending">${teacher ? t("Awaiting review", "بانتظار المراجعة") : t("Not submitted", "لم يُسلَّم")}</option>${!teacher ? `<option value="submitted">${t("Submitted", "مُسلَّم")}</option>` : ""}<option value="reviewed">${t("Reviewed", "تمت المراجعة")}</option></select></label><span class="assignment-note" data-assignment-count role="status"></span></div>` : ""}<div class="assignment-grid">${list.map((post) => `<article class="assignment-card" data-assignment-card="${esc(post.id)}"><div class="assignment-content"><p class="assignment-channel">${esc(channelName(post))}</p><h3>${esc(title(post))}</h3><p class="assignment-description">${esc(body(post).slice(0, 180))}</p><div class="assignment-meta"><span>${post.dueDate ? t("Due:", "موعد التسليم:") + " " + esc(post.dueDate) : t("No due date", "دون موعد تسليم")}</span><a href="${url(post)}">${t("Open instructions", "فتح التعليمات")}</a></div></div>${inline(post)}</article>`).join("") || `<div class="assignment-empty"><h3>${t("No assignments yet", "لا توجد واجبات بعد")}</h3><p>${t("No published assignments for your account yet.", "لا توجد واجبات منشورة لحسابك بعد.")}</p></div>`}</div><p class="assignment-empty" data-assignment-no-match hidden>${t("No matching assignments. Try another title or status.", "لا توجد واجبات مطابقة. جرّب عنوانًا أو حالة أخرى.")}</p>${
-      notes.length
-        ? `<details class="assignment-notifications" ${opened ? "open" : ""}><summary>${t("Assignment notifications", "إشعارات الواجبات")} · ${notes.filter((note) => !note.read).length}</summary>${notes
-            .slice(0, 30)
-            .map(
-              (note) =>
-                `<div class="assignment-notification"><p>${esc(note[document.documentElement.lang === "en" ? "en" : "ar"])}</p>${!note.read ? `<button class="assignment-button" data-assignment-note="${esc(note.id)}">${t("Mark read", "تمت القراءة")}</button>` : ""}</div>`,
-            )
-            .join("")}</details>`
-        : ""
-    }`;
-    const select = section.querySelector("[data-assignment-filter]");
-    if (select) select.value = filter;
-    applyFilters(section);
+    const notifications = A.notifications().filter((note) => note.assignmentId === post.id);
+    return content + notifications.map(
+      (note) =>
+        `<div class="assignment-notification"><p>${esc(note[document.documentElement.lang === "en" ? "en" : "ar"])}</p>${!note.read ? `<button class="assignment-button" data-assignment-note="${esc(note.id)}">${t("Mark read", "تمت القراءة")}</button>` : ""}</div>`,
+    ).join("");
   }
   function mount(force = false) {
     const active = user();
     if (!["teacher", "student"].includes(active.role)) return;
-    const host = document.querySelector("#overview,#main-content");
-    if (host) {
-      let section = document.getElementById("assignments-section");
-      if (!section) {
-        section = document.createElement("section");
-        section.id = "assignments-section";
-        section.className = "orbit-assignments";
-        section.tabIndex = -1;
-        section.setAttribute("aria-labelledby", "assignment-section-title");
-        const meetings = document.getElementById("meetings-section"),
-          tour = document.getElementById("school-tour-entry"),
-          grid = host.querySelector(".workspace-grid");
-        if (meetings) meetings.after(section);
-        else if (tour) tour.after(section);
-        else if (grid) grid.before(section);
-        else host.append(section);
-        render(section);
-      } else if (force || section.dataset.lang !== document.documentElement.lang) render(section);
-    }
     const posts = A.visible();
     document.querySelectorAll("[data-assignment-slot]").forEach((slot) => {
       if (!force && slot.dataset.assignmentHydrated === document.documentElement.lang) return;
@@ -201,24 +131,6 @@
         : `<p class="assignment-note">${t("Only published assignments can be submitted by enrolled students. Illustrative samples do not collect answers.", "التسليم متاح للواجبات المنشورة وللطلاب المسجلين فقط. الأمثلة التوضيحية لا تجمع إجابات.")}</p>`;
       slot.dataset.assignmentHydrated = document.documentElement.lang;
     });
-    const nav = document.querySelector("#orbit-rail nav");
-    if (nav && host && !nav.querySelector("[data-assignment-nav]")) {
-      const link = document.createElement("a");
-      link.className = "orbit-nav-link";
-      link.dataset.assignmentNav = "";
-      link.href = "#assignments-section";
-      link.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V2h6v2M9 10h6M9 15h6"/></svg><span>${t("Assignments", "الواجبات")}</span>`;
-      link.onclick = () => {
-        document.body.classList.remove("orbit-menu-open");
-        document.getElementById("orbit-page").inert = false;
-        document.getElementById("orbit-mobile-toggle")?.setAttribute("aria-expanded", "false");
-        document.getElementById("assignments-section")?.focus({ preventScroll: true });
-      };
-      nav.append(link);
-    }
-    const navText = nav?.querySelector("[data-assignment-nav] span");
-    if (navText && navText.textContent !== t("Assignments", "الواجبات"))
-      navText.textContent = t("Assignments", "الواجبات");
   }
   function submitDialog(id) {
     const post = A.find(id),
@@ -307,6 +219,7 @@
       `<button class="assignment-back" type="button" data-assignment-review-list="${esc(id)}">${t("Back to submissions", "العودة للتسليمات")}</button><div class="assignment-review-layout"><section class="assignment-response"><h3>${t("Student answer", "إجابة الطالب")}</h3>${answerHTML(id, record)}</section><form class="assignment-review-form"><h3>${t("Your review", "مراجعتك")}</h3><label>${t("Teacher feedback", "ملاحظات المعلم")}<textarea name="feedback" maxlength="3000">${esc(record.review?.feedback || "")}</textarea></label><label>${t("Optional grade / 100", "درجة اختيارية / 100")}<input name="grade" type="number" min="0" max="100" step="0.1" value="${record.review?.grade ?? ""}"></label><p class="assignment-error" role="alert"></p><button class="assignment-button primary" type="submit">${t("Save review", "حفظ المراجعة")}</button></form></div>`,
     );
     node.classList.add("assignment-review-dialog");
+    if (!A.canWrite(post)) { node.querySelector("form").remove(); return; }
     node.querySelector("form").onsubmit = (event) => {
       event.preventDefault();
       try {
@@ -324,21 +237,9 @@
       }
     };
   }
-  document.addEventListener("input", (event) => {
-    if (event.target.matches("[data-assignment-search]")) {
-      query = event.target.value;
-      applyFilters(event.target.closest(".orbit-assignments"));
-    }
-  });
-  document.addEventListener("change", (event) => {
-    if (event.target.matches("[data-assignment-filter]")) {
-      filter = event.target.value;
-      applyFilters(event.target.closest(".orbit-assignments"));
-    }
-  });
   document.addEventListener("click", async (event) => {
     const button = event.target.closest(
-      "[data-assignment-submit],[data-assignment-own],[data-assignment-review-list],[data-assignment-review],[data-assignment-file],[data-assignment-note],[data-assignment-publish]",
+      "[data-assignment-submit],[data-assignment-own],[data-assignment-review-list],[data-assignment-review],[data-assignment-file],[data-assignment-note]",
     );
     if (!button) return;
     try {
@@ -348,25 +249,7 @@
       else if (button.dataset.assignmentReview)
         reviewDialog(button.dataset.assignmentReview, button.dataset.studentId);
       else if (button.dataset.assignmentNote) A.markRead(button.dataset.assignmentNote);
-      else if (button.hasAttribute("data-assignment-publish")) {
-        const owned = ORBIT.channels().filter(ORBIT.own);
-        const enrollment = Object.entries(OrbitAuth.get("orbit.memberships.v3", {}));
-        const hasStudents = (channel) =>
-          enrollment.some(
-            ([id, ids]) => id !== "guest" && Array.isArray(ids) && ids.includes(channel.id),
-          );
-        const preferred =
-          owned.find((channel) => channel.private && hasStudents(channel)) ||
-          owned.find(hasStudents) ||
-          owned.find((channel) => channel.private) ||
-          owned[0];
-        ORBIT.editor(preferred?.id);
-        const type = document.querySelector("#publish-form [name=type]");
-        if (type) {
-          type.value = "assignment";
-          type.dispatchEvent(new Event("change", { bubbles: true }));
-        }
-      } else if (button.dataset.assignmentFile) {
+      else if (button.dataset.assignmentFile) {
         button.disabled = true;
         try {
           const blob = await A.attachment(

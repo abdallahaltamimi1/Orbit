@@ -1,13 +1,13 @@
 :root {
-  --bg: #f9fbff;
+  --bg: var(--orbit-green-50);
   --panel: #fff;
-  --text: #233148;
-  --muted: #7e8ba1;
-  --line: #e4eaf3;
+  --text: var(--orbit-green-900);
+  --muted: var(--orbit-green-500);
+  --line: var(--orbit-green-100);
   --purple: var(--orbit-accent);
   --soft: var(--orbit-soft);
-  --blue: #397af0;
-  --scene: #dce8ef;
+  --blue: var(--orbit-green-500);
+  --scene: var(--orbit-green-100);
   color-scheme: light;
 }
 #orbit-page * {
@@ -66,7 +66,7 @@ body {
   gap: 10px;
 }
 #orbit-page .brand > span {
-  background: linear-gradient(135deg,var(--orbit-accent),#477ef8);
+  background: linear-gradient(135deg,var(--orbit-accent),var(--orbit-green-400));
   color: white;
   width: 35px;
   height: 35px;
@@ -102,7 +102,7 @@ body {
   color: var(--text);
 }
 #orbit-page .lab-header nav > span {
-  color: #bbc4d4;
+  color: var(--orbit-green-200);
 }
 #orbit-page .preferences {
   display: flex;
@@ -193,7 +193,7 @@ body {
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: #36b898;
+  background: var(--orbit-green-600);
   margin-inline-end: 5px;
 }
 #orbit-page .vector-toggle {
@@ -211,8 +211,8 @@ body {
   height: 410px;
   position: relative;
   overflow: hidden;
-  background: linear-gradient(180deg,#d3e4ee 0%,#eaf1f4 46%,#ced6c9 67%,#a6b49d 100%);
-  border: 1px solid #dce6ed;
+  background: linear-gradient(180deg,var(--orbit-green-100) 0%,var(--orbit-green-50) 46%,#ced6c9 67%,#a6b49d 100%);
+  border: 1px solid var(--orbit-green-100);
   isolation: isolate;
   direction: ltr;
 }
@@ -252,7 +252,7 @@ body {
 #orbit-page .hills.distant {
   height: 100px;
   bottom: 90px;
-  background: linear-gradient(#8caaa530,#acb6a640);
+  background: linear-gradient(color-mix(in srgb, var(--orbit-green-400) 18.82%, transparent),#acb6a640);
   filter: blur(2px);
   transform: rotate(-2deg);
 }
@@ -266,7 +266,7 @@ body {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(#687b8510 1px,transparent 1px),linear-gradient(90deg,#687b8510 1px,transparent 1px);
+    linear-gradient(color-mix(in srgb, var(--orbit-green-600) 6.27%, transparent) 1px,transparent 1px),linear-gradient(90deg,color-mix(in srgb, var(--orbit-green-600) 6.27%, transparent) 1px,transparent 1px);
   background-size: 40px 40px;
   mask-image: linear-gradient(transparent,#0005 20%,#0005 60%,transparent);
 }
@@ -276,14 +276,14 @@ body {
   top: 17px;
   font-size: 7px;
   letter-spacing: 1px;
-  color: #7d929d;
+  color: var(--orbit-accent);
   display: flex;
   align-items: center;
   gap: 10px;
 }
 #orbit-page .coordinate-label > span {
   font-size: 10px;
-  color: #67778b;
+  color: var(--orbit-accent);
 }
 #orbit-page .road-rig {
   position: absolute;
@@ -299,7 +299,7 @@ body {
   height: 9px;
   background: linear-gradient(#717777,#424849);
   border-top: 2px solid #bfc4ba;
-  box-shadow: 0 1px 3px #1a243332;
+  box-shadow: 0 1px 3px color-mix(in srgb, var(--orbit-green-900) 19.61%, transparent);
   position: absolute;
   width: 100%;
   top: 0;
@@ -307,9 +307,9 @@ body {
 }
 #orbit-page .asphalt {
   height: 180px;
-  background: repeating-linear-gradient(163deg,#333e43 0 1px,#374247 1px 3px,#354045 3px 5px);
+  background: repeating-linear-gradient(163deg,var(--orbit-green-800) 0 1px,var(--orbit-green-800) 1px 3px,var(--orbit-green-800) 3px 5px);
   border-bottom: 1px solid #3f4649;
-  box-shadow: inset 0 18px 35px #18242b66;
+  box-shadow: inset 0 18px 35px color-mix(in srgb, var(--orbit-green-925) 40.00%, transparent);
 }
 #orbit-page .lane-markings {
   position: absolute;
@@ -324,8 +324,8 @@ body {
   top: 99px;
   height: 14px;
   width: 100%;
-  background: repeating-linear-gradient(90deg,#d2dce638 0 1px,transparent 1px 40px);
-  border-top: 1px solid #d2dce638;
+  background: repeating-linear-gradient(90deg,color-mix(in srgb, var(--orbit-green-100) 21.96%, transparent) 0 1px,transparent 1px 40px);
+  border-top: 1px solid color-mix(in srgb, var(--orbit-green-100) 21.96%, transparent);
 }
 #orbit-page .car {
   --car-width: 310px;
@@ -354,7 +354,7 @@ body {
   bottom: 14%;
   height: 9px;
   border-radius: 50%;
-  background: #101a1f75;
+  background: color-mix(in srgb, var(--orbit-green-925) 45.88%, transparent);
   filter: blur(3px);
   z-index: -1;
 }
@@ -383,7 +383,7 @@ body {
   font:
     10px Inter,sans-serif;
   paint-order: stroke;
-  stroke: #f0f5f3;
+  stroke: var(--orbit-green-50);
   stroke-width: 3px;
   stroke-linejoin: round;
 }
@@ -403,10 +403,10 @@ body {
   fill: #af793f;
 }
 #orbit-page .force-overlay #gravity-vector line {
-  stroke: #548faa;
+  stroke: var(--orbit-green-600);
 }
 #orbit-page .force-overlay #gravity-vector text {
-  fill: #548faa;
+  fill: var(--orbit-green-600);
 }
 #orbit-page .scene-readout {
   position: absolute;
@@ -417,7 +417,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 7px;
-  color: #637b8a;
+  color: var(--orbit-accent);
   pointer-events: none;
 }
 #orbit-page .scene-readout > span {
@@ -426,7 +426,7 @@ body {
 }
 #orbit-page .scene-readout strong {
   font-size: 35px;
-  color: #34495b;
+  color: var(--orbit-accent);
   font-weight: 500;
   letter-spacing: -1px;
 }
@@ -443,11 +443,11 @@ body {
   bottom: 58px;
   right: 18px;
   z-index: 7;
-  color: #e5e9ec;
+  color: var(--orbit-green-100);
   display: flex;
   gap: 8px;
   align-items: center;
-  background: #34455088;
+  background: color-mix(in srgb, var(--orbit-green-800) 53.33%, transparent);
   backdrop-filter: blur(7px);
   padding: 9px 12px;
   border: 1px solid #ffffff1c;
@@ -476,7 +476,7 @@ body {
   justify-content: space-between;
   gap: 8px;
   z-index: 8;
-  color: #d0d8de;
+  color: var(--orbit-green-200);
   font-size: 7px;
   letter-spacing: .2px;
 }
@@ -531,7 +531,7 @@ body {
   place-items: center;
   width: 35px;
   height: 35px;
-  background: #f2f5fa;
+  background: var(--orbit-green-50);
   color: var(--muted);
   border-radius: 9px;
 }
@@ -679,7 +679,7 @@ body {
   margin: 0;
   appearance: none;
   height: 4px;
-  background: linear-gradient(90deg,var(--orbit-soft),#dbe6f7);
+  background: linear-gradient(90deg,var(--orbit-soft),var(--orbit-green-100));
   border-radius: 10px;
   direction: ltr;
   cursor: pointer;
@@ -707,7 +707,7 @@ body {
   justify-content: space-between;
   margin-top: 10px;
   font-size: 7px;
-  color: #a6afbd;
+  color: var(--orbit-green-300);
   align-items: center;
 }
 #orbit-page .variable-symbol {
@@ -808,7 +808,7 @@ body {
   color: #bc8548;
 }
 #orbit-page .gravity {
-  color: #548faa;
+  color: var(--orbit-accent);
 }
 #orbit-page .investigation {
   border-inline-start: 1px solid var(--line);
@@ -902,7 +902,7 @@ body {
 #orbit-page th {
   font-weight: 500;
   color: var(--muted);
-  background: #f4f6fa;
+  background: var(--orbit-green-50);
 }
 #orbit-page td {
   color: var(--text);
@@ -962,11 +962,11 @@ body[data-mood="calm"] #orbit-page .cloud {
   animation: none;
 }
 body[data-theme="dark"] {
-  --bg: #171c2b;
-  --panel: #202738;
-  --text: #e3e9f4;
-  --muted: #9eabc1;
-  --line: #333e52;
+  --bg: var(--orbit-green-925);
+  --panel: var(--orbit-green-900);
+  --text: var(--orbit-green-100);
+  --muted: var(--orbit-green-300);
+  --line: var(--orbit-green-800);
   --purple: var(--orbit-accent);
   --soft: var(--orbit-space);
   color-scheme: dark;
@@ -977,21 +977,21 @@ body[data-theme="dark"] #orbit-page .preset-group button {
   color: var(--orbit-accent);
 }
 body[data-theme="dark"] #orbit-page .icon-button {
-  background: #2a3245;
-  color: #adb7cb;
+  background: var(--orbit-green-900);
+  color: var(--orbit-green-300);
 }
 body[data-theme="dark"] #orbit-page th {
-  background: #283146;
+  background: var(--orbit-green-900);
 }
 body[data-theme="dark"] #orbit-page .variable input {
-  background: linear-gradient(90deg,var(--orbit-accent),#37475e);
+  background: linear-gradient(90deg,var(--orbit-accent),var(--orbit-green-800));
 }
 body[data-theme="dark"] #orbit-page .empty-notebook {
   border-color: var(--orbit-accent);
 }
 body[data-theme="dark"] #orbit-page .scene {
   filter: brightness(.88);
-  border-color: #333e52;
+  border-color: var(--orbit-green-800);
 }
 @media (max-width:1150px) {
   #orbit-page main {

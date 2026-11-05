@@ -1,6 +1,6 @@
 #orbit-page #editor {
   background: var(--panel,#fff);
-  color: var(--text,#24304c);
+  color: var(--text,var(--orbit-green-900));
   border: 1px solid var(--orbit-soft);
   border-radius: 20px;
   padding: 25px;

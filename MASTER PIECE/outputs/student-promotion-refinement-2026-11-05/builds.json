@@ -1,0 +1,17 @@
+[
+  {
+    "name": "shared",
+    "exitCode": 0,
+    "seconds": 1.17
+  },
+  {
+    "name": "registration",
+    "exitCode": 0,
+    "seconds": 1.22
+  },
+  {
+    "name": "school-tour",
+    "exitCode": 0,
+    "seconds": 1.36
+  }
+]

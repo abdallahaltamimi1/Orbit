@@ -26,6 +26,7 @@ const subjectNames = {
     pending: ["Pending", "قيد الانتظار"],
     review: ["Under review", "قيد المراجعة"],
     shortlisted: ["Shortlisted", "القائمة المختصرة"],
+    interview_scheduled: ["Interview scheduled", "تمت جدولة المقابلة"],
     accepted: ["Accepted", "مقبول"],
     rejected: ["Rejected", "مرفوض"],
     withdrawn: ["Withdrawn", "منسحب"],
@@ -45,7 +46,7 @@ const field = (name, label, value = "", type = "text", extra = "") =>
       .map((s) => `<option value="${s}" ${selected === s ? "selected" : ""}>${subject(s)}</option>`)
       .join("")}`,
   statusOptions = (selected = "", all = true) =>
-    `${all ? `<option value="">${t("All statuses", "كل الحالات")}</option>` : ""}${R.statuses.map((s) => `<option value="${s}" ${selected === s ? "selected" : ""}>${state(s)}</option>`).join("")}`;
+    `${all ? `<option value="">${t("All statuses", "كل الحالات")}</option>` : ""}${R.statuses.filter((s) => s !== "shortlisted").map((s) => `<option value="${s}" ${selected === s ? "selected" : ""}>${state(s)}</option>`).join("")}`;
 const errorText = (e) =>
   ({
     IMAGE_INVALID: t(
@@ -401,6 +402,9 @@ function jobDetail(id) {
 }
 function teacherApplications() {
   const all = R.applications(),
+    meetings = window.OrbitMeetings.recruitmentInterviews(),
+    meetingApplications = new Set(meetings.map((meeting) => meeting.applicationId)),
+    legacyInterviews = R.interviews().filter((interview) => !meetingApplications.has(interview.applicationId)),
     apps = all
       .filter((a) => !statusFilter || a.status === statusFilter)
       .sort((a, b) => (Date.parse(b.createdAt) || 0) - (Date.parse(a.createdAt) || 0));
@@ -412,14 +416,7 @@ function teacherApplications() {
       : t("Not available", "غير متاح");
   O.shell(
     t("My applications", "طلباتي"),
-    `<header class="application-workspace-heading"><p>${t("Track your submitted applications and each school’s latest response.", "تابع طلباتك المقدّمة وآخر رد من كل مدرسة.")}</p><a class="btn" href="../jobs/jobs.html">${t("Find new opportunities", "اكتشف فرصًا جديدة")} ↗</a></header>${hint()}<section id="interviews"><h2>${t("Interview invitations", "دعوات المقابلات")}</h2><p>${t("Local appointments in this browser; times use your device time zone.", "مواعيد محلية في هذا المتصفح؛ الأوقات حسب المنطقة الزمنية لجهازك.")}</p>${
-      R.interviews()
-        .map(
-          (x) =>
-            `<article class="card"><h3>${esc(R.publicSchool(x.schoolId)?.name || t("School", "المدرسة"))}</h3><p>${esc(R.getJob(x.jobId)?.title || "")}</p><p>${esc(new Date(x.startAt).toLocaleString(O.prefs.lang === "en" ? "en-GB" : "ar-JO"))} · ${x.duration} ${t("minutes", "دقيقة")}</p><p>${x.status === "cancelled" ? t("Cancelled", "ملغاة") : t("Scheduled", "مجدولة")}</p><p>${esc(x.location)}</p><p>${esc(x.notes)}</p>${x.status === "scheduled" && x.url ? `<a class="btn soft" href="${esc(x.url)}" target="_blank" rel="noopener noreferrer">${t("Open interview link", "فتح رابط المقابلة")}</a>` : ""}</article>`,
-        )
-        .join("") || `<p>${t("No interview invitations yet.", "لا توجد دعوات مقابلات بعد.")}</p>`
-    }</section><div class="toolbar application-filters"><div><h2>${t("Submitted applications", "الطلبات المقدّمة")}</h2><span id="applications-count" role="status">${apps.length} / ${all.length} ${t("applications", "طلبات")}</span></div><label>${t("Application status", "حالة الطلب")}<select id="my-status-filter">${statusOptions(statusFilter)}</select></label></div><div class="application-list" role="list">${
+    `<header class="application-workspace-heading"><p>${t("Track your submitted applications and each school’s latest response.", "تابع طلباتك المقدّمة وآخر رد من كل مدرسة.")}</p><a class="btn" href="../jobs/jobs.html">${t("Find new opportunities", "اكتشف فرصًا جديدة")} ↗</a></header>${hint()}<section id="interviews" data-recruitment-interviews></section><div class="toolbar application-filters"><div><h2>${t("Submitted applications", "الطلبات المقدّمة")}</h2><span id="applications-count" role="status">${apps.length} / ${all.length} ${t("applications", "طلبات")}</span></div><label>${t("Application status", "حالة الطلب")}<select id="my-status-filter">${statusOptions(statusFilter)}</select></label></div><div class="application-list" role="list">${
       apps
         .map((a) => {
           const j = R.getJob(a.jobId),
@@ -430,6 +427,7 @@ function teacherApplications() {
       `<section class="applications-empty"><h3>${all.length ? t("No applications with this status.", "ما في طلبات بهالحالة.") : t("You have not applied yet.", "لسّه ما قدّمت أي طلب.")}</h3><p>${all.length ? t("Choose another status to see your applications.", "اختَر حالة ثانية لتشوف طلباتك.") : t("Discover an opportunity and apply. Your actual applications will appear here.", "استكشف فرصة وقدّم عليها. طلباتك الفعلية رح تظهر هون.")}</p>${all.length ? `<button class="btn soft" id="applications-reset">${t("Show all", "عرض الكل")}</button>` : `<a class="btn" href="../jobs/jobs.html">${t("Discover opportunities", "استكشف الفرص")}</a>`}</section>`
     }</div>`,
   );
+  OrbitRecruitmentWorkspace.mount(document.querySelector('[data-recruitment-interviews]'),teacherApplications);
   document.getElementById("my-status-filter").onchange = (event) => {
     statusFilter = event.target.value;
     teacherApplications();
@@ -529,3 +527,18 @@ try {
   O.shell(t("Unable to open this page", "تعذّر فتح الصفحة"), hint());
   report(e);
 }
+
+function refreshTeacherApplications() {
+  if (
+    location.pathname.includes("/applications/") &&
+    O.user.role === "teacher" &&
+    !document.querySelector("dialog[open]")
+  )
+    teacherApplications();
+}
+window.addEventListener("orbit:meetings-change", refreshTeacherApplications);
+window.addEventListener("orbit:recruitment-change", refreshTeacherApplications);
+window.addEventListener("storage", (event) => {
+  if (event.key === window.OrbitMeetings.key || event.key === "orbit.recruitment.v1")
+    refreshTeacherApplications();
+});

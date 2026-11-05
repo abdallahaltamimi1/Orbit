@@ -10,6 +10,7 @@ function body(p) {
   return p.body || t(p.bodyEn, p.bodyAr) || "";
 }
 const teacherMode = O.user.role === "teacher",
+  teacherDirectoryVisible = ["student", "school"].includes(O.user.role),
   path = location.pathname;
 const seedPosts = [
   {
@@ -48,7 +49,7 @@ const subjects = {
 const subjectLabel = (c) =>
   subjects[c.subject] ? t(...subjects[c.subject]) : c.subject || t("General", "عام");
 const description = (c) => t(c.descEn || c.descAr || "", c.descAr || c.descEn || "");
-const memberCount = (c) =>
+const memberCount = (c) => OrbitAuth.managedChannel(c) ? OrbitChannels.members(c.id).length :
   Object.values(O.get("orbit.memberships.v3", {})).filter(
     (list) => Array.isArray(list) && list.includes(c.id),
   ).length;
@@ -79,7 +80,7 @@ function card(c) {
     encodeURIComponent(c.id) +
     '">' +
     (O.own(c) ? t("Manage channel", "إدارة القناة") : t("View channel", "عرض القناة")) +
-    " ←</a></footer></div></article>"
+    " ←</a>" + (O.user.role === "school" && OrbitAuth.managedChannel(c) ? `<button class="btn soft" type="button" data-transfer-channel="${esc(c.id)}">${t("Transfer management", "نقل الإدارة")}</button>` : "") + "</footer></div></article>"
   );
 }
 function studentCard(c) {
@@ -94,7 +95,7 @@ function studentCard(c) {
       biology: '<path d="M5 20C4 8 9 4 20 4c0 11-4 16-15 16Zm0 0L17 7M9 16v-5m4 2h5"/>',
       english: '<path d="M3 5h7l2 2 2-2h7v15h-7l-2 2-2-2H3ZM12 7v15"/>',
     };
-  return `<article class="card channel-card"><div class="channel-cover subject-${subject}"><span class="channel-cover-fallback" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${icons[subject] || icons.english}</svg></span>${c.coverAsset ? `<img data-asset="${esc(c.coverAsset)}" alt="" onerror="this.hidden=true">` : ""}<span class="tag">${channelIcon(c.private ? "lock" : "globe")}${c.private ? t("Private classroom", "صف خاص") : t("Public channel", "قناة عامة")}</span><span class="cover-subject">${esc(subjectLabel(c))}</span></div><div class="channel-card-body"><h2>${esc(O.label(c))}</h2><p class="channel-description">${esc(description(c) || t("No description added yet.", "لم يُضف وصف بعد."))}</p><div class="channel-people"><a class="channel-teacher" href="../teacher-profile/teacher-profile.html?id=${encodeURIComponent(c.teacher)}">${channelIcon("user")}${esc(O.teacher(c.teacher))}</a><span>${channelIcon("users")}${memberCount(c)} ${t("members", "أعضاء")}</span></div><a class="btn channel-enter" href="../channel/channel.html?id=${encodeURIComponent(c.id)}">${O.own(c) ? t("Manage channel", "إدارة القناة") : teacherMode ? t("View channel", "عرض القناة") : O.memberships().includes(c.id) ? t("Enter channel", "دخول القناة") : t("Explore channel", "استكشف القناة")}${channelIcon("arrowRight")}</a></div></article>`;
+  return `<article class="card channel-card"><div class="channel-cover subject-${subject}"><span class="channel-cover-fallback" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${icons[subject] || icons.english}</svg></span>${c.coverAsset ? `<img data-asset="${esc(c.coverAsset)}" alt="" onerror="this.hidden=true">` : ""}<span class="tag">${channelIcon(c.private ? "lock" : "globe")}${OrbitAuth.managedChannel(c) ? t("School enrollment", "التسجيل المدرسي") : c.private ? t("Private classroom", "صف خاص") : t("Public channel", "قناة عامة")}</span><span class="cover-subject">${esc(subjectLabel(c))}</span></div><div class="channel-card-body"><h2>${esc(O.label(c))}</h2><p class="channel-description">${esc(description(c) || t("No description added yet.", "لم يُضف وصف بعد."))}</p><div class="channel-people"><a class="channel-teacher" href="../teacher-profile/teacher-profile.html?id=${encodeURIComponent(c.teacher)}">${channelIcon("user")}${esc(O.teacher(c.teacher))}</a><span>${channelIcon("users")}${memberCount(c)} ${t("members", "أعضاء")}</span></div><a class="btn channel-enter" href="../channel/channel.html?id=${encodeURIComponent(c.id)}">${O.own(c) ? t("Manage channel", "إدارة القناة") : teacherMode ? t("View channel", "عرض القناة") : O.memberships().includes(c.id) ? t("Enter channel", "دخول القناة") : t("Explore channel", "استكشف القناة")}${channelIcon("arrowRight")}</a></div></article>`;
 }
 function channelIcon(name) {
   const paths = {
@@ -109,11 +110,13 @@ function channelIcon(name) {
   return `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths[name] || paths.users}</svg>`;
 }
 function directoryList() {
-  const all = O.channels();
+  const all = window.OrbitRecordOrder?.newest(O.channels()) || O.channels();
   return (
     mode === "search"
       ? all.filter((c) => !c.private)
-      : teacherMode
+      : O.user.role === "school"
+        ? all.filter(c => c.schoolId === O.user.email)
+        : teacherMode
         ? all.filter(O.own)
         : all.filter((c) => O.memberships().includes(c.id))
   ).filter((c) =>
@@ -147,6 +150,30 @@ function results() {
   document.getElementById("result-count").textContent = list.length + " " + t("channels", "قنوات");
   O.hydrate();
 }
+function transferManagement(id) {
+  const channel = OrbitChannels.find(id);
+  const accounts = OrbitAuth.get("orbit.recruitment.v1", {}).accounts || [];
+  const eligible = [...new Set([...accounts.map(account => account.email), "teacher@orbit.com"])].filter(email =>
+    email !== channel.teacher && OrbitAuth.schoolChannelTeacher({ ...channel, teacher: email }, email));
+  const dialog = O.dialog(`<h2>${t("Transfer channel management", "نقل إدارة القناة")}</h2>
+    <form><label>${t("Eligible teacher", "المعلم المؤهل")}<select name="teacher" required>
+    <option value="">${t("Choose teacher", "اختر المعلم")}</option>
+    ${eligible.map(email => `<option value="${esc(email)}">${esc(O.teacher(email))}</option>`).join("")}
+    </select></label><label>${t("Reason", "السبب")}<input name="reason" required maxlength="500"></label>
+    <p role="alert">${eligible.length ? "" : t("No teacher has approved assignments for all linked sections.", "لا يوجد معلم لديه تكليفات معتمدة لجميع الشعب المرتبطة.")}</p>
+    <button class="btn" ${eligible.length ? "" : "disabled"}>${t("Confirm transfer", "تأكيد النقل")}</button></form>`);
+  dialog.querySelector("form").onsubmit = event => {
+    event.preventDefault();
+    const fields = new FormData(event.target);
+    try { OrbitChannels.transfer(id, fields.get("teacher"), fields.get("reason")); dialog.close(); renderDirectory(); }
+    catch (error) { dialog.querySelector("[role=alert]").textContent = error.message; }
+  };
+}
+document.addEventListener("click", event => {
+  const transfer = event.target.closest("[data-transfer-channel]");
+  if (transfer) transferManagement(transfer.dataset.transferChannel);
+});
+
 function renderDirectory() {
   document.body.classList.toggle("student-channels", O.user.role === "student");
   document.body.classList.toggle("teacher-channels", teacherMode);
@@ -200,9 +227,13 @@ function renderDirectory() {
       t("Search channels, teachers, subjects…", "ابحث عن قناة أو معلم أو مادة…") +
       '" aria-label="' +
       t("Search channels", "البحث عن قنوات") +
-      '"></label></div><div class="directory-caption"><span id="result-count" role="status"></span><a href="../teacher-directory/teacher-directory.html">' +
-      t("Explore teachers", "تعرّف على المعلمين") +
-      ' ↗</a></div><div class="grid" id="channel-results"></div></section>',
+      '"></label></div><div class="directory-caption"><span id="result-count" role="status"></span>' +
+      (mode === "search" && teacherDirectoryVisible
+        ? '<a href="../teacher-directory/teacher-directory.html">' +
+          t("Teacher Directory", "دليل المعلمين") +
+          " ↗</a>"
+        : "") +
+      '</div><div class="grid" id="channel-results"></div></section>',
   );
   if (O.user.role === "student" || teacherMode) {
     const heading = document.querySelector(".directory-heading>div"),
@@ -235,10 +266,15 @@ function renderDirectory() {
 }
 function createChannel() {
   if (!OrbitSubscriptions.requireAccount("teacher")) return;
+  const choices = OrbitChannels.schoolChoices();
   const d = O.dialog(
     "<h2>" +
       t("Create a learning space", "أنشئ مساحة للتعلم") +
       '</h2><form id="new-channel"><label>' +
+      t("Workspace", "مساحة العمل") + '<select name="workspace"><option value="">' +
+      t("Personal channel", "قناة شخصية") + '</option>' +
+      [...new Set(choices.map(row => row.schoolId))].map(id => '<option value="' + esc(id) + '">' + esc(OrbitProfiles.read(id, "school").name || id) + '</option>').join("") +
+      '</select></label><fieldset data-school-channel-sections hidden></fieldset><label>' +
       t("Channel name", "اسم القناة") +
       '<input name="name" required maxlength="100"></label><label>' +
       t("Description", "الوصف") +
@@ -256,13 +292,25 @@ function createChannel() {
       t("Private — invitation code", "خاصة — بكود دعوة") +
       "</option></select></label><label>" +
       t("Optional cover image", "صورة غلاف اختيارية") +
-      '<input type="file" name="cover" accept="image/png,image/jpeg,image/webp"></label><p class="muted">' +
+      '<input type="file" name="cover" accept="image/png,image/jpeg,image/webp"></label><p class="muted" data-channel-access-note>' +
       t("Private classrooms require a teacher code.", "الصفوف الخاصة تتطلب كودًا من المعلم.") +
       '</p><p class="error" role="alert"></p><button class="btn">' +
       t("Create channel", "إنشاء القناة") +
       "</button></form>",
   );
-  d.querySelector("form").onsubmit = async (e) => {
+  const createForm = d.querySelector("#new-channel");
+  const assignmentFields = createForm.querySelector("[data-school-channel-sections]");
+  createForm.elements.workspace.onchange = () => {
+    const schoolId = createForm.elements.workspace.value;
+    assignmentFields.hidden = !schoolId;
+    createForm.querySelector("[data-channel-access-note]").textContent = schoolId
+      ? t("Students get access through verified enrollment.", "يصل الطلاب عبر التسجيل المدرسي الموثق.")
+      : t("Private classrooms require a teacher code.", "الصفوف الخاصة تتطلب كودًا من المعلم.");
+    for (const key of ["subject", "access"]) createForm.elements[key].closest("label").hidden = !!schoolId;
+    assignmentFields.innerHTML = `<legend>${t("Approved sections · choose one subject", "الشعب المعتمدة · اختر مادة واحدة")}</legend>${choices.filter(row => row.schoolId === schoolId).map(row =>
+      `<label><input type="checkbox" name="assignment" value="${esc(row.id)}">${esc(row.subjectName)} · ${esc(row.gradeName)} / ${esc(OrbitSectionLabels.label(row.sectionName))}</label>`).join("")}`;
+  };
+  createForm.onsubmit = async (e) => {
     e.preventDefault();
     const form = e.target,
       f = new FormData(form),
@@ -272,7 +320,7 @@ function createChannel() {
       const name = f.get("name").trim(),
         desc = f.get("description").trim();
       if (!name || !desc) throw Error(t("Enter a name and description.", "أدخل اسمًا ووصفًا."));
-      const privateChannel = f.get("access") === "private";
+      const privateChannel = !!f.get("workspace") || f.get("access") === "private";
       if (privateChannel && !OrbitSubscriptions.allow("classes")) return;
       let coverAsset = "";
       const image = form.elements.cover.files[0];
@@ -306,12 +354,13 @@ function createChannel() {
         code,
         coverAsset,
         createdAt: new Date().toISOString(),
-        schoolId: OrbitSubscriptions.effective().schoolId || null,
+        schoolId: null,
       };
       OrbitSubscriptions.perform(
         privateChannel ? "classes" : null,
         () => {
           const data = O.db();
+          if (f.get("workspace")) Object.assign(c, OrbitChannels.schoolAssociation(f.get("workspace"), f.getAll("assignment")));
           data.channels.push(c);
           O.set("orbit.channels.v2", data);
         },
@@ -327,7 +376,7 @@ function createChannel() {
           "</h2><p>" +
           esc(name) +
           "</p>" +
-          (privateChannel
+          (privateChannel && !OrbitAuth.managedChannel(c)
             ? "<p>" +
               t("Invitation code", "كود الدعوة") +
               ': <strong dir="ltr">' +
@@ -500,4 +549,7 @@ function renderChannel() {
       }),
   );
 }
-path.includes("/channels/") ? renderDirectory() : renderChannel();
+if (path.includes("/channels/")) {
+  renderDirectory();
+  if (new URLSearchParams(location.search).get("create") === "school" && teacherMode) createChannel();
+} else renderChannel();

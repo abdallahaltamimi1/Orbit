@@ -69,9 +69,6 @@
       day = (today.getUTCDay() + 6) % 7,
       start = new Date(today.getTime() - day * 86400000).toISOString().slice(0, 10),
       end = new Date(today.getTime() + (7 - day) * 86400000).toISOString().slice(0, 10);
-    const assignments = (window.OrbitAssignments?.visible() || []).filter(
-      (p) => p.dueDate && p.dueDate.slice(0, 10) >= start && p.dueDate.slice(0, 10) < end,
-    );
     const meetings = (window.OrbitMeetings?.visible() || []).filter(
       (m) => m.status !== "cancelled" && dateKey(m.startAt) >= start && dateKey(m.startAt) < end,
     );
@@ -88,17 +85,17 @@
     }
     const completed = completedIds.size;
     const rows = [
-      ["book-open", completed, t("Completed lesson", "درس مكتمل"), "#progress-section"],
+      ["book-open", completed, t("Completed Lessons", "دروس مكتملة"), "#progress-section"],
       [
         "play",
         unfinished,
-        t("Learning records in progress", "سجلات تعلّم قيد المتابعة"),
+        t("Learning in Progress", "التعلّم قيد التقدم"),
         "#student-saved-learning",
       ],
       [
         "calendar-days",
-        assignments.length + meetings.length,
-        t("Scheduled tasks this week", "مواعيد ومهام هذا الأسبوع"),
+        meetings.length,
+        t("Meetings This Week", "اجتماعات هذا الأسبوع"),
         "#student-plan",
       ],
       [
@@ -116,7 +113,6 @@
       )
       .join("");
 
-    return assignments;
   }
   function continueLearning(d) {
     const level = ["primary", "secondary", "university"].includes(OrbitProfiles.current()?.level)
@@ -125,15 +121,15 @@
     const topic = d.done.includes("lesson") ? "energy" : "forces",
       record = d.records[topic + "-" + level],
       finished = Boolean(record?.completedAt),
-      percent = finished ? 100 : record ? null : 0;
+      percent = finished ? 100 : null;
     const title =
       topic === "forces"
         ? t("Forces and Newton’s laws", "القوى وقوانين نيوتن")
         : t("Energy and its transformations", "الطاقة وتحولاتها");
     $("current-learning").innerHTML =
-      `<header class="premium-section-head"><h2>${t("Continue learning", "متابعة التعلّم")}</h2><a href="../lessons/lessons.html?level=${level}">${t("View all", "عرض الكل")}</a></header><div class="orbit-continue-body"><a class="orbit-lesson-thumbnail" href="../lesson/lesson.html?topic=${topic}&subject=physics&level=${level}"><img src="./assets/experiment-newton.png" width="640" height="360" alt="${t("Physics experiment preview", "معاينة تجربة فيزيائية")}">${svg("play")}</a><div><h3>${title}</h3><p>${t("Physics", "الفيزياء")} · ${esc({ primary: t("Primary", "أساسي"), secondary: t("Secondary", "ثانوي"), university: t("University", "جامعي") }[level])}</p><p class="orbit-progress-note">${record && !finished ? t("Saved learning available · no exact partial percentage recorded", "عندك تعلّم محفوظ · نسبة التقدم الجزئي غير مسجّلة") : t("Your next available lesson", "درسك التالي المتاح")}</p><div class="orbit-progress-track" role="progressbar" aria-label="${t("Recorded lesson completion", "إكمال الدرس المسجّل")}" aria-valuemin="0" aria-valuemax="100" ${percent === null ? 'aria-valuetext="' + t("Exact partial progress unavailable", "نسبة التقدم الجزئي غير متاحة") + '"' : 'aria-valuenow="' + percent + '"'}><span style="width:${percent ?? 0}%"></span></div><a class="button primary" href="../lesson/lesson.html?topic=${topic}&subject=physics&level=${level}">${t("Continue lesson", "متابعة الدرس")}${svg("play")}</a></div></div>`;
+      `<header class="premium-section-head"><h2>${t("Continue learning", "متابعة التعلّم")}</h2><a href="../lessons/lessons.html?level=${level}">${t("View all", "عرض الكل")}</a></header><div class="orbit-continue-body"><a class="orbit-lesson-thumbnail" href="../lesson/lesson.html?topic=${topic}&subject=physics&level=${level}"><img src="./assets/experiment-newton.png" width="640" height="360" alt="${t("Physics experiment preview", "معاينة تجربة فيزيائية")}">${svg("play")}</a><div><h3>${title}</h3><p>${t("Physics", "الفيزياء")} · ${esc({ primary: t("Primary", "أساسي"), secondary: t("Secondary", "ثانوي"), university: t("University", "جامعي") }[level])}</p><p class="orbit-progress-note">${record && !finished ? t("Saved learning available · no exact partial percentage recorded", "عندك تعلّم محفوظ · نسبة التقدم الجزئي غير مسجّلة") : t("Your next available lesson", "درسك التالي المتاح")}</p>${percent !== null ? `<div class="orbit-progress-track" role="progressbar" aria-label="${t("Recorded lesson completion", "إكمال الدرس المسجّل")}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${percent}"><span style="width:${percent}%"></span></div>` : ""}<a class="button primary" href="../lesson/lesson.html?topic=${topic}&subject=physics&level=${level}">${t("Continue lesson", "متابعة الدرس")}${svg("play")}</a></div></div>`;
   }
-  function goals(d, assignments) {
+  function goals(d) {
     const course = [
       ["lesson", "Learn Newton’s laws", "تعلّم قوانين نيوتن", "../lesson/lesson.html"],
       ["practice", "Solve a force problem", "حلّ مسألة قوى", "../practice/practice.html"],
@@ -145,24 +141,20 @@
       ],
       ["quiz", "Check your understanding", "اختبر فهمك", "../quiz/quiz.html"],
     ];
-    const rows = assignments.length
-      ? assignments
-          .slice(0, 5)
-          .map((p) => ({
-            name: p.title || p.titleAr || p.titleEn || t("Assignment", "واجب"),
-            done: OrbitAssignments.records(p.id).some((r) => r.studentId === A.current().email),
-            url: "#assignments-section",
-          }))
-      : course.map(([id, en, ar, url]) => ({ name: t(en, ar), done: d.done.includes(id), url }));
+    const rows = course.map(([id, en, ar, url]) => ({
+      name: t(en, ar),
+      done: d.done.includes(id),
+      url,
+    }));
     const count = rows.filter((r) => r.done).length;
     $("student-weekly-goals").innerHTML =
-      `<header class="premium-section-head"><h2>${assignments.length ? t("This week’s goals", "أهداف هذا الأسبوع") : t("Your learning goals", "أهدافك التعليمية")}</h2><b dir="ltr">${count}/${rows.length}</b></header><div class="orbit-progress-track"><span style="width:${(count / rows.length) * 100}%"></span></div><ul class="orbit-goal-list">${rows.map((r) => `<li><a href="${r.url}"><span class="orbit-goal-check ${r.done ? "is-done" : ""}" aria-label="${r.done ? t("Completed", "مكتمل") : t("Pending", "بانتظارك")}">${r.done ? svg("circle-check") : ""}</span>${esc(r.name)}</a></li>`).join("")}</ul>`;
+      `<header class="premium-section-head"><h2>${t("Your learning goals", "أهدافك التعليمية")}</h2><b dir="ltr">${count}/${rows.length}</b></header><div class="orbit-progress-track"><span style="width:${(count / rows.length) * 100}%"></span></div><ul class="orbit-goal-list">${rows.map((r) => `<li><a href="${r.url}"><span class="orbit-goal-check ${r.done ? "is-done" : ""}" aria-label="${r.done ? t("Completed", "مكتمل") : t("Pending", "بانتظارك")}">${r.done ? svg("circle-check") : ""}</span>${esc(r.name)}</a></li>`).join("")}</ul>`;
   }
   function subjects(d) {
     const db = A.get("orbit.channels.v2", {}),
       joined = A.get("orbit.memberships.v3", {})[A.current().email] || [],
       channels = (db.channels || []).filter(
-        (c) => !c.deleted && (!c.private || joined.includes(c.id)),
+        (c) => !c.deleted && (A.managedChannel(c) ? A.schoolChannelStudent(c, A.current().email, null, true) : (!c.private || joined.includes(c.id))),
       );
     const subjects = new Map([
       [
@@ -188,7 +180,7 @@
       if (
         !c.subject ||
         subjects.has(c.subject) ||
-        !(db.posts || []).some((p) => p.channel === c.id && p.type === "lesson" && !p.deleted)
+        !(db.posts || []).some((p) => p.channel === c.id && p.type === "lesson" && !p.deleted && p.moderationStatus !== "hidden" && (!A.managedChannel(c) || A.schoolChannelStudent(c, A.current().email, p)))
       )
         continue;
       const n = names[c.subject] || [c.subject, c.subject];
@@ -209,26 +201,13 @@
             `<a href="${s.url}">${svg("book-open")}<strong>${esc(t(s.en, s.ar))}</strong><small>${s.percent === null ? t("Available lessons", "دروس متاحة") : s.percent + "%"}</small>${s.percent !== null ? `<span class="orbit-progress-track"><span style="width:${s.percent}%"></span></span>` : ""}</a>`,
         )
         .join("")}</div>`;
-    const publicIds = new Set(channels.filter((c) => !c.private).map((c) => c.id)),
-      posts = (db.posts || []).filter(
-        (p) => publicIds.has(p.channel) && p.type === "discussion" && !p.deleted,
-      );
-    $("orbit-community-content").innerHTML =
-      posts
-        .slice(0, 4)
-        .map(
-          (p) =>
-            `<p><a href="../channel/channel.html?id=${encodeURIComponent(p.channel)}">${esc(p.title || p.titleAr || p.titleEn || t("Discussion", "نقاش"))}</a></p>`,
-        )
-        .join("") ||
-      `<p class="premium-empty">${t("Discover available public learning channels and their discussions.", "استكشف القنوات التعليمية العامة والنقاشات المتاحة فيها.")}</p><a href="../channels/channels.html">${t("Explore channels", "استكشف القنوات")}</a>`;
   }
   function refresh() {
     if (!$("orbit-real-stats")) return;
-    const d = data(),
-      assignments = stats(d);
+    const d = data();
+    stats(d);
     continueLearning(d);
-    goals(d, assignments);
+    goals(d);
     subjects(d);
     const n = d.done.length + d.entries.filter((r) => r.completedAt).length;
     if (previousCount !== null && n > previousCount)
@@ -246,9 +225,7 @@
       );
     emptyBefore = event.detail.empty;
   });
-  ["orbit:meetings-change", "orbit:assignments-change"].forEach((n) =>
-    window.addEventListener(n, refresh),
-  );
+  window.addEventListener("orbit:meetings-change", refresh);
   window.addEventListener("storage", refresh);
   document.addEventListener(
     "DOMContentLoaded",

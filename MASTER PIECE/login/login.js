@@ -1,8 +1,31 @@
+const loginSystemAppearance = matchMedia("(prefers-color-scheme: dark)");
+function applyLoginAppearance() {
+  const preference = OrbitAuth.get("orbit.settings.appearance", null),
+    savedPrefs = OrbitAuth.get("orbit.student.v1", {}),
+    selected = ["light", "dark", "auto"].includes(preference)
+      ? preference
+      : ["light", "dark", "auto"].includes(savedPrefs.theme)
+        ? savedPrefs.theme
+        : localStorage.getItem("orbitTheme") || localStorage.getItem("theme") || "light",
+    theme = selected === "auto"
+      ? loginSystemAppearance.matches ? "dark" : "light"
+      : selected === "dark" ? "dark" : "light";
+  document.documentElement.dataset.orbitAppearance = selected;
+  document.documentElement.dataset.theme = theme;
+  document.body.dataset.theme = theme;
+}
+applyLoginAppearance();
+loginSystemAppearance.addEventListener?.("change", () => {
+  if (OrbitAuth.get("orbit.settings.appearance", null) === "auto") applyLoginAppearance();
+});
+window.addEventListener("storage", (event) => {
+  if (["orbit.settings.appearance", "orbit.student.v1", "orbitTheme", "theme"].includes(event.key)) applyLoginAppearance();
+});
+
 document.addEventListener("DOMContentLoaded", function () {
   const loginText = (en, ar) => (document.documentElement.lang === "ar" ? ar : en);
 
   const appearance = OrbitAuth.get("orbit.student.v1", {});
-  document.body.dataset.theme = appearance.theme === "dark" ? "dark" : "light";
   document.body.dataset.mood =
     localStorage.getItem("orbit.motion.preference") || appearance.mood || "fun";
   const schoolOnly =
@@ -295,7 +318,13 @@ document.addEventListener("DOMContentLoaded", function () {
       school: "../school-dashboard/school-dashboard.html",
     };
 
-    const destination = OrbitSubscriptions.nextDestination(user) || pages[user.role];
+    const opportunity = new URLSearchParams(location.search).get("opportunity"),
+      validOpportunity =
+        /^[A-Za-z0-9_-]{1,128}$/.test(opportunity || "") &&
+        window.OrbitRecruitment?.listJobs().some((job) => job.id === opportunity),
+      destination = validOpportunity
+        ? `../jobs/jobs.html?id=${encodeURIComponent(opportunity)}`
+        : OrbitSubscriptions.nextDestination(user) || pages[user.role];
 
     // The dashboard files will be added later.
 
@@ -370,6 +399,25 @@ document.addEventListener("DOMContentLoaded", function () {
         passwordInput.setAttribute("aria-invalid", "true");
         passwordInput.focus();
         return;
+      }
+      if (OrbitRecruitment.data().accounts.find(a => a.email === user.email)?.mustChangePassword) {
+        const updated = await new Promise(resolve => {
+          const d = document.createElement("dialog"); d.className = "orbit-first-login";
+          const title = loginText("Choose your own password", "اختر كلمة مرور خاصة بك");
+          d.innerHTML = '<form><h2>' + title + '</h2><p>' + loginText("Use at least 10 characters, including a letter and a number. Your temporary password will stop working.", "استخدم 10 أحرف على الأقل تشمل حرفًا ورقمًا. ستتوقف كلمة المرور المؤقتة.") + '</p><label>' + loginText("New password", "كلمة المرور الجديدة") + '<input name="password" type="password" autocomplete="new-password" required minlength="10"></label><label>' + loginText("Confirm password", "تأكيد كلمة المرور") + '<input name="confirm" type="password" autocomplete="new-password" required minlength="10"></label><p role="alert"></p><button type="submit">' + loginText("Save password and continue", "حفظ كلمة المرور والمتابعة") + '</button><button type="button" data-cancel>' + loginText("Cancel", "إلغاء") + '</button></form>';
+          d.setAttribute("aria-label", title); document.body.append(d);
+          d.querySelector('[data-cancel]').onclick = () => d.close();
+          d.onclose = () => { d.remove(); resolve(null); };
+          d.querySelector('form').onsubmit = async e => {
+            e.preventDefault(); const form = e.target, button = form.querySelector('[type=submit]');
+            if (form.elements.password.value !== form.elements.confirm.value) { form.querySelector('[role=alert]').textContent = loginText("Passwords do not match.", "كلمتا المرور غير متطابقتين."); return; }
+            button.disabled = true;
+            try { const next = await OrbitRecruitment.changeInitialPassword(user.email, password, form.elements.password.value); resolve(next); d.close(); }
+            catch { form.querySelector('[role=alert]').textContent = loginText("Use a new password with at least 10 characters, a letter and a number.", "استخدم كلمة جديدة من 10 أحرف على الأقل تشمل حرفًا ورقمًا."); button.disabled = false; }
+          }; d.showModal();
+        });
+        if (!updated) return;
+        user = updated;
       }
       try {
         OrbitAuth.startSession(user);
@@ -512,3 +560,5 @@ document.addEventListener("DOMContentLoaded", function () {
 
   document.title = loginText("Login | ORBIT", "تسجيل الدخول | ORBIT");
 });
+
+;(() => { const opportunity = new URLSearchParams(location.search).get('opportunity'); if (!/^[A-Za-z0-9_-]{1,128}$/.test(opportunity || '')) return; document.querySelectorAll('a[href]').forEach(a => { const url = new URL(a.href, location.href); if (url.origin !== location.origin || !/\/(login|registration)\/\1\.html$/.test(url.pathname)) return; url.searchParams.set('opportunity', opportunity); if (url.pathname.includes('/registration/')) url.searchParams.set('role', 'teacher'); a.href = url.href; }); })();

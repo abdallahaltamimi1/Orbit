@@ -2,6 +2,8 @@
 (() => {
   "use strict";
   if (window.OrbitAuth?.current()?.role !== "student") return;
+  if (location.hash === "#student-community")
+    history.replaceState(history.state, "", location.pathname + location.search);
   const $ = (id) => document.getElementById(id),
     t = (en, ar) => (document.documentElement.lang === "ar" ? ar : en),
     escape = (v) =>
@@ -10,38 +12,21 @@
         (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c],
       );
   document.body.classList.add("student-workspace");
-  function assignments() {
-    const box = $("student-assignment-preview"),
-      A = window.OrbitAssignments;
-    if (!box || !A) return;
-    const email = OrbitAuth.current()?.email,
-      items = A.visible()
-        .filter((p) => !A.records(p.id).some((r) => r.studentId === email))
-        .sort((a, b) => (Date.parse(a.dueDate) || Infinity) - (Date.parse(b.dueDate) || Infinity));
-    box.innerHTML =
-      `<header class="premium-section-head"><h2>${t("Assignments to submit", "واجبات بانتظارك")}</h2><a href="#assignments-section">${t("View all", "عرض الكل")}</a></header>` +
-      (items.length
-        ? `<ul class="student-task-list">${items
-            .slice(0, 3)
-            .map(
-              (p) =>
-                `<li><a href="#assignments-section"><strong>${escape(p.title || p.titleAr || p.titleEn || t("Assignment", "واجب"))}</strong><small>${p.dueDate && Number.isFinite(Date.parse(p.dueDate)) ? escape(new Intl.DateTimeFormat(document.documentElement.lang === "ar" ? "ar-JO" : "en-GB", { dateStyle: "medium" }).format(new Date(p.dueDate))) : t("No due date", "بدون موعد محدد")}</small></a></li>`,
-            )
-            .join("")}</ul>`
-        : `<p class="premium-empty">${t("You have no outstanding assignments. Open all assignments to review your submissions.", "ما عندك واجبات بانتظار التسليم. افتح كل الواجبات لمراجعة تسليماتك.")}</p>`);
-  }
   function taskView(event) {
     const main = $("main-content");
     if (!main?.dataset.studentOrganized) return;
     const id = location.hash.slice(1),
       names = {
-        "assignments-section": ["Assignments & submissions", "الواجبات والتسليمات"],
         "meetings-section": ["Meetings", "الاجتماعات"],
-        "student-community": ["Learning community", "مجتمع التعلّم"],
       };
     main
       .querySelectorAll(":scope > .student-task-active")
-      .forEach((n) => n.classList.remove("student-task-active"));
+      .forEach((n) => {
+        n.classList.remove("student-task-active");
+        n.querySelectorAll(".student-task-detail-active").forEach((detail) =>
+          detail.classList.remove("student-task-detail-active"),
+        );
+      });
     let heading = $("student-task-heading");
     if (!names[id]) {
       delete document.body.dataset.studentTask;
@@ -50,10 +35,14 @@
     }
     document.body.dataset.studentTask = id;
     const target = $(id),
-      container = target?.closest("#main-content > details") || target;
+      detail = target?.closest("details"),
+      container = target?.closest("#main-content > *") || target;
     if (container) {
       container.classList.add("student-task-active");
-      if (container.tagName === "DETAILS") container.open = true;
+      if (detail && container.contains(detail)) {
+        detail.classList.add("student-task-detail-active");
+        detail.open = true;
+      } else if (container.tagName === "DETAILS") container.open = true;
     }
     if (!heading) {
       heading = document.createElement("header");
@@ -84,13 +73,12 @@
     upcoming.className = "student-upcoming";
     upcoming.setAttribute(
       "aria-label",
-      t("Upcoming assignments and meetings", "الواجبات والاجتماعات القادمة"),
+      t("Upcoming meetings", "الاجتماعات القادمة"),
     );
-    const assignmentsBox = document.createElement("section");
-    assignmentsBox.id = "student-assignment-preview";
-    assignmentsBox.className = "panel";
-    upcoming.append(assignmentsBox);
     if ($("premium-next-meeting")) upcoming.append($("premium-next-meeting"));
+    const primaryGrid = document.createElement("div");
+    primaryGrid.className = "student-primary-grid";
+    primaryGrid.append(current, upcoming);
     const expanded = learning.querySelector(".premium-expanded");
     for (const id of ["student-weekly-goals", "student-plan"]) if ($(id)) expanded?.append($(id));
     const explore = document.createElement("section");
@@ -133,8 +121,8 @@
         "channels",
         "My channels",
         "قنواتي",
-        "Stay connected to your learning community.",
-        "خليك قريب من مجتمعك التعليمي.",
+        "Follow lessons, updates and discussions in your channels.",
+        "تابع الدروس والتحديثات والنقاشات في قنواتك.",
         "radio",
       ],
       [
@@ -143,7 +131,7 @@
         "تبادل الكتب",
         "Give books and learning tools a new journey.",
         "خلّي كتبك وأدواتك تفيد غيرك.",
-        "arrow-left-right",
+        "book-open",
       ],
     ]
       .map(
@@ -157,33 +145,27 @@
     for (const id of ["student-subjects", "school-tour-entry"]) if ($(id)) grid.append($(id));
     const experiments = main.querySelector(".orbit-experiments");
     if (experiments) grid.append(experiments);
-    const community = $("student-community"),
-      communityDetails = document.createElement("details");
-    communityDetails.className = "panel premium-extra";
-    communityDetails.innerHTML = `<summary>${t("Learning community", "مجتمع التعلّم")}</summary>`;
-    if (community) communityDetails.append(community);
-    const assignmentDetails = $("assignments-section")?.closest("details"),
-      meetingDetails = $("meetings-section")?.closest("details");
+    const meetingDetails = $("meetings-section")?.closest("details");
+    const detailsStack = document.createElement("section");
+    detailsStack.className = "student-detail-stack";
+    const browseDetails = explore.querySelector(".student-explore-details");
+    if (browseDetails) detailsStack.append(browseDetails);
+    for (const details of [learning, meetingDetails]) if (details) detailsStack.append(details);
     const nodes = [
       welcome,
-      current,
       stats,
-      upcoming,
+      primaryGrid,
       recent,
       explore,
-      learning,
-      communityDetails,
-      assignmentDetails,
-      meetingDetails,
+      detailsStack,
     ].filter(Boolean);
     main.append(...nodes);
     main
-      .querySelectorAll(":scope > .orbit-learning-grid,:scope > .orbit-support-grid")
+      .querySelectorAll(":scope > .orbit-learning-grid,:scope > .orbit-support-grid,:scope > .orbit-content-grid")
       .forEach((n) => {
         if (!n.children.length) n.remove();
         else n.classList.add("student-secondary-content");
       });
-    assignments();
     taskView();
   }
   let queued = false;
@@ -198,11 +180,17 @@
     }
   });
   observer.observe($("app") || document.body, { childList: true, subtree: true });
+  const languageObserver = new MutationObserver(() => taskView());
+  languageObserver.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["lang"],
+  });
   window.addEventListener("hashchange", taskView);
-  window.addEventListener("orbit:assignments-change", assignments);
-  window.addEventListener("storage", assignments);
   window.addEventListener("pagehide", (e) => {
-    if (!e.persisted) observer.disconnect();
+    if (!e.persisted) {
+      observer.disconnect();
+      languageObserver.disconnect();
+    }
   });
   if (document.readyState === "loading")
     document.addEventListener("DOMContentLoaded", mount, { once: true });

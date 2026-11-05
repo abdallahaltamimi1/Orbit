@@ -1,28 +1,28 @@
 :root {
   box-sizing: border-box;
 
-  --bg: #F5F8FC;
+  --bg: var(--orbit-green-50);
   --surface: #FFFFFF;
-  --surface-soft: #EEF4FD;
+  --surface-soft: var(--orbit-green-50);
 
-  --space: #05080F;
+  --space: var(--orbit-green-950);
 
-  --ink: #0E1C33;
-  --ink-soft: #44566F;
-  --muted: #6C7F96;
+  --ink: var(--orbit-green-925);
+  --ink-soft: var(--orbit-green-700);
+  --muted: var(--orbit-muted);
 
-  --blue: #2F6BF0;
-  --blue-ink: #1B4ED1;
-  --blue-soft: #E8F0FE;
+  --blue: var(--orbit-green-500);
+  --blue-ink: var(--orbit-green-600);
+  --blue-soft: var(--orbit-green-50);
 
-  --navy: #0F1C33;
+  --navy: var(--orbit-green-925);
 
-  --line: #E3EAF4;
-  --line-strong: #CFDCEF;
+  --line: var(--orbit-green-100);
+  --line-strong: var(--orbit-green-100);
 
-  --shadow-sm: 0 1px 2px rgba(14, 28, 51, .05);
+  --shadow-sm: 0 1px 2px color-mix(in srgb, var(--orbit-green-925) 5.00%, transparent);
 
-  --shadow-md: 0 14px 34px -22px rgba(14, 28, 51, .35);
+  --shadow-md: 0 14px 34px -22px color-mix(in srgb, var(--orbit-green-925) 35.00%, transparent);
 
   --r-card: 16px;
   --r-sm: 10px;
@@ -145,7 +145,7 @@ body {
   color: white;
 }
 #orbit-page .m-btn--primary:hover {
-  background: #1B2E4D;
+  background: var(--orbit-green-900);
 }
 #orbit-page .m-btn--blue {
   background: var(--blue);
@@ -277,6 +277,7 @@ body {
 
   font-size: 16px;
   font-weight: 700;
+  flex: none;
 }
 #orbit-page .m-nav__mark {
   display: grid;
@@ -297,7 +298,10 @@ body {
 
   align-items: center;
 
-  gap: 26px;
+  min-width: 0;
+  flex: 1 1 auto;
+
+  gap: 18px;
 
   margin: 0 auto;
 }
@@ -308,6 +312,7 @@ body {
 
   font-size: 14px;
   font-weight: 500;
+  white-space: nowrap;
 
   transition: color .2s ease;
 }
@@ -344,6 +349,8 @@ body {
   display: flex;
 
   align-items: center;
+
+  flex: none;
 
   gap: 14px;
 }
@@ -387,7 +394,7 @@ body {
 
   border-bottom-color: var(--line);
 
-  box-shadow: 0 1px 18px -10px rgba(14,28,51,.3);
+  box-shadow: 0 1px 18px -10px color-mix(in srgb, var(--orbit-green-925) 30.00%, transparent);
 }
 #orbit-page .m-nav.is-solid .m-nav__brand {
   color: var(--ink);
@@ -417,9 +424,9 @@ body {
   background: linear-gradient(
             180deg,
             var(--space) 0%,
-            #0B1526 26%,
-            #1B2E4D 48%,
-            #9FB6D6 78%,
+            var(--orbit-green-925) 26%,
+            var(--orbit-green-900) 48%,
+            var(--orbit-green-300) 78%,
             var(--bg) 100%
         );
 }
@@ -478,33 +485,35 @@ body {
   border-color: var(--blue);
 
   box-shadow: 0 18px 40px -26px
-        rgba(47,107,240,.6);
+        color-mix(in srgb, var(--orbit-green-500) 60.00%, transparent);
 }
 #orbit-page .m-card--lead .m-icon {
   background: var(--blue);
 
   color: white;
 }
-#orbit-page .m-services .m-head {
-  margin-bottom: 46px;
+#orbit-page .m-features-grid {
+  grid-auto-rows: minmax(210px, 1fr);
+  gap: clamp(16px, 2vw, 24px);
 }
-#orbit-page .m-services__body {
+#orbit-page .m-features-grid .m-card {
   display: grid;
-
-  grid-template-columns:
-    minmax(0, 300px)
-        minmax(0, 1fr);
-
-  gap: var(--gap);
-
-  align-items: stretch;
+  grid-template-columns: 38px minmax(0, 1fr);
+  align-content: center;
+  column-gap: 16px;
+  row-gap: 10px;
+  padding: 26px 28px 24px;
 }
-#orbit-page .m-grid-2 {
-  display: grid;
-
-  grid-template-columns: repeat(2, 1fr);
-
-  gap: var(--gap);
+#orbit-page .m-features-grid .m-card h3 {
+  align-self: center;
+  margin: 0;
+  font-size: 17px;
+}
+#orbit-page .m-features-grid .m-card p {
+  grid-column: 1 / -1;
+  max-width: 58ch;
+  margin-bottom: 0;
+  line-height: 1.65;
 }
 #orbit-page .m-card--sm {
   padding: 20px;
@@ -518,109 +527,6 @@ body {
   margin-bottom: 0;
 
   font-size: 13px;
-}
-#orbit-page .m-orbit {
-  position: relative;
-
-  display: flex;
-
-  flex-direction: column;
-
-  align-items: center;
-  justify-content: center;
-
-  min-height: 300px;
-
-  padding: 26px;
-
-  overflow: hidden;
-
-  background: radial-gradient(
-            520px 300px at 50% 50%,
-            #F8FBFF 0%,
-            #EEF4FD 100%
-        );
-
-  border: 1px solid var(--line);
-
-  border-radius: var(--r-card);
-}
-#orbit-page .m-orbit svg {
-  width: 100%;
-
-  max-width: 238px;
-
-  height: auto;
-}
-#orbit-page .m-orbit__ring {
-  fill: none;
-
-  stroke: var(--line-strong);
-
-  stroke-width: 1;
-}
-#orbit-page .m-orbit__ring--node {
-  stroke: #DBE5F3;
-}
-#orbit-page .m-orbit__star {
-  fill: var(--line-strong);
-}
-#orbit-page .m-orbit__spin {
-  transform-box: view-box;
-
-  transform-origin: 130px 130px;
-}
-#orbit-page .m-orbit__dot {
-  fill: #B6C6DD;
-
-  transition: fill .3s ease;
-}
-#orbit-page .m-orbit__halo {
-  fill: var(--blue);
-
-  opacity: 0;
-}
-#orbit-page .m-orbit__node.is-live .m-orbit__dot {
-  fill: var(--blue);
-}
-#orbit-page .m-orbit__node.is-live .m-orbit__halo {
-  opacity: .16;
-
-  animation: m-pulse 2.4s ease-in-out infinite;
-}
-@keyframes m-pulse {
-  0%,
-  100% {
-    opacity: .1;
-  }
-
-  50% {
-    opacity: .24;
-  }
-}
-#orbit-page .m-orbit__core {
-  fill: var(--blue);
-}
-#orbit-page .m-orbit__label {
-  min-height: 18px;
-
-  color: var(--blue-ink);
-
-  font-size: 12.5px;
-  font-weight: 600;
-
-  opacity: 0;
-
-  transform: translateY(4px);
-
-  transition:
-    opacity .28s ease,
-        transform .28s ease;
-}
-#orbit-page .m-orbit.is-focused .m-orbit__label {
-  opacity: 1;
-
-  transform: none;
 }
 #orbit-page .m-faq {
   background: var(--surface);
@@ -655,7 +561,7 @@ body {
 #orbit-page .m-faq__item.is-open {
   border-color: var(--blue);
 
-  background: #F7FAFF;
+  background: var(--orbit-green-50);
 }
 #orbit-page .m-faq__q {
   display: flex;
@@ -740,7 +646,7 @@ body {
 
   background: var(--surface-soft);
 
-  border: 1px solid #DCE7F8;
+  border: 1px solid var(--orbit-green-100);
 
   border-radius: var(--r-card);
 }
@@ -895,16 +801,13 @@ body {
   #orbit-page .m-head h2 {
     font-size: 30px;
   }
-  #orbit-page .m-services__body {
-    grid-template-columns: 1fr;
-  }
   #orbit-page .m-faq__body {
     grid-template-columns: 1fr;
 
     gap: 28px;
   }
 }
-@media (max-width: 860px) {
+@media (max-width: 900px) {
   #orbit-page .m-nav__links,
   #orbit-page .m-nav__login {
     display: none;
@@ -913,7 +816,7 @@ body {
     display: grid;
   }
   #orbit-page .m-nav__actions {
-    margin-left: auto;
+    margin-inline-start: auto;
   }
   #orbit-page .m-grid-3 {
     grid-template-columns: repeat(2, 1fr);
@@ -932,8 +835,7 @@ body {
   #orbit-page .m-head h2 {
     font-size: 26px;
   }
-  #orbit-page .m-grid-3,
-  #orbit-page .m-grid-2 {
+  #orbit-page .m-grid-3 {
     grid-template-columns: 1fr;
   }
   #orbit-page .m-transition {
@@ -968,9 +870,9 @@ body {
         system-ui,
         sans-serif;
 
-  --ink: #F2F6FC;
-  --dim: #92A5C0;
-  --blue: #4C86FF;
+  --ink: var(--orbit-green-50);
+  --dim: var(--orbit-green-400);
+  --blue: var(--orbit-green-400);
 
   position: relative;
 
@@ -980,9 +882,9 @@ body {
 
   overflow: hidden;
 
-  background: #04070D;
+  background: var(--orbit-green-950);
 
-  color: #F2F6FC;
+  color: var(--orbit-green-50);
 
   font-family: var(--orbit-font);
 
@@ -1015,10 +917,10 @@ body {
 
   background: linear-gradient(
             90deg,
-            rgba(4,7,13,.94) 0%,
-            rgba(4,7,13,.72) 30%,
-            rgba(4,7,13,.28) 52%,
-            rgba(4,7,13,0) 70%
+            color-mix(in srgb, var(--orbit-green-950) 94.00%, transparent) 0%,
+            color-mix(in srgb, var(--orbit-green-950) 72.00%, transparent) 30%,
+            color-mix(in srgb, var(--orbit-green-950) 28.00%, transparent) 52%,
+            color-mix(in srgb, var(--orbit-green-950) 0.00%, transparent) 70%
         );
 }
 #orbit-page #hero .u-vig {
@@ -1031,7 +933,7 @@ body {
   background: radial-gradient(
             125% 95% at 55% 50%,
             transparent 34%,
-            rgba(1,3,7,.82) 100%
+            color-mix(in srgb, var(--orbit-green-950) 82.00%, transparent) 100%
         );
 }
 #orbit-page #hero .u-shell {
@@ -1155,10 +1057,10 @@ body {
 
   background: linear-gradient(
             100deg,
-            #B4CAFF,
-            #4C86FF 45%,
-            #9A7DFF 72%,
-            #B4CAFF
+            var(--orbit-green-100),
+            var(--orbit-green-400) 45%,
+            var(--orbit-green-800) 72%,
+            var(--orbit-green-100)
         );
 
   background-size: 220% 100%;
@@ -1239,26 +1141,25 @@ body {
   transform: translateY(1px);
 }
 #orbit-page #hero .u-btn:focus-visible {
-  outline: 2px solid
-        rgba(140,175,255,.9);
+  outline: 2px solid var(--orbit-green-800);
 
   outline-offset: 4px;
 }
 #orbit-page #hero .u-primary {
   background: linear-gradient(
             140deg,
-            #5B8CFF,
-            #2F66F5
+            var(--orbit-green-400),
+            var(--orbit-green-500)
         );
 
   color: #fff;
 
   box-shadow: 0 10px 34px -12px
-        rgba(76,134,255,.85);
+        color-mix(in srgb, var(--orbit-green-400) 85.00%, transparent);
 }
 #orbit-page #hero .u-primary:hover {
   box-shadow: 0 15px 40px -10px
-        rgba(76,134,255,.95);
+        color-mix(in srgb, var(--orbit-green-400) 95.00%, transparent);
 }
 #orbit-page #hero .u-second {
   border: 1px solid
@@ -1433,8 +1334,8 @@ body {
 #orbit-page #hero .u-roles .u-role.picked {
   background: linear-gradient(
             140deg,
-            #5B8CFF,
-            #2F66F5
+            var(--orbit-green-400),
+            var(--orbit-green-500)
         );
 
   border-color: transparent;
@@ -1442,7 +1343,7 @@ body {
   color: #fff;
 
   box-shadow: 0 10px 30px -12px
-        rgba(76,134,255,.9);
+        color-mix(in srgb, var(--orbit-green-400) 90.00%, transparent);
 }
 @keyframes rolein {
   from {
@@ -1488,7 +1389,7 @@ body {
 
   padding: 8px 15px;
 
-  background: rgba(6,10,20,.5);
+  background: color-mix(in srgb, var(--orbit-green-950) 50.00%, transparent);
 
   backdrop-filter: blur(10px);
 
@@ -1540,7 +1441,7 @@ body {
 
   font-size: 14px;
 
-  color: rgba(238,244,255,.5);
+  color: color-mix(in srgb, var(--orbit-green-50) 50.00%, transparent);
 
   text-shadow: 0 2px 16px
         rgba(0,0,0,.65);
@@ -1557,7 +1458,7 @@ body {
   font-size: 17px;
 
   text-shadow: 0 0 18px
-        rgba(130,165,255,.65);
+        color-mix(in srgb, var(--orbit-green-300) 65.00%, transparent);
 }
 #orbit-page #hero .u-label.is-off {
   opacity: 0;
@@ -1571,7 +1472,7 @@ body {
 
   letter-spacing: .02em;
 
-  color: rgba(226,236,252,.55);
+  color: color-mix(in srgb, var(--orbit-green-50) 55.00%, transparent);
 
   text-transform: none;
 }
@@ -1589,7 +1490,7 @@ body {
 
   line-height: 1.55;
 
-  color: #BFD2EE;
+  color: var(--orbit-green-200);
 
   opacity: 0;
 
@@ -1631,7 +1532,7 @@ body {
 
   text-transform: uppercase;
 
-  color: #7F93AE;
+  color: var(--orbit-accent);
 
   pointer-events: none;
 
@@ -1673,9 +1574,9 @@ body {
   #orbit-page #hero .u-scrim {
     background: linear-gradient(
                 0deg,
-                rgba(4,7,13,.96) 18%,
-                rgba(4,7,13,.68) 55%,
-                rgba(4,7,13,.18) 100%
+                color-mix(in srgb, var(--orbit-green-950) 96.00%, transparent) 18%,
+                color-mix(in srgb, var(--orbit-green-950) 68.00%, transparent) 55%,
+                color-mix(in srgb, var(--orbit-green-950) 18.00%, transparent) 100%
             );
   }
   #orbit-page #hero .u-panel {
@@ -1792,16 +1693,13 @@ body {
 
 /* Landing-only brand recovery: preserve navy surfaces and the authored hero scene. */
 #orbit-page[data-orbit-page="hompage"] {
-  --landing-primary: #0d9488;
-  --landing-primary-hover: #0f766e;
-  --landing-accent: #14b8a6;
-  --landing-mint: #ccfbf1;
+  --landing-primary: var(--orbit-green-800);
+  --landing-primary-hover: var(--orbit-green-800);
+  --landing-accent: var(--orbit-green-700);
+  --landing-mint: var(--orbit-green-100);
   --blue: var(--landing-primary);
   --blue-ink: var(--landing-primary-hover);
   --blue-soft: var(--landing-mint);
-  --orbit-accent: var(--landing-primary);
-  --orbit-action: var(--landing-primary);
-  --orbit-focus: var(--landing-accent);
 }
 #orbit-page[data-orbit-page="hompage"] .m-link {
   color: var(--landing-primary-hover);
@@ -1810,8 +1708,74 @@ body {
   color: var(--landing-primary);
 }
 body[data-theme="dark"] #orbit-page[data-orbit-page="hompage"] :is(.m-badge, .m-icon) {
-  --blue-ink: #5eead4;
-  --blue-soft: #163b3c;
+  --blue-ink: var(--orbit-accent);
+  --blue-soft: var(--orbit-soft);
+}
+
+/* Dark palette for the landing page's legacy variables; the hero artwork stays authored. */
+body.orbit-homepage[data-theme="dark"] {
+  --bg: var(--orbit-canvas);
+  --surface: var(--orbit-surface);
+  --surface-soft: var(--orbit-elevated);
+  --ink: var(--orbit-ink);
+  --ink-soft: var(--orbit-muted);
+  --muted: var(--orbit-muted);
+  --blue: var(--orbit-accent);
+  --blue-ink: var(--orbit-accent);
+  --blue-soft: var(--orbit-soft);
+  --navy: var(--orbit-surface);
+  --line: var(--orbit-border);
+  --line-strong: var(--orbit-input-border);
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 22%);
+  --shadow-md: 0 14px 34px -22px rgb(0 0 0 / 55%);
+  background: var(--orbit-canvas);
+  color: var(--orbit-muted);
+}
+body.orbit-homepage[data-theme="dark"] #orbit-page[data-orbit-page="hompage"] {
+  --landing-primary: var(--orbit-action);
+  --landing-primary-hover: var(--orbit-accent);
+  --landing-accent: var(--orbit-accent);
+  --landing-mint: var(--orbit-soft);
+  --blue: var(--orbit-accent);
+  --blue-ink: var(--orbit-accent);
+  --blue-soft: var(--orbit-soft);
+  color: var(--orbit-muted);
+}
+body.orbit-homepage[data-theme="dark"] #orbit-page[data-orbit-page="hompage"] .m-transition {
+  background: linear-gradient(
+    180deg,
+    var(--orbit-green-950) 0%,
+    var(--orbit-green-925) 26%,
+    var(--orbit-green-900) 48%,
+    var(--orbit-green-900) 78%,
+    var(--orbit-canvas) 100%
+  );
+}
+body.orbit-homepage[data-theme="dark"] #orbit-page[data-orbit-page="hompage"] .m-faq__item {
+  background: var(--orbit-surface);
+}
+body.orbit-homepage[data-theme="dark"] #orbit-page[data-orbit-page="hompage"] .m-faq__item.is-open {
+  background: var(--orbit-elevated);
+}
+body.orbit-homepage[data-theme="dark"] #orbit-page[data-orbit-page="hompage"] .m-faq__sign {
+  background: var(--orbit-soft);
+}
+body.orbit-homepage[data-theme="dark"] #orbit-page[data-orbit-page="hompage"] .m-faq__sign::before,
+body.orbit-homepage[data-theme="dark"] #orbit-page[data-orbit-page="hompage"] .m-faq__sign::after {
+  background: var(--orbit-accent);
+}
+body.orbit-homepage[data-theme="dark"] #orbit-page[data-orbit-page="hompage"]
+  .m-faq__item.is-open .m-faq__sign {
+  background: var(--orbit-action);
+}
+body.orbit-homepage[data-theme="dark"] #orbit-page[data-orbit-page="hompage"]
+  .m-faq__item.is-open .m-faq__sign::before,
+body.orbit-homepage[data-theme="dark"] #orbit-page[data-orbit-page="hompage"]
+  .m-faq__item.is-open .m-faq__sign::after {
+  background: var(--orbit-on-action);
+}
+body.orbit-homepage[data-theme="dark"] #orbit-page[data-orbit-page="hompage"] .m-ask {
+  border-color: var(--orbit-border);
 }
 /* Brand accents only: retain the hero gradient's sizing, timing and animation. */
 #orbit-page[data-orbit-page="hompage"] #hero .u-h1 em {
@@ -1821,20 +1785,20 @@ body[data-theme="dark"] #orbit-page[data-orbit-page="hompage"] :is(.m-badge, .m-
   background-image: linear-gradient(140deg,var(--landing-accent),var(--landing-primary-hover));
 }
 #orbit-page[data-orbit-page="hompage"] .m-card--lead {
-  box-shadow: 0 18px 40px -26px rgb(13 148 136 / .6);
+  box-shadow: 0 18px 40px -26px color-mix(in srgb, var(--orbit-green-800) 60.00%, transparent);
 }
 #orbit-page[data-orbit-page="hompage"] .m-nav__links a.is-active {
-  color: var(--landing-mint);
+  color: var(--orbit-on-action);
 }
 #orbit-page[data-orbit-page="hompage"] .m-nav.is-solid .m-nav__links a:is(:hover, .is-active) {
   color: var(--landing-primary-hover);
 }
 #orbit-page[data-orbit-page="hompage"] .m-nav:is(.is-solid, .is-open) .m-nav__cta {
-  background: var(--landing-primary);
-  border-color: var(--landing-primary);
+  background: var(--orbit-action);
+  border-color: var(--orbit-action);
   color: #fff;
 }
 #orbit-page[data-orbit-page="hompage"] .m-nav:is(.is-solid, .is-open) .m-nav__cta:hover {
-  background: var(--landing-primary-hover);
-  border-color: var(--landing-primary-hover);
+  background: var(--orbit-action-hover);
+  border-color: var(--orbit-action-hover);
 }

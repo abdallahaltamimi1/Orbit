@@ -286,9 +286,9 @@ function catalog() {
   const lessons = O.db().posts.filter(
     (p) =>
       p.type === "lesson" &&
-      !O.get("orbit.deleted.posts", []).includes(p.id) &&
+      p.moderationStatus !== "hidden" && !O.get("orbit.deleted.posts", []).includes(p.id) &&
       O.channels().some(
-        (c) => c.id === p.channel && (O.own(c) || !c.private || O.memberships().includes(c.id)),
+        (c) => c.id === p.channel && (OrbitAuth.managedChannel(c) ? (O.own(c) || O.user.role === "student" && OrbitAuth.schoolChannelStudent(c, O.user.email, p)) : (O.own(c) || !c.private || O.memberships().includes(c.id))),
       ),
   );
   function results(q = "", subject = "", level = selectedLevel) {
@@ -524,11 +524,11 @@ function catalog() {
 function lesson() {
   const videos = O.db().posts.filter(
     (p) =>
-      !O.get("orbit.deleted.posts", []).includes(p.id) &&
+      p.moderationStatus !== "hidden" && !O.get("orbit.deleted.posts", []).includes(p.id) &&
       p.type === "video" &&
       p.topic === id &&
       O.channels().some(
-        (c) => c.id === p.channel && (O.own(c) || !c.private || O.memberships().includes(c.id)),
+        (c) => c.id === p.channel && (OrbitAuth.managedChannel(c) ? (O.own(c) || O.user.role === "student" && OrbitAuth.schoolChannelStudent(c, O.user.email, p)) : (O.own(c) || !c.private || O.memberships().includes(c.id))),
       ),
   );
   O.shell(

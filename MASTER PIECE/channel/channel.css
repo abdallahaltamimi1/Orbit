@@ -398,6 +398,210 @@
   display: flex;
   gap: 12px;
 }
+
+/* Channel post cards keep metadata, content, and actions in one compact rhythm. */
+#orbit-page[data-orbit-page="channel"] .post {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background: var(--orbit-surface);
+  color: var(--orbit-ink);
+}
+#orbit-page[data-orbit-page="channel"] .post-header {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 8px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--orbit-border);
+  color: var(--orbit-muted);
+}
+#orbit-page[data-orbit-page="channel"] .post-headline {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  min-width: 0;
+}
+#orbit-page[data-orbit-page="channel"] .post-headline .post-type {
+  align-self: flex-start;
+}
+#orbit-page[data-orbit-page="channel"] .post-headline h2 {
+  margin: 0;
+  color: var(--orbit-ink);
+  font-size: 20px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+#orbit-page[data-orbit-page="channel"] .post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 14px;
+  color: var(--orbit-muted);
+  font-size: 13px;
+}
+#orbit-page[data-orbit-page="channel"] .post-meta time {
+  font-variant-numeric: tabular-nums;
+}
+#orbit-page[data-orbit-page="channel"] .post-body {
+  margin: 12px 0 0;
+  color: var(--orbit-ink);
+  line-height: 1.7;
+}
+#orbit-page[data-orbit-page="channel"] .post > .attachment,
+#orbit-page[data-orbit-page="channel"] .post > figure {
+  margin-block: 12px 0;
+}
+#orbit-page[data-orbit-page="channel"] .post-deadline {
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  gap: 8px;
+  margin: 10px 0 0;
+  padding: 5px 10px;
+  border-radius: 8px;
+  background: var(--orbit-soft);
+  color: var(--orbit-ink);
+  font-size: 13px;
+}
+#orbit-page[data-orbit-page="channel"] .post-deadline span {
+  color: var(--orbit-muted);
+}
+#orbit-page[data-orbit-page="channel"] .post-footer {
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 1px solid var(--orbit-border);
+}
+#orbit-page[data-orbit-page="channel"] .post-assignment:empty {
+  display: none;
+}
+#orbit-page[data-orbit-page="channel"] .post-assignment .assignment-inline {
+  margin: 0 0 10px;
+  padding: 0 0 10px;
+  border-top: 0;
+  border-bottom: 1px solid var(--orbit-border);
+}
+#orbit-page[data-orbit-page="channel"] .post-assignment .assignment-inline p {
+  margin: 4px 0;
+}
+#orbit-page[data-orbit-page="channel"] .post-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+#orbit-page[data-orbit-page="channel"] .post-action-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+#orbit-page[data-orbit-page="channel"] .post-actions .btn {
+  min-height: 44px;
+  margin: 0;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
+    transform 160ms ease,
+    box-shadow 160ms ease;
+}
+#orbit-page[data-orbit-page="channel"] .post-discussion {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--orbit-border);
+}
+#orbit-page[data-orbit-page="channel"] .post-discussion-title {
+  margin: 0 0 8px;
+  color: var(--orbit-ink);
+  font-size: 14px;
+  line-height: 1.5;
+}
+#orbit-page[data-orbit-page="channel"] .post .comments:empty {
+  display: none;
+}
+#orbit-page[data-orbit-page="channel"] .post .comments:not(:empty) {
+  margin-top: 8px;
+  padding: 8px 12px;
+}
+#orbit-page[data-orbit-page="channel"] .post .comments p {
+  margin: 4px 0;
+  line-height: 1.6;
+}
+#orbit-page[data-orbit-page="channel"] .post-comment-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+#orbit-page[data-orbit-page="channel"] .post-comment-field {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+  margin: 0;
+  color: var(--orbit-muted);
+  font-size: 13px;
+}
+#orbit-page[data-orbit-page="channel"] .post-comment-form .post-comment-field input {
+  min-height: 44px;
+  margin: 0;
+  padding: 9px 12px;
+  border-radius: 10px;
+  background: var(--orbit-input);
+  color: var(--orbit-input-ink);
+}
+#orbit-page[data-orbit-page="channel"] .post-comment-form .orbit-field-error:empty {
+  display: none;
+  min-height: 0;
+  margin: 0;
+}
+#orbit-page[data-orbit-page="channel"] .post form[data-comment] .post-comment-submit {
+  min-height: 44px;
+  margin: 0;
+  padding: 9px 16px;
+  border: 1px solid var(--orbit-action);
+  border-radius: 10px;
+  background: var(--orbit-action);
+  color: var(--orbit-on-action);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    transform 160ms ease,
+    box-shadow 160ms ease;
+}
+#orbit-page[data-orbit-page="channel"] .post form[data-comment] .post-comment-submit:hover:not(:disabled) {
+  background: var(--orbit-action-hover);
+  border-color: var(--orbit-action-hover);
+  transform: translateY(-1px);
+}
+#orbit-page[data-orbit-page="channel"] .post form[data-comment] .post-comment-submit:active:not(:disabled) {
+  transform: translateY(0);
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  #orbit-page[data-orbit-page="channel"] .post-actions .btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  #orbit-page[data-orbit-page="channel"] .post-actions .btn {
+    transition: none;
+  }
+  #orbit-page[data-orbit-page="channel"] .post form[data-comment] .post-comment-submit {
+    transition: none;
+  }
+}
 @media (max-width:1100px) {
   #orbit-page .channel-layout {
     grid-template-columns: minmax(0,1fr);
@@ -413,6 +617,22 @@
   }
 }
 @media (max-width:600px) {
+  #orbit-page[data-orbit-page="channel"] .post {
+    padding: 18px;
+  }
+  #orbit-page[data-orbit-page="channel"] .post-actions {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  #orbit-page[data-orbit-page="channel"] .post-owner-actions {
+    align-self: flex-start;
+  }
+  #orbit-page[data-orbit-page="channel"] .post-comment-form {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  #orbit-page[data-orbit-page="channel"] .post-comment-submit {
+    justify-self: start;
+  }
   #orbit-page .channel-summary {
     align-items: stretch;
     flex-direction: column;
@@ -1037,3 +1257,10 @@ html[dir="rtl"] #orbit-page .classroom-board {
   text-align: center;
   overflow-wrap: anywhere;
 }
+
+/* Secondary navigation within Content. */
+#orbit-page .channel-content-filters { display:flex; flex-wrap:wrap; gap:8px; margin-block:12px; }
+#orbit-page .channel-content-filters button { min-height:44px; padding:8px 14px; border:1px solid var(--orbit-border); border-radius:10px; background:var(--orbit-surface); color:var(--orbit-ink); cursor:pointer; }
+#orbit-page .channel-content-filters button[aria-pressed="true"] { background:var(--orbit-soft); color:var(--orbit-on-soft); border-color:var(--orbit-focus); }
+#orbit-page .channel-main > .orbit-meetings { min-width:0; }
+#orbit-page .channel-main .meeting-grid { grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr)); }

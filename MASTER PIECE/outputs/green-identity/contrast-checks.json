@@ -1,0 +1,223 @@
+[
+  {
+    "route": "hompage/hompage.html",
+    "theme": "light",
+    "failures": [
+      {
+        "tag": "SPAN",
+        "cls": "m-logo__word",
+        "color": "rgb(236, 253, 245)",
+        "bg": [
+          236,
+          253,
+          245
+        ],
+        "ratio": 1,
+        "text": "ORBIT"
+      },
+      {
+        "tag": "A",
+        "cls": "is-active",
+        "color": "rgb(255, 255, 255)",
+        "bg": [
+          236,
+          253,
+          245
+        ],
+        "ratio": 1.05,
+        "text": "Home"
+      },
+      {
+        "tag": "A",
+        "cls": "",
+        "color": "rgb(236, 253, 245)",
+        "bg": [
+          236,
+          253,
+          245
+        ],
+        "ratio": 1,
+        "text": "Features"
+      },
+      {
+        "tag": "A",
+        "cls": "m-nav__login",
+        "color": "rgb(236, 253, 245)",
+        "bg": [
+          236,
+          253,
+          245
+        ],
+        "ratio": 1,
+        "text": "Log in"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "",
+        "color": "rgb(209, 250, 229)",
+        "bg": [
+          237.34117647058824,
+          253.14117647058825,
+          245.7058823529412
+        ],
+        "ratio": 1.08,
+        "text": "العربية"
+      }
+    ]
+  },
+  {
+    "route": "hompage/hompage.html",
+    "theme": "dark",
+    "failures": []
+  },
+  {
+    "route": "about/about.html",
+    "theme": "light",
+    "failures": []
+  },
+  {
+    "route": "about/about.html",
+    "theme": "dark",
+    "failures": []
+  },
+  {
+    "route": "contact/contact.html",
+    "theme": "light",
+    "failures": []
+  },
+  {
+    "route": "contact/contact.html",
+    "theme": "dark",
+    "failures": []
+  },
+  {
+    "route": "pricing/pricing.html",
+    "theme": "light",
+    "failures": []
+  },
+  {
+    "route": "pricing/pricing.html",
+    "theme": "dark",
+    "failures": []
+  },
+  {
+    "route": "login/login.html",
+    "theme": "light",
+    "failures": []
+  },
+  {
+    "route": "login/login.html",
+    "theme": "dark",
+    "failures": []
+  },
+  {
+    "route": "school-login/school-login.html",
+    "theme": "light",
+    "failures": []
+  },
+  {
+    "route": "school-login/school-login.html",
+    "theme": "dark",
+    "failures": []
+  },
+  {
+    "route": "registration/registration.html",
+    "theme": "light",
+    "failures": []
+  },
+  {
+    "route": "registration/registration.html",
+    "theme": "dark",
+    "failures": []
+  },
+  {
+    "route": "student-dashboard/student-dashboard.html",
+    "theme": "light",
+    "failures": []
+  },
+  {
+    "route": "student-dashboard/student-dashboard.html",
+    "theme": "dark",
+    "failures": []
+  },
+  {
+    "route": "teacher-dashboard/teacher-dashboard.html",
+    "theme": "light",
+    "failures": []
+  },
+  {
+    "route": "teacher-dashboard/teacher-dashboard.html",
+    "theme": "dark",
+    "failures": []
+  },
+  {
+    "route": "school-dashboard/school-dashboard.html",
+    "theme": "light",
+    "failures": []
+  },
+  {
+    "route": "school-dashboard/school-dashboard.html",
+    "theme": "dark",
+    "failures": []
+  },
+  {
+    "route": "school-management/school-management.html",
+    "theme": "light",
+    "failures": []
+  },
+  {
+    "route": "school-management/school-management.html",
+    "theme": "dark",
+    "failures": []
+  },
+  {
+    "route": "jobs/jobs.html",
+    "theme": "light",
+    "failures": []
+  },
+  {
+    "route": "jobs/jobs.html",
+    "theme": "dark",
+    "failures": []
+  },
+  {
+    "route": "settings/settings.html",
+    "theme": "light",
+    "failures": []
+  },
+  {
+    "route": "settings/settings.html",
+    "theme": "dark",
+    "failures": []
+  },
+  {
+    "route": "account-profile/account-profile.html",
+    "theme": "light",
+    "failures": []
+  },
+  {
+    "route": "account-profile/account-profile.html",
+    "theme": "dark",
+    "failures": []
+  },
+  {
+    "route": "channels/channels.html",
+    "theme": "light",
+    "failures": []
+  },
+  {
+    "route": "channels/channels.html",
+    "theme": "dark",
+    "failures": []
+  },
+  {
+    "route": "teacher-directory/teacher-directory.html",
+    "theme": "light",
+    "failures": []
+  },
+  {
+    "route": "teacher-directory/teacher-directory.html",
+    "theme": "dark",
+    "failures": []
+  }
+]

@@ -2,6 +2,32 @@
 <html lang="en">
   <head>
     <script src="../shared/account-access.js"></script>
+    <script>
+      (() => {
+        try {
+          const read = (key) => JSON.parse(localStorage.getItem(key) || "null"),
+            appearance = read("orbit.settings.appearance"),
+            prefs = read("orbit.student.v1") || {},
+            valid = (value) => ["light", "dark", "auto"].includes(value),
+            saved = valid(appearance)
+              ? appearance
+              : valid(prefs.theme)
+                ? prefs.theme
+                : localStorage.getItem("orbitTheme") || localStorage.getItem("theme") || "light",
+            resolved =
+              saved === "auto"
+                ? matchMedia("(prefers-color-scheme: dark)").matches
+                  ? "dark"
+                  : "light"
+                : saved;
+          document.documentElement.dataset.orbitAppearance = valid(saved) ? saved : "light";
+          document.documentElement.dataset.theme = resolved;
+        } catch {
+          document.documentElement.dataset.orbitAppearance = "light";
+          document.documentElement.dataset.theme = "light";
+        }
+      })();
+    </script>
     <link rel="stylesheet" href="../shared/tokens.css" />
     <link rel="stylesheet" href="../shared/title-orbit.css" />
     <script src="../shared/title-orbit.js"></script>
@@ -45,7 +71,10 @@
     <script src="../shared/language-control.js" defer></script>
   </head>
 
-  <body>
+  <body class="orbit-homepage">
+    <script>
+      document.body.dataset.theme = document.documentElement.dataset.theme || "light";
+    </script>
     <div id="orbit-page" class="orbit-content" data-orbit-page="hompage">
       <!-- =========================================================
      NAVBAR
@@ -74,8 +103,9 @@
             <a href="#top" class="is-active">Home</a>
             <a href="#features">Features</a>
             <a href="#services">Services</a>
+            <a href="../pricing/pricing.html">Plans</a>
             <a href="#faq">FAQ</a>
-            <a href="#contact">Contact</a>
+            <a href="../contact/contact.html">Contact</a>
           </nav>
 
           <!-- Actions -->
@@ -85,6 +115,17 @@
             <a class="m-btn m-btn--primary m-nav__cta" href="../registration/registration.html">
               Sign Up
             </a>
+
+            <button
+              class="m-nav__theme"
+              id="orbit-theme-toggle"
+              type="button"
+              aria-label="Switch to dark mode"
+              aria-pressed="false"
+              title="Switch to dark mode"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"></svg>
+            </button>
 
             <button
               class="m-nav__burger"
@@ -189,8 +230,6 @@
 
               <div class="u-cta">
                 <button class="u-btn u-primary">Start exploring</button>
-
-                <button class="u-btn u-second">Explore the journey</button>
               </div>
             </div>
           </div>
@@ -246,77 +285,12 @@
      FEATURES
 ========================================================= -->
 
-        <section class="m-section m-features" id="features">
+        <section class="m-section m-features" id="features" aria-labelledby="features-title">
           <div class="m-container">
-            <header class="m-head m-head--center" data-reveal>
-              <span class="m-badge"> Features </span>
-
-              <h2>Everything your class needs</h2>
-
-              <p>One connected space for teaching, learning and collaboration.</p>
+            <header class="m-head m-head--center m-platform-intro" data-reveal>
+              <p class="orbit-intro-eyebrow" data-locale-ar="ORBIT | منصة تعليمية متكاملة">ORBIT | An integrated educational platform</p><h2 id="features-title"><span id="discover-orbit-title" data-locale-ar="مساحة واحدة تجمع التعليم والفرص">One space for learning and opportunity</span></h2><p data-locale-ar="تجربة رقمية تربط الطلاب والمعلمين والمدارس، وتفتح آفاقاً جديدة للتعلّم والتطوّر المهني.">A digital experience connecting students, teachers, and schools, opening new possibilities for learning and professional growth.</p>
             </header>
-
-            <div class="m-grid-3">
-              <article class="m-card" data-reveal>
-                <span class="m-card__corner"> ↗ </span>
-
-                <span class="m-icon"> 📚 </span>
-
-                <h3>Lesson prep</h3>
-
-                <p>Prepare lessons, worksheets, questions and learning materials.</p>
-
-                <a class="m-link" href="#"> Prepare a lesson → </a>
-              </article>
-
-              <article class="m-card m-card--lead" data-reveal>
-                <span class="m-card__corner"> ↗ </span>
-
-                <span class="m-icon"> 💬 </span>
-
-                <h3>Class channel</h3>
-
-                <p>Homework, videos, notes and results in one place.</p>
-
-                <a class="m-link" href="#"> See how it works → </a>
-              </article>
-
-              <article class="m-card" data-reveal>
-                <span class="m-card__corner"> ↗ </span>
-
-                <span class="m-icon"> 🧪 </span>
-
-                <h3>Interactive labs</h3>
-
-                <p>Let students explore concepts through interactive experiments.</p>
-
-                <a class="m-link" href="#"> Open the lab → </a>
-              </article>
-
-              <article class="m-card" data-reveal>
-                <span class="m-icon"> 📊 </span>
-
-                <h3>Learning levels</h3>
-
-                <p>Content adapted for different learning levels.</p>
-              </article>
-
-              <article class="m-card" data-reveal>
-                <span class="m-icon"> 🔄 </span>
-
-                <h3>Books & tools</h3>
-
-                <p>Exchange educational books and learning tools.</p>
-              </article>
-
-              <article class="m-card" data-reveal>
-                <span class="m-icon"> ✦ </span>
-
-                <h3>AI assistant</h3>
-
-                <p>Support teachers and students throughout the learning journey.</p>
-              </article>
-            </div>
+<div class="orbit-intro-features"><div><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 5h7l2 2 2-2h7v14h-7l-2 2-2-2H3zM12 7v14"/></svg><h3 data-locale-ar="تعلّم">Learn</h3><p data-locale-ar="دروس وقنوات تعليمية">Lessons and educational channels</p></div><div><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 4h16v12H4zM8 21l4-5 4 5M8 8h8M8 12h5"/></svg><h3 data-locale-ar="درّس">Teach</h3><p data-locale-ar="أنشئ قنواتك وأدر محتواك">Create your channels and manage your content</p></div><div><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 8h16v12H4zM8 8V4h8v4M4 12h16M10 12v3h4v-3"/></svg><h3 data-locale-ar="تقدّم">Advance</h3><p data-locale-ar="اكتشف فرص التدريس">Discover teaching opportunities</p></div></div>
           </div>
         </section>
 
@@ -328,99 +302,57 @@
           <div class="m-container">
             <header class="m-head m-head--center" data-reveal>
               <span class="m-badge"> Our services </span>
-
-              <h2>Built around the learning journey</h2>
-
-              <p>Everything connects through one learning orbit.</p>
+              <h2>One Platform, Endless Learning Opportunities</h2>
+              <p>Discover a connected educational environment bringing students, teachers, and schools together.</p>
             </header>
 
-            <div class="m-services__body">
-              <!-- Orbit visualization -->
+            <div class="m-services-grid">
+              <article class="m-card m-service-card" data-reveal>
+                <span class="m-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7v14M12 7C9.7 5.2 6.5 4.5 3 5.5v13c3.5-1 6.7-.3 9 1.5M12 7c2.3-1.8 5.5-2.5 9-1.5v13c-3.5-1-6.7-.3-9 1.5"/><path d="M6.5 9.5c1.5-.2 2.8.1 4 .8M17.5 9.5c-1.5-.2-2.8.1-4 .8"/></svg></span>
+                <h3>Interactive Learning Channels</h3>
+                <p>Join teacher-led channels and explore lessons and learning activities in one place.</p>
+                <a class="m-service-card__link" href="../channels/channels.html">Explore →</a>
+              </article>
 
-              <div class="m-orbit" id="orbit" data-reveal>
-                <svg viewBox="0 0 260 260">
-                  <circle class="m-orbit__star" cx="34" cy="44" r="1.4" />
+              <article class="m-card m-service-card" data-reveal>
+                <span class="m-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3.5 20v-1.4a5.5 5.5 0 0 1 11 0V20zM16 5.2a3.2 3.2 0 0 1 0 5.8M17 14a4.5 4.5 0 0 1 3.5 4.4V20h-3"/></svg></span>
+                <h3 data-locale-ar="مساحة متكاملة للمعلم">Teacher Workspace</h3>
+                <p>Create channels, share knowledge, and organize assignments and student engagement.</p>
+                <a class="m-service-card__link" href="../teacher-dashboard/teacher-dashboard.html">Explore →</a>
+              </article>
 
-                  <circle class="m-orbit__star" cx="224" cy="62" r="1.1" />
+              <article class="m-card m-service-card" data-reveal>
+                <span class="m-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20.5h18M5 20V8l7-4 7 4v12M9 20v-6h6v6M8 9.5h.01M12 9.5h.01M16 9.5h.01"/><path d="M9 12h.01M15 12h.01"/></svg></span>
+                <h3>Schools &amp; Teaching Opportunities</h3>
+                <p>Discover qualified teachers, publish teaching opportunities, and manage applications and interviews.</p>
+                <a class="m-service-card__link" href="../jobs/jobs.html">Explore →</a>
+              </article>
 
-                  <circle class="m-orbit__star" cx="46" cy="214" r="1.2" />
-
-                  <circle class="m-orbit__star" cx="212" cy="206" r="1.5" />
-
-                  <circle class="m-orbit__ring" cx="130" cy="130" r="108" />
-
-                  <circle class="m-orbit__ring m-orbit__ring--node" cx="130" cy="130" r="86" />
-
-                  <circle class="m-orbit__ring" cx="130" cy="130" r="48" />
-
-                  <g class="m-orbit__spin" id="orbitSpin">
-                    <g class="m-orbit__node" data-node="school">
-                      <circle class="m-orbit__halo" cx="130" cy="44" r="13" />
-
-                      <circle class="m-orbit__dot" cx="130" cy="44" r="5.2" />
-                    </g>
-
-                    <g class="m-orbit__node" data-node="offline">
-                      <circle class="m-orbit__halo" cx="216" cy="130" r="13" />
-
-                      <circle class="m-orbit__dot" cx="216" cy="130" r="5.2" />
-                    </g>
-
-                    <g class="m-orbit__node" data-node="reports">
-                      <circle class="m-orbit__halo" cx="130" cy="216" r="13" />
-
-                      <circle class="m-orbit__dot" cx="130" cy="216" r="5.2" />
-                    </g>
-
-                    <g class="m-orbit__node" data-node="curriculum">
-                      <circle class="m-orbit__halo" cx="44" cy="130" r="13" />
-
-                      <circle class="m-orbit__dot" cx="44" cy="130" r="5.2" />
-                    </g>
-                  </g>
-
-                  <rect x="112" y="112" width="36" height="36" rx="11" class="m-orbit__core" />
-                </svg>
-
-                <span class="m-orbit__label" id="orbitLabel"></span>
-              </div>
-
-              <!-- Service cards -->
-
-              <div class="m-grid-2">
-                <article class="m-card m-card--sm" data-service="school" data-reveal>
-                  <span class="m-icon">🏫</span>
-
-                  <h3>School plans</h3>
-
-                  <p>One connected platform for your whole school.</p>
-                </article>
-
-                <article class="m-card m-card--sm" data-service="offline" data-reveal>
-                  <span class="m-icon">☁</span>
-
-                  <h3>Offline learning</h3>
-
-                  <p>Keep lessons available even without internet.</p>
-                </article>
-
-                <article class="m-card m-card--sm" data-service="reports" data-reveal>
-                  <span class="m-icon">📈</span>
-
-                  <h3>Progress reports</h3>
-
-                  <p>Understand student progress clearly.</p>
-                </article>
-
-                <article class="m-card m-card--sm" data-service="curriculum" data-reveal>
-                  <span class="m-icon">◉</span>
-
-                  <h3>Local curriculum</h3>
-
-                  <p>Learning content adapted to your curriculum.</p>
-                </article>
-              </div>
+              <article class="m-card m-service-card" data-reveal>
+                <span class="m-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4h8l3 3v13H5V4h3Z"/><path d="M9 4v4h6V4M9 13h6M9 17h3"/><path d="m14.5 16 1.3 1.3 2.7-2.8"/></svg></span>
+                <h3 data-locale-ar="واجبات وتقييمات منظمة">Assignments &amp; Feedback</h3>
+                <p>Manage assignments and feedback directly within learning channels.</p>
+                <a class="m-service-card__link" href="../channels/channels.html">Explore →</a>
+              </article>
             </div>
+          </div>
+        </section>
+
+        <section class="m-section m-orbit-video" id="discover-orbit" aria-labelledby="discover-orbit-title">
+          <div class="m-container">
+            <video
+              class="m-orbit-introduction__video"
+              controls
+              playsinline
+              preload="metadata"
+              width="1920"
+              height="1080"
+              poster="../public/assets/introduction/ORBIT_Introduction_Poster.png"
+              aria-labelledby="discover-orbit-title"
+            >
+              <source src="../public/assets/introduction/ORBIT_Introduction_MSA_Corrected_Review_1080p.mp4" type="video/mp4" />
+              <a href="../public/assets/introduction/ORBIT_Introduction_MSA_Corrected_Review_1080p.mp4" data-locale-ar="شاهد فيديو ORBIT التعريفي">Watch the ORBIT introduction video</a>
+            </video>
           </div>
         </section>
 
@@ -567,7 +499,7 @@
                 </li>
 
                 <li>
-                  <a href="#contact"> Contact </a>
+                  <a href="../contact/contact.html"> Contact </a>
                 </li>
               </ul>
             </div>
@@ -594,10 +526,12 @@
       <script src="home-interactions.js"></script>
       <link rel="stylesheet" href="home-interactions.css" />
 
-      <link rel="stylesheet" href="landing-premium.css" />
       <script src="landing-premium.js"></script>
       <link rel="stylesheet" href="hero-video.css" />
       <script src="hero-video.js"></script>
+      <link rel="stylesheet" href="landing-premium.css" />
+      <link rel="stylesheet" href="night-sky.css" />
+      <link rel="stylesheet" href="introduction-video.css" />
     </div>
   </body>
 </html>

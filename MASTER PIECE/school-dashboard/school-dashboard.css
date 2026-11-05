@@ -1,9 +1,9 @@
 @import url("../shared/recruitment.css");
 /* Recruitment workspace: scoped to this route; shared services stay intact. */
 body.recruitment-hub {
-  --purple: #0d9488;
-  --purple-dark: #0f766e;
-  --hub-border: #e2ecef;
+  --purple: var(--orbit-green-800);
+  --purple-dark: var(--orbit-green-800);
+  --hub-border: var(--orbit-green-100);
   --hub-surface: var(--card,#fff);
 }
 .recruitment-hub #school-follow,
@@ -37,7 +37,7 @@ body.recruitment-hub {
   font-size: .9rem;
 }
 .recruitment-hub .btn:not(.soft) {
-  background: #0d9488;
+  background: var(--orbit-green-800);
   color: white;
 }
 .recruitment-hub .recruit-stats {
@@ -56,7 +56,7 @@ body.recruitment-hub {
   align-items: center;
 }
 .recruitment-hub .recruit-stats strong {
-  color: #0f766e;
+  color: var(--orbit-accent);
   font-size: 2rem;
   font-variant-numeric: tabular-nums;
 }
@@ -90,7 +90,7 @@ body.recruitment-hub {
 }
 .hub-table th {
   font-weight: 600;
-  background: color-mix(in srgb,#0d9488 5%,var(--hub-surface));
+  background: color-mix(in srgb,var(--orbit-green-800) 5%,var(--hub-surface));
 }
 .hub-table :is(th, td) {
   padding: 16px;
@@ -101,7 +101,7 @@ body.recruitment-hub {
 .hub-applicant small {
   display: block;
   margin-top: 5px;
-  color: var(--muted,#64748b);
+  color: var(--muted,var(--orbit-green-600));
 }
 .hub-link {
   color: var(--purple);
@@ -152,7 +152,7 @@ body.recruitment-hub {
   min-height: 42px;
 }
 .recruitment-hub :is(a, button, input, select, textarea):focus-visible {
-  outline: 3px solid #14b8a6;
+  outline: 3px solid var(--orbit-focus);
   outline-offset: 3px;
 }
 .recruitment-hub .pill {
@@ -163,21 +163,21 @@ body.recruitment-hub {
   flex-wrap: wrap;
 }
 .recruitment-hub ::selection {
-  background: #ccfbf1;
-  color: #102238;
+  background: var(--orbit-green-100);
+  color: var(--orbit-green-900);
 }
 .recruitment-hub .role-banner {
   font-size: .8rem;
 }
 .recruitment-hub[data-theme="dark"] {
-  --hub-border: #294343;
-  --hub-surface: #10242d;
+  --hub-border: var(--orbit-green-900);
+  --hub-surface: var(--orbit-green-925);
 }
 .recruitment-hub[data-theme="dark"] .recruit-stats strong {
-  color: #5eead4;
+  color: var(--orbit-accent);
 }
 .recruitment-hub[data-theme="dark"] .hub-link {
-  color: #5eead4;
+  color: var(--orbit-accent);
 }
 @media (max-width:1100px) {
   .hub-applicant {
@@ -188,6 +188,15 @@ body.recruitment-hub {
   }
 }
 @media (max-width:600px) {
+  body.recruitment-hub #orbit-page .recruit-stats {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  body.recruitment-hub #orbit-page .recruit-stats article {
+    min-width: 0;
+  }
+  body.recruitment-hub #orbit-page .recruit-stats :is(strong, span) {
+    overflow-wrap: anywhere;
+  }
   .hub-heading {
     align-items: stretch;
     flex-direction: column;
@@ -244,28 +253,115 @@ body.recruitment-hub {
     grid-template-columns: 1fr;
   }
 }
-/* Shared legacy theme rules load later: keep the approved hub palette local. */
+/* Recruitment keeps the School workflow's interactive palette on ORBIT teal. */
 body.recruitment-hub #app main .btn:not(.soft) {
-  background: #0d9488 !important;
-  color: #fff !important;
-  border-color: #0d9488 !important;
+  background: var(--orbit-action);
+  color: var(--orbit-on-action);
+  border-color: var(--orbit-action);
 }
 body.recruitment-hub #app main .btn.soft {
-  background: #effaf8 !important;
-  color: #0f766e !important;
-  border-color: #d5eeea !important;
+  background: var(--orbit-soft);
+  color: var(--orbit-on-soft);
+  border-color: var(--orbit-border);
 }
 body.recruitment-hub #app main .recruit-stats strong {
-  color: #0f766e !important;
-}
-body.recruitment-hub[data-theme="dark"] #app main .btn.soft {
-  background: #173e3b !important;
-  color: #99f6e4 !important;
-  border-color: #28534e !important;
-}
-body.recruitment-hub[data-theme="dark"] #app main .recruit-stats strong {
-  color: #5eead4 !important;
+  color: var(--orbit-accent);
 }
 .recruitment-hub #meetings-section:not(:target) {
   display: none;
+}
+body.recruitment-hub[data-orbit-role="school"] {
+  --orbit-accent: var(--orbit-green-800);
+  --orbit-action: var(--orbit-green-800);
+  --orbit-action-hover: var(--orbit-green-900);
+  --orbit-soft: var(--orbit-green-50);
+  --orbit-on-soft: var(--orbit-green-800);
+  --orbit-hover: var(--orbit-green-50);
+  --orbit-active: var(--orbit-green-100);
+  --orbit-role-accent: var(--orbit-green-800);
+  --orbit-role-soft: var(--orbit-green-50);
+  --orbit-focus: var(--orbit-green-800);
+  --purple: var(--orbit-green-800);
+  --purple-dark: var(--orbit-green-800);
+  --blue: var(--orbit-green-800);
+}
+body.recruitment-hub[data-theme="dark"][data-orbit-role="school"] {
+  --orbit-accent: var(--orbit-green-400);
+  --orbit-action: var(--orbit-green-800);
+  --orbit-action-hover: var(--orbit-green-800);
+  --orbit-soft: var(--orbit-green-900);
+  --orbit-on-soft: var(--orbit-green-400);
+  --orbit-hover: var(--orbit-green-900);
+  --orbit-active: var(--orbit-green-800);
+  --orbit-role-accent: var(--orbit-green-400);
+  --orbit-role-soft: var(--orbit-green-900);
+  --orbit-focus: var(--orbit-green-400);
+}
+body.recruitment-hub[data-orbit-role="school"] #orbit-subscription-panel :is(button, a, input, select, textarea):focus-visible {
+  outline-color: var(--orbit-focus);
+}
+body.recruitment-hub .pill.interview_scheduled {
+  color: var(--orbit-on-soft);
+  background: var(--orbit-soft);
+  border-color: var(--orbit-border);
+}
+.meeting-interview-count {
+  color: var(--orbit-muted);
+}
+#editor.job-opportunity-dialog {
+  color-scheme: light;
+}
+body[data-theme="dark"] #editor.job-opportunity-dialog {
+  color-scheme: dark;
+}
+#editor.job-opportunity-dialog :is(input, select, textarea):hover:not(:disabled) {
+  border-color: var(--orbit-accent);
+}
+#editor.job-opportunity-dialog :is(input, select, textarea):focus-visible {
+  border-color: var(--orbit-focus);
+  outline: 2px solid var(--orbit-focus);
+  outline-offset: 2px;
+}
+#editor.job-opportunity-dialog input:is([type="checkbox"], [type="radio"]) {
+  accent-color: var(--orbit-accent);
+}
+#editor.job-opportunity-dialog :is(button, input, select, textarea):focus-visible {
+  outline: 2px solid var(--orbit-focus);
+  outline-offset: 3px;
+}
+#editor.job-opportunity-dialog #job-form .btn {
+  background: var(--orbit-action);
+  color: var(--orbit-on-action);
+}
+body.recruitment-hub .recruit-tabs .btn {
+  transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease;
+}
+#orbit-page[data-orbit-page] .recruit-tabs [aria-current="page"] {
+  background: var(--orbit-action);
+  border-color: var(--orbit-action);
+  color: var(--orbit-on-action);
+  cursor: default;
+}
+#orbit-page[data-orbit-page] .recruit-tabs [aria-current="false"] {
+  background: var(--orbit-soft);
+  border-color: var(--orbit-border);
+  color: var(--orbit-on-soft);
+}
+@media (hover: hover) and (pointer: fine) {
+  body.recruitment-hub #app main .btn:not(.soft):hover:not(:disabled),
+  #editor.job-opportunity-dialog #job-form .btn:hover:not(:disabled) {
+    background: var(--orbit-action-hover);
+    border-color: var(--orbit-action-hover);
+  }
+  body.recruitment-hub #app main .btn.soft:hover:not(:disabled),
+  #orbit-page[data-orbit-page] .recruit-tabs [aria-current="false"]:hover:not(:disabled) {
+    background: var(--orbit-hover);
+    border-color: var(--orbit-accent);
+    color: var(--orbit-on-soft);
+  }
+}
+@media (hover: hover) and (pointer: fine) {
+  #editor.job-opportunity-dialog > .close:hover {
+    color: var(--orbit-accent);
+  }
 }

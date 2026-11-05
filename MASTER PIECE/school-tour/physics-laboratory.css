@@ -62,7 +62,7 @@
   color: var(--orbit-on-action,#fff);
 }
 .physics-room button.physics-run:hover {
-  background: var(--orbit-midnight,#142b4a);
+  background: var(--orbit-action-hover,#6ee7b7);
   color: var(--orbit-on-action,#fff);
 }
 .physics-layout {

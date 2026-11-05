@@ -21,6 +21,24 @@
     <link rel="stylesheet" href="../shared/subscriptions.css" />
     <script src="../shared/subscription-ui.js" defer></script>
     <script src="../shared/session.js"></script>
+    <script>
+      (() => {
+        let role = "";
+        try {
+          role = JSON.parse(localStorage.getItem("orbitUser") || "{}").role || "";
+        } catch {}
+        if (role === "student") {
+          location.replace("./teaching-profile.html" + location.search);
+          return;
+        }
+        if (!["teacher", "school"].includes(role))
+          location.replace(
+            role === "student"
+              ? "../student-dashboard/student-dashboard.html"
+              : "../login/login.html",
+          );
+      })();
+    </script>
     <link rel="stylesheet" href="../shared/portal-shell.css" />
     <script src="../shared/portal-shell.js" defer></script>
     <link rel="stylesheet" href="../shared/forms.css" />
@@ -38,7 +56,6 @@
       <div id="app"></div>
       <div id="toast" role="status" aria-live="polite"></div>
       <noscript>يرجى تفعيل JavaScript لتشغيل ORBIT.</noscript>
-      <script src="../shared/recruitment-profile.js" defer></script>
     </div>
   </body>
 </html>

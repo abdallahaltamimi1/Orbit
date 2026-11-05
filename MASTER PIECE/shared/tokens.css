@@ -1,4 +1,6 @@
 @import url("./audit-foundations.css");
+@import url("./green-identity.css");
+@import url("./footer-identity-boundary.css");
 :root {
   --orbit-font: OrbitAuditArabic,'Segoe UI',Tahoma,Arial,sans-serif;
   --orbit-font-heading: OrbitAuditHeading,'Segoe UI',Tahoma,Arial,sans-serif;
@@ -7,28 +9,44 @@
   --orbit-type-control: 16px;
   --orbit-type-nav: 15px;
   --orbit-line: 1.75;
-  --orbit-midnight: #142b4a;
-  --orbit-blue: #3b82f6;
-  --orbit-turquoise: #22c7a9;
+  --orbit-midnight: var(--orbit-green-900);
+  --orbit-blue: var(--orbit-green-400);
+  --orbit-turquoise: var(--orbit-green-600);
   --orbit-yellow: #ffd166;
   --orbit-coral: #ff7a70;
-  --orbit-teal: #0f9d91;
-  --orbit-indigo: #4355a5;
-  --orbit-ink: #17243a;
-  --orbit-muted: #64748b;
-  --orbit-accent: #2563eb;
-  --orbit-action: #2563eb;
+  --orbit-teal: var(--orbit-green-700);
+  --orbit-indigo: var(--orbit-green-800);
+  --orbit-ink: var(--orbit-green-900);
+  --orbit-muted: var(--orbit-green-700);
+  --orbit-accent: var(--orbit-green-800);
+  --orbit-action: var(--orbit-green-800);
+  --orbit-action-hover: var(--orbit-green-900);
   --orbit-on-action: #fff;
-  --orbit-focus: #2563eb;
-  --orbit-border: #dce4ef;
+  --orbit-focus: var(--orbit-green-800);
+  --orbit-hover: var(--orbit-green-50);
+  --orbit-active: var(--orbit-green-100);
+  --orbit-border: var(--orbit-green-100);
+  --orbit-input-border: var(--orbit-green-500);
   --orbit-surface: #fff;
-  --orbit-canvas: #f6f8fc;
-  --orbit-soft: #eaf1ff;
-  --orbit-space: #142b4a;
+  --orbit-canvas: var(--orbit-green-50);
+  --orbit-elevated: #fff;
+  --orbit-input: #fff;
+  --orbit-input-ink: var(--orbit-green-900);
+  --orbit-placeholder: var(--orbit-green-700);
+  --orbit-soft: var(--orbit-green-50);
+  --orbit-on-soft: var(--orbit-green-800);
+  --orbit-space: var(--orbit-green-900);
   --orbit-error: #b4233b;
+  --orbit-success: var(--orbit-green-800);
+  --orbit-warning: #895500;
+  --orbit-disabled: var(--orbit-green-600);
+  --orbit-overlay: color-mix(in srgb, var(--orbit-green-950) 68.00%, transparent);
+  --orbit-selection: var(--orbit-green-100);
+  --orbit-selection-ink: var(--orbit-green-900);
   --orbit-radius: 14px;
   --orbit-space-unit: 8px;
   --purple: var(--orbit-accent);
+  --purple-deep: var(--orbit-action);
   --blue: var(--orbit-blue);
   --text: var(--orbit-ink);
   --muted: var(--orbit-muted);
@@ -36,6 +54,8 @@
   --panel: var(--orbit-surface);
   --bg: var(--orbit-canvas);
   --soft: var(--orbit-soft);
+  --side: var(--orbit-surface);
+  --error: var(--orbit-error);
 }
 html {
   font-size: 16px;
@@ -49,16 +69,32 @@ body {
   line-height: var(--orbit-line);
 }
 body[data-theme="dark"] {
-  --orbit-ink: #edf4ff;
-  --orbit-muted: #b4c3d8;
-  --orbit-border: #304763;
-  --orbit-surface: #162b43;
-  --orbit-canvas: #0d1d30;
-  --orbit-soft: #203b59;
-  --orbit-space: #0b192a;
-  --orbit-accent: #9ac3ff;
-  --orbit-focus: #9ac3ff;
+  --orbit-ink: var(--orbit-green-50);
+  --orbit-muted: var(--orbit-green-300);
+  --orbit-border: var(--orbit-green-800);
+  --orbit-input-border: var(--orbit-green-600);
+  --orbit-surface: var(--orbit-green-900);
+  --orbit-canvas: var(--orbit-green-925);
+  --orbit-elevated: var(--orbit-green-900);
+  --orbit-input: var(--orbit-green-900);
+  --orbit-input-ink: var(--orbit-green-50);
+  --orbit-placeholder: var(--orbit-green-300);
+  --orbit-soft: var(--orbit-green-900);
+  --orbit-on-soft: var(--orbit-green-400);
+  --orbit-space: var(--orbit-green-925);
+  --orbit-accent: var(--orbit-green-400);
+  --orbit-action: var(--orbit-green-800);
+  --orbit-action-hover: var(--orbit-green-800);
+  --orbit-focus: var(--orbit-green-400);
+  --orbit-hover: var(--orbit-green-900);
+  --orbit-active: var(--orbit-green-800);
   --orbit-error: #ffacb5;
+  --orbit-success: var(--orbit-green-400);
+  --orbit-warning: #f9d282;
+  --orbit-disabled: var(--orbit-green-400);
+  --orbit-overlay: rgb(0 0 0 / 74%);
+  --orbit-selection: var(--orbit-green-800);
+  --orbit-selection-ink: var(--orbit-green-50);
 }
 *,
 *::before,
@@ -83,14 +119,14 @@ img {
 body.orbit-shell-mounted {
   background: var(--orbit-canvas);
 }
-/* Frozen scene palette: localization may change copy, never the hero's art. */
+/* Keep the legacy hero wrapper's functional accents aligned with the ORBIT brand. */
 #orbit-page[data-orbit-page="hompage"] #hero {
-  --orbit-accent: #7542df;
-  --orbit-focus: #a58ae5;
-  --orbit-ink: #25263e;
-  --orbit-muted: #777a92;
-  --orbit-border: #e5e0ef;
+  --orbit-accent: var(--orbit-green-800);
+  --orbit-focus: var(--orbit-green-800);
+  --orbit-ink: var(--orbit-green-900);
+  --orbit-muted: var(--orbit-green-500);
+  --orbit-border: var(--orbit-green-100);
   --orbit-surface: #fff;
-  --orbit-canvas: #f8f7fc;
+  --orbit-canvas: var(--orbit-green-50);
   --orbit-error: #b63455;
 }

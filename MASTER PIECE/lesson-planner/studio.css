@@ -20,9 +20,9 @@
 }
 body.lesson-studio #orbit-page {
   font-family: StudioArabic,StudioEnglish,sans-serif;
-  --orbit-accent: #0d9488;
-  --orbit-action: #0d9488;
-  --orbit-soft: #ccfbf1;
+  --orbit-accent: var(--orbit-green-800);
+  --orbit-action: var(--orbit-green-800);
+  --orbit-soft: var(--orbit-green-100);
 }
 html[lang="en"] body.lesson-studio #orbit-page {
   font-family: StudioEnglish,sans-serif;
@@ -68,7 +68,7 @@ body.lesson-studio #orbit-page .studio-top {
 }
 body.lesson-studio #orbit-page .studio-demo {
   background: var(--orbit-surface);
-  border-inline-start: 2px solid #0d9488;
+  border-inline-start: 2px solid var(--orbit-green-800);
   border-radius: 0;
   padding: 12px 16px;
   color: var(--orbit-muted);
@@ -85,8 +85,8 @@ body.lesson-studio #orbit-page .studio-heading {
 .studio-symbol {
   display: grid;
   place-items: center;
-  background: #e0f7f1;
-  color: #0f766e;
+  background: var(--orbit-green-100);
+  color: var(--orbit-accent);
   width: 52px;
   height: 52px;
   border-radius: 15px;
@@ -130,8 +130,8 @@ body.lesson-studio #orbit-page .studio-tools {
   justify-content: center;
   min-width: 50px;
   height: 42px;
-  background: #e4f7f2;
-  color: #0f766e;
+  background: var(--orbit-green-50);
+  color: var(--orbit-accent);
   border-radius: 10px;
   font-weight: 600;
   font-size: 17px;
@@ -169,9 +169,9 @@ body.lesson-studio #orbit-page :is(button, .studio-toolbar-actions button) {
     background-color .18s,transform .18s;
 }
 body.lesson-studio #orbit-page button.studio-primary {
-  background: #0f766e;
+  background: var(--orbit-green-800);
   color: #fff;
-  border-color: #0f766e;
+  border-color: var(--orbit-green-800);
   font-weight: 600;
 }
 body.lesson-studio #orbit-page button:disabled {
@@ -179,7 +179,7 @@ body.lesson-studio #orbit-page button:disabled {
   cursor: not-allowed;
 }
 body.lesson-studio #orbit-page :is(a, button, input, textarea, select):focus-visible {
-  outline: 2px solid #14b8a6;
+  outline: 2px solid var(--orbit-green-700);
   outline-offset: 3px;
 }
 body.lesson-studio #orbit-page button:active:not(:disabled) {
@@ -267,9 +267,9 @@ body.lesson-studio #orbit-page button:active:not(:disabled) {
   font-weight: 600;
 }
 .studio-steps li[aria-current] > span {
-  background: #0f766e;
+  background: var(--orbit-green-800);
   color: white;
-  border-color: #0f766e;
+  border-color: var(--orbit-green-800);
 }
 body.lesson-studio #orbit-page .studio-form-panel {
   max-width: 850px;
@@ -359,7 +359,7 @@ body.lesson-studio #orbit-page #studio-view .studio-activities label {
 .studio-activities input {
   width: 18px;
   height: 18px;
-  accent-color: #0d9488;
+  accent-color: var(--orbit-green-800);
 }
 .studio-review {
   display: grid;
@@ -490,9 +490,9 @@ body.lesson-studio #orbit-page .studio-thumbnails button {
   font-weight: 500;
 }
 .studio-thumbnails [aria-current] {
-  border-color: #0d9488 !important;
+  border-color: var(--orbit-green-800) !important;
   background: var(--orbit-soft) !important;
-  color: #0f766e !important;
+  color: var(--orbit-accent) !important;
 }
 body.lesson-studio #orbit-page #studio-view .studio-thumbnails label {
   display: flex;
@@ -502,7 +502,7 @@ body.lesson-studio #orbit-page #studio-view .studio-thumbnails label {
   margin-top: 6px;
 }
 .studio-thumbnails input {
-  accent-color: #0d9488;
+  accent-color: var(--orbit-green-800);
 }
 .studio-preview-center {
   min-width: 0;
@@ -510,10 +510,10 @@ body.lesson-studio #orbit-page #studio-view .studio-thumbnails label {
 body.lesson-studio #orbit-page .studio-slide {
   aspect-ratio: 16/9;
   padding: 7%;
-  background: #f7fcfb;
-  color: #102238;
+  background: var(--orbit-green-50);
+  color: var(--orbit-green-900);
   position: relative;
-  border: 1px solid #d9e8e6;
+  border: 1px solid var(--orbit-green-100);
   overflow: auto;
   display: flex;
   flex-direction: column;
@@ -525,7 +525,7 @@ body.lesson-studio #orbit-page .studio-slide {
   top: 6%;
   inset-inline-start: 7%;
   font-size: 10px;
-  color: #0f766e;
+  color: var(--orbit-accent);
 }
 .studio-slide h2 {
   font-size: clamp(18px,2vw,30px) !important;
@@ -544,21 +544,21 @@ body.lesson-studio #orbit-page .studio-slide {
   bottom: 5%;
   inset-inline-end: 6%;
   font-size: 10px;
-  color: #54736e;
+  color: var(--orbit-accent);
 }
 .studio-slide.layout-cover,
 .studio-slide.layout-section {
-  background: #103938;
+  background: var(--orbit-green-900);
   color: #fff;
-  border-color: #103938;
+  border-color: var(--orbit-green-900);
 }
 .layout-cover .studio-slide-label,
 .layout-section .studio-slide-label {
-  color: #a1eada;
+  color: var(--orbit-green-200);
 }
 .studio-slide.layout-activity,
 .studio-slide.layout-experiment {
-  background: #e6f6f1;
+  background: var(--orbit-green-50);
 }
 .studio-process {
   display: flex;
@@ -572,7 +572,7 @@ body.lesson-studio #orbit-page .studio-slide {
   flex: 1;
   min-width: 70px;
   padding: 8px;
-  border-bottom: 2px solid #0d9488;
+  border-bottom: 2px solid var(--orbit-green-800);
 }
 .studio-slide-controls {
   display: flex;
@@ -668,7 +668,7 @@ body.lesson-studio #orbit-page #studio-presentation {
   border-radius: 12px;
 }
 #studio-presentation::backdrop {
-  background: #071722d9;
+  background: color-mix(in srgb, var(--orbit-green-950) 85.10%, transparent);
 }
 #presentation-stage {
   margin-top: 15px;
@@ -679,16 +679,16 @@ body.lesson-studio #orbit-page #studio-presentation {
 }
 body.lesson-studio[data-theme="dark"] .studio-symbol,
 body.lesson-studio[data-theme="dark"] .studio-tool-mark {
-  background: #173e3d;
-  color: #7ee9d6;
+  background: var(--orbit-green-900);
+  color: var(--orbit-green-300);
 }
 @media (hover:hover) {
   .studio-tools > a:hover {
     transform: translateY(-2px);
-    border-color: #0d9488;
+    border-color: var(--orbit-green-800);
   }
   body.lesson-studio #orbit-page button:not(:disabled):hover {
-    border-color: #0d9488;
+    border-color: var(--orbit-green-800);
   }
 }
 @media (max-width:1200px) {
@@ -832,9 +832,9 @@ body.lesson-studio[data-theme="dark"] .studio-tool-mark {
   }
 }
 body.lesson-studio #orbit-page .studio-slide:is(.layout-cover, .layout-section) {
-  background: #103938;
+  background: var(--orbit-green-900);
   color: #fff;
-  border-color: #103938;
+  border-color: var(--orbit-green-900);
 }
 body.lesson-studio #orbit-page .studio-slide:is(.layout-cover, .layout-section) :is(h2, p) {
   color: #fff;
@@ -843,16 +843,16 @@ body.lesson-studio
   #orbit-page
   .studio-slide:is(.layout-cover, .layout-section)
   :is(.studio-slide-label, small) {
-  color: #a1eada;
+  color: var(--orbit-green-200);
 }
 body.lesson-studio #orbit-page .studio-slide:is(.layout-activity, .layout-experiment) {
-  background: #e6f6f1;
+  background: var(--orbit-green-50);
 }
 body.lesson-studio #orbit-page .studio-slide.layout-assessment {
-  border-top: 5px solid #0d9488;
+  border-top: 5px solid var(--orbit-green-800);
 }
 body.lesson-studio #orbit-page .studio-slide.layout-summary {
-  border-bottom: 5px solid #0d9488;
+  border-bottom: 5px solid var(--orbit-green-800);
 }
 .studio-slide > small,
 .studio-slide-controls > span {
@@ -893,11 +893,11 @@ body.lesson-studio
 }
 .studio-comparison p {
   padding: 12px 0;
-  border-top: 2px solid #0d9488;
+  border-top: 2px solid var(--orbit-green-800);
 }
 .layout-timeline .studio-process {
   display: block;
-  border-inline-start: 2px solid #0d9488;
+  border-inline-start: 2px solid var(--orbit-green-800);
   padding-inline-start: 22px;
 }
 .layout-timeline .studio-process li {

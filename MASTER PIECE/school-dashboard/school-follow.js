@@ -24,7 +24,7 @@
       return null;
     if (!S.check("basicReports", { context }).allowed) return { blocked: true };
     const org = S.organizations().schools[context.schoolId] || { teachers: [], students: [] },
-      channels = S.scopedChannels(context),
+      channels = OrbitSchool.channels(),
       ids = new Set(channels.map((c) => c.id)),
       memberships = A.get("orbit.memberships.v3", {});
     const teacherIds = [

@@ -6,7 +6,7 @@
   const prefs = OrbitAuth.get("orbit.student.v1", {});
   document.documentElement.lang = prefs.lang === "en" ? "en" : "ar";
   document.documentElement.dir = prefs.lang === "en" ? "ltr" : "rtl";
-  document.body.dataset.theme = prefs.theme === "dark" ? "dark" : "light";
+  window.OrbitThemePreference?.apply() || (document.body.dataset.theme = prefs.theme === "dark" ? "dark" : "light");
   document.body.dataset.orbitRole = user.role;
   const t = M.t,
     id = new URLSearchParams(location.search).get("id");

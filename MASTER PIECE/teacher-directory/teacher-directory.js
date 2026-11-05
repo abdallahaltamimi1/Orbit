@@ -154,7 +154,7 @@ function dashboard() {
     .join(
       "",
     )}<span class="muted">${t("Keep learning to climb the ranks.", "واصل التعلم لتتقدم في الترتيب.")}</span></section>
-<section class="card"><div class="card-title"><h2>${t("Your badges", "شاراتك")}</h2><a class="link" href="../achievements/achievements.html">${t("See all 24", "عرض الـ24")}</a></div><div class="badges">${badge("♨", "#ffa500", "5", t("day streak", "أيام متتالية"))}${badge("♧", "#8235f8", "Lab", t("explorer", "مستكشف"))}${badge("✓", "#0cbc8b", "10", t("tasks", "مهام"))}${badge("♧", "#bcc6d7", t("Perfect", "أسبوع"), t("week", "مثالي"))}</div></section>
+<section class="card"><div class="card-title"><h2>${t("Your badges", "شاراتك")}</h2><a class="link" href="../achievements/achievements.html">${t("See all 24", "عرض الـ24")}</a></div><div class="badges">${badge("♨", "#ffa500", "5", t("day streak", "أيام متتالية"))}${badge("♧", "#047857", "Lab", t("explorer", "مستكشف"))}${badge("✓", "#0cbc8b", "10", t("tasks", "مهام"))}${badge("♧", "#bcc6d7", t("Perfect", "أسبوع"), t("week", "مثالي"))}</div></section>
 <section class="card"><div class="card-title"><h2>${t("From the exchange", "من سوق التبادل")}</h2><a href="../exchange/exchange.html" class="link">${t("Browse", "تصفح")}</a></div><a href="../exchange/exchange.html" class="exchange-row">${icon("▣", "blue")}<div><h3>${t("Physics 9 textbook", "كتاب فيزياء 9")}</h3><small>${t("Good condition", "بحالة جيدة")}</small></div><b>5 JD</b></a><a href="../exchange/exchange.html" class="exchange-row">${icon("◇", "mint")}<div><h3>${t("Geometry set", "طقم هندسة")}</h3><small>${t("For lending", "للإعارة")}</small></div><b>3 JD</b></a></section></div></div>`;
 }
 function lessonTile(title, sub, symbol, progress, url, parts, xp) {
@@ -232,7 +232,7 @@ function contentPage() {
   }
   if (page === "achievements") {
     title = t("Your achievements", "إنجازاتك");
-    body = `<section class="card"><p>${t("9 badges unlocked · 24 to collect", "9 شارات مكتسبة · 24 شارة للتجميع")}</p><div class="badges">${Array.from({ length: 24 }, (_, i) => badge(i < 9 ? "★" : "♧", i < 9 ? ["#ffa500", "#8235f8", "#0cbc8b"][i % 3] : "#bcc6d7", `${i + 1}`, i < 9 ? t("Unlocked", "مكتسبة") : t("Locked", "مقفلة"))).join("")}</div></section>`;
+    body = `<section class="card"><p>${t("9 badges unlocked · 24 to collect", "9 شارات مكتسبة · 24 شارة للتجميع")}</p><div class="badges">${Array.from({ length: 24 }, (_, i) => badge(i < 9 ? "★" : "♧", i < 9 ? ["#ffa500", "#047857", "#0cbc8b"][i % 3] : "#bcc6d7", `${i + 1}`, i < 9 ? t("Unlocked", "مكتسبة") : t("Locked", "مقفلة"))).join("")}</div></section>`;
   }
   if (page === "exchange") {
     title = t("Student exchange", "تبادل الطلاب");
@@ -476,6 +476,16 @@ const demoSara = {
 };
 const people = [];
 function refreshTeachers() {
+  if (OrbitAuth.current()?.role === "student") {
+    people.splice(0, people.length, ...OrbitTeachingProfiles.list().map((p) => ({
+      id: p.id, en: p.name, ar: p.name, subject: p.subjects[0] || "",
+      letters: p.name.split(/\s+/).map((part) => part[0]).slice(0, 2).join(""),
+      experience: 0, photo: "", style: "purple",
+      bioEn: p.channels[0]?.descEn || p.channels[0]?.descAr || "",
+      bioAr: p.channels[0]?.descAr || p.channels[0]?.descEn || "",
+    })));
+    return;
+  }
   const records = new Map(
     OrbitProfiles.list("teacher").map((p) => [OrbitProfiles.canonical(p.id), p]),
   );
@@ -941,7 +951,7 @@ award = (id, xp) => {
     sparks.innerHTML = Array.from(
       { length: 22 },
       (_, i) =>
-        `<i style="--x:${(i * 41) % 100}%;--r:${i * 27}deg;--delay:${(i % 5) * 50}ms;background:${["#8b5cf6", "#ffb82e", "#23d6b1"][i % 3]}"></i>`,
+        `<i style="--x:${(i * 41) % 100}%;--r:${i * 27}deg;--delay:${(i % 5) * 50}ms;background:${["#34D399", "#ffb82e", "#23d6b1"][i % 3]}"></i>`,
     ).join("");
     document.body.append(sparks);
     setTimeout(() => sparks.remove(), 1500);
@@ -1108,6 +1118,21 @@ function directoryFilter() {
 const directoryFinalRender = render;
 render = () => {
   directoryFinalRender();
+  if (OrbitAuth.current()?.role === "student") {
+    const experience = document.getElementById("teacher-exp");
+    if (experience) {
+      experience.value = "0";
+      experience.closest("label").hidden = true;
+    }
+    document.querySelectorAll(".teacher-meta").forEach((node) => node.remove());
+    document.querySelectorAll('.teacher-card a[href*="teacher-profile.html"]').forEach((link) => {
+      link.textContent = t("View teaching profile", "شاهد الملف التعليمي") + " ↗";
+    });
+    const description = document.querySelector(".directory-intro p");
+    if (description) description.textContent = t("Explore teachers through the teaching channels available to you.", "تعرّف على المعلمين من خلال القنوات التعليمية المتاحة لك.");
+    const hint = document.querySelector(".demo-hint");
+    if (hint) hint.textContent = t("Only public channels and private classrooms you have joined are included.", "تظهر القنوات العامة والصفوف الخاصة التي انضممت إليها فقط.");
+  }
   const topSearch = document.getElementById("search");
   if (topSearch) {
     topSearch.placeholder = t("Search teachers", "ابحث عن معلم");

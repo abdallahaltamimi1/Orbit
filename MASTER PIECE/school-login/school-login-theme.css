@@ -1,0 +1,62 @@
+/* Only colors change; keep the existing School Login geometry. */
+html[data-theme="dark"] body {
+  --text: var(--orbit-ink);
+  --muted: var(--orbit-muted);
+  --line: var(--orbit-border);
+  --bg: var(--orbit-canvas);
+  background: var(--orbit-green-925);
+  color: var(--orbit-green-50);
+}
+/* Also apply dark tokens before the body is available to the head script. */
+html[data-theme="dark"] {
+  --orbit-ink: var(--orbit-green-50);
+  --orbit-muted: var(--orbit-green-300);
+  --orbit-border: var(--orbit-green-800);
+  --orbit-input-border: var(--orbit-green-600);
+  --orbit-surface: var(--orbit-green-900);
+  --orbit-canvas: var(--orbit-green-925);
+  --orbit-soft: var(--orbit-green-900);
+  --orbit-on-soft: var(--orbit-green-400);
+  --orbit-accent: var(--orbit-green-400);
+}
+#orbit-page[data-orbit-page="school-login"] {
+  --blue: var(--orbit-on-soft);
+  --muted: var(--orbit-muted);
+  --text: var(--orbit-ink);
+  --line: var(--orbit-border);
+}
+#orbit-page[data-orbit-page="school-login"] :is(.input-box,.demo-user,.google-unconfigured) {
+  background: var(--orbit-surface);
+  color: var(--orbit-ink);
+  border-color: var(--orbit-input-border);
+}
+#orbit-page[data-orbit-page="school-login"] .input-box input {
+  color: var(--orbit-ink);
+}
+#orbit-page[data-orbit-page="school-login"] .input-box input::placeholder {
+  color: var(--orbit-muted);
+  opacity: 1;
+}
+#orbit-page[data-orbit-page="school-login"] :is(.demo-title,.orbit-google p) {
+  color: var(--orbit-muted);
+}
+#orbit-page[data-orbit-page="school-login"] :is(.login-button,.login-button:hover) {
+  background: var(--orbit-action);
+  color: var(--orbit-on-action);
+}
+#orbit-page[data-orbit-page="school-login"] .input-box:focus-within {
+  border-color: var(--orbit-focus);
+}
+
+#orbit-page[data-orbit-page="school-login"] :is(.login-small-title,.signup-text a,.forgot-link) {
+  color: var(--orbit-on-soft);
+}
+
+#orbit-page[data-orbit-page="school-login"] .login-form .password-toggle { color: var(--orbit-muted); }
+/* The scenic panel stays dark in either appearance. */
+#orbit-page[data-orbit-page="school-login"] :is(.visual-content p,.visual-footer) { color: #d0deee; }
+#orbit-page[data-orbit-page="school-login"] .visual-content h1 span { color: var(--orbit-green-100); }
+
+#orbit-page[data-orbit-page="school-login"] .orbit-top-back { color: var(--orbit-on-soft); }
+
+#orbit-page[data-orbit-page="school-login"] .password-toggle { opacity: 1; }

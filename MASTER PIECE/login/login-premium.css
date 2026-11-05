@@ -25,28 +25,30 @@
   font-display: swap;
 }
 #orbit-page[data-orbit-page="login"] {
-  --orbit-action: #0d9488;
-  --orbit-accent: #0d9488;
-  --orbit-focus: #0d9488;
+  --orbit-action: var(--orbit-green-800);
+  --orbit-accent: var(--orbit-green-800);
+  --orbit-focus: var(--orbit-green-800);
   --orbit-on-action: #fff;
-  --orbit-soft: #e6f7f3;
-  --orbit-canvas: #f6fafb;
+  --orbit-soft: var(--orbit-green-50);
+  --orbit-canvas: var(--orbit-green-50);
   --orbit-surface: #fff;
-  --orbit-ink: #102238;
-  --orbit-muted: #596f83;
-  --orbit-border: #d9e6eb;
+  --orbit-ink: var(--orbit-green-900);
+  --orbit-muted: var(--orbit-green-600);
+  --orbit-border: var(--orbit-green-100);
   font-family: LoginArabic,LoginEnglish,sans-serif;
 }
 html[lang="en"] #orbit-page[data-orbit-page="login"] {
   font-family: LoginEnglish,sans-serif;
 }
 body[data-theme="dark"] #orbit-page[data-orbit-page="login"] {
-  --orbit-canvas: #0b1c2b;
-  --orbit-surface: #142c3e;
-  --orbit-ink: #e4f1fa;
-  --orbit-muted: #afc6d7;
-  --orbit-border: #365061;
-  --orbit-soft: #17453f;
+  --orbit-canvas: var(--orbit-green-925);
+  --orbit-surface: var(--orbit-green-900);
+  --orbit-ink: var(--orbit-green-50);
+  --orbit-muted: var(--orbit-green-300);
+  --orbit-border: var(--orbit-green-800);
+  --orbit-soft: var(--orbit-green-900);
+  --orbit-accent: var(--orbit-green-300);
+  --orbit-focus: var(--orbit-green-300);
 }
 #orbit-page[data-orbit-page="login"] :is(input, button, label, p, a, small, span) {
   font-family: inherit;
@@ -81,12 +83,12 @@ body[data-theme="dark"] #orbit-page[data-orbit-page="login"] {
     600 42px/1.6 LoginHeading,LoginEnglishHeading,sans-serif;
   letter-spacing: -.02em;
   margin: 18px 0;
-  color: #f0f8ff;
+  color: var(--orbit-green-50);
   text-wrap: balance;
 }
 #orbit-page[data-orbit-page="login"] .visual-content h1 span {
   display: inline;
-  color: #bdf8ea;
+  color: var(--orbit-green-100);
   background: none;
   animation: none;
   -webkit-text-fill-color: currentColor;
@@ -98,12 +100,12 @@ html[lang="en"] #orbit-page[data-orbit-page="login"] .visual-content h1 {
 #orbit-page[data-orbit-page="login"] .visual-content > p {
   font-size: 16px;
   line-height: 1.9;
-  color: #d0deee;
+  color: var(--orbit-green-100);
   max-width: 40ch;
 }
 #orbit-page[data-orbit-page="login"] .visual-badge {
   margin-bottom: 0;
-  color: #c2d5e6;
+  color: var(--orbit-green-200);
 }
 #orbit-page[data-orbit-page="login"] .visual-footer {
   position: relative;
@@ -168,7 +170,7 @@ html[lang="en"] #orbit-page[data-orbit-page="login"] .login-heading h2 {
 }
 #orbit-page[data-orbit-page="login"] .input-box {
   height: 50px;
-  border: 1px solid var(--orbit-border);
+  border: 1px solid var(--orbit-input-border);
   border-radius: 12px;
   background: var(--orbit-surface);
   box-shadow: none;
@@ -176,8 +178,8 @@ html[lang="en"] #orbit-page[data-orbit-page="login"] .login-heading h2 {
     border-color .2s,box-shadow .2s;
 }
 #orbit-page[data-orbit-page="login"] .input-box:focus-within {
-  border-color: #0d9488;
-  box-shadow: 0 0 0 3px #0d94881c;
+  border-color: var(--orbit-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--orbit-green-800) 10.98%, transparent);
 }
 #orbit-page[data-orbit-page="login"] .input-box input {
   font-size: 15px;
@@ -194,7 +196,7 @@ html[lang="en"] #orbit-page[data-orbit-page="login"] .login-heading h2 {
 }
 #orbit-page[data-orbit-page="login"] .input-box input::placeholder {
   color: var(--orbit-muted);
-  opacity: .85;
+  opacity: 1;
 }
 #orbit-page[data-orbit-page="login"] .password-toggle {
   width: 44px;
@@ -233,12 +235,12 @@ html[dir="rtl"] #orbit-page[data-orbit-page="login"] #password {
   border: 0;
   padding: 3px 0;
   background: none;
-  color: #0f766e;
+  color: var(--orbit-accent);
   font: 500 12px/1.8 inherit;
   cursor: pointer;
 }
 body[data-theme="dark"] #orbit-page[data-orbit-page="login"] .password-recovery {
-  color: #80dfcd;
+  color: var(--orbit-green-300);
 }
 #orbit-page[data-orbit-page="login"] .input-message {
   font-size: 12px;
@@ -261,7 +263,7 @@ body[data-theme="dark"] #orbit-page[data-orbit-page="login"] .password-recovery 
   cursor: pointer;
 }
 #orbit-page[data-orbit-page="login"] #rememberMe {
-  accent-color: #0d9488;
+  accent-color: var(--orbit-green-800);
   min-height: 18px;
   width: 18px;
   height: 18px;
@@ -269,16 +271,16 @@ body[data-theme="dark"] #orbit-page[data-orbit-page="login"] .password-recovery 
 #orbit-page[data-orbit-page="login"] .login-button {
   height: 50px;
   border-radius: 12px;
-  background: #0d9488;
-  color: #fff;
+  background: var(--orbit-action);
+  color: var(--orbit-on-action);
   font-size: 15px;
   border: 0;
-  box-shadow: 0 5px 13px #0d948812;
+  box-shadow: 0 5px 13px color-mix(in srgb, var(--orbit-green-800) 7.06%, transparent);
   transition:
     background .2s,transform .2s;
 }
 #orbit-page[data-orbit-page="login"] .login-button:hover:not(:disabled) {
-  background: #0f766e;
+  background: var(--orbit-green-800);
 }
 #orbit-page[data-orbit-page="login"] .login-button:active:not(:disabled) {
   transform: scale(.985);
@@ -349,7 +351,7 @@ body[data-theme="dark"] #orbit-page[data-orbit-page="login"] .login-message {
   display: flex;
 }
 #orbit-page[data-orbit-page="login"] .demo-user.is-selected {
-  border-color: #0d9488;
+  border-color: var(--orbit-green-800);
   background: var(--orbit-soft);
   color: var(--orbit-ink);
 }
@@ -357,7 +359,7 @@ body[data-theme="dark"] #orbit-page[data-orbit-page="login"] .login-message {
   border-color: #ca5266;
 }
 #orbit-page[data-orbit-page="login"] :is(a, button, input):focus-visible {
-  outline: 3px solid #0d9488;
+  outline: 3px solid var(--orbit-focus);
   outline-offset: 3px;
 }
 #orbit-page[data-orbit-page="login"] .shake {
@@ -368,9 +370,9 @@ body[data-theme="dark"] #orbit-page[data-orbit-page="login"] .login-message {
   inset: auto 24px 24px auto;
   width: min(400px,calc(100vw - 48px));
   height: auto;
-  background: #edfcf7;
-  border: 1px solid #b7e4d6;
-  box-shadow: 0 12px 36px #10223826;
+  background: var(--orbit-green-50);
+  border: 1px solid var(--orbit-green-200);
+  box-shadow: 0 12px 36px color-mix(in srgb, var(--orbit-green-900) 14.90%, transparent);
   border-radius: 18px;
   z-index: 3000;
   pointer-events: none;
@@ -411,8 +413,8 @@ body[data-theme="dark"] #orbit-page[data-orbit-page="login"] .login-message {
   display: grid;
   place-items: center;
   margin: 0;
-  color: #0f766e;
-  background: #ccf6e7 !important;
+  color: var(--orbit-accent);
+  background: var(--orbit-green-100) !important;
   opacity: 1;
   transform: none;
   font-size: 18px;
@@ -425,14 +427,14 @@ body[data-theme="dark"] #orbit-page[data-orbit-page="login"] .login-message {
 }
 #orbit-page[data-orbit-page="login"] .animation-result h3 {
   font-size: 15px;
-  color: #155e53;
+  color: var(--orbit-green-900);
   margin: 0;
   opacity: 1;
   transform: none;
 }
 #orbit-page[data-orbit-page="login"] .animation-result p {
   font-size: 12px;
-  color: #347365;
+  color: var(--orbit-accent);
   margin: 0;
   opacity: 1;
   transform: none;
@@ -458,7 +460,7 @@ body[data-theme="dark"] #orbit-page[data-orbit-page="login"] .login-message {
 @media (hover:hover) {
   #orbit-page[data-orbit-page="login"] .demo-user:hover {
     transform: translateY(-2px);
-    border-color: #65b8ad;
+    border-color: var(--orbit-green-500);
     background: var(--orbit-soft);
   }
 }
@@ -490,7 +492,7 @@ body[data-theme="dark"] #orbit-page[data-orbit-page="login"] .login-message {
   #orbit-page[data-orbit-page="login"] .mobile-logo {
     display: inline-block;
     margin: 0 0 16px;
-    color: #0d9488;
+    color: var(--orbit-accent);
     font:
       700 23px LoginEnglish,sans-serif;
   }
@@ -545,10 +547,15 @@ body[data-theme="dark"] #orbit-page[data-orbit-page="login"] .login-message {
     padding: 17px 20px;
     margin-bottom: 20px;
     border-radius: 14px;
-    color: #effffb;
+    color: var(--orbit-green-50);
     background:
       linear-gradient(90deg,#071722b3,#07172226),url('../shared/assets/lunar-observatory.png') 60% 32%/cover;
     box-sizing: border-box;
     min-height: 62px;
   }
 }
+
+/* Status copy remains readable on both login surfaces. */
+#orbit-page[data-orbit-page="login"] .orbit-google p { color: var(--orbit-muted); }
+
+#orbit-page[data-orbit-page="login"] .password-toggle { opacity: 1; }

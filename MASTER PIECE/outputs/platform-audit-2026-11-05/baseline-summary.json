@@ -1,0 +1,72 @@
+{
+  "stats": {
+    "startTime": "2026-11-04T21:30:50.575Z",
+    "duration": 1036335.65,
+    "expected": 271,
+    "skipped": 0,
+    "unexpected": 12,
+    "flaky": 0
+  },
+  "failures": [
+    {
+      "file": "delivery-readiness.spec.js",
+      "line": 553,
+      "title": "School Recruitment colors and opportunity modal remain usable in both themes and directions"
+    },
+    {
+      "file": "school-academic-demo.spec.js",
+      "line": 9,
+      "title": "explicit demo action creates connected records and real counts across all management pages"
+    },
+    {
+      "file": "school-acceptance.spec.js",
+      "line": 107,
+      "title": "monitoring bulk selection follows visible editable records, resets with filters and preserves archive restrictions"
+    },
+    {
+      "file": "school-finalization.spec.js",
+      "line": 9,
+      "title": "connected school journey preserves existing data and exercises reviewed years, rosters, teaching, channels, monitoring and promotions"
+    },
+    {
+      "file": "school-finalization.spec.js",
+      "line": 41,
+      "title": "school account provisioning, explicit student identity/enrollment and first-login password change update real demo state"
+    },
+    {
+      "file": "school-finalization.spec.js",
+      "line": 168,
+      "title": "teacher issuance preserves an explicitly chosen specialization and monitoring never projects private or unreliable evaluation data"
+    },
+    {
+      "file": "school-management.spec.js",
+      "line": 27,
+      "title": "school sidebar preserves active states and all academic sections"
+    },
+    {
+      "file": "school-management.spec.js",
+      "line": 78,
+      "title": "overview supports bilingual directions, themes and responsive navigation"
+    },
+    {
+      "file": "school-management.spec.js",
+      "line": 127,
+      "title": "school grouped navigation reuses academic anchors and recruitment views"
+    },
+    {
+      "file": "school-schedule.spec.js",
+      "line": 92,
+      "title": "archived and removed references retain records, require repair and stay off the overview"
+    },
+    {
+      "file": "school-year-context.spec.js",
+      "line": 10,
+      "title": "shared year defaults Active, switches all statuses, persists through every academic destination and reload without academic writes"
+    },
+    {
+      "file": "school-year-context.spec.js",
+      "line": 54,
+      "title": "archived context disables legacy edits, leaves inspection usable, and rechecks an already open dialog before saving"
+    }
+  ]
+}

@@ -115,7 +115,7 @@
   font: inherit;
 }
 .assignment-dialog::backdrop {
-  background: rgb(10 25 42 / .55);
+  background: color-mix(in srgb, var(--orbit-green-925) 55.00%, transparent);
 }
 .assignment-dialog header {
   display: flex;

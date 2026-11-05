@@ -1,0 +1,20 @@
+[
+  {
+    "command": "node node_modules/vite/bin/vite.js build --configLoader runner",
+    "exitCode": 0,
+    "seconds": 1.77,
+    "output": "shared/learning-orbit.bundle.js"
+  },
+  {
+    "command": "node node_modules/vite/bin/vite.js build --config registration/scene-build.config.js --configLoader runner",
+    "exitCode": 0,
+    "seconds": 1.53,
+    "output": "registration/learning-universe.bundle.js"
+  },
+  {
+    "command": "node node_modules/vite/bin/vite.js build --config school-tour/scene-build.config.js --configLoader runner",
+    "exitCode": 0,
+    "seconds": 1.51,
+    "output": "school-tour/tour-scene.bundle.js"
+  }
+]

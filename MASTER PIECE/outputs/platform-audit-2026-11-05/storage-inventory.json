@@ -1,0 +1,486 @@
+{
+  "orbit.studio.drafts.": [
+    "lesson-planner/studio.js"
+  ],
+  "orbit.ai.studio.projects.v1.": [
+    "lesson-planner/studio-service.js"
+  ],
+  "orbit.lesson.plans.": [
+    "lesson-planner/lesson-planner.js",
+    "shared/presentation.js"
+  ],
+  "orbit.student.v1": [
+    "lesson-planner/lesson-planner.js",
+    "lesson/lesson.js",
+    "lab/lab.js",
+    "teacher-profile/teaching-profile.js",
+    "teacher-profile/teacher-profile.js",
+    "teacher-directory/teacher-directory.js",
+    "teacher-dashboard/teacher-dashboard.js",
+    "hompage/home-locale.js",
+    "hompage/home-interactions.js",
+    "student-dashboard/student-premium.js",
+    "student-dashboard/student-overview.js",
+    "student-dashboard/student-dashboard.js",
+    "palette-preview/preview.js",
+    "car-lab/car-lab.js",
+    "quiz/quiz.js",
+    "class-details/class-details.js",
+    "notifications/notifications.js",
+    "school-management/school-management.js",
+    "meetings/meeting.js",
+    "channels/channels.js",
+    "login/login.js",
+    "admin/admin.js",
+    "achievements/achievements.js",
+    "channel/channel.js",
+    "shared/core.js",
+    "shared/auth.js",
+    "lessons/lessons.js",
+    "about/about.js",
+    "result/result.js",
+    "shared/public-appearance.js",
+    "shared/profiles.js",
+    "shared/portal-shell.js",
+    "shared/language-control.js",
+    "shared/student-learn.js",
+    "shared/session.js",
+    "settings/settings.js",
+    "practice/practice.js",
+    "shared/ui-improvements.js",
+    "account-profile/account-profile.js",
+    "school-tour/tour-ui.js",
+    "school-tour/physics-laboratory.js"
+  ],
+  "orbit.deleted.posts": [
+    "lesson/lesson.js",
+    "teacher-profile/teacher-profile.js",
+    "teacher-dashboard/teacher-dashboard.js",
+    "student-dashboard/student-discovery.js",
+    "channels/channels.js",
+    "channel/channel.js",
+    "shared/assignment-service.js",
+    "lessons/lessons.js",
+    "shared/school-annual-monitoring.js",
+    "shared/recruitment-profile.js",
+    "practice/practice.js"
+  ],
+  "orbit.learning.": [
+    "lesson/lesson.js",
+    "student-dashboard/student-premium.js",
+    "student-dashboard/student-overview.js",
+    "student-dashboard/student-discovery.js",
+    "admin/admin-service.js",
+    "lessons/lessons.js",
+    "shared/learning-service.js",
+    "shared/student-learn.js",
+    "shared/subscription-ui.js",
+    "practice/practice.js",
+    "school-tour/physics-laboratory.js"
+  ],
+  "orbit.practice.": [
+    "lesson/lesson.js",
+    "lessons/lessons.js",
+    "shared/student-learn.js",
+    "practice/practice.js"
+  ],
+  "orbit.channels.v2": [
+    "teacher-profile/teaching-profile.js",
+    "teacher-profile/teacher-profile.js",
+    "teacher-directory/teacher-directory.js",
+    "teacher-dashboard/teacher-dashboard.js",
+    "student-dashboard/student-premium.js",
+    "student-dashboard/student-overview.js",
+    "student-dashboard/student-discovery.js",
+    "quiz/quiz.js",
+    "class-details/class-details.js",
+    "channels/channels.js",
+    "admin/admin-service.js",
+    "school-dashboard/school-follow.js",
+    "achievements/achievements.js",
+    "channel/channel.js",
+    "shared/core.js",
+    "shared/channel-service.js",
+    "shared/auth.js",
+    "shared/assignments-ui.js",
+    "shared/assignment-service.js",
+    "result/result.js",
+    "shared/school-demo.js",
+    "shared/school-annual-monitoring.js",
+    "shared/school-academic-service.js",
+    "shared/school-academic-demo.js",
+    "shared/presentation.js",
+    "shared/meeting-service.js",
+    "shared/school-teaching-service.js",
+    "shared/school-service.js",
+    "shared/school-section-service.js",
+    "shared/school-period-service.js",
+    "shared/school-monitoring-service.js",
+    "shared/session.js",
+    "shared/school-workflow-service.js",
+    "shared/subscriptions.js",
+    "school-tour/tour-data.js"
+  ],
+  "orbit.memberships.v3": [
+    "teacher-profile/teaching-profile.js",
+    "teacher-profile/teacher-profile.js",
+    "teacher-directory/teacher-directory.js",
+    "teacher-dashboard/teacher-dashboard.js",
+    "student-dashboard/student-premium.js",
+    "student-dashboard/student-overview.js",
+    "student-dashboard/student-discovery.js",
+    "meetings/meeting.js",
+    "channels/channels.js",
+    "admin/admin-service.js",
+    "school-dashboard/school-follow.js",
+    "channel/channel.js",
+    "shared/core.js",
+    "shared/channel-service.js",
+    "shared/auth.js",
+    "shared/assignments-ui.js",
+    "shared/assignment-service.js",
+    "shared/school-demo.js",
+    "shared/school-academic-demo.js",
+    "shared/presentation.js",
+    "shared/meetings-ui.js",
+    "shared/meeting-service.js",
+    "shared/school-monitoring-service.js",
+    "shared/session.js",
+    "shared/subscription-ui.js",
+    "shared/subscriptions.js",
+    "school-tour/tour-data.js"
+  ],
+  "orbit.profiles.v1": [
+    "teacher-profile/teaching-profile.js",
+    "admin/admin-service.js",
+    "channel/channel.js",
+    "shared/school-demo.js",
+    "shared/school-academic-demo.js",
+    "shared/recruitment-service.js",
+    "shared/profiles.js"
+  ],
+  "orbit.exchange.interest": [
+    "teacher-profile/teacher-profile.js",
+    "teacher-directory/teacher-directory.js",
+    "quiz/quiz.js",
+    "class-details/class-details.js",
+    "achievements/achievements.js",
+    "result/result.js"
+  ],
+  "orbit.settings.appearance": [
+    "hompage/home-interactions.js",
+    "login/login.js",
+    "shared/core.js",
+    "about/about.js",
+    "shared/public-appearance.js",
+    "shared/portal-shell.js",
+    "shared/session.js",
+    "settings/settings.js",
+    "school-tour/tour-ui.js"
+  ],
+  "orbit.preferences": [
+    "hompage/home-interactions.js",
+    "shared/core.js",
+    "shared/auth.js",
+    "about/about.js",
+    "shared/portal-shell.js"
+  ],
+  "orbit.exchange.v2": [
+    "exchange/exchange.js"
+  ],
+  "orbit.meetings.v1": [
+    "student-dashboard/student-premium.js",
+    "shared/recruitment-service.js",
+    "shared/meeting-service.js"
+  ],
+  "orbit.assignments.v1": [
+    "student-dashboard/student-premium.js",
+    "school-dashboard/school-follow.js",
+    "shared/core.js",
+    "shared/assignments-ui.js",
+    "shared/assignment-service.js",
+    "shared/school-demo.js",
+    "shared/school-annual-monitoring.js",
+    "shared/school-academic-demo.js",
+    "shared/school-monitoring-service.js",
+    "shared/school-member-workspace.js"
+  ],
+  "orbit.recruitment.v1": [
+    "student-dashboard/student-discovery.js",
+    "applications/applications.js",
+    "channels/channels.js",
+    "admin/admin-service.js",
+    "admin/admin-actions.js",
+    "shared/channel-service.js",
+    "shared/auth.js",
+    "shared/assignments-ui.js",
+    "shared/account-access.js",
+    "shared/school-demo.js",
+    "shared/school-academic-service.js",
+    "shared/school-academic-read-model.js",
+    "shared/school-academic-demo.js",
+    "shared/recruitment-service.js",
+    "shared/profiles.js",
+    "shared/presentation.js",
+    "shared/portal-shell.js",
+    "shared/meetings-ui.js",
+    "shared/meeting-service.js",
+    "shared/school-teaching-service.js",
+    "shared/school-period-service.js",
+    "shared/school-monitoring-service.js",
+    "shared/school-member-workspace.js",
+    "shared/school-enrollment-service.js",
+    "shared/school-workflow-service.js"
+  ],
+  "orbit.lab.settings": [
+    "car-lab/car-lab.js"
+  ],
+  "orbit.lab.trials": [
+    "car-lab/car-lab.js"
+  ],
+  "orbit.teacher.profile": [
+    "quiz/quiz.js",
+    "class-details/class-details.js",
+    "achievements/achievements.js",
+    "shared/auth.js",
+    "result/result.js",
+    "shared/profiles.js"
+  ],
+  "orbit.admin.v1": [
+    "school-management/school-students.js",
+    "admin/admin-service.js",
+    "shared/auth.js",
+    "shared/account-access.js",
+    "shared/school-academic-read-model.js",
+    "shared/school-academic-demo.js",
+    "shared/school-teaching-service.js",
+    "shared/school-period-service.js",
+    "shared/school-member-workspace.js",
+    "shared/school-enrollment-service.js"
+  ],
+  "orbit.workspace.period-section.v1:": [
+    "school-management/school-period-builder.js"
+  ],
+  "orbit.school.members.v1": [
+    "meetings/meeting.js",
+    "admin/admin-service.js",
+    "school-dashboard/school-follow.js",
+    "shared/presentation.js",
+    "shared/meetings-ui.js",
+    "shared/meeting-service.js",
+    "shared/school-section-service.js",
+    "shared/subscriptions.js"
+  ],
+  "orbit.channel.joined": [
+    "channels/channels.js",
+    "channel/channel.js"
+  ],
+  "orbit.registration.email": [
+    "school-login/school-login.js",
+    "login/login.js",
+    "registration/registration.js"
+  ],
+  "orbit.motion.preference": [
+    "login/login.js",
+    "shared/core.js",
+    "shared/student-learn.js",
+    "shared/session.js",
+    "settings/settings.js",
+    "school-tour/tour-ui.js"
+  ],
+  "orbit.login.rememberedEmail": [
+    "login/login.js"
+  ],
+  "orbit.subscriptions.v1": [
+    "admin/admin-service.js",
+    "school-dashboard/school-follow.js",
+    "shared/subscription-ui.js",
+    "shared/subscriptions.js"
+  ],
+  "orbit.admin.session": [
+    "admin/admin-service.js",
+    "shared/auth.js",
+    "shared/account-access.js",
+    "shared/recruitment-service.js"
+  ],
+  "orbit.admin.recorded": [
+    "admin/admin-service.js"
+  ],
+  "orbit.student.state.": [
+    "admin/admin-service.js",
+    "shared/auth.js",
+    "shared/presentation.js",
+    "shared/subscription-ui.js"
+  ],
+  "orbit.admin.preferences": [
+    "admin/admin-actions.js"
+  ],
+  "orbit.classrooms.v1": [
+    "channel/channel.js",
+    "shared/channel-service.js",
+    "shared/presentation.js"
+  ],
+  "orbit.school.teaching-assignments.demo.v1:": [
+    "shared/channel-service.js",
+    "shared/auth.js",
+    "shared/school-demo.js",
+    "shared/school-academic-service.js",
+    "shared/school-academic-demo.js",
+    "shared/recruitment-service.js",
+    "shared/school-teaching-service.js",
+    "shared/school-period-service.js",
+    "shared/school-monitoring-service.js",
+    "shared/school-member-workspace.js",
+    "shared/teacher-account-ui.js"
+  ],
+  "orbit.teacher.owner": [
+    "shared/auth.js",
+    "shared/profiles.js"
+  ],
+  "orbit.school.years.demo.v1:": [
+    "shared/auth.js",
+    "shared/account-access.js",
+    "shared/school-demo.js",
+    "shared/school-academic-demo.js",
+    "shared/school-teaching-service.js",
+    "shared/school-period-service.js",
+    "shared/school-member-workspace.js",
+    "shared/school-year-service.js",
+    "shared/school-workflow-service.js"
+  ],
+  "orbit.school.academics.demo.v1:": [
+    "shared/auth.js",
+    "shared/school-demo.js",
+    "shared/school-academic-service.js",
+    "shared/school-academic-demo.js",
+    "shared/recruitment-service.js",
+    "shared/school-teaching-service.js",
+    "shared/school-period-service.js",
+    "shared/school-member-workspace.js"
+  ],
+  "orbit.school.section-structures.demo.v1:": [
+    "shared/auth.js",
+    "shared/account-access.js",
+    "shared/school-demo.js",
+    "shared/school-academic-read-model.js",
+    "shared/school-academic-demo.js",
+    "shared/school-teaching-service.js",
+    "shared/school-section-service.js",
+    "shared/school-period-service.js",
+    "shared/school-member-workspace.js",
+    "shared/school-enrollment-service.js"
+  ],
+  "orbit.school.education.links.v1:": [
+    "shared/auth.js",
+    "shared/school-demo.js",
+    "shared/school-academic-demo.js",
+    "shared/recruitment-service.js",
+    "shared/school-teaching-service.js",
+    "shared/school-period-service.js",
+    "shared/school-monitoring-service.js",
+    "shared/school-member-workspace.js",
+    "shared/school-workflow-service.js"
+  ],
+  "orbit.school.enrollment-identities.demo.v1:": [
+    "shared/auth.js",
+    "shared/account-access.js",
+    "shared/school-demo.js",
+    "shared/school-academic-demo.js",
+    "shared/recruitment-service.js",
+    "shared/school-period-service.js",
+    "shared/school-member-workspace.js",
+    "shared/school-enrollment-service.js",
+    "shared/school-workflow-service.js"
+  ],
+  "orbit.school.enrollments.demo.v1:": [
+    "shared/auth.js",
+    "shared/account-access.js",
+    "shared/school-demo.js",
+    "shared/school-academic-service.js",
+    "shared/school-academic-demo.js",
+    "shared/school-section-service.js",
+    "shared/school-schedule-service.js",
+    "shared/school-period-service.js",
+    "shared/school-member-workspace.js",
+    "shared/school-enrollment-service.js",
+    "shared/school-workflow-service.js"
+  ],
+  "orbit.demo.school.manifest.v1": [
+    "shared/school-demo.js"
+  ],
+  "orbit.school.": [
+    "shared/school-demo.js",
+    "shared/school-academic-service.js",
+    "shared/school-academic-demo.js",
+    "shared/school-teaching-service.js",
+    "shared/school-section-service.js"
+  ],
+  "orbit.school.timetable.demo.v1:": [
+    "shared/school-demo.js",
+    "shared/school-academic-demo.js",
+    "shared/school-schedule-service.js",
+    "shared/school-period-service.js",
+    "shared/school-workflow-service.js"
+  ],
+  "orbit.school.events.demo.v1:": [
+    "shared/school-demo.js",
+    "shared/school-academic-demo.js",
+    "shared/school-schedule-service.js"
+  ],
+  "orbit.school.period-timetables.demo.v1:": [
+    "shared/school-demo.js",
+    "shared/school-academic-service.js",
+    "shared/school-academic-demo.js",
+    "shared/school-period-service.js",
+    "shared/school-member-workspace.js"
+  ],
+  "orbit.school.monitoring-reviews.v1:": [
+    "shared/school-annual-monitoring.js",
+    "shared/school-member-workspace.js"
+  ],
+  "orbit.demo.academic.manifest.v1": [
+    "shared/school-academic-demo.js"
+  ],
+  "orbit.demo.academic.transaction.v1": [
+    "shared/school-academic-demo.js"
+  ],
+  "orbit.presentation.v1": [
+    "shared/presentation.js"
+  ],
+  "orbit.nav.": [
+    "shared/portal-shell.js"
+  ],
+  "orbit.recruitment-nav.open": [
+    "shared/portal-shell.js"
+  ],
+  "orbit.sidebar.collapsed": [
+    "shared/portal-shell.js"
+  ],
+  "orbit.motion.feedback": [
+    "shared/motion-system.js"
+  ],
+  "orbit.school.academics.": [
+    "shared/school-teaching-service.js"
+  ],
+  "orbit.school.promotion-previews.demo.v1:": [
+    "shared/school-promotion-preview-service.js"
+  ],
+  "orbit.workspace.academic-year.v1:": [
+    "shared/school-year-context.js"
+  ],
+  "orbit.school.workflow.v1:": [
+    "shared/school-workflow-service.js"
+  ],
+  "orbit.auth.next": [
+    "shared/subscriptions.js"
+  ],
+  "orbit.lab.session.": [
+    "shared/subscriptions.js"
+  ],
+  "orbit.settings.saved": [
+    "settings/settings.js"
+  ],
+  "orbit.back.arrival": [
+    "shared/ui-improvements.js"
+  ]
+}

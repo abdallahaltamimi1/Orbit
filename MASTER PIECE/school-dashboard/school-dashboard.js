@@ -1,6 +1,7 @@
 "use strict";
 const O = ORBIT,
   R = OrbitRecruitment,
+  M = window.OrbitMeetings,
   { t, esc } = O,
   params = new URLSearchParams(location.search);
 let tab = params.get("tab") || "jobs",
@@ -11,7 +12,7 @@ let tab = params.get("tab") || "jobs",
   experienceFilter = "",
   gradeFilter = "",
   qualificationFilter = "",
-  statusFilter = "",
+  statusFilter = params.get("status") || "",
   matchesOnly = false;
 const subjectNames = {
     physics: ["Physics", "الفيزياء"],
@@ -26,6 +27,7 @@ const subjectNames = {
     pending: ["Pending", "قيد الانتظار"],
     review: ["Under review", "قيد المراجعة"],
     shortlisted: ["Shortlisted", "القائمة المختصرة"],
+    interview_scheduled: ["Interview scheduled", "تمت جدولة المقابلة"],
     accepted: ["Accepted", "مقبول"],
     rejected: ["Rejected", "مرفوض"],
     withdrawn: ["Withdrawn", "منسحب"],
@@ -44,8 +46,8 @@ const field = (name, label, value = "", type = "text", extra = "") =>
     )
       .map((s) => `<option value="${s}" ${selected === s ? "selected" : ""}>${subject(s)}</option>`)
       .join("")}`,
-  statusOptions = (selected = "", all = true) =>
-    `${all ? `<option value="">${t("All statuses", "كل الحالات")}</option>` : ""}${R.statuses.map((s) => `<option value="${s}" ${selected === s ? "selected" : ""}>${state(s)}</option>`).join("")}`;
+  statusOptions = (selected = "", all = true, editing = false) =>
+    `${all ? `<option value="">${t("All statuses", "كل الحالات")}</option>` : ""}${R.statuses.filter((s) => !editing || s !== "interview_scheduled" || s === selected).map((s) => `<option value="${s}" ${selected === s ? "selected" : ""} ${editing && s === "interview_scheduled" ? "disabled" : ""}>${state(s)}</option>`).join("")}`;
 const errorText = (e) =>
   ({
     INVALID_INTERVIEW: t(
@@ -59,6 +61,10 @@ const errorText = (e) =>
     INVALID_APPLICATION: t(
       "Choose an active application. Withdrawn or rejected applications cannot be scheduled.",
       "اختر طلبًا نشطًا؛ لا يمكن جدولة طلب منسحب أو مرفوض.",
+    ),
+    INTERVIEW_MEETING_REQUIRED: t(
+      "Schedule the interview through Meetings before setting this status.",
+      "جدول المقابلة من خلال الاجتماعات قبل اختيار هذه الحالة.",
     ),
     IMAGE_INVALID: t(
       "Choose a PNG, JPEG or WebP image under 5 MB.",
@@ -97,11 +103,21 @@ function report(e, element) {
   (element || document.getElementById("recruit-errors")).textContent = errorText(e);
 }
 function hint() {
-  return `<p class="role-banner">${t("Local browser prototype · profile credentials are self-reported. Notifications and matching are local; there is no server or identity verification.", "نموذج محلي في المتصفح · المؤهلات معلنة ذاتيًا. الإشعارات والمطابقة محلية؛ لا يوجد خادم أو توثيق هوية.")}</p><p id="recruit-errors" role="status"></p>`;
+  const note =
+    O.user?.role === "school"
+      ? t(
+          "Applicant qualifications are self-reported; verify documents before hiring. Application and interview updates appear in ORBIT on this browser; email is not sent.",
+          "المؤهلات في ملفات المتقدمين مُدخلة من أصحابها؛ تحقق من الوثائق قبل التوظيف. تظهر تحديثات الطلبات والمقابلات في ORBIT على هذا المتصفح، ولا يُرسل بريد إلكتروني.",
+        )
+      : t(
+          "Application updates appear in ORBIT on this browser. Email notifications are not available.",
+          "تظهر تحديثات الطلب في ORBIT على هذا المتصفح. إشعارات البريد الإلكتروني غير متاحة.",
+        );
+  return `<p class="role-banner">${note}</p><p id="recruit-errors" role="status"></p>`;
 }
 function confirmAction(title, callback) {
   const d = O.dialog(
-    `<h2>${title}</h2><p>${t("Confirm this change. The affected account receives a local notification when applicable.", "أكد التغيير. الحساب المعني يستقبل إشعارًا محليًا عند الحاجة.")}</p><p class="error" role="status"></p><button class="btn" id="confirm-action">${t("Confirm", "تأكيد")}</button>`,
+    `<h2>${title}</h2><p>${t("Confirm this application update. It will appear in ORBIT.", "أكد تحديث الطلب. سيظهر التحديث في ORBIT.")}</p><p class="error" role="status"></p><button class="btn" id="confirm-action">${t("Confirm", "تأكيد")}</button>`,
   );
   d.querySelector("#confirm-action").onclick = () => {
     try {
@@ -188,16 +204,17 @@ function jobDialog(existing) {
     skills: [],
   };
   const d = O.dialog(
-    `<h2>${existing ? t("Edit job", "تعديل وظيفة") : t("Create a teaching opportunity", "أنشئ فرصة تدريس")}</h2><form id="job-form"><div class="form-grid">${field("title", t("Job title", "عنوان الوظيفة"), j.title, "text", 'required maxlength="150"')}<label>${t("Specialization", "التخصص")}<select name="subject">${options(j.subject)}</select></label>${field("location", t("Location", "الموقع"), j.location || R.school().location, "text", "required")}${field("experience", t("Minimum years of experience", "أقل سنوات خبرة"), j.experience, "number", 'required min="0" max="60" step="1"')}${field("grades", t("Grade levels · comma-separated", "الصفوف · افصل بفواصل"), j.grades.join(", "))}${field("skills", t("Required skills · comma-separated", "المهارات المطلوبة · افصل بفواصل"), j.skills.join(", "))}<label>${t("Employment", "نوع التوظيف")}<select name="employment">${["full-time", "part-time", "contract"].map((x) => `<option value="${x}" ${j.employment === x ? "selected" : ""}>${employment(x)}</option>`).join("")}</select></label><label>${t("Status", "الحالة")}<select name="status">${["draft", "published", "closed"].map((x) => `<option value="${x}" ${j.status === x ? "selected" : ""}>${state(x)}</option>`).join("")}</select></label></div>${text("qualifications", t("Required qualifications · keywords separated by commas", "المؤهلات المطلوبة · كلمات واضحة مفصولة بفواصل"), j.qualifications)}${text("description", t("Responsibilities and other requirements", "المهام والمتطلبات الإضافية"), j.description)}<label><input name="remote" type="checkbox" ${j.remote ? "checked" : ""}> ${t("Remote work · do not score location", "عمل عن بعد · الموقع لا يدخل في المطابقة")}</label><p class="recruit-hint">${t("Qualification comparison is textual, not certificate verification. Publishing notifies visible, available teachers who match.", "مقارنة المؤهل نصية وليست توثيق شهادة. النشر يُشعر المعلمين المتاحين الذين شاركوا ملفاتهم ووجدت مطابقة.")}</p><p class="error" role="status"></p><button class="btn">${t("Save job", "حفظ الوظيفة")}</button></form>`,
+    `<h2>${existing ? t("Edit job", "تعديل وظيفة") : t("Create a teaching opportunity", "أنشئ فرصة تدريس")}</h2><form id="job-form"><div class="form-grid">${field("title", t("Job title", "عنوان الوظيفة"), j.title, "text", 'required maxlength="150"')}<label>${t("Specialization", "التخصص")}<select name="subject">${options(j.subject)}</select></label>${field("location", t("Location", "الموقع"), j.location || R.school().location, "text", "required")}${field("experience", t("Minimum years of experience", "أقل سنوات خبرة"), j.experience, "number", 'required min="0" max="60" step="1"')}${field("grades", t("Grade levels · comma-separated", "الصفوف · افصل بفواصل"), j.grades.join(", "))}${field("skills", t("Required skills · comma-separated", "المهارات المطلوبة · افصل بفواصل"), j.skills.join(", "))}<label>${t("Employment", "نوع التوظيف")}${j.employment === "contract" ? `<input type="text" value="${employment(j.employment)} · ${t("existing record", "قيمة محفوظة")}" disabled><input type="hidden" name="employment" value="contract">` : `<select name="employment">${["full-time", "part-time"].map((x) => `<option value="${x}" ${j.employment === x ? "selected" : ""}>${employment(x)}</option>`).join("")}</select>`}</label></div>${text("qualifications", t("Required qualifications · keywords separated by commas", "المؤهلات المطلوبة · كلمات واضحة مفصولة بفواصل"), j.qualifications)}${existing ? text("description", t("Responsibilities and other requirements", "المهام والمتطلبات الإضافية"), j.description) : ""}<p class="recruit-hint">${t("Qualification comparison is textual, not certificate verification. Publishing notifies visible, available teachers who match.", "مقارنة المؤهل نصية وليست توثيق شهادة. النشر يُشعر المعلمين المتاحين الذين شاركوا ملفاتهم ووجدت مطابقة.")}</p><p class="error" role="status"></p><button class="btn">${existing ? t("Save changes", "حفظ التغييرات") : t("Save as draft", "حفظ كمسودة")}</button></form>`,
   );
+  d.classList.add("job-opportunity-dialog");
   const form = d.querySelector("#job-form");
   for (const [title, names] of [
     [
       t("Basic information", "المعلومات الأساسية"),
-      ["title", "subject", "location", "employment", "status"],
+      ["title", "subject", "location", "employment"],
     ],
     [t("Requirements", "المتطلبات"), ["experience", "grades", "skills", "qualifications"]],
-    [t("Opportunity details", "تفاصيل الفرصة"), ["description", "remote"]],
+    ...(existing ? [[t("Opportunity details", "تفاصيل الفرصة"), ["description"]]] : []),
   ]) {
     const group = document.createElement("fieldset"),
       legend = document.createElement("legend");
@@ -215,7 +232,8 @@ function jobDialog(existing) {
     e.preventDefault();
     try {
       const f = Object.fromEntries(new FormData(e.target));
-      f.remote = !!f.remote;
+      f.remote = existing ? j.remote === true : false;
+      f.status = existing ? j.status : "draft";
       R.putJob(f, j.id);
       d.close();
       schoolDashboard();
@@ -234,39 +252,7 @@ async function imageAsset(file) {
   await O.media(key, file);
   return key;
 }
-function interviewDialog(applicationId = "") {
-  const candidates = R.applications().filter((a) => !["withdrawn", "rejected"].includes(a.status)),
-    jobs = R.ownJobs();
-  const d = O.dialog(
-    `<h2>${t("Schedule interview", "جدولة مقابلة")}</h2><form id="interview-form"><label>${t("Applicant", "المتقدم")}<select name="applicationId" required><option value="">${t("Choose an applicant", "اختر متقدمًا")}</option>${candidates.map((a) => `<option value="${esc(a.id)}" ${a.id === applicationId ? "selected" : ""}>${esc(a.profile?.name || a.teacherId)} — ${esc(jobs.find((j) => j.id === a.jobId)?.title || "")}</option>`).join("")}</select></label><p id="interview-candidate" role="status"></p>${field("startAt", t("Date and time · device time zone", "التاريخ والوقت · حسب جهازك"), "", "datetime-local", "required")}${field("duration", t("Duration in minutes", "المدة بالدقائق"), 30, "number", 'required min="15" max="180" step="1"')}${field("location", t("Interview location", "مكان المقابلة"))}${field("url", t("Existing meeting link · optional HTTPS", "رابط اجتماع موجود · HTTPS اختياري"), "", "url")}${text("notes", t("Notes for the teacher", "ملاحظات للمعلم"))}<p>${t("Stored locally; invitations appear in the teacher account on this browser.", "حفظ محلي؛ الدعوة تظهر في حساب المعلم على هذا المتصفح.")}</p><p class="error" role="alert"></p><button class="btn" ${candidates.length ? "" : "disabled"}>${t("Save interview", "حفظ المقابلة")}</button></form>`,
-  );
-  const form = d.querySelector("form"),
-    selection = form.querySelector("select");
-  function preview() {
-    const a = candidates.find((a) => a.id === selection.value);
-    d.querySelector("#interview-candidate").textContent = a
-      ? t("Selected: ", "المتقدم المحدد: ") + (a.profile?.name || a.teacherId)
-      : t("Choose an applicant to continue.", "اختر المتقدم ثم حدد الموعد.");
-  }
-  selection.onchange = preview;
-  preview();
-  form.onsubmit = (e) => {
-    e.preventDefault();
-    try {
-      R.scheduleInterview(Object.fromEntries(new FormData(form)));
-      d.close();
-      tab = "interviews";
-      schoolDashboard();
-      document.getElementById("recruit-errors").textContent = t(
-        "Interview saved and local invitation recorded.",
-        "تم حفظ المقابلة وتسجيل الدعوة محليًا.",
-      );
-    } catch (e) {
-      report(e, form.querySelector(".error"));
-    }
-  };
-}
-let hubSearch = "";
+let hubSearch = params.get("query") || "";
 function hubDate(value) {
   const d = new Date(value);
   return value && !Number.isNaN(+d)
@@ -297,28 +283,20 @@ function schoolDashboard() {
     }</tbody></table></div>`;
   }
   if (tab === "applications") {
-    const filtered = apps.filter(
-      (a) =>
-        (!selectedJob || a.jobId === selectedJob) &&
-        (!statusFilter || a.status === statusFilter) &&
-        R.norm(
-          (a.profile?.name || "") + " " + (jobs.find((j) => j.id === a.jobId)?.title || ""),
-        ).includes(R.norm(hubSearch)),
-    );
-    content = `<form id="hub-search" class="filters"><label>${t("Teacher or opportunity", "المعلم أو الفرصة")}<input name="query" type="search" value="${esc(hubSearch)}"></label><label>${t("Opportunity", "الفرصة")}<select id="application-job"><option value="">${t("All opportunities", "كل الفرص")}</option>${jobs.map((j) => `<option value="${esc(j.id)}" ${selectedJob === j.id ? "selected" : ""}>${esc(j.title)}</option>`).join("")}</select></label><label>${t("Application status", "حالة الطلب")}<select id="application-status">${statusOptions(statusFilter)}</select></label><button class="btn soft">${t("Search", "بحث")}</button></form><div class="hub-applicants">${
+    const filtered = apps;
+    content = `<form id="hub-search" class="filters recruitment-application-toolbar"><label>${t("Teacher or opportunity", "المعلم أو الفرصة")}<input name="query" type="search" value="${esc(hubSearch)}"></label><label>${t("Opportunity", "الفرصة")}<select id="application-job"><option value="">${t("All opportunities", "كل الفرص")}</option>${jobs.map((j) => `<option value="${esc(j.id)}" ${selectedJob === j.id ? "selected" : ""}>${esc(j.title)}</option>`).join("")}</select></label><label>${t("Application status", "حالة الطلب")}<select id="application-status">${statusOptions(statusFilter)}</select></label><button type="button" class="btn soft" data-reset-app-filters hidden>${t("Reset Filters", "إعادة ضبط الفلاتر")}</button></form><p class="recruitment-result-count" role="status" data-app-result-count></p><div class="hub-applicants">${
       filtered
         .map((a) => {
           const p = a.profile || a.submittedProfile || {},
             j = jobs.find((j) => j.id === a.jobId);
-          return `<article class="hub-applicant"><div class="teacher-mini">${photo(p)}<div><h2>${esc(p.name || t("Teacher", "معلم"))}</h2><p>${esc(subject(p.subject || ""))} · ${p.experience ?? t("Not stated", "غير مذكورة")} ${t("years", "سنوات")}</p></div></div><div><strong>${esc(j?.title || t("Opportunity unavailable", "الفرصة غير متاحة"))}</strong><small>${hubDate(a.createdAt)}</small></div><span class="pill ${a.status}">${state(a.status)}</span><a class="hub-link" href="${profileURL(a.id, a.teacherId)}">${t("View profile", "عرض الملف")}</a><button class="btn soft" data-review="${esc(a.id)}">${t("Review application", "مراجعة الطلب")}</button></article>`;
+          return `<article class="hub-applicant" data-app-record="${esc(a.id)}"><div class="teacher-mini">${photo(p)}<div><h2>${esc(p.name || t("Teacher", "معلم"))}</h2><p>${esc(subject(p.subject || ""))} · ${p.experience ?? t("Not stated", "غير مذكورة")} ${t("years", "سنوات")}</p></div></div><div><strong>${esc(j?.title || t("Opportunity unavailable", "الفرصة غير متاحة"))}</strong><small>${hubDate(a.createdAt)}</small></div><span class="pill ${a.status}">${state(a.status)}</span><a class="hub-link" href="${profileURL(a.id, a.teacherId)}">${t("View profile", "عرض الملف")}</a><button class="btn soft" data-review="${esc(a.id)}">${t("Review application", "مراجعة الطلب")}</button></article>`;
         })
         .join("") ||
       `<p class="empty">${t("No matching applications. Try another search or filter.", "لا توجد طلبات مطابقة. جرّب بحثًا أو فلترًا آخر.")}</p>`
-    }</div>`;
+    }</div><p class="empty" data-app-empty hidden>${t("No matching applications. Try another search or filter.","لا توجد طلبات مطابقة. جرّب بحثًا أو فلترًا آخر.")}</p>`;
   }
   if (tab === "interviews") {
-    const interviews = R.interviews();
-    content = `<section id="interviews"><header class="hub-heading"><h2>${t("Interviews", "المقابلات")}</h2><button class="btn" id="schedule-interview">${t("Schedule interview", "جدولة مقابلة")}</button></header><p>${t("Appointments and invitations are stored in this browser only. No email is sent; another device requires server integration. Times use your device time zone.", "المواعيد والدعوات محفوظة في هذا المتصفح فقط. لا يُرسل بريد؛ الظهور على جهاز آخر يحتاج ربط خادم. الأوقات حسب المنطقة الزمنية لجهازك.")}</p>${interviews.map((x) => `<article class="hub-applicant"><div><strong>${esc(R.teacher(x.teacherId).name)}</strong><small>${esc(jobs.find((j) => j.id === x.jobId)?.title || "")}</small></div><div><time>${esc(new Date(x.startAt).toLocaleString(O.prefs.lang === "en" ? "en-GB" : "ar-JO"))}</time><small>${x.duration} ${t("minutes", "دقيقة")}</small></div><span>${x.status === "cancelled" ? t("Cancelled", "ملغاة") : Date.parse(x.endAt) < Date.now() ? t("Past appointment", "موعد سابق") : t("Scheduled", "مجدولة")}</span><div>${esc(x.location)}${x.status === "scheduled" && x.url ? `<a class="hub-link" href="${esc(x.url)}" target="_blank" rel="noopener noreferrer">${t("Open meeting link", "فتح رابط المقابلة")}</a>` : ""}</div>${x.status === "scheduled" ? `<button class="btn soft" data-cancel-interview="${esc(x.id)}">${t("Cancel", "إلغاء")}</button>` : ""}</article>`).join("") || `<p class="empty">${t("No interviews scheduled. Select an applicant to create an appointment.", "لا توجد مقابلات مجدولة. اختر متقدمًا وحدد موعده.")}</p>`}</section>`;
+    content = `<section id="interviews" data-recruitment-interviews></section>`;
   }
   if (tab === "discover") {
     const teachers = R.discover(selectedJob).filter(
@@ -333,8 +311,8 @@ function schoolDashboard() {
   }
   document.body.classList.add("recruitment-hub");
   O.shell(
-    t("Recruitment Hub", "مركز التوظيف"),
-    `<header class="hub-heading"><p>${t("Publish opportunities, review applications and find your next teacher.", "انشر فرصك، راجع الطلبات، واعثر على المعلم المناسب لمدرستك.")}</p><button class="btn" id="new-job">${t("Create opportunity", "إنشاء فرصة تدريس")}</button></header><div class="recruit-stats"><article><strong>${jobs.filter((j) => j.status === "published").length}</strong><span>${t("Open opportunities", "فرص مفتوحة")}</span></article><article><strong>${apps.filter((a) => a.status === "pending").length}</strong><span>${t("Awaiting review", "بانتظار المراجعة")}</span></article><article><strong>${R.interviews().filter((x) => x.status === "scheduled" && Date.parse(x.startAt) > Date.now()).length}</strong><span>${t("Upcoming interviews", "المقابلات القادمة")}</span></article></div><nav class="recruit-tabs" aria-label="${t("Recruitment sections", "أقسام التوظيف")}">${[
+    ({jobs:t("Job Opportunities","الفرص الوظيفية"),applications:t("Job Applications","طلبات التوظيف"),discover:t("Teacher Discovery","اكتشاف المعلمين"),interviews:t("Interviews","المقابلات")})[tab],
+    `<header class="hub-heading"><p>${t("Publish opportunities, review applications and find your next teacher.", "انشر فرصك، راجع الطلبات، واعثر على المعلم المناسب لمدرستك.")}</p>${tab==='jobs'?`<button class="btn" id="new-job">${t("Create opportunity", "إنشاء فرصة تدريس")}</button>`:''}</header><div class="recruit-stats"><article><strong>${jobs.filter((j) => j.status === "published").length}</strong><span>${t("Open opportunities", "فرص مفتوحة")}</span></article><article><strong>${apps.filter((a) => a.status === "pending").length}</strong><span>${t("Awaiting review", "بانتظار المراجعة")}</span></article><article><strong>${(M?.visible() || []).filter((meeting) => meeting.kind === "recruitment-interview" && meeting.status === "scheduled" && Date.parse(meeting.startAt) > Date.now()).length}</strong><span>${t("Upcoming interviews", "المقابلات القادمة")}</span></article></div><nav class="recruit-tabs" aria-label="${t("Recruitment sections", "أقسام التوظيف")}">${[
       ["jobs", t("Opportunities", "الفرص")],
       ["applications", t("Applicants", "المتقدمون")],
       ["discover", t("Discover teachers", "اكتشاف المعلمين")],
@@ -346,47 +324,21 @@ function schoolDashboard() {
       )
       .join("")}</nav>${hint()}<section class="hub-content">${content}</section>`,
   );
-  document.getElementById("schedule-interview")?.addEventListener("click", () => interviewDialog());
   document.querySelectorAll("[data-cancel-interview]").forEach(
     (b) =>
       (b.onclick = () =>
         confirmAction(t("Cancel interview?", "إلغاء المقابلة؟"), () => {
-          R.cancelInterview(b.dataset.cancelInterview);
+          if (b.dataset.interviewSource === "legacy") R.cancelInterview(b.dataset.cancelInterview);
+          else M.cancel(b.dataset.cancelInterview);
           schoolDashboard();
         })),
   );
-  document.getElementById("hub-search")?.addEventListener("submit", (e) => {
-    e.preventDefault();
-    hubSearch = new FormData(e.target).get("query") || "";
-    schoolDashboard();
-  });
-  document.querySelectorAll("[data-review]").forEach(
-    (b) =>
-      (b.onclick = () => {
-        const a = apps.find((a) => a.id === b.dataset.review);
-        const d = O.dialog(
-          `<h2>${t("Review application", "مراجعة الطلب")}</h2><p>${esc(a.profile?.name || "")}</p><p>${esc(a.message || t("No cover message supplied.", "لم تُرفق رسالة تقديم."))}</p><p>${esc(a.profile?.qualification || "")}</p><a class="hub-link" href="${profileURL(a.id, a.teacherId)}">${t("Professional profile", "الملف المهني")}</a><label>${t("Application status", "حالة الطلب")}<select id="hub-review-status">${statusOptions(a.status, false)}</select></label><p role="status" class="error"></p><button class="btn" id="hub-save-status" ${a.status === "withdrawn" ? "disabled" : ""}>${t("Save status", "حفظ الحالة")}</button><button class="btn soft" id="schedule-from-review" ${["withdrawn", "rejected"].includes(a.status) ? "disabled" : ""}>${t("Schedule interview", "جدولة مقابلة")}</button>`,
-        );
-        d.querySelector('#hub-review-status option[value="withdrawn"]')?.remove();
-        d.querySelector("#schedule-from-review").onclick = () => {
-          d.close();
-          interviewDialog(a.id);
-        };
-        d.querySelector("#hub-save-status").onclick = () => {
-          try {
-            R.updateApplication(a.id, d.querySelector("select").value);
-            d.close();
-            schoolDashboard();
-            document.getElementById("recruit-errors").textContent = t(
-              "Application status saved.",
-              "تم حفظ حالة الطلب.",
-            );
-          } catch (e) {
-            report(e, d.querySelector(".error"));
-          }
-        };
-      }),
-  );
+
+  document.querySelectorAll('.hub-table').forEach(table=>{const labels=[...table.querySelectorAll('thead th')].map(x=>x.textContent);table.querySelectorAll('tbody tr').forEach(row=>[...row.children].forEach((cell,i)=>cell.dataset.label=labels[i]||''));});
+  function filterApplications(){const f=document.getElementById('hub-search');if(!f)return;hubSearch=f.querySelector('[name=query]').value;selectedJob=f.querySelector('#application-job').value;statusFilter=f.querySelector('#application-status').value;let count=0;document.querySelectorAll('[data-app-record]').forEach(row=>{const a=apps.find(x=>x.id===row.dataset.appRecord),title=jobs.find(j=>j.id===a.jobId)?.title||'';const match=(!selectedJob||a.jobId===selectedJob)&&(!statusFilter||a.status===statusFilter)&&R.norm((a.profile?.name||'')+' '+title).includes(R.norm(hubSearch));row.hidden=!match;if(match)count++;});f.querySelector('[data-reset-app-filters]').hidden=!(hubSearch||selectedJob||statusFilter);document.querySelector('[data-app-result-count]').textContent=count+' / '+apps.length+' '+t('applications','طلبات');const empty=document.querySelector('[data-app-empty]');if(empty)empty.hidden=count>0||!apps.length;const url=new URL(location.href);for(const [key,value]of [['job',selectedJob],['status',statusFilter],['query',hubSearch]])value?url.searchParams.set(key,value):url.searchParams.delete(key);history.replaceState(null,'',url);}
+  const applicationToolbar=document.getElementById('hub-search');if(applicationToolbar){applicationToolbar.onsubmit=ev=>ev.preventDefault();applicationToolbar.querySelector('[name=query]').oninput=filterApplications;applicationToolbar.querySelector('[data-reset-app-filters]').onclick=()=>{applicationToolbar.querySelector('[name=query]').value='';applicationToolbar.querySelector('#application-job').value='';applicationToolbar.querySelector('#application-status').value='';filterApplications();applicationToolbar.querySelector('[name=query]').focus();};filterApplications();}
+  OrbitRecruitmentWorkspace.mount(document.querySelector('[data-recruitment-interviews]'),schoolDashboard);
+  document.querySelectorAll('[data-review]').forEach(b=>b.onclick=()=>OrbitRecruitmentWorkspace.review(b.dataset.review,b,schoolDashboard));
   document.querySelectorAll("[data-tab]").forEach(
     (b) =>
       (b.onclick = () => {
@@ -430,11 +382,11 @@ function schoolDashboard() {
   );
   document.getElementById("application-job")?.addEventListener("change", (e) => {
     selectedJob = e.target.value;
-    schoolDashboard();
+    filterApplications();
   });
   document.getElementById("application-status")?.addEventListener("change", (e) => {
     statusFilter = e.target.value;
-    schoolDashboard();
+    filterApplications();
   });
   document.querySelectorAll("[data-app-status]").forEach(
     (b) =>
@@ -633,4 +585,8 @@ window.addEventListener("orbit:profile-change", () => {
     !["INPUT", "TEXTAREA", "SELECT"].includes(document.activeElement?.tagName)
   )
     schoolDashboard();
+});
+window.addEventListener("orbit:recruitment-change", () => {
+  if (location.pathname.includes("/school-dashboard/") && O.user.role === "school")
+    setTimeout(schoolDashboard, 0);
 });

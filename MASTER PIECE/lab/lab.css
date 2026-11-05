@@ -72,32 +72,32 @@
   transform: rotate(40deg);
   width: 220px;
   height: 200px;
-  border-color: #65bdf85c;
+  border-color: color-mix(in srgb, var(--orbit-green-300) 36.08%, transparent);
 }
 #orbit-page .orbital-core {
   height: 120px;
   width: 120px;
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 25%,var(--orbit-accent),#111933 70%);
+  background: radial-gradient(circle at 35% 25%,var(--orbit-accent),var(--orbit-green-925) 70%);
   box-shadow: 0 0 70px color-mix(in srgb,var(--orbit-accent) 26.67%,transparent);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: 32px;
-  color: #dce9ff;
+  color: var(--orbit-green-50);
 }
 #orbit-page .orbital-core span {
   font: 7px monospace;
   margin-top: 10px;
-  color: #9cb8e4;
+  color: var(--orbit-green-300);
 }
 #orbit-page .orbital-point {
   position: absolute;
   width: 9px;
   height: 9px;
-  background: #a4e7ff;
-  box-shadow: 0 0 15px #72cbff;
+  background: var(--orbit-green-200);
+  box-shadow: 0 0 15px var(--orbit-green-300);
   border-radius: 50%;
   animation: lab-orbit 18s linear infinite;
 }
@@ -151,14 +151,14 @@
 #orbit-page .experiment-card:focus-visible,
 #orbit-page .lab-search input:focus-visible,
 #orbit-page .lab-back:focus-visible {
-  outline: 2px solid #91daff;
+  outline: 2px solid var(--orbit-green-200);
   outline-offset: 4px;
 }
 #orbit-page .experiment-image {
   height: 220px;
   position: relative;
   overflow: hidden;
-  background: #0b112b;
+  background: var(--orbit-green-925);
 }
 #orbit-page .experiment-image img,
 #orbit-page .experiment-image svg {
@@ -172,9 +172,9 @@
   top: 14px;
   inset-inline-start: 14px;
   padding: 5px 9px;
-  background: #090e26c9;
-  border: 1px solid #697aad66;
-  color: #b1bbe0;
+  background: color-mix(in srgb, var(--orbit-green-925) 78.82%, transparent);
+  border: 1px solid color-mix(in srgb, var(--orbit-green-500) 40.00%, transparent);
+  color: var(--orbit-green-200);
   font: 11px monospace;
   border-radius: 8px;
 }
@@ -184,9 +184,9 @@
   left: 16px;
   padding: 6px 10px;
   background: color-mix(in srgb,var(--orbit-space) 79.22%,transparent);
-  border: 1px solid #7784b344;
+  border: 1px solid color-mix(in srgb, var(--orbit-green-500) 26.67%, transparent);
   border-radius: 8px;
-  color: #becded;
+  color: var(--orbit-green-200);
   font: 12px monospace;
 }
 #orbit-page .experiment-content {
@@ -247,9 +247,9 @@
 }
 #orbit-page[data-orbit-page="lab"] .lab-stage,
 #orbit-page[data-orbit-page="lab"] section.card {
-  background: #0e1630;
-  border-color: #3c4565;
-  color: #dbe4fc;
+  background: var(--orbit-green-925);
+  border-color: var(--orbit-green-800);
+  color: var(--orbit-green-100);
 }
 #orbit-page #simulation {
   display: block;
@@ -370,7 +370,7 @@
   align-items: start;
 }
 #orbit-page .lab-stage {
-  border: 1px solid #3c4565;
+  border: 1px solid var(--orbit-green-800);
   border-radius: 18px;
   padding: 22px;
   min-width: 0;
@@ -381,7 +381,7 @@
   justify-content: space-between;
   gap: 16px;
   font-size: 10px;
-  color: #b9c5e5;
+  color: var(--orbit-green-200);
   padding-bottom: 18px;
   border-bottom: 1px solid #ffffff20;
   letter-spacing: .5px;
@@ -400,7 +400,7 @@
 }
 #orbit-page #clock {
   margin-inline-start: auto;
-  color: #bbc9e6;
+  color: var(--orbit-green-200);
   font-size: 14px;
   direction: ltr;
 }
@@ -515,7 +515,7 @@
   width: 100%;
   height: 100%;
   margin: 0;
-  background: #071722;
+  background: var(--orbit-green-950);
   overflow: hidden;
   direction: ltr;
 }
@@ -535,15 +535,15 @@
   overflow: visible;
   font:
     600 22px/1.2 Inter,sans-serif;
-  filter: drop-shadow(0 2px 2px #071722);
+  filter: drop-shadow(0 2px 2px var(--orbit-green-950));
 }
 #orbit-page .car-preview-note {
   position: absolute;
   inset-inline: 0;
   bottom: 0;
   padding: 7px 10px;
-  background: #071722e8;
-  color: #d5eeec;
+  background: color-mix(in srgb, var(--orbit-green-950) 90.98%, transparent);
+  color: var(--orbit-green-100);
   font-size: 12px;
   line-height: 1.5;
   text-align: end;
@@ -555,9 +555,9 @@
 }
 #orbit-page .experiment-card:has(.car-science-preview) .experiment-formula {
   bottom: 39px;
-  color: #ccfbf1;
-  background: #071722e8;
-  border-color: #27736e;
+  color: var(--orbit-green-100);
+  background: color-mix(in srgb, var(--orbit-green-950) 90.98%, transparent);
+  border-color: var(--orbit-green-800);
 }
 @media (hover:hover) and (pointer:fine) {
   #orbit-page .experiment-card:hover .car-preview-drive {

@@ -1,8 +1,8 @@
 :root {
   --bg: var(--orbit-canvas);
   --panel: #fff;
-  --text: #24304c;
-  --muted: #79839c;
+  --text: var(--orbit-green-900);
+  --muted: var(--orbit-green-500);
   --line: var(--orbit-soft);
   --purple: var(--orbit-accent);
   --soft: var(--orbit-soft);
@@ -19,7 +19,7 @@ body[data-theme="dark"] {
   --bg: var(--orbit-space);
   --panel: var(--orbit-space);
   --text: var(--orbit-canvas);
-  --muted: #b1b8d1;
+  --muted: var(--orbit-green-300);
   --line: var(--orbit-accent);
   --soft: var(--orbit-space);
 }
@@ -100,7 +100,7 @@ body[data-theme="dark"] {
   color: var(--muted);
 }
 #orbit-page .hero {
-  background: linear-gradient(120deg,var(--orbit-accent),#3975ef);
+  background: linear-gradient(120deg,var(--orbit-accent),var(--orbit-green-500));
   color: white;
   border-radius: 24px;
   padding: 30px;
@@ -243,7 +243,7 @@ body[data-theme="dark"] {
   border-radius: 15px;
 }
 #orbit-page .lab-stage {
-  background: linear-gradient(#182640,#29364e);
+  background: linear-gradient(var(--orbit-green-900),var(--orbit-green-800));
   border-radius: 20px;
   padding: 20px;
   color: white;

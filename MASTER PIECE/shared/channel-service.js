@@ -22,15 +22,20 @@
     return c;
   }
   function members(id) {
-    return Object.entries(O.get("orbit.memberships.v3", {}))
-      .filter(([email, list]) => email && Array.isArray(list) && list.includes(id))
-      .map(([id]) => ({
+    const c = find(id);
+    const emails = OrbitAuth.managedChannel(c)
+      ? (OrbitAuth.get("orbit.recruitment.v1", {}).accounts || []).map(a => a.email).concat("student@orbit.com")
+      : Object.keys(O.get("orbit.memberships.v3", {})).filter(email => (O.get("orbit.memberships.v3", {})[email] || []).includes(id));
+    return [...new Set(emails)].filter(email => !OrbitAuth.managedChannel(c) || OrbitAuth.schoolChannelStudent(c, email, null, true))
+      .map(id => ({
         id,
         name: OrbitProfiles.read(id, "student").name || O.t("Student", "طالب"),
       }))
       .sort((a, b) => a.id.localeCompare(b.id));
   }
   function admitted(c) {
+    if (OrbitAuth.managedChannel(c)) return O.own(c) || (current().role === "student" && OrbitAuth.schoolChannelStudent(c, current().email, null, true));
+    if(current().role==='student'&&OrbitAuth.schoolStudentAccess(c)===false)return false;
     return (
       O.own(c) ||
       (current().role === "student" &&
@@ -39,6 +44,12 @@
     );
   }
   function canRead(c) {
+    if (OrbitAuth.managedChannel(c)) {
+      const actor = current();
+      return actor.role === "teacher" ? OrbitAuth.schoolChannelTeacher(c, actor.email, true) :
+        actor.role === "school" ? actor.email === c.schoolId : actor.role === "student" && OrbitAuth.schoolChannelStudent(c, actor.email);
+    }
+    if(current().role==='student'&&OrbitAuth.schoolStudentAccess(c)===false)return false;
     return !c.private || admitted(c);
   }
   function seats(id) {
@@ -95,6 +106,7 @@
       "coverAsset",
     ])
       if (key in changes) allowed[key] = changes[key];
+    if (OrbitAuth.managedChannel(c)) { delete allowed.subject; delete allowed.private; delete allowed.code; delete allowed.codeExpiresAt; }
     const updated = { ...c, ...allowed },
       data = O.db();
     data.channels = data.channels.filter((x) => x.id !== id);
@@ -103,7 +115,7 @@
     return updated;
   }
   function remove(id, email) {
-    owner(id);
+    if (OrbitAuth.managedChannel(owner(id))) fail("Membership follows school enrollment.", "تتبع العضوية التسجيل المدرسي.");
     const data = O.get("orbit.memberships.v3", {});
     if (!Array.isArray(data[email]) || !data[email].includes(id))
       fail("This student is no longer a member.", "هذا الطالب لم يعد عضوًا في القناة.");
@@ -130,6 +142,8 @@
       u = current(),
       data = O.get("orbit.memberships.v3", {}),
       list = data[u.email] || [];
+    if (OrbitAuth.managedChannel(c)) fail("Membership follows school enrollment.", "تتبع العضوية التسجيل المدرسي.");
+    if(!leave && OrbitAuth.schoolStudentAccess(c,u.email,{requireMembership:false})===false)fail('School access requires a reviewed Active-year enrollment.','يتطلب الوصول المدرسي تسجيلًا مراجعًا في السنة النشطة.');
     if (!leave && !list.includes(id) && c.private) {
       if (!invitation || invitation.trim().toUpperCase() !== c.code)
         fail("Invalid invitation code.", "كود الدعوة غير صحيح.");
@@ -147,6 +161,41 @@
     data[u.email] = leave ? list.filter((x) => x !== id) : [...new Set([...list, id])];
     O.set("orbit.memberships.v3", data);
     return true;
+  }
+
+  function schoolChoices() {
+    const prefix = "orbit.school.teaching-assignments.demo.v1:";
+    if (OrbitAuth.current()?.role !== "teacher") return [];
+    return Object.keys(localStorage).filter(key => key.startsWith(prefix)).flatMap(key => {
+      try { return OrbitAuth.schoolChannelOptions(decodeURIComponent(key.slice(prefix.length))); }
+      catch { return []; }
+    });
+  }
+
+  function schoolAssociation(schoolId, assignmentIds) {
+    const actor = OrbitAuth.current();
+    const options = schoolChoices().filter(row => row.schoolId === schoolId);
+    const rows = [...new Set(assignmentIds)].map(id => options.find(row => row.id === id));
+    if (!rows.length || rows.some(row => !row || row.subjectId !== rows[0].subjectId ||
+        row.academicYearId !== rows[0].academicYearId)) fail("Select approved sections for one subject.", "اختر شعبًا معتمدة لمادة واحدة.");
+    const [first] = rows;
+    return { schoolChannelVersion: 1, schoolId, teacher: actor.email, academicYearId: first.academicYearId,
+      subjectId: first.subjectId, subject: first.subjectName, sectionId: first.sectionId,
+      sectionIds: rows.map(row => row.sectionId), private: true };
+  }
+
+  function transfer(id, email, reason) {
+    const channel = find(id), actor = OrbitAuth.current();
+    reason = String(reason || "").trim();
+    if (actor?.role !== "school" || actor.email !== channel.schoolId || !OrbitAuth.managedChannel(channel) ||
+        email === channel.teacher || !reason || reason.length > 500 ||
+        !OrbitAuth.schoolChannelTeacher({ ...channel, teacher: email }, email))
+      fail("Choose an eligible teacher and enter a reason.", "اختر معلمًا مؤهلًا وأدخل السبب.");
+    const data = O.db();
+    if (data.channels.filter(row => row.id === id).length !== 1) fail("Channel needs review.", "تحتاج القناة إلى مراجعة.");
+    data.channels = data.channels.map(row => row.id === id ? { ...row, teacher: email,
+      managementHistory: [...(row.managementHistory || []), { from: row.teacher, to: email, reason, actor: actor.email, at: new Date().toISOString() }] } : row);
+    O.set("orbit.channels.v2", data);
   }
 
   function selectSeat(id, index) {
@@ -180,7 +229,7 @@
     remove,
     code,
     join,
-    selectSeat,
+    selectSeat, schoolChoices, schoolAssociation, transfer,
     // Reserved request states for a future server-backed approval policy; direct admission remains current behavior.
     joinRequestStates: Object.freeze(["pending", "approved", "rejected"]),
   };

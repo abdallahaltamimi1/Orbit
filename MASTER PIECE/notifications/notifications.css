@@ -26,7 +26,7 @@
 #orbit-page .notification-kicker {
   font-size: 11px;
   letter-spacing: 1px;
-  color: var(--purple);
+  color: var(--orbit-accent);
   font-weight: 600;
 }
 #orbit-page .notification-intro {
@@ -60,7 +60,7 @@
 }
 #orbit-page .notification-count strong {
   font-size: 40px;
-  color: var(--purple);
+  color: var(--orbit-accent);
 }
 #orbit-page .notification-count span {
   font-size: 12px;
@@ -97,8 +97,8 @@
   font-size: 13px;
 }
 #orbit-page .notification-filter.active {
-  background: var(--soft);
-  color: var(--purple);
+  background: var(--orbit-soft);
+  color: var(--orbit-accent);
 }
 #orbit-page #read-all {
   font-size: 12px;
@@ -121,7 +121,7 @@
   animation: none;
 }
 #orbit-page .notification.unread {
-  border: 1px solid var(--purple);
+  border: 1px solid var(--orbit-accent);
   background: var(--panel);
 }
 #orbit-page .notification-symbol {
@@ -136,8 +136,8 @@
   font-size: 23px;
 }
 #orbit-page .unread .notification-symbol {
-  background: var(--soft);
-  color: var(--purple);
+  background: var(--orbit-soft);
+  color: var(--orbit-accent);
 }
 #orbit-page .notification-copy {
   min-width: 0;
@@ -148,7 +148,7 @@
   color: var(--muted);
 }
 #orbit-page .unread .notification-state {
-  color: var(--purple);
+  color: var(--orbit-accent);
 }
 #orbit-page .notification h3 {
   font-size: 18px;
@@ -190,8 +190,8 @@
   place-items: center;
   width: 66px;
   height: 66px;
-  background: var(--soft);
-  color: var(--purple);
+  background: var(--orbit-soft);
+  color: var(--orbit-accent);
   font-size: 30px;
   border-radius: 20px;
   margin: 0 auto 24px;

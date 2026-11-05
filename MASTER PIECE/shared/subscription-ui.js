@@ -22,7 +22,11 @@
       : "—";
   function usageMarkup(context = S.effective()) {
     if (!["teacher", "school"].includes(OrbitAuth.current()?.role) || !context.record) return "";
-    return `<div class="orbit-usage-grid">${Object.entries(context.plan.limits)
+    const schoolMetrics = new Set(["jobs"]),
+      metrics = Object.entries(context.plan.limits).filter(
+        ([key]) => context.user.role !== "school" || schoolMetrics.has(key),
+      );
+    return `<div class="orbit-usage-grid">${metrics
       .map(
         ([key, limit]) =>
           `<div><small>${label(key)}</small><strong dir="ltr">${S.usage(key, context)} / ${limit === null ? t("Unlimited", "غير محدود") : limit}</strong></div>`,
@@ -77,7 +81,7 @@
       return;
     }
     const context = S.effective();
-    panel.innerHTML = `<header><div><span class="orbit-plan-pill">${esc(context.plan?.name || "")}</span><h2>${t("Your subscription & usage", "اشتراكك واستخدامك")}</h2></div><a class="orbit-access-button secondary" href="../pricing/pricing.html">${t("View plans", "عرض الخطط")}</a></header><p>${context.allowed ? (context.record.status === "trialing" ? t("School trial ends: ", "تنتهي تجربة المدرسة: ") + date(context.record.trialExpiration) : t("Current plan is available.", "الخطة الحالية متاحة.")) : t("Subscription expired. Public previews remain available.", "انتهى الاشتراك. المعاينات العامة متاحة.")}${context.schoolId && context.user.role === "teacher" ? ` · ${t("Included through your school", "مشمول من خلال مدرستك")}` : ""}</p>${usageMarkup(context)}<div class="orbit-access-actions"><button type="button" class="orbit-access-button secondary" data-progress-report>${t("Advanced progress report", "تقرير تقدم متقدم")}</button>${context.user.role === "teacher" ? `<a class="orbit-access-button secondary" href="../lesson-planner/lesson-planner.html">${t("Lesson planning", "تحضير الدروس")}</a>` : ""}</div><p class="orbit-local-note">${t("Local subscription prototype. Billing and secure server authorization are not connected.", "نموذج اشتراك محلي. الفوترة والتحقق الآمن على الخادم غير مربوطين.")}</p>`;
+    panel.innerHTML = `<header><div><span class="orbit-plan-pill">${esc(context.plan?.name || "")}</span><h2>${t("Your subscription & usage", "اشتراكك واستخدامك")}</h2></div><a class="orbit-access-button secondary" href="../pricing/pricing.html">${t("View plans", "عرض الخطط")}</a></header><p>${context.allowed ? (context.record.status === "trialing" ? t("School trial ends: ", "تنتهي تجربة المدرسة: ") + date(context.record.trialExpiration) : t("Current plan is available.", "الخطة الحالية متاحة.")) : t("Subscription expired. Public previews remain available.", "انتهى الاشتراك. المعاينات العامة متاحة.")}${context.schoolId && context.user.role === "teacher" ? ` · ${t("Included through your school", "مشمول من خلال مدرستك")}` : ""}</p>${usageMarkup(context)}<div class="orbit-access-actions"><button type="button" class="orbit-access-button secondary" data-progress-report>${t("Advanced progress report", "تقرير تقدم متقدم")}</button>${context.user.role === "teacher" ? `<a class="orbit-access-button secondary" href="../lesson-planner/lesson-planner.html">${t("Lesson planning", "تحضير الدروس")}</a>` : ""}</div><p class="orbit-local-note">${t("Billing is unavailable here, so no payment is taken or paid plan activated. Plan access is stored in this browser.", "الدفع غير متاح هنا، لذلك لن تُخصم رسوم ولن تُفعّل خطة مدفوعة. تُحفظ صلاحيات الخطة في هذا المتصفح.")}</p>`;
     const progress = report(context);
     panel.querySelector("[data-progress-report]").onclick = progress.advanced;
     panel.insertAdjacentHTML(
@@ -90,7 +94,7 @@
     const org = S.organizations().schools[context.schoolId] || { teachers: [], students: [] };
     const members = document.createElement("section");
     members.className = "orbit-school-members";
-    members.innerHTML = `<h3>${t("Your school team", "فريق مدرستك")}</h3><p>${t("Associate existing accounts in this browser. This is a local association, not an invitation or verified school membership.", "اربط حسابات موجودة في هذا المتصفح. هذا ربط محلي، وليس دعوة أو عضوية مدرسة موثقة.")}</p><form id="orbit-school-member-form"><label>${t("Account type", "نوع الحساب")}<select name="role"><option value="teacher">${t("Teacher", "معلم")}</option><option value="student">${t("Student", "طالب")}</option></select></label><label>${t("Registered account email", "بريد الحساب المسجل")}<input type="email" name="email" required autocomplete="off"></label><fieldset><legend>${t("School teacher permissions", "صلاحيات معلم المدرسة")}</legend>${[
+    members.innerHTML = `<h3>${t("Your school team", "فريق مدرستك")}</h3><p>${t("Add an existing account to this school on this device. This does not send an invitation or verify membership.", "أضف حسابًا مسجلًا إلى المدرسة على هذا الجهاز. لا يرسل ذلك دعوة ولا يتحقق من العضوية.")}</p><form id="orbit-school-member-form"><label>${t("Account type", "نوع الحساب")}<select name="role"><option value="teacher">${t("Teacher", "معلم")}</option><option value="student">${t("Student", "طالب")}</option></select></label><label>${t("Registered account email", "بريد الحساب المسجل")}<input type="email" name="email" required autocomplete="off"></label><fieldset><legend>${t("School teacher permissions", "صلاحيات معلم المدرسة")}</legend>${[
       ["publish", t("Publish", "النشر")],
       ["classes", t("Classes", "الصفوف")],
       ["labs", t("Labs", "المختبر")],
@@ -172,33 +176,49 @@
     }
   }
   function pricing() {
-    if (OrbitAuth.current()?.role === "student") {
+    const currentUser = OrbitAuth.current();
+    if (currentUser?.role === "student") {
       location.replace("../student-dashboard/student-dashboard.html");
       return;
     }
+    const planRole = currentUser?.role === "teacher" || currentUser?.role === "school"
+        ? currentUser.role
+        : "public",
+      planEntries = Object.entries(S.config.plans).filter(
+        ([, plan]) => planRole === "public" || plan.accountType === planRole,
+      );
+    const schoolPlanFeatures = (id) =>
+      `<li>${t("Receive job applications", "استقبال طلبات التوظيف")}</li><li>${t("Review applicants", "مراجعة المتقدمين")}</li><li>${t("Schedule recruitment interviews", "جدولة مقابلات التوظيف")}</li><li>${t(id === "school-starter" ? "Basic teacher discovery" : "Teacher discovery", id === "school-starter" ? "استكشاف أساسي للمعلمين" : "استكشاف المعلمين")}</li>`,
+      schoolPlanLimits = (plan) => Object.entries(plan.limits).filter(([key]) => key === "jobs"),
+      planPrice = (id, plan) =>
+        id === "teacher-free" || id === "school-starter"
+          ? t("Free", "مجاني")
+          : plan.trialDays
+            ? t(plan.trialDays + "-day trial · pricing coming soon", "تجربة " + plan.trialDays + " يومًا · الأسعار قريبًا")
+            : t("Pricing coming soon", "الأسعار قريبًا"),
+      planFeatures = (id, plan) =>
+        plan.accountType === "school"
+          ? schoolPlanFeatures(id)
+          : `${plan.features.advancedReports ? `<li>${t("Advanced progress reports", "تقارير تقدم متقدمة")}</li>` : `<li>${t("Basic progress overview", "نظرة عامة على التقدم")}</li>`}${plan.features.productivity ? `<li>${t("Additional planning tools", "أدوات تحضير إضافية")}</li>` : ""}`,
+      planLimits = (plan) =>
+        (plan.accountType === "school" ? schoolPlanLimits(plan) : Object.entries(plan.limits))
+          .map(
+            ([key, value]) =>
+              `<li><strong>${value === null ? t("Unlimited", "غير محدود") : value}</strong> ${label(key)}</li>`,
+          )
+          .join("");
     const O = window.ORBIT;
     if (!O) return;
     O.shell(
       t("Plans for your next orbit", "خطط لمدارك القادم"),
-      `<section class="hero"><h2>${t("More room to teach. One connected school.", "مساحة أكبر للتعليم. مدرسة مترابطة.")}</h2><p>${t("Browse every plan without an account. Final prices are coming soon.", "استعرض جميع الخطط دون حساب. الأسعار النهائية ستُعلن قريبًا.")}</p></section><div id="orbit-current-plan"></div><div class="orbit-pricing-grid">${Object.entries(
-        S.config.plans,
-      )
+      `<section class="hero"><h2>${t("More room to teach. One connected school.", "مساحة أكبر للتعليم. مدرسة مترابطة.")}</h2><p>${t("Browse plans for teachers and schools without an account. Final prices are coming soon.", "استعرض باقات المعلمين والمدارس دون حساب. الأسعار النهائية ستُعلن قريبًا.")}</p></section><div id="orbit-current-plan"></div><div id="orbit-pricing-grid" class="orbit-pricing-grid" data-pricing-role="${planRole}">${planEntries
         .map(
           ([id, plan]) =>
-            `<article class="card orbit-plan-card"><span class="orbit-plan-pill">${plan.accountType === "school" ? t("Schools", "المدارس") : t("Teachers", "المعلمون")}</span><h2>${esc(plan.name)}</h2><strong class="orbit-plan-price">${id === "teacher-free" ? t("Free", "مجاني") : plan.trialDays ? t(plan.trialDays + "-day trial · pricing coming soon", "تجربة " + plan.trialDays + " يومًا · الأسعار قريبًا") : t("Pricing coming soon", "الأسعار قريبًا")}</strong><ul>${Object.entries(
-              plan.limits,
-            )
-              .map(
-                ([key, value]) =>
-                  `<li><strong>${value === null ? t("Unlimited", "غير محدود") : value}</strong> ${label(key)}</li>`,
-              )
-              .join(
-                "",
-              )}${plan.features.advancedReports ? `<li>${t("Advanced progress reports", "تقارير تقدم متقدمة")}</li>` : `<li>${t("Basic progress overview", "نظرة عامة على التقدم")}</li>`}${plan.features.productivity ? `<li>${t("Additional planning tools", "أدوات تحضير إضافية")}</li>` : ""}</ul><button class="orbit-access-button" data-select-plan="${id}">${id === "teacher-free" ? t("Use Teacher Free", "استخدم Teacher Free") : plan.trialDays ? t("Explore school trial", "استكشف تجربة المدرسة") : t("View availability", "عرض التوفر")}</button></article>`,
+            `<article class="card orbit-plan-card"><span class="orbit-plan-pill">${plan.accountType === "school" ? t("Schools", "المدارس") : t("Teachers", "المعلمون")}</span><h2>${esc(plan.name)}</h2><strong class="orbit-plan-price">${planPrice(id, plan)}</strong><ul>${planLimits(plan)}${planFeatures(id, plan)}</ul><button class="orbit-access-button" data-select-plan="${id}">${id === "teacher-free" ? t("Use Teacher Free", "استخدم Teacher Free") : id === "school-starter" ? t("Use Free School", "استخدم المدرسة المجانية") : plan.trialDays ? t("Explore school trial", "استكشف تجربة المدرسة") : t("View availability", "عرض التوفر")}</button></article>`,
         )
         .join(
           "",
-        )}</div><p class="orbit-local-note">${t("Local prototype. No payment provider is connected and no paid subscription is activated here. School membership and limits need server verification before production.", "نموذج محلي. لا يوجد مزود دفع مربوط ولا يُفعّل اشتراك مدفوع هنا. العضوية والحدود تحتاج التحقق من الخادم قبل التشغيل الفعلي.")}</p>`,
+        )}</div><p class="orbit-local-note">${t("Payment is unavailable here. You will not be charged, and this plan will not activate.", "الدفع غير متاح هنا. لن تُخصم رسوم ولن تُفعّل هذه الخطة.")}</p>`,
     );
     const context = S.effective(),
       current = document.getElementById("orbit-current-plan");
@@ -253,10 +273,9 @@
       return;
     }
     if (id === "school-starter") {
-      const context = S.effective();
       S.modal(
-        t("School trial", "تجربة المدرسة"),
-        `<p>${context.record.status === "trialing" ? t("Your trial ends: ", "تنتهي تجربتك: ") + date(context.record.trialExpiration) : t("Your trial is not restarted by selecting this plan.", "اختيار الخطة لا يعيد بدء التجربة.")}</p><a class="orbit-access-button" href="../school-dashboard/school-dashboard.html">${t("Open school workspace", "افتح مساحة المدرسة")}</a>`,
+        t("Free School", "المدرسة المجانية"),
+        `<p>${t("Publish up to 3 job opportunities per month, receive applications, review applicants, schedule interviews, and discover teachers. Drafts can still be saved after reaching the publishing limit.", "انشر حتى 3 فرص تدريس شهريًا، واستقبل الطلبات وراجعها، وجدول المقابلات، واستكشف المعلمين. يمكنك حفظ المسودات بعد بلوغ حد النشر.")}</p><a class="orbit-access-button" href="../school-dashboard/school-dashboard.html">${t("Open school workspace", "افتح مساحة المدرسة")}</a>`,
       );
       return;
     }

@@ -1,0 +1,20 @@
+# Phase 3B.2 — read-only annual student view
+
+Location: School Workspace → Students → Annual enrollments · Read-only.
+
+URL: `/school-management/school-management.html?section=students&view=annual`.
+Optional `academicYear=<year ID>` preserves the selected year through reloads, refreshes and language changes. With no explicit selection, the active year is selected when available; otherwise the user chooses a year. An invalid/removed explicit year is not silently replaced with the active year. No selector preference is written to localStorage.
+
+The default Students view stays the existing academic roster, with unchanged edit operations. A second, separately labeled view mounts `school-enrollment-view.js`. It never mounts the legacy editor, including for an active year. Existing routes and section navigation remain intact. Switching back to Academic roster restores the existing controls; their edits are not annual enrollment changes.
+
+The annual view lists available years using `availableYears()` and renders `read(yearId)` results. Enrollment labels: Verified / متحقق, Unresolved / غير محسوم, Not enrolled / غير مسجل. Identity labels: Confirmed / مؤكدة, Pending / قيد المراجعة, Unresolved / غير محسومة. An annual identity-reference mismatch is displayed as unresolved even when a different current mapping has confirmed status. Verified is explicitly explained as consistency of saved references; it grants no access and does not establish current account authorization.
+
+Active years remain read-only in this view. Upcoming years display the no-educational-access notice. Archived years display preserved placement snapshots, including label-drift warnings, with no edit/delete controls. Roster-only records have no inferred annual grade or section. No identity is inferred from names. Empty annual enrollment, missing roster, missing/invalid year, unavailable storage, inconsistent records and refresh recovery have localized messages, with no raw error codes shown. Failures stay within the annual panel so other sections remain accessible.
+
+The component calls only read-model methods, history.replaceState for URL selection, and DOM operations. It never calls enrollment/mapping/year mutations, academic roster reads that seed data, membership APIs or storage setters. Dependencies are loaded on the School management page solely to support the read model; no new mutation control is exposed. Global Academic Years activation remains unchanged.
+
+The existing workspace session bootstrap still maintains its role/joined cache and appearance preferences, and profiles may initialize their existing display data. This phase does not refactor those existing behaviors. Tests distinguish those existing session inputs from new view behavior: fixtures preinitialize the role cache, protected academic/channel/membership data is compared byte-for-byte, and isolated component tests make every storage write/remove/clear throw. A missing academic store is not seeded by the annual route. Selecting the existing editable roster or overview may still initialize demo data under their pre-existing behavior.
+
+Tests use fresh Playwright contexts with synthetic academic/account/enrollment fixtures; no personal browser profile or real saved demo data is used. They cover active/upcoming/archived selection, preserved URL selection, labels in both languages, RTL/LTR, light/dark, desktop/mobile, snapshots versus changed legacy labels, conflicting identities, empty/malformed stores, refresh recovery, missing roster/year stores and no storage mutations from the component. Screenshots are written to the OS temp directory, outside the preserved excluded files.
+
+Remaining limitations: no new enrollment or correction workflow, no promotions/transfers, no access changes, and no cross-tab transaction or live automatic refresh. Users can explicitly refresh; snapshot-change errors request that action. The existing read model's local-only verification limits still apply. Next step should review the read-only UI before separately scoping any mutation or authorization integration.

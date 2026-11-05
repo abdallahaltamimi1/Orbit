@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>ORBIT · Teaching profile</title>
+    <script src="../shared/account-access.js"></script>
+    <link rel="stylesheet" href="../shared/tokens.css" />
+    <link rel="stylesheet" href="../shared/experience.css" />
+    <link rel="stylesheet" href="../shared/portal-shell.css" />
+    <link rel="stylesheet" href="../shared/role-themes.css" />
+    <link rel="stylesheet" href="../shared/final-polish.css" />
+    <link rel="stylesheet" href="teaching-profile.css" />
+    <script src="../shared/core.js"></script>
+    <script src="../shared/profiles.js"></script>
+    <script src="../shared/auth.js"></script>
+    <script>
+      (() => {
+        const user = OrbitAuth.current();
+        if (user?.role === "student") return;
+        location.replace(["teacher", "school"].includes(user?.role)
+          ? "./teacher-profile.html" + location.search
+          : "../login/login.html");
+      })();
+    </script>
+    <script src="../shared/channel-service.js"></script>
+    <script src="../shared/teaching-profile-service.js"></script>
+    <script src="teaching-profile.js" defer></script>
+    <script src="../shared/portal-shell.js" defer></script>
+    <script src="../shared/language-control.js" defer></script>
+  </head>
+  <body data-orbit-role="student">
+    <div id="orbit-page" data-orbit-page="teaching-profile"><div id="app"></div></div>
+  </body>
+</html>

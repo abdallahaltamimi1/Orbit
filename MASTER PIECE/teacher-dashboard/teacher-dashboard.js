@@ -125,7 +125,7 @@ const samplePosts = [
   },
 ];
 const posts = () =>
-    [...db.posts, ...samplePosts.filter((p) => !db.posts.some((x) => x.id === p.id))].filter(
+    (window.OrbitRecordOrder?.newest([...db.posts, ...samplePosts.filter((p) => !db.posts.some((x) => x.id === p.id))]) || db.posts).filter(
       (p) => channel(p.channel) && !read("orbit.deleted.posts")?.includes(p.id),
     ),
   postTitle = (p) => esc(p.title || t(p.titleEn, p.titleAr)),
@@ -191,11 +191,10 @@ const profileCompletion = () =>
       !!teacher.name,
       !!teacher.bio,
       !!teacher.qualification,
-      !!teacher.location,
       !!teacher.cv,
       Number.isFinite(+teacher.experience),
     ].filter(Boolean).length /
-      6) *
+      5) *
       100,
   );
 
@@ -346,7 +345,6 @@ function render() {
       ["#overview", "home", t("Overview", "نظرة عامة"), "active"],
       ["#my-channels", "channel", t("My channels", "قنواتي"), ""],
       ["#content-library", "video", t("Content library", "مكتبة المحتوى"), ""],
-      ["#content-library", "assignment", t("Assignments", "الواجبات"), "assignment-nav"],
       [
         route("teacher-profile", "?id=" + encodeURIComponent(read("orbitUser")?.email || "")),
         "profile",
@@ -390,7 +388,7 @@ function render() {
       )
       .join(
         "",
-      )}</div><div class="workspace-grid"><div><section id="my-channels"><div class="section-head"><div><h2>${t("Your teaching channels", "قنواتك التعليمية")}</h2><p>${t("Your classroom. Your audience. Your voice.", "صفك، جمهورك، وصوتك.")}</p></div><button class="text-link" data-action="create">＋ ${t("Create channel", "إنشاء قناة")}</button></div><div class="tabs" aria-label="${t("Filter channels", "فلترة القنوات")}">${[
+      )}</div><div class="workspace-grid"><div><section id="my-channels"><div class="section-head"><div><h2>${t("Your teaching channels", "قنواتك التعليمية")}</h2><a class="text-link" href="../channels/channels.html?create=school">${t("Create school channel", "إنشاء قناة مدرسية")}</a><p>${t("Your classroom. Your audience. Your voice.", "صفك، جمهورك، وصوتك.")}</p></div><button class="text-link" data-action="create">＋ ${t("Create channel", "إنشاء قناة")}</button></div><div class="tabs" aria-label="${t("Filter channels", "فلترة القنوات")}">${[
       ["all", t("All", "الكل")],
       ["public", t("Public", "عامة")],
       ["private", t("Private", "خاصة")],
@@ -405,7 +403,6 @@ function render() {
       ["all", t("All", "الكل")],
       ["video", t("Videos", "فيديوهات")],
       ["lesson", t("Lessons", "شروحات")],
-      ["assignment", t("Assignments", "واجبات")],
     ]
       .map(
         (n) =>
@@ -413,7 +410,7 @@ function render() {
       )
       .join(
         "",
-      )}</div><label class="search-field">${icon("search")}<input id="library-search" value="${esc(search)}" placeholder="${t("Search your content", "ابحث في محتواك")}" aria-label="${t("Search your content", "ابحث في محتواك")}"></label></div><div id="post-list">${all.map(postRow).join("")}</div><p id="library-empty" class="empty" hidden>${t("No content matches. Publish your next idea.", "لا يوجد محتوى مطابق. انشر فكرتك القادمة.")}</p></section></div><aside class="rail"><section class="portfolio-panel"><span class="eyebrow">${t("YOUR PROFESSIONAL ORBIT", "مدارك المهني")}</span><div class="profile-top"><span class="profile-avatar">${initials()}</span><button class="small-icon" data-action="edit-profile" aria-label="${t("Edit portfolio", "تعديل الملف المهني")}">${icon("edit")}</button></div><h2>${esc(name())}</h2><span class="subject-label">${subject(teacher.subject)} · ${teacher.experience} ${t("years", "سنوات")}</span><p>${esc(bio())}</p><div class="profile-progress"><strong>${pc}%</strong><div><i style="width:${pc}%"></i></div></div><small class="portfolio-hint">${t("Add your story, qualifications, location and CV link.", "أضف نبذتك ومؤهلاتك وموقعك ورابط سيرتك الذاتية.")}</small><button class="button primary" data-action="edit-profile">${t("Build my portfolio", "ابنِ ملفي المهني")}${icon("arrow")}</button><span class="credential-note">${t("Qualifications are self-reported, not verified.", "المؤهلات معلنة ذاتيًا وغير موثقة.")}</span></section><section class="next-steps"><span class="eyebrow">${t("YOUR NEXT SMALL STEPS", "خطواتك الصغيرة القادمة")}</span><h2>${t("Make your work visible.", "خلّي شغلك يُشاهد.")}</h2><button data-action="create"><span>01</span><div><b>${t("Give your class a home", "امنح صفك مساحة")}</b><small>${t("Create a private channel", "أنشئ قناة خاصة")}</small></div>${icon("arrow")}</button><button data-action="compose"><span>02</span><div><b>${t("Share a teaching moment", "شارك لحظة تعليمية")}</b><small>${t("Post a short video or lesson", "انشر فيديو قصيرًا أو شرحًا")}</small></div>${icon("arrow")}</button><button data-action="edit-profile"><span>03</span><div><b>${t("Tell your professional story", "احكِ قصتك المهنية")}</b><small>${t("Complete your portfolio", "أكمل ملفك المهني")}</small></div>${icon("arrow")}</button></section><section class="plus-panel"><span>✧ ORBIT PLUS</span><h3>${t("Bigger ideas.<br>More room.", "أفكار أكبر.<br>ومساحة أوسع.")}</h3><p>${t("Longer videos and more teaching tools. Preview the proposed plan.", "فيديوهات أطول وأدوات تعليم أكثر. شاهد تصور الاشتراك.")}</p><button class="text-link" data-action="premium">${t("Explore the plan", "استكشف الخطة")} ↗</button></section></aside></div><footer><span>ORBIT · ${t("Teach. Connect. Grow.", "علّم. تواصل. تطوّر.")}</span><span>${t("Local prototype · content and videos stay in this browser.", "نموذج محلي · المحتوى والفيديوهات تُحفظ في هذا المتصفح.")}</span></footer></main></div></div><dialog id="studio-dialog"></dialog>`;
+      )}</div><label class="search-field">${icon("search")}<input id="library-search" value="${esc(search)}" placeholder="${t("Search your content", "ابحث في محتواك")}" aria-label="${t("Search your content", "ابحث في محتواك")}"></label></div><div id="post-list">${all.map(postRow).join("")}</div><p id="library-empty" class="empty" hidden>${t("No content matches. Publish your next idea.", "لا يوجد محتوى مطابق. انشر فكرتك القادمة.")}</p></section></div><aside class="rail"><section class="portfolio-panel"><span class="eyebrow">${t("YOUR PROFESSIONAL ORBIT", "مدارك المهني")}</span><div class="profile-top"><span class="profile-avatar">${initials()}</span><button class="small-icon" data-action="edit-profile" aria-label="${t("Edit portfolio", "تعديل الملف المهني")}">${icon("edit")}</button></div><h2>${esc(name())}</h2><span class="subject-label">${subject(teacher.subject)} · ${teacher.experience} ${t("years", "سنوات")}</span><p>${esc(bio())}</p><div class="profile-progress"><strong>${pc}%</strong><div><i style="width:${pc}%"></i></div></div><small class="portfolio-hint">${t("Add your story, qualifications and CV link.", "أضف نبذتك ومؤهلاتك ورابط سيرتك الذاتية.")}</small><button class="button primary" data-action="edit-profile">${t("Build my portfolio", "ابنِ ملفي المهني")}${icon("arrow")}</button><span class="credential-note">${t("Qualifications are self-reported, not verified.", "المؤهلات معلنة ذاتيًا وغير موثقة.")}</span></section><section class="next-steps"><span class="eyebrow">${t("YOUR NEXT SMALL STEPS", "خطواتك الصغيرة القادمة")}</span><h2>${t("Make your work visible.", "خلّي شغلك يُشاهد.")}</h2><button data-action="create"><span>01</span><div><b>${t("Give your class a home", "امنح صفك مساحة")}</b><small>${t("Create a private channel", "أنشئ قناة خاصة")}</small></div>${icon("arrow")}</button><button data-action="compose"><span>02</span><div><b>${t("Share a teaching moment", "شارك لحظة تعليمية")}</b><small>${t("Post a short video or lesson", "انشر فيديو قصيرًا أو شرحًا")}</small></div>${icon("arrow")}</button><button data-action="edit-profile"><span>03</span><div><b>${t("Tell your professional story", "احكِ قصتك المهنية")}</b><small>${t("Complete your portfolio", "أكمل ملفك المهني")}</small></div>${icon("arrow")}</button></section><section class="plus-panel"><span>✧ ORBIT PLUS</span><h3>${t("Bigger ideas.<br>More room.", "أفكار أكبر.<br>ومساحة أوسع.")}</h3><p>${t("Longer videos and more teaching tools. Preview the proposed plan.", "فيديوهات أطول وأدوات تعليم أكثر. شاهد تصور الاشتراك.")}</p><button class="text-link" data-action="premium">${t("Explore the plan", "استكشف الخطة")} ↗</button></section></aside></div><footer><span>ORBIT · ${t("Teach. Connect. Grow.", "علّم. تواصل. تطوّر.")}</span><span>${t("Local prototype · content and videos stay in this browser.", "نموذج محلي · المحتوى والفيديوهات تُحفظ في هذا المتصفح.")}</span></footer></main></div></div><dialog id="studio-dialog"></dialog>`;
   filterContent();
 }
 function filterContent() {
@@ -428,17 +425,49 @@ function filterContent() {
   let count = 0;
   document.querySelectorAll(".post-row").forEach((el) => {
     el.hidden =
+      el.dataset.kind === "assignment" ||
       (libraryFilter !== "all" && el.dataset.kind !== libraryFilter) ||
       (search && !el.textContent.toLocaleLowerCase().includes(search.toLocaleLowerCase()));
     if (!el.hidden) count++;
   });
   $("library-empty").hidden = count !== 0;
 }
+let studioReturnAction = null, studioReturnTarget = null;
 function modal(html) {
-  $("studio-dialog").innerHTML =
+  const dialog = $("studio-dialog");
+  const trigger = dialog.contains(document.activeElement) ? studioReturnTarget : document.activeElement;
+  const triggerAction = trigger?.getAttribute("data-action") || studioReturnAction;
+  studioReturnAction = triggerAction;
+  studioReturnTarget = trigger;
+  dialog.innerHTML =
     `<button class="dialog-close" data-action="close" aria-label="${t("Close", "إغلاق")}">×</button>${html}`;
-  $("studio-dialog").showModal();
-  $("studio-dialog").querySelector("input,textarea,select")?.focus();
+  const heading = dialog.querySelector("h2,h1,h3");
+  if (heading) {
+    heading.id = "studio-dialog-title";
+    dialog.setAttribute("aria-labelledby", heading.id);
+    dialog.removeAttribute("aria-label");
+  } else {
+    dialog.removeAttribute("aria-labelledby");
+    dialog.setAttribute("aria-label", t("Teacher channel dialog", "حوار قناة المعلم"));
+  }
+  dialog.addEventListener("close", () => {
+    // A successful action can replace the dashboard and immediately open another dialog.
+    if (document.querySelector("dialog[open]")) return;
+    const replacement = triggerAction && [...document.querySelectorAll("[data-action]")]
+      .find(el => el.dataset.action === triggerAction && el.getClientRects().length);
+    (trigger?.isConnected && trigger !== document.body ? trigger : replacement)?.focus();
+  }, { once: true });
+  dialog.onkeydown = event => {
+    if (event.key !== "Tab") return;
+    const controls = [...dialog.querySelectorAll('button:not(:disabled),a[href],input:not(:disabled):not([type=hidden]),textarea:not(:disabled),select:not(:disabled),[tabindex="0"]')]
+      .filter(el => el.getClientRects().length);
+    const first = controls[0], last = controls.at(-1);
+    if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+    else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+  };
+  dialog.showModal();
+  (dialog.querySelector("input:not([type=hidden]):not(:disabled),textarea:not(:disabled),select:not(:disabled)") ||
+    dialog.querySelector("button:not(:disabled),a[href]"))?.focus();
 }
 function field(key, title, value = "", type = "text", required = false) {
   return `<label class="form-field">${title}<input name="${key}" type="${type}" value="${esc(value)}" ${required ? "required" : ""} maxlength="${key === "cv" ? 600 : 150}"></label>`;
@@ -544,7 +573,7 @@ function createDialog() {
       color: form.get("visibility") === "private" ? "blue" : "purple",
       createdAt: new Date().toISOString(),
     };
-    c.schoolId = OrbitSubscriptions.effective().schoolId || null;
+    c.schoolId = null;
     try {
       OrbitSubscriptions.perform(
         c.private ? "classes" : null,
@@ -599,6 +628,8 @@ function composeDialog(selected) {
     let videoAsset = "",
       duration = 0;
     try {
+      const schoolId = ORBIT.publicationSchool(data.get("channel"));
+      const selectedChannel = channel(data.get("channel"));
       if (type === "video") {
         if (file && file.size) {
           if (file.size > 50 * 1024 * 1024)
@@ -675,7 +706,12 @@ function composeDialog(selected) {
         dueDate: type === "assignment" ? data.get("dueDate") : "",
         createdAt: new Date().toISOString(),
         likes: 0,
+        schoolId,
+        ...(OrbitAuth.managedChannel(selectedChannel) ? { sectionIds: [...selectedChannel.sectionIds], academicYearId: selectedChannel.academicYearId, authorId: OrbitAuth.current().email } : {}),
       };
+      if (ORBIT.publicationSchool(row.channel) !== schoolId)
+        throw Error(t("Channel ownership changed. Reopen the editor before publishing.", "تغيرت ملكية القناة. أعد فتح المحرر قبل النشر."));
+      db = { ...db, ...ORBIT.db() };
       db.posts.unshift(row);
       persist();
       $("studio-dialog").close();
@@ -769,13 +805,6 @@ document.addEventListener("click", async (e) => {
     document
       .querySelectorAll("[data-post-filter]")
       .forEach((el) => el.classList.toggle("selected", el === pf));
-    filterContent();
-  }
-  if (e.target.closest(".assignment-nav")) {
-    libraryFilter = "assignment";
-    document
-      .querySelectorAll("[data-post-filter]")
-      .forEach((el) => el.classList.toggle("selected", el.dataset.postFilter === "assignment"));
     filterContent();
   }
 });

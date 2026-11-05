@@ -29,6 +29,8 @@
       "skills",
       "methods",
       "positions",
+      "certificates",
+      "workSamples",
       "cv",
       "available",
       "shareWithSchools",
@@ -175,6 +177,15 @@
       if (!Number.isFinite(+p.experience) || +p.experience < 0 || +p.experience > 60)
         throw Error("INVALID_EXPERIENCE");
       if (p.cv && !/^https:\/\//i.test(p.cv)) throw Error("HTTPS_REQUIRED");
+      for (const field of ["certificates", "workSamples"])
+        if (
+          !Array.isArray(p[field] || []) ||
+          (p[field] || []).length > 20 ||
+          (p[field] || []).some((item) => typeof item !== "string" || item.length > 500)
+        )
+          throw Error("INVALID_PORTFOLIO_ITEMS");
+      if ((p.workSamples || []).some((url) => !/^https:\/\//i.test(url)))
+        throw Error("HTTPS_REQUIRED");
     }
     if (p.role === "school") {
       if (!p.location?.trim() || !p.contact?.trim()) throw Error("SCHOOL_REQUIRED");

@@ -8,9 +8,12 @@
       (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char],
     );
   const active = () => OrbitAuth.current() || {};
+  const channelPage = () => document.querySelector('#orbit-page[data-orbit-page="channel"]');
+  const channelScope = () => channelPage() ? new URLSearchParams(location.search).get("id") : null;
   const locale = () => (document.documentElement.lang === "en" ? "en" : "ar");
   const meetingURL = (id) => "../meetings/meeting.html?id=" + encodeURIComponent(id);
   const statuses = () => ({
+    scheduled: t("Scheduled · awaiting completion", "مجدولة · بانتظار الإكمال"),
     upcoming: t("Upcoming", "قادم"),
     live: t("In progress", "جارٍ الآن"),
     completed: t("Meeting ended", "انتهى الاجتماع"),
@@ -89,17 +92,48 @@
   }
   function card(meeting) {
     const status = M.status(meeting),
-      role = active().role;
-    return `<article class="meeting-card" data-meeting-record="${esc(meeting.id)}"><span class="meeting-badge ${status}">${statuses()[status]}</span><h3>${esc(meeting.title)}</h3><div class="meeting-meta">${esc(meeting.teacherName)} · ${esc(meeting.subject)}<br>${esc(dateText(meeting))} · ${duration(meeting)} ${t("min", "دقيقة")}<br>${esc(meeting.timezone || "")} · ${esc(meeting.channelName)}<br>${esc(audienceText(meeting))}</div>${role !== "school" ? `<p>${esc(meeting.description.slice(0, 180))}</p>` : ""}${status === "upcoming" ? `<p class="meeting-meta">${esc(until(meeting))}</p>` : ""}<div class="meeting-actions">${role !== "school" ? `<button class="meeting-button" data-meeting-details="${meeting.id}">${t("Details", "التفاصيل")}</button>${status === "live" ? `<a class="meeting-button primary" href="${meetingURL(meeting.id)}">${t("Join meeting", "انضم للاجتماع")}</a>` : status === "completed" || status === "cancelled" ? `<span class="meeting-meta">${statuses()[status]}</span>` : ""}` : ""}${role === "teacher" ? `<button class="meeting-button" data-meeting-edit="${meeting.id}">${t("Edit", "تعديل")}</button>${status !== "cancelled" && status !== "completed" ? `<button class="meeting-button" data-meeting-cancel="${meeting.id}">${t("Cancel", "إلغاء")}</button>` : ""}<button class="meeting-button danger" data-meeting-delete="${meeting.id}">${t("Delete", "حذف")}</button>` : ""}</div></article>`;
+      role = active().role,
+      interview = meeting.kind === "recruitment-interview",
+      kind = meeting.type === "interview-in-person"
+        ? t("In-person interview", "مقابلة حضورية")
+        : t("Online interview", "مقابلة عن بُعد");
+    return `<article class="meeting-card${interview ? " interview-meeting-card" : ""}" data-meeting-record="${esc(meeting.id)}"><span class="meeting-badge ${status}">${statuses()[status]}</span>${interview ? `<span class="meeting-badge interview-kind">${kind}</span>` : ""}<h3>${esc(meeting.title)}</h3><div class="meeting-meta">${esc(meeting.teacherName)} · ${esc(meeting.subject)}<br>${esc(dateText(meeting))} · ${duration(meeting)} ${t("min", "دقيقة")}<br>${esc(meeting.timezone || "")}${interview ? `<br>${t("Opportunity", "الفرصة")}: ${esc(meeting.channelName)}` : `<br>${esc(meeting.channelName)}<br>${esc(audienceText(meeting))}`}</div>${interview ? `<p>${meeting.type === "interview-in-person" ? `${t("Location", "الموقع")}: ${esc(meeting.location)}` : meeting.externalUrl ? `${t("Meeting link", "رابط الاجتماع")}: <a href="${esc(meeting.externalUrl)}" target="_blank" rel="noopener noreferrer">${t("Open meeting link", "فتح رابط الاجتماع")} ↗</a>` : `${t("Platform meeting", "اجتماع المنصة")}${status === "live" ? ` · <a href="${meetingURL(meeting.id)}">${t("Join", "انضم")}</a>` : ""}`}</p>` : role !== "school" ? `<p>${esc(meeting.description.slice(0, 180))}</p>` : ""}${interview && role === "teacher" ? `<p>${esc(meeting.description.slice(0, 180))}</p>` : ""}${status === "upcoming" ? `<p class="meeting-meta">${esc(until(meeting))}</p>` : ""}<div class="meeting-actions">${role !== "school" || interview ? `<button class="meeting-button" data-meeting-details="${esc(meeting.id)}">${t("Details", "التفاصيل")}</button>` : ""}${!interview && status === "live" ? `<a class="meeting-button primary" href="${meetingURL(meeting.id)}">${t("Join meeting", "انضم للاجتماع")}</a>` : ""}${role === "teacher" && !interview ? `<button class="meeting-button" data-meeting-edit="${esc(meeting.id)}">${t("Edit", "تعديل")}</button>${status !== "cancelled" && status !== "completed" ? `<button class="meeting-button" data-meeting-cancel="${esc(meeting.id)}">${t("Cancel", "إلغاء")}</button>` : ""}<button class="meeting-button danger" data-meeting-delete="${esc(meeting.id)}">${t("Delete", "حذف")}</button>` : ""}${role === "school" && interview ? `<button class="meeting-button" data-meeting-edit="${esc(meeting.id)}">${t("Edit / reschedule", "تعديل / إعادة جدولة")}</button>${status !== "cancelled" && status !== "completed" ? `<button class="meeting-button danger" data-meeting-cancel="${esc(meeting.id)}">${t("Cancel interview", "إلغاء المقابلة")}</button>` : ""}` : ""}</div></article>`;
+  }
+  function studentMeetingList(list) {
+    if (!list.length)
+      return `<div class="meeting-empty student-meetings-empty" role="status"><strong>${t("No meetings scheduled yet.", "لا توجد اجتماعات مجدولة حاليًا")}</strong><p>${t("When a meeting is scheduled for you, its details will appear here.", "عندما يتم تحديد اجتماع لك، ستظهر تفاصيله هنا.")}</p></div>`;
+    const now = Date.now(),
+      upcoming = list
+        .filter((meeting) => Date.parse(meeting.endAt) >= now)
+        .sort((a, b) => Date.parse(a.startAt) - Date.parse(b.startAt)),
+      past = list
+        .filter((meeting) => Date.parse(meeting.endAt) < now)
+        .sort((a, b) => Date.parse(b.startAt) - Date.parse(a.startAt));
+    return [
+      [t("Upcoming meetings", "الاجتماعات القادمة"), upcoming],
+      [t("Past meetings", "الاجتماعات السابقة"), past],
+    ]
+      .filter(([, meetings]) => meetings.length)
+      .map(
+        ([title, meetings]) =>
+          `<section class="meeting-period"><h3>${title}</h3><div class="meeting-grid">${meetings.map(card).join("")}</div></section>`,
+      )
+      .join("");
   }
   function render(section) {
     if (!section) return;
     const role = active().role,
-      list = M.visible(),
-      notes = M.notifications();
+      scope = section.dataset.channelId,
+      recruitmentInterviewList = role === "school" && document.getElementById("interviews"),
+      list = M.visible().filter(
+        (meeting) =>
+          (!scope || meeting.channelId === scope) &&
+          !(recruitmentInterviewList && meeting.kind === "recruitment-interview"),
+      ),
+      notes = M.notifications().filter((note) => !scope || M.get(note.meetingId)?.channelId === scope);
     const open = section.querySelector("details")?.open;
     section.dataset.lang = locale();
-    section.innerHTML = `<div class="meeting-heading"><div><h2 id="meeting-section-title">${t("Online meetings", "الاجتماعات المباشرة")}</h2><p class="meeting-meta">${t("Your schedule, audience and learning sessions.", "مواعيدك وجمهورك وجلساتك التعليمية.")}</p></div>${role === "teacher" ? `<div class="meeting-actions"><button class="meeting-button primary" data-new-meeting>${t("Create meeting", "إنشاء اجتماع")}</button><button class="meeting-button" data-new-meeting-group>${t("Create group", "إنشاء مجموعة")}</button><button class="meeting-button" data-meeting-demo>${t("Demo setup", "إعداد التجربة")}</button></div>` : ""}</div><p class="meeting-local-note">${t("Local demonstration: schedules and notifications stay in this browser. Jitsi room links are public and do not enforce enrollment access.", "تجربة محلية: المواعيد والإشعارات محفوظة في هذا المتصفح. روابط غرف Jitsi عامة ولا تفرض حماية حسب العضوية.")}</p><div class="meeting-grid">${list.map(card).join("") || `<p class="meeting-empty">${role === "teacher" ? t("No meetings yet. Enroll students in a channel, then create a meeting.", "لا توجد اجتماعات بعد. سجّل الطلاب في قناة ثم أنشئ اجتماعًا.") : t("No meetings assigned to your account.", "لا توجد اجتماعات مخصصة لحسابك.")}</p>`}</div>${
+    section.innerHTML = `<div class="meeting-heading"><div><h2 id="meeting-section-title">${role === "school" ? t("Meetings and interviews", "الاجتماعات والمقابلات") : t("Online meetings", "الاجتماعات المباشرة")}</h2><p class="meeting-meta">${role === "school" ? t("Recruitment interviews and meetings with teacher applicants.", "مقابلات التوظيف واجتماعات المتقدمين للتدريس.") : t("Your schedule, audience and learning sessions.", "مواعيدك وجمهورك وجلساتك التعليمية.")}</p></div>${role === "teacher" ? `<div class="meeting-actions"><button class="meeting-button primary" data-new-meeting>${t("Create meeting", "إنشاء اجتماع")}</button><button class="meeting-button" data-new-meeting-group>${t("Create group", "إنشاء مجموعة")}</button>${!scope ? `<button class="meeting-button" data-meeting-demo>${t("Demo setup", "إعداد التجربة")}</button>` : ""}</div>` : ""}</div><p class="meeting-local-note">${role === "school" ? t("Interview schedules are saved in this browser. ORBIT does not send email invitations.", "تُحفظ مواعيد المقابلات في هذا المتصفح. لا يرسل ORBIT دعوات عبر البريد الإلكتروني.") : t("Schedules and notifications are saved in this browser. Email is not sent, and generated Jitsi room links are public.", "تُحفظ المواعيد والإشعارات في هذا المتصفح. لا يُرسل بريد إلكتروني، وروابط غرف Jitsi المنشأة عامة.")}</p>${role === "student" ? studentMeetingList(list) : `<div class="meeting-grid">${list.map(card).join("") || `<p class="meeting-empty">${role === "teacher" ? t("No meetings yet. Enroll students in a channel, then create a meeting.", "لا توجد اجتماعات بعد. سجّل الطلاب في قناة ثم أنشئ اجتماعًا.") : recruitmentInterviewList ? t("Recruitment interviews are listed in the Interviews section above. No other meetings are scheduled.", "تظهر مقابلات التوظيف في قسم المقابلات أعلاه. لا توجد اجتماعات أخرى مجدولة.") : t("No interviews or school-to-teacher meetings are scheduled.", "لا توجد مقابلات أو اجتماعات بين المدرسة والمعلمين.")}</p>`}</div>`}${
       notes.length
         ? `<details class="meeting-notifications" ${open ? "open" : ""}><summary>${t("Meeting notifications", "إشعارات الاجتماعات")} · ${notes.filter((note) => !note.read).length}</summary>${notes
             .slice(0, 30)
@@ -112,7 +146,13 @@
     }`;
   }
   function mount() {
+    if(active().role==='school'&&document.querySelector('[data-recruitment-interviews]')&&location.hash!=='#meetings-section'){document.getElementById('meetings-section')?.remove();return;}
     if (!["teacher", "student", "school"].includes(active().role)) return;
+    if (channelPage()) {
+      const section = document.getElementById("meetings-section");
+      if (section && section.dataset.lang !== locale()) render(section);
+      return;
+    }
     const host = document.querySelector("#overview,#main-content,#app main");
     if (!host) return;
     let section = document.getElementById("meetings-section");
@@ -147,8 +187,10 @@
       });
     }
     const navLink = nav?.querySelector("[data-meeting-nav] span");
-    if (navLink && navLink.textContent !== t("Meetings", "الاجتماعات"))
-      navLink.textContent = t("Meetings", "الاجتماعات");
+    const navLabel = active().role === "school"
+      ? t("Interviews", "المقابلات")
+      : t("Meetings", "الاجتماعات");
+    if (navLink && navLink.textContent !== navLabel) navLink.textContent = navLabel;
   }
   function options(channels, current) {
     return channels
@@ -177,50 +219,45 @@
       time: `${pad(date.getHours())}:${pad(date.getMinutes())}`,
     };
   }
-  function editor(id) {
-    const old = id ? M.get(id) : null;
-    if (id && (!old || old.teacherId !== active().email))
+  function editor(id, interviewApplicationId = "") {
+    const old = id ? M.get(id) : null,
+      interview = !!interviewApplicationId || old?.kind === "recruitment-interview";
+    if (id && !old) throw Error(t("Meeting unavailable.", "الاجتماع غير متاح."));
+    if (interview && active().role !== "school")
+      throw Error(t("Only a school can schedule a recruitment interview.", "المدرسة فقط يمكنها جدولة مقابلة توظيف."));
+    if (!interview && id && old.teacherId !== active().email)
       throw Error(t("Meeting unavailable.", "الاجتماع غير متاح."));
-    const channels = M.ownChannels();
-    if (!channels.length) {
+
+    let application, job, teacher;
+    if (interview) {
+      application = OrbitRecruitment.applications().find((item) => item.id === (interviewApplicationId || old.applicationId));
+      job = application && OrbitRecruitment.getJob(application.jobId);
+      teacher = application?.profile || OrbitRecruitment.teacher(application?.teacherId);
+      if (!application || !job)
+        throw Error(t("Choose an application belonging to your school.", "اختر طلبًا تابعًا لمدرستك."));
+    }
+
+    const channels = interview ? [] : M.ownChannels().filter((channel) => !channelScope() || channel.id === channelScope());
+    if (!interview && !channels.length) {
       feedback(t("Create a channel and enroll students first.", "أنشئ قناة وسجّل الطلاب أولًا."));
       return;
     }
     const start = localParts(old?.startAt),
-      end = localParts(old?.endAt || new Date(Date.now() + 7200000).toISOString());
+      end = localParts(old?.endAt || new Date(Date.now() + 7200000).toISOString()),
+      title = old?.title || (interview ? `${t("Interview · ", "مقابلة · ")}${job.title}` : ""),
+      subject = old?.subject || (interview ? job.subject : ""),
+      description = old?.description || (interview ? `${t("Interview for the teaching opportunity:", "مقابلة لفرصة التدريس:")} ${job.title}` : ""),
+      mode = old?.type === "interview-in-person" ? "interview-in-person" : "interview-online";
     const node = dialog(
-      old ? t("Edit meeting", "تعديل الاجتماع") : t("Create meeting", "إنشاء اجتماع"),
-      `<form id="meeting-form"><div class="meeting-form-grid"><label class="full">${t("Meeting title", "عنوان الاجتماع")}<input name="title" required maxlength="150" value="${esc(old?.title || "")}"></label><label>${t("Subject / course", "المادة / المقرر")}<input name="subject" required maxlength="100" value="${esc(old?.subject || "")}"></label><label>${t("Channel / class", "القناة / الصف")}<select name="channelId">${options(channels, old?.channelId)}</select></label><label class="full">${t("Description and agenda", "الوصف والأجندة")}<textarea name="description" required maxlength="3000">${esc(old?.description || "")}</textarea></label><label>${t("Date", "التاريخ")}<input name="date" type="date" required value="${start.date}"></label><label>${t("Meeting type", "نوع الاجتماع")}<select name="type">${[
-        ["lesson", t("Live lesson", "درس مباشر")],
-        ["revision", t("Revision", "مراجعة")],
-        ["consultation", t("Consultation", "استشارة")],
-        ["other", t("Other", "أخرى")],
-      ]
-        .map(
-          ([value, label]) =>
-            `<option value="${value}" ${old?.type === value ? "selected" : ""}>${label}</option>`,
-        )
-        .join(
-          "",
-        )}</select></label><label>${t("Start time", "وقت البداية")}<input name="start" type="time" required value="${start.time}"></label><label>${t("End time (same day)", "وقت النهاية (اليوم نفسه)")}<input name="end" type="time" required value="${end.time}"></label><p class="meeting-meta full">${t("Times use this device’s time zone:", "الأوقات حسب المنطقة الزمنية لهذا الجهاز:")} ${esc(Intl.DateTimeFormat().resolvedOptions().timeZone)}</p><label>${t("Audience", "الجمهور")}<select name="audienceMode">${[
-        ["channel", t("All channel students", "كل طلاب القناة")],
-        ["group", t("Specific group", "مجموعة محددة")],
-        ["individual", t("Selected students", "طلاب محددون")],
-      ]
-        .map(
-          ([value, label]) =>
-            `<option value="${value}" ${old?.audience.mode === value ? "selected" : ""}>${label}</option>`,
-        )
-        .join(
-          "",
-        )}</select></label><label>${t("Status", "الحالة")}<select name="status"><option value="scheduled">${t("Scheduled", "مجدول")}</option><option value="cancelled" ${old?.status === "cancelled" ? "selected" : ""}>${t("Cancelled", "ملغى")}</option></select></label><div class="full" id="meeting-audience-fields"></div><label class="full">${t("Optional resources: name | HTTPS URL, one per line (max 5)", "مصادر اختيارية: الاسم | رابط HTTPS، كل مصدر بسطر (حتى 5)")}<textarea name="resources" dir="auto">${esc((old?.resources || []).map((resource) => resource.name + " | " + resource.url).join("\n"))}</textarea></label><p class="meeting-meta full">${t("A unique Jitsi room is generated on save. Editing keeps the same room.", "تُنشأ غرفة Jitsi فريدة عند الحفظ. التعديل يحافظ على الغرفة نفسها.")}</p></div><p class="meeting-feedback" id="meeting-form-error" role="alert"></p><button class="meeting-button primary" type="submit">${t("Save meeting", "حفظ الاجتماع")}</button></form>`,
+      old ? (interview ? t("Edit / reschedule interview", "تعديل / إعادة جدولة المقابلة") : t("Edit meeting", "تعديل الاجتماع")) : (interview ? t("Schedule interview", "جدولة مقابلة") : t("Create meeting", "إنشاء اجتماع")),
+      `<form id="meeting-form"${interview ? ' data-interview-form=""' : ""}><div class="meeting-form-grid">${interview ? `<div class="meeting-interview-context full"><strong>${esc(teacher?.name || application.teacherId)}</strong><span>${esc(job.title)} · ${esc(application.teacherId)}</span></div>` : ""}<label class="full">${t("Meeting title", "عنوان الاجتماع")}<input name="title" required maxlength="150" value="${esc(title)}"></label><label>${t("Subject / course", "المادة / المقرر")}<input name="subject" required maxlength="100" value="${esc(subject)}"></label>${interview ? "" : `<label>${t("Channel / class", "القناة / الصف")}<select name="channelId">${options(channels, old?.channelId)}</select></label>`}<label class="full">${t("Description and agenda", "الوصف والأجندة")}<textarea name="description" required maxlength="3000">${esc(description)}</textarea></label><label>${t("Date", "التاريخ")}<input name="date" type="date" required value="${start.date}"></label><label>${interview ? t("Interview format", "طريقة المقابلة") : t("Meeting type", "نوع الاجتماع")}<select name="type">${(interview ? [["interview-online", t("Online interview", "مقابلة عن بُعد")], ["interview-in-person", t("In-person interview", "مقابلة حضورية")]] : [["lesson", t("Live lesson", "درس مباشر")], ["revision", t("Revision", "مراجعة")], ["consultation", t("Consultation", "استشارة")], ["other", t("Other", "أخرى")]]).map(([value, label]) => `<option value="${value}" ${(interview ? mode : old?.type) === value ? "selected" : ""}>${label}</option>`).join("")}</select></label><label>${t("Start time", "وقت البداية")}<input name="start" type="time" required value="${start.time}"></label><label>${t("End time (same day)", "وقت النهاية (اليوم نفسه)")}<input name="end" type="time" required value="${end.time}"></label>${interview ? `<label data-interview-location>${t("Interview location", "موقع المقابلة")}<input name="location" maxlength="500" value="${esc(old?.location || "")}"></label><label class="full" data-interview-link>${t("Online meeting link", "رابط الاجتماع الإلكتروني")}<input name="externalUrl" type="url" dir="ltr" value="${esc(old?.externalUrl || "")}"></label>` : `<p class="meeting-meta full">${t("Times use this device’s time zone:", "الأوقات حسب المنطقة الزمنية لهذا الجهاز:")} ${esc(Intl.DateTimeFormat().resolvedOptions().timeZone)}</p><label>${t("Audience", "الجمهور")}<select name="audienceMode">${[["channel", t("All channel students", "كل طلاب القناة")], ["group", t("Specific group", "مجموعة محددة")], ["individual", t("Selected students", "طلاب محددون")]].map(([value, label]) => `<option value="${value}" ${old?.audience.mode === value ? "selected" : ""}>${label}</option>`).join("")}</select></label><label>${t("Status", "الحالة")}<select name="status"><option value="scheduled">${t("Scheduled", "مجدول")}</option><option value="cancelled" ${old?.status === "cancelled" ? "selected" : ""}>${t("Cancelled", "ملغى")}</option></select></label><div class="full" id="meeting-audience-fields"></div><label class="full">${t("Optional resources: name | HTTPS URL, one per line (max 5)", "مصادر اختيارية: الاسم | رابط HTTPS، كل مصدر بسطر (حتى 5)")}<textarea name="resources" dir="auto">${esc((old?.resources || []).map((resource) => resource.name + " | " + resource.url).join("\n"))}</textarea></label><p class="meeting-meta full">${t("A unique Jitsi room is generated on save. Editing keeps the same room.", "تُنشأ غرفة Jitsi فريدة عند الحفظ. التعديل يحافظ على الغرفة نفسها.")}</p>`}</div><p class="meeting-meta full meeting-timezone">${t("Times use this device’s time zone:", "الأوقات حسب المنطقة الزمنية لهذا الجهاز:")} ${esc(Intl.DateTimeFormat().resolvedOptions().timeZone)}</p><p class="meeting-feedback" id="meeting-form-error" role="alert"></p><button class="meeting-button primary" type="submit">${interview ? t("Save interview", "حفظ المقابلة") : t("Save meeting", "حفظ الاجتماع")}</button></form>`,
     );
     const form = node.querySelector("form");
     let audienceDirty = false;
     function audienceFields() {
       const mode = form.elements.audienceMode.value,
-        channelId = form.elements.channelId.value;
-      const choices = M.groups(channelId);
+        channelId = form.elements.channelId.value,
+        choices = M.groups(channelId);
       node.querySelector("#meeting-audience-fields").innerHTML =
         mode === "group"
           ? `<label>${t("Group", "المجموعة")}<select name="groupId" required><option value="">${t("Choose a group", "اختر مجموعة")}</option>${choices.map((group) => `<option value="${esc(group.id)}" ${old?.audience.groupId === group.id ? "selected" : ""}>${esc(group.name)}</option>`).join("")}</select></label>${!choices.length ? `<p>${t("Create a group before selecting this audience.", "أنشئ مجموعة قبل اختيار هذا الجمهور.")}</p>` : ""}`
@@ -228,62 +265,49 @@
             ? `<fieldset><legend>${t("Select students", "اختر الطلاب")}</legend><div class="meeting-checkboxes">${studentCheckboxes(channelId, old?.audience.studentIds)}</div></fieldset>`
             : `<p class="meeting-meta">${M.members(channelId).length} ${t("enrolled students", "طالب مسجل")}</p>`;
     }
-    audienceFields();
+    function interviewFields() {
+      if (!interview) return;
+      const inPerson = form.elements.type.value === "interview-in-person",
+        locationField = form.querySelector("[data-interview-location]"),
+        linkField = form.querySelector("[data-interview-link]");
+      locationField.hidden = !inPerson;
+      locationField.querySelector("input").required = inPerson;
+      locationField.querySelector("input").disabled = !inPerson;
+      linkField.hidden = inPerson;
+      linkField.querySelector("input").disabled = inPerson;
+      linkField.querySelector("input").required = !inPerson;
+    }
+    if (interview) interviewFields();
+    else audienceFields();
     form.addEventListener("change", (event) => {
+      if (interview && event.target.name === "type") interviewFields();
       if (["audienceMode", "channelId", "groupId", "studentIds"].includes(event.target.name))
         audienceDirty = true;
-      if (["audienceMode", "channelId"].includes(event.target.name)) audienceFields();
+      if (!interview && ["audienceMode", "channelId"].includes(event.target.name)) audienceFields();
     });
     form.onsubmit = (event) => {
       event.preventDefault();
-      const f = new FormData(form),
-        button = form.querySelector("[type=submit]");
+      const f = new FormData(form), button = form.querySelector("[type=submit]");
       button.disabled = true;
       try {
-        const audience =
-          old && !audienceDirty
-            ? old.audience
-            : f.get("audienceMode") === "group"
-              ? { mode: "group", groupId: f.get("groupId") }
-              : f.get("audienceMode") === "individual"
-                ? { mode: "individual", studentIds: f.getAll("studentIds") }
-                : { mode: "channel" };
         let startAt = new Date(`${f.get("date")}T${f.get("start")}:00`).toISOString(),
           endAt = new Date(`${f.get("date")}T${f.get("end")}:00`).toISOString();
-        if (old && f.get("date") === start.date && f.get("start") === start.time)
-          startAt = old.startAt;
+        if (old && f.get("date") === start.date && f.get("start") === start.time) startAt = old.startAt;
         if (old && f.get("date") === start.date && f.get("end") === end.time) endAt = old.endAt;
-        const resourceList = String(f.get("resources"))
-          .split("\n")
-          .filter((line) => line.trim())
-          .map((line) => {
-            const index = line.indexOf("|");
-            return { name: line.slice(0, index).trim(), url: line.slice(index + 1).trim() };
-          });
-        M.put(
-          {
-            title: f.get("title"),
-            subject: f.get("subject"),
-            description: f.get("description"),
-            channelId: f.get("channelId"),
-            type: f.get("type"),
-            status: f.get("status"),
-            startAt: old && startAt === new Date(old.startAt).toISOString() ? old.startAt : startAt,
-            endAt: old && endAt === new Date(old.endAt).toISOString() ? old.endAt : endAt,
-            audience,
-            resources: resourceList,
-            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-          },
-          old?.id,
-          old?.revision,
-        );
+        if (interview) {
+          const result = old
+            ? M.updateInterview({ title: f.get("title"), subject: f.get("subject"), description: f.get("description"), type: f.get("type"), location: f.get("location"), externalUrl: f.get("externalUrl"), startAt, endAt, timezone: Intl.DateTimeFormat().resolvedOptions().timeZone }, old.id, old.revision)
+            : M.putInterview({ title: f.get("title"), subject: f.get("subject"), description: f.get("description"), type: f.get("type"), location: f.get("location"), externalUrl: f.get("externalUrl"), startAt, endAt, timezone: Intl.DateTimeFormat().resolvedOptions().timeZone }, application.id);
+          node.close();
+          feedback(t("Interview saved. It appears in the selected teacher’s Meetings list in this browser; no email is sent.", "تم حفظ المقابلة. ستظهر في قائمة اجتماعات المعلم المحدد على هذا المتصفح؛ لا يُرسل بريد إلكتروني."));
+          if (active().role === "school") location.hash = "meetings-section";
+          return result;
+        }
+        const audience = old && !audienceDirty ? old.audience : f.get("audienceMode") === "group" ? { mode: "group", groupId: f.get("groupId") } : f.get("audienceMode") === "individual" ? { mode: "individual", studentIds: f.getAll("studentIds") } : { mode: "channel" },
+          resourceList = String(f.get("resources")).split("\n").filter((line) => line.trim()).map((line) => { const index = line.indexOf("|"); return { name: line.slice(0, index).trim(), url: line.slice(index + 1).trim() }; });
+        M.put({ title: f.get("title"), subject: f.get("subject"), description: f.get("description"), channelId: f.get("channelId"), type: f.get("type"), status: f.get("status"), startAt, endAt, audience, resources: resourceList, timezone: Intl.DateTimeFormat().resolvedOptions().timeZone }, old?.id, old?.revision);
         node.close();
-        feedback(
-          t(
-            "Meeting saved and delivered to its audience.",
-            "تم حفظ الاجتماع وإيصاله للجمهور المحدد.",
-          ),
-        );
+        feedback(t("Meeting saved and delivered to its audience.", "تم حفظ الاجتماع وإيصاله للجمهور المحدد."));
       } catch (error) {
         node.querySelector("#meeting-form-error").textContent = error.message;
       } finally {
@@ -292,7 +316,7 @@
     };
   }
   function groupEditor() {
-    const channels = M.ownChannels();
+    const channels = M.ownChannels().filter((channel) => !channelScope() || channel.id === channelScope());
     if (!channels.length) {
       feedback(t("Create a channel first.", "أنشئ قناة أولًا."));
       return;
@@ -329,13 +353,17 @@
     const meeting = M.get(id);
     if (!meeting) throw Error(t("Meeting unavailable.", "الاجتماع غير متاح."));
     const status = M.status(meeting);
-    const roomInfo =
-      active().role === "teacher"
-        ? `<label>${t("Platform meeting URL", "رابط الاجتماع في المنصة")}<input type="url" readonly dir="ltr" value="${esc(new URL(meetingURL(meeting.id), location.href).href)}"></label><p class="meeting-meta">${t("Generated Jitsi room:", "غرفة Jitsi المنشأة:")} <code dir="ltr">${esc(meeting.roomName)}</code></p>`
-        : "";
+    const interview = meeting.kind === "recruitment-interview",
+      roomInfo = interview
+        ? meeting.type === "interview-in-person"
+          ? `<p><strong>${t("Location", "الموقع")}:</strong> ${esc(meeting.location)}</p>`
+          : `<p><strong>${t("Meeting link", "رابط الاجتماع")}:</strong> <a href="${esc(meeting.externalUrl || meetingURL(meeting.id))}" target="_blank" rel="noopener noreferrer" dir="ltr">${meeting.externalUrl ? t("Open external meeting", "فتح رابط الاجتماع") : esc(new URL(meetingURL(meeting.id), location.href).href)} ↗</a></p>`
+        : active().role === "teacher"
+          ? `<label>${t("Platform meeting URL", "رابط الاجتماع في المنصة")}<input type="url" readonly dir="ltr" value="${esc(new URL(meetingURL(meeting.id), location.href).href)}"></label><p class="meeting-meta">${t("Generated Jitsi room:", "غرفة Jitsi المنشأة:")} <code dir="ltr">${esc(meeting.roomName)}</code></p>`
+          : "";
     dialog(
       meeting.title,
-      `<span class="meeting-badge ${status}">${statuses()[status]}</span><p>${esc(meeting.description)}</p><p class="meeting-meta">${esc(meeting.teacherName)} · ${esc(meeting.subject)}<br>${esc(dateText(meeting))} · ${duration(meeting)} ${t("min", "دقيقة")} · ${esc(meeting.timezone || "")}<br>${esc(audienceText(meeting))}</p>${roomInfo}${status === "upcoming" ? `<p>${esc(until(meeting))}</p>` : ""}<div class="meeting-resources">${resources(meeting)}</div>${status === "live" && ["teacher", "student"].includes(active().role) ? `<a class="meeting-button primary" href="${meetingURL(meeting.id)}">${t("Join meeting", "انضم للاجتماع")}</a>` : ""}`,
+      `<span class="meeting-badge ${status}">${statuses()[status]}</span>${interview ? `<span class="meeting-badge interview-kind">${meeting.type === "interview-in-person" ? t("In-person interview", "مقابلة حضورية") : t("Online interview", "مقابلة عن بُعد")}</span><p><strong>${t("Opportunity", "الفرصة")}:</strong> ${esc(meeting.channelName)}</p>` : ""}<p>${esc(meeting.description)}</p><p class="meeting-meta">${esc(meeting.teacherName)} · ${esc(meeting.subject)}<br>${esc(dateText(meeting))} · ${duration(meeting)} ${t("min", "دقيقة")} · ${esc(meeting.timezone || "")}${interview ? "" : `<br>${esc(audienceText(meeting))}`}</p>${roomInfo}${status === "upcoming" ? `<p>${esc(until(meeting))}</p>` : ""}<div class="meeting-resources">${resources(meeting)}</div>${status === "live" && ["teacher", "student"].includes(active().role) && !interview ? `<a class="meeting-button primary" href="${meetingURL(meeting.id)}">${t("Join meeting", "انضم للاجتماع")}</a>` : ""}`,
     );
   }
   async function demoSetup() {
@@ -374,7 +402,9 @@
       else if (
         button.dataset.meetingCancel &&
         confirm(
-          t("Cancel this meeting and notify its students?", "إلغاء هذا الاجتماع وإشعار طلابه؟"),
+          button.closest("[data-meeting-record]")?.classList.contains("interview-meeting-card")
+            ? t("Cancel this interview and notify the selected teacher?", "إلغاء هذه المقابلة وإشعار المعلم المحدد؟")
+            : t("Cancel this meeting and notify its students?", "إلغاء هذا الاجتماع وإشعار طلابه؟"),
         )
       ) {
         M.cancel(button.dataset.meetingCancel);
@@ -401,7 +431,7 @@
   };
   window.addEventListener("orbit:meetings-change", refresh);
   window.addEventListener("storage", (event) => {
-    if ([M.key, "orbit.memberships.v3", "orbit.school.members.v1"].includes(event.key)) refresh();
+    if ([M.key, "orbit.memberships.v3", "orbit.school.members.v1", "orbit.recruitment.v1"].includes(event.key)) refresh();
   });
   function tick() {
     if (document.hidden) return;
@@ -442,6 +472,14 @@
     attributes: true,
     attributeFilter: ["lang"],
   });
+  window.OrbitMeetingsUI = {
+    openInterview(applicationId) {
+      if (active().role !== "school")
+        throw Error(t("Only a school can schedule a recruitment interview.", "المدرسة فقط يمكنها جدولة مقابلة توظيف."));
+      const existing = M.interviewForApplication(applicationId);
+      editor(existing?.id || null, applicationId);
+    },
+  };
   window.addEventListener("pagehide", (event) => {
     clearInterval(interval);
     clearTimeout(toastTimer);

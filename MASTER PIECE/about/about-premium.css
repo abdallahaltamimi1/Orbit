@@ -52,48 +52,178 @@ body:has(#orbit-page[data-orbit-page="about"]) {
   background: color-mix(in srgb,var(--orbit-accent) 18%,var(--orbit-soft));
   color: var(--orbit-ink);
 }
-#orbit-page[data-orbit-page="about"] .bar {
-  position: relative;
+#orbit-page[data-orbit-page="about"] .m-nav {
+  position: sticky;
+  z-index: 60;
+  top: 0;
+  background: color-mix(in srgb,var(--orbit-surface) 94%,transparent);
+  border-bottom: 1px solid var(--orbit-border);
+  box-shadow: 0 4px 20px color-mix(in srgb,var(--orbit-space) 5%,transparent);
+  backdrop-filter: blur(14px);
+  transition: background-color .2s,border-color .2s,box-shadow .2s;
+}
+#orbit-page[data-orbit-page="about"] .m-container {
+  width: min(100%,1320px);
+  margin-inline: auto;
+  padding-inline: 30px;
+}
+#orbit-page[data-orbit-page="about"] .m-nav__inner {
+  min-height: 76px;
   display: flex;
   align-items: center;
-  gap: 26px;
-  max-width: 1200px;
-  margin: auto;
-  padding: 23px 30px;
-  border-bottom: 1px solid var(--orbit-border);
-  background: transparent;
-  box-shadow: none;
-}
-#orbit-page[data-orbit-page="about"] .bar .logo {
-  font: 700 24px var(--orbit-font);
-  color: var(--orbit-ink);
-  letter-spacing: .5px;
-}
-#orbit-page[data-orbit-page="about"] .bar nav {
-  margin-inline-start: auto;
-  display: flex;
   gap: 24px;
+  padding-block: 10px;
 }
-#orbit-page[data-orbit-page="about"] .bar nav a {
-  font-size: 15px;
-  color: var(--orbit-muted);
-  text-decoration: none;
+#orbit-page[data-orbit-page="about"] .m-nav__brand {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  gap: 8px;
+  color: var(--orbit-ink);
+  font: 750 21px/1 AboutEnglish,sans-serif;
+  letter-spacing: -.03em;
 }
-#orbit-page[data-orbit-page="about"] .bar a:hover {
+#orbit-page[data-orbit-page="about"] .m-nav__mark {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
   color: var(--orbit-accent);
+}
+#orbit-page[data-orbit-page="about"] .m-nav__mark svg {
+  width: 100%;
+  height: 100%;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+#orbit-page[data-orbit-page="about"] .m-nav__links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(10px,1.4vw,20px);
+  flex: 1 1 auto;
+  min-width: 0;
+  margin-inline: auto;
+}
+#orbit-page[data-orbit-page="about"] .m-nav__links a {
+  position: relative;
+  color: var(--orbit-muted);
+  font-size: 13px;
+  font-weight: 550;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: color .18s ease;
+}
+#orbit-page[data-orbit-page="about"] .m-nav__links a::after {
+  position: absolute;
+  inset-inline: 0;
+  bottom: -8px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--orbit-accent);
+  content: "";
+  transform: scaleX(0);
+  transition: transform .2s ease;
+}
+#orbit-page[data-orbit-page="about"] .m-nav__links a:hover,
+#orbit-page[data-orbit-page="about"] .m-nav__links a:focus-visible {
+  color: var(--orbit-ink);
+}
+#orbit-page[data-orbit-page="about"] .m-nav__links a:hover::after,
+#orbit-page[data-orbit-page="about"] .m-nav__links a:focus-visible::after {
+  transform: scaleX(1);
+}
+#orbit-page[data-orbit-page="about"] .m-nav__actions {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex: none;
+}
+#orbit-page[data-orbit-page="about"] .m-nav__login {
+  color: var(--orbit-ink);
+  font-size: 13px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+#orbit-page[data-orbit-page="about"] .m-nav__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 8px 15px;
+  border: 1px solid var(--orbit-action);
+  border-radius: 11px;
+  background: var(--orbit-action);
+  color: var(--orbit-on-action);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color .18s ease,transform .18s ease;
+}
+#orbit-page[data-orbit-page="about"] .m-nav__cta:hover {
+  background: var(--orbit-action-hover);
+  transform: translateY(-1px);
+}
+#orbit-page[data-orbit-page="about"] #orbit-theme-toggle {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid var(--orbit-border);
+  border-radius: 10px;
+  background: var(--orbit-surface);
+  color: var(--orbit-ink);
+  cursor: pointer;
+  transition: background-color .18s ease,border-color .18s ease,color .18s ease;
+}
+#orbit-page[data-orbit-page="about"] #orbit-theme-toggle svg {
+  width: 19px;
+  height: 19px;
+}
+#orbit-page[data-orbit-page="about"] #orbit-theme-toggle:hover {
+  background: var(--orbit-hover);
+  border-color: var(--orbit-input-border);
 }
 #orbit-page[data-orbit-page="about"] #orbit-language-button {
   position: static !important;
   inset: auto !important;
   transform: none !important;
   margin: 0;
-  padding: 8px 13px;
-  background: var(--orbit-surface);
-  color: color-mix(in srgb,var(--orbit-accent) 80%,var(--orbit-soft));
+  min-height: 40px;
+  padding: 8px 11px;
   border: 1px solid var(--orbit-border);
   border-radius: 10px;
-  min-height: 40px;
-  font-size: 13px;
+  background: var(--orbit-surface);
+  color: var(--orbit-accent);
+  font-size: 12px;
+}
+#orbit-page[data-orbit-page="about"] .m-nav__burger {
+  display: none;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 8px;
+  border: 1px solid var(--orbit-border);
+  border-radius: 10px;
+  background: var(--orbit-surface);
+  color: var(--orbit-ink);
+}
+#orbit-page[data-orbit-page="about"] .m-nav__burger span {
+  display: block;
+  width: 18px;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+}
+#orbit-page[data-orbit-page="about"] .orbit-home-mobile {
+  display: none;
+}
+html[lang="ar"] #orbit-page[data-orbit-page="about"] .m-nav :is(a,button) {
+  font-family: AboutArabic,sans-serif;
 }
 #orbit-page[data-orbit-page="about"] .wrap {
   max-width: 1200px;
@@ -136,122 +266,103 @@ body:has(#orbit-page[data-orbit-page="about"]) {
   height: 24px;
   flex-shrink: 0;
 }
-#orbit-page[data-orbit-page="about"] .about-orbital {
-  height: 410px;
-  perspective: 900px;
+#orbit-page[data-orbit-page="about"] .about-ecosystem {
   position: relative;
-  pointer-events: auto;
+  width: min(100%,520px);
+  aspect-ratio: 520 / 360;
+  margin-inline: auto;
+  isolation: isolate;
+  direction: ltr;
 }
-#orbit-page[data-orbit-page="about"] .about-orbital-depth {
-  height: 100%;
+#orbit-page[data-orbit-page="about"] .about-ecosystem-lines {
+  position: absolute;
+  inset: 0;
   width: 100%;
-  position: relative;
+  height: 100%;
+  overflow: visible;
+  fill: none;
+  stroke: var(--orbit-border);
+  stroke-width: 1.5;
+}
+#orbit-page[data-orbit-page="about"] .about-ecosystem-lines path {
+  stroke: color-mix(in srgb,var(--orbit-accent) 42%,var(--orbit-border));
+  stroke-dasharray: 4 7;
+  stroke-linecap: round;
+}
+#orbit-page[data-orbit-page="about"] .about-ecosystem-core {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: 50%;
   display: grid;
   place-items: center;
-  transition: transform .35s cubic-bezier(.16,1,.3,1);
-  transform-style: preserve-3d;
+  width: 190px;
+  min-height: 84px;
+  padding: 12px 16px;
+  border: 1px solid var(--orbit-border);
+  border-radius: 16px;
+  background: var(--orbit-surface);
+  box-shadow: 0 12px 28px color-mix(in srgb,var(--orbit-space) 10%,transparent);
+  transform: translate(-50%,-50%);
 }
-#orbit-page[data-orbit-page="about"] .about-orbit-core {
-  width: 155px;
-  height: 155px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 32% 24%,color-mix(in srgb,var(--orbit-accent) 24%,var(--orbit-soft)),var(--orbit-soft) 55%,var(--orbit-surface));
-  box-shadow:
-    inset 0 2px 3px color-mix(in srgb,var(--orbit-accent) 25%,transparent),0 20px 50px color-mix(in srgb,var(--orbit-space) 20%,transparent);
+#orbit-page[data-orbit-page="about"] .about-ecosystem-core span {
+  color: var(--orbit-ink);
+  font: 750 21px/1.15 AboutEnglish,sans-serif;
+  letter-spacing: .03em;
+}
+#orbit-page[data-orbit-page="about"] .about-ecosystem-core small {
+  margin-top: 4px;
+  color: var(--orbit-muted);
+  font-size: 11px;
+  line-height: 1.5;
+  text-align: center;
+}
+#orbit-page[data-orbit-page="about"] .about-ecosystem-node {
+  position: absolute;
+  z-index: 1;
   display: flex;
   align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  border: 1px solid var(--orbit-accent);
-  z-index: 2;
-}
-#orbit-page[data-orbit-page="about"] .about-orbit-core > span {
-  font: 700 25px var(--orbit-font);
-  letter-spacing: 3px;
+  gap: 10px;
+  min-width: 142px;
+  padding: 10px 13px;
+  border: 1px solid var(--orbit-border);
+  border-radius: 13px;
+  background: var(--orbit-surface);
   color: var(--orbit-ink);
+  box-shadow: 0 7px 18px color-mix(in srgb,var(--orbit-space) 8%,transparent);
 }
-#orbit-page[data-orbit-page="about"] .about-orbit-core small {
-  font-size: 11px;
-  color: var(--orbit-muted);
-  margin-top: 10px;
-}
-#orbit-page[data-orbit-page="about"] .about-ring {
-  position: absolute;
-  inset: 45px 25px;
-  border: 1px solid color-mix(in srgb,var(--orbit-accent) 35%,transparent);
-  border-radius: 50%;
-  transform-style: preserve-3d;
-  animation: about-orbit 38s linear infinite;
-  animation-play-state: paused;
-}
-#orbit-page[data-orbit-page="about"] .ring-one {
-  --ring-angle: 60deg;
-  --ring-turn: 20deg;
-}
-#orbit-page[data-orbit-page="about"] .ring-two {
-  inset: 75px 5px;
-  --ring-angle: 67deg;
-  --ring-turn: 135deg;
-  animation-duration: 49s;
-  animation-direction: reverse;
-  border-color: color-mix(in srgb,var(--orbit-border) 80%,transparent);
-}
-#orbit-page[data-orbit-page="about"] .ring-three {
-  inset: 18px 58px;
-  --ring-angle: 45deg;
-  --ring-turn: 85deg;
-  animation-duration: 63s;
-  border-color: color-mix(in srgb,var(--orbit-accent) 35%,transparent);
-}
-#orbit-page[data-orbit-page="about"] .about-ring i {
-  position: absolute;
-  top: 15%;
-  left: 15%;
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: var(--orbit-accent);
-  box-shadow: 0 0 15px color-mix(in srgb,var(--orbit-accent) 25%,transparent);
-}
-#orbit-page[data-orbit-page="about"] .about-orbit-node {
-  position: absolute;
+#orbit-page[data-orbit-page="about"] .about-ecosystem-node > span {
   display: grid;
   place-items: center;
-  width: 58px;
-  height: 58px;
-  z-index: 3;
-  border-radius: 18px;
-  background: linear-gradient(140deg,color-mix(in srgb,var(--orbit-accent) 18%,var(--orbit-soft)),var(--orbit-surface));
+  width: 36px;
+  height: 36px;
+  flex: none;
+  border-radius: 10px;
+  background: var(--orbit-soft);
   color: var(--orbit-accent);
-  box-shadow:
-    0 12px 20px color-mix(in srgb,var(--orbit-space) 9%,transparent),inset 0 1px 0 color-mix(in srgb,var(--orbit-accent) 20%,transparent);
-  transform: rotate(-8deg);
 }
-#orbit-page[data-orbit-page="about"] .node-student {
-  top: 38px;
-  left: 26%;
+#orbit-page[data-orbit-page="about"] .about-ecosystem-node svg {
+  width: 20px;
+  height: 20px;
 }
-#orbit-page[data-orbit-page="about"] .node-teacher {
-  bottom: 44px;
+#orbit-page[data-orbit-page="about"] .about-ecosystem-node b {
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+#orbit-page[data-orbit-page="about"] .about-ecosystem .node-student {
+  top: 7%;
   left: 7%;
-  transform: rotate(8deg);
 }
-#orbit-page[data-orbit-page="about"] .node-school {
-  right: 0;
-  top: 48%;
+#orbit-page[data-orbit-page="about"] .about-ecosystem .node-teacher {
+  top: 7%;
+  right: 7%;
 }
-#orbit-page[data-orbit-page="about"] .about-orbital.about-visible .about-ring {
-  animation-play-state: running;
-}
-@keyframes about-orbit {
-  from {
-    transform: rotateZ(var(--ring-turn)) rotateX(var(--ring-angle)) rotateZ(0);
-  }
-  to {
-    transform: rotateZ(var(--ring-turn)) rotateX(var(--ring-angle)) rotateZ(360deg);
-  }
-}
-#orbit-page[data-orbit-page="about"] .about-section {
+#orbit-page[data-orbit-page="about"] .about-ecosystem .node-school {
+  bottom: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+}#orbit-page[data-orbit-page="about"] .about-section {
   margin: 0 0 82px;
   scroll-margin-top: 25px;
 }
@@ -640,10 +751,6 @@ html[dir="rtl"]
   > svg {
   transform: scaleX(-1);
 }
-#orbit-page[data-about-quiet="true"] .about-ring,
-#orbit-page[data-about-quiet="true"] .about-connection-signal {
-  animation-play-state: paused !important;
-}
 @media (hover:hover) {
   #orbit-page[data-orbit-page="about"] .about-world:hover,
   #orbit-page[data-orbit-page="about"] .about-feature:hover {
@@ -656,10 +763,7 @@ html[dir="rtl"]
     gap: 24px;
     min-height: 480px;
   }
-  #orbit-page[data-orbit-page="about"] .about-orbital {
-    height: 330px;
-  }
-  #orbit-page[data-orbit-page="about"] .about-closing {
+#orbit-page[data-orbit-page="about"] .about-closing {
     flex-direction: column;
     align-items: flex-start;
   }
@@ -689,20 +793,7 @@ html[dir="rtl"]
   #orbit-page[data-orbit-page="about"] .wrap {
     padding: 0 20px 24px;
   }
-  #orbit-page[data-orbit-page="about"] .bar {
-    padding: 18px 20px;
-    gap: 15px;
-  }
-  #orbit-page[data-orbit-page="about"] .bar nav {
-    gap: 14px;
-  }
-  #orbit-page[data-orbit-page="about"] .bar nav a {
-    font-size: 12px;
-  }
-  #orbit-page[data-orbit-page="about"] .bar .logo {
-    font-size: 20px;
-  }
-  #orbit-page[data-orbit-page="about"] .about-cinematic {
+#orbit-page[data-orbit-page="about"] .about-cinematic {
     grid-template-columns: 1fr;
     padding: 44px 0 32px;
     gap: 10px;
@@ -718,25 +809,10 @@ html[dir="rtl"]
     font-size: 15px;
     line-height: 2;
   }
-  #orbit-page[data-orbit-page="about"] .about-orbital {
-    height: 290px;
-    max-width: 380px;
-    width: 100%;
-    margin: auto;
+  #orbit-page[data-orbit-page="about"] .about-ecosystem {
+    width: min(100%,440px);
   }
-  #orbit-page[data-orbit-page="about"] .about-orbit-core {
-    width: 125px;
-    height: 125px;
-  }
-  #orbit-page[data-orbit-page="about"] .about-orbit-node {
-    width: 46px;
-    height: 46px;
-    border-radius: 14px;
-  }
-  #orbit-page[data-orbit-page="about"] .about-ring {
-    animation-duration: 60s;
-  }
-  #orbit-page[data-orbit-page="about"] .about-worlds {
+#orbit-page[data-orbit-page="about"] .about-worlds {
     grid-template-columns: 1fr;
     gap: 18px;
   }
@@ -794,23 +870,94 @@ html[dir="rtl"]
   }
 }
 @media (max-width:360px) {
-  #orbit-page[data-orbit-page="about"] .bar {
-    gap: 9px;
-    padding-inline: 14px;
-  }
-  #orbit-page[data-orbit-page="about"] .bar nav {
-    gap: 9px;
-  }
-  #orbit-page[data-orbit-page="about"] .bar .logo {
-    font-size: 17px;
-  }
-  #orbit-page[data-orbit-page="about"] #orbit-language-button {
+#orbit-page[data-orbit-page="about"] #orbit-language-button {
     font-size: 11px;
     padding: 6px 9px;
   }
   #orbit-page[data-orbit-page="about"] .about-opening h1 {
     font-size: 27px;
   }
+}
+@media (max-width:1100px) {
+  #orbit-page[data-orbit-page="about"] .m-nav__inner { gap: 14px; }
+  #orbit-page[data-orbit-page="about"] .m-nav__links { gap: 10px; }
+  #orbit-page[data-orbit-page="about"] .m-nav__cta { display: none; }
+}
+@media (max-width:900px) {
+  #orbit-page[data-orbit-page="about"] .m-nav__inner {
+    min-height: 68px;
+    padding-block: 8px;
+  }
+  #orbit-page[data-orbit-page="about"] .m-nav__links,
+  #orbit-page[data-orbit-page="about"] .m-nav__login,
+  #orbit-page[data-orbit-page="about"] .m-nav__cta { display: none; }
+  #orbit-page[data-orbit-page="about"] .m-nav__actions { margin-inline-start: auto; }
+  #orbit-page[data-orbit-page="about"] .m-nav__burger { display: grid; }
+  #orbit-page[data-orbit-page="about"] .orbit-home-mobile:not([hidden]) {
+    display: grid;
+    gap: 2px;
+    max-height: calc(100dvh - 68px);
+    padding: 8px max(20px,calc((100vw - 1260px) / 2));
+    overflow: auto;
+    border-top: 1px solid var(--orbit-border);
+    background: var(--orbit-surface);
+  }
+  #orbit-page[data-orbit-page="about"] .orbit-home-mobile a {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 8px 12px;
+    border-radius: 9px;
+    color: var(--orbit-ink);
+    font-size: 14px;
+    text-decoration: none;
+  }
+  #orbit-page[data-orbit-page="about"] .orbit-home-mobile a:hover,
+  #orbit-page[data-orbit-page="about"] .orbit-home-mobile a:focus-visible {
+    background: var(--orbit-hover);
+    color: var(--orbit-accent);
+  }
+}
+@media (max-width:700px) {
+  #orbit-page[data-orbit-page="about"] .m-container { padding-inline: 20px; }
+  #orbit-page[data-orbit-page="about"] .about-ecosystem { width: min(100%,440px); }
+  #orbit-page[data-orbit-page="about"] .about-ecosystem-core { width: 164px; min-height: 76px; }
+  #orbit-page[data-orbit-page="about"] .about-ecosystem-node { min-width: 126px; gap: 7px; padding: 8px 9px; }
+  #orbit-page[data-orbit-page="about"] .about-ecosystem-node > span { width: 32px; height: 32px; }
+  #orbit-page[data-orbit-page="about"] .about-ecosystem-node b { font-size: 12px; }
+}
+@media (max-width:420px) {
+  #orbit-page[data-orbit-page="about"] .about-ecosystem { width: 100%; }
+  #orbit-page[data-orbit-page="about"] .about-ecosystem-core { width: 142px; min-height: 68px; }
+  #orbit-page[data-orbit-page="about"] .about-ecosystem-core span { font-size: 18px; }
+  #orbit-page[data-orbit-page="about"] .about-ecosystem-core small { font-size: 9px; }
+  #orbit-page[data-orbit-page="about"] .about-ecosystem-node { min-width: 110px; gap: 5px; padding: 7px; }
+  #orbit-page[data-orbit-page="about"] .about-ecosystem-node > span { width: 28px; height: 28px; }
+  #orbit-page[data-orbit-page="about"] .about-ecosystem-node svg { width: 17px; height: 17px; }
+  #orbit-page[data-orbit-page="about"] .about-ecosystem-node b { font-size: 11px; }
+}
+body[data-theme="dark"] #orbit-page[data-orbit-page="about"] .wrap::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  pointer-events: none;
+  opacity: .56;
+  background-image:
+    radial-gradient(1px 1px at 7% 8%,color-mix(in srgb,var(--orbit-blue) 28%,var(--orbit-ink)) 85%,transparent),
+    radial-gradient(1.5px 1.5px at 23% 19%,color-mix(in srgb,var(--orbit-blue) 40%,var(--orbit-ink)) 75%,transparent),
+    radial-gradient(1px 1px at 44% 11%,color-mix(in srgb,var(--orbit-blue) 18%,var(--orbit-ink)) 80%,transparent),
+    radial-gradient(1px 1px at 76% 16%,color-mix(in srgb,var(--orbit-blue) 28%,var(--orbit-ink)) 80%,transparent),
+    radial-gradient(1.5px 1.5px at 91% 31%,color-mix(in srgb,var(--orbit-blue) 46%,var(--orbit-ink)) 70%,transparent),
+    radial-gradient(1px 1px at 12% 48%,color-mix(in srgb,var(--orbit-blue) 18%,var(--orbit-ink)) 75%,transparent),
+    radial-gradient(1px 1px at 66% 57%,color-mix(in srgb,var(--orbit-blue) 40%,var(--orbit-ink)) 75%,transparent),
+    radial-gradient(1px 1px at 84% 74%,color-mix(in srgb,var(--orbit-blue) 28%,var(--orbit-ink)) 75%,transparent),
+    radial-gradient(1.5px 1.5px at 32% 88%,color-mix(in srgb,var(--orbit-blue) 18%,var(--orbit-ink)) 70%,transparent),
+    radial-gradient(1px 1px at 57% 96%,color-mix(in srgb,var(--orbit-blue) 40%,var(--orbit-ink)) 75%,transparent);
+}
+#orbit-page[data-orbit-page="about"] .wrap {
+  position: relative;
+  isolation: isolate;
 }
 @media (prefers-reduced-motion:reduce) {
   #orbit-page[data-orbit-page="about"] * {
@@ -837,4 +984,49 @@ body:has(#orbit-page[data-orbit-page="about"]) #orbit-site-footer h2 {
 }
 html[lang="en"] body:has(#orbit-page[data-orbit-page="about"]) #orbit-site-footer {
   font-family: AboutEnglish,sans-serif;
+}
+
+/* Relocated Homepage mission artwork, scoped to the standalone About page. */
+#orbit-page[data-orbit-page="about"] .about-purpose-relocated {
+  display: block;
+  padding: 32px 0;
+  border-top: 1px solid var(--orbit-border);
+  border-bottom: 1px solid var(--orbit-border);
+}
+#orbit-page[data-orbit-page="about"] .about-purpose-heading { margin: 0 auto 18px; text-align: center; }
+#orbit-page[data-orbit-page="about"] .about-purpose-heading > span {
+  display: inline-flex; padding: 7px 12px; border-radius: 999px;
+  color: var(--orbit-focus); background: var(--orbit-soft); font-size: 12px; font-weight: 650;
+}
+#orbit-page[data-orbit-page="about"] .about-purpose-heading h2 {
+  margin: 10px 0 0; color: var(--orbit-ink); font-size: clamp(24px, 3vw, 30px);
+}
+#orbit-page[data-orbit-page="about"] .about-purpose-layout {
+  display: grid; grid-template-columns: minmax(0, .95fr) minmax(0, 1.6fr); align-items: center; gap: 20px;
+}
+#orbit-page[data-orbit-page="about"] .about-purpose-art { display: block; min-width: 0; width: 100%; }
+#orbit-page[data-orbit-page="about"] .about-purpose-art svg {
+  display: block; width: 100%; height: auto; aspect-ratio: 520 / 350; max-height: 270px; filter: drop-shadow(0 12px 18px color-mix(in srgb, var(--orbit-green-900) 9.00%, transparent));
+}
+#orbit-page[data-orbit-page="about"] .about-purpose-cards {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px;
+}
+#orbit-page[data-orbit-page="about"] .about-purpose-cards article {
+  min-width: 0; min-height: 190px; padding: 18px; border: 1px solid var(--orbit-border);
+  border-radius: 18px; background: var(--orbit-surface); box-shadow: 0 5px 16px color-mix(in srgb, var(--orbit-green-800) 4.00%, transparent);
+}
+#orbit-page[data-orbit-page="about"] .about-purpose-cards h3 { margin: 0; color: var(--orbit-ink); font-size: 17px; }
+#orbit-page[data-orbit-page="about"] .about-purpose-cards p { margin-top: 10px; }
+  @media (max-width: 760px) {
+  #orbit-page[data-orbit-page="about"] .about-purpose-relocated { padding: 24px 0; }
+  #orbit-page[data-orbit-page="about"] .about-purpose-layout { grid-template-columns: 1fr; gap: 8px; }
+  #orbit-page[data-orbit-page="about"] .about-purpose-art { max-width: 440px; margin-inline: auto; }
+  #orbit-page[data-orbit-page="about"] .about-purpose-art svg { max-height: 220px; }
+}
+  @media (max-width: 520px) {
+  #orbit-page[data-orbit-page="about"] .about-purpose-cards { grid-template-columns: 1fr; gap: 10px; }
+  #orbit-page[data-orbit-page="about"] .about-purpose-cards article { min-height: 0; padding: 16px; }
+}
+  @media (prefers-reduced-motion: reduce) {
+  #orbit-page[data-orbit-page="about"] .about-purpose-relocated [data-about-reveal] { animation: none; transition: none; }
 }

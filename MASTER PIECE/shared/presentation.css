@@ -5,12 +5,12 @@
   z-index: 1200;
   max-width: min(380px,calc(100vw - 32px));
   background: var(--orbit-surface,#fff);
-  color: var(--orbit-ink,#17243a);
-  border: 1px solid var(--orbit-border,#dce4ef);
+  color: var(--orbit-ink,var(--orbit-green-900));
+  border: 1px solid var(--orbit-border,var(--orbit-green-100));
   border-radius: 12px;
   font:
     14px/1.8 'Segoe UI',Tahoma,Arial,sans-serif;
-  box-shadow: 0 8px 24px rgb(20 43 74 / .12);
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--orbit-green-900) 12.00%, transparent);
 }
 .presentation-bar summary {
   cursor: pointer;
@@ -37,14 +37,14 @@
   min-height: 44px;
   width: 100%;
   font: inherit;
-  border: 1px solid var(--orbit-border,#dce4ef);
+  border: 1px solid var(--orbit-border,var(--orbit-green-100));
   border-radius: 10px;
   padding: 10px;
   background: var(--orbit-surface,#fff);
-  color: var(--orbit-ink,#17243a);
+  color: var(--orbit-ink,var(--orbit-green-900));
 }
 .presentation-controls button {
-  background: var(--orbit-action,#2563eb);
+  background: var(--orbit-action,var(--orbit-green-500));
   color: var(--orbit-on-action,#fff);
   cursor: pointer;
 }
@@ -59,16 +59,26 @@
   margin: 12px 0;
 }
 .presentation-links a {
-  color: var(--orbit-ink,#17243a);
+  color: var(--orbit-ink,var(--orbit-green-900));
   text-underline-offset: 4px;
   min-height: 44px;
   display: inline-flex;
   align-items: center;
 }
 .presentation-bar :focus-visible {
-  outline: 3px solid var(--orbit-focus,#2563eb);
+  outline: 3px solid var(--orbit-focus,var(--orbit-green-500));
   outline-offset: 3px;
 }
 body.presentation-active {
   padding-bottom: 88px;
+}
+@media (max-width: 600px) {
+  body.presentation-active {
+    padding-bottom: 0;
+  }
+  .presentation-bar {
+    position: static;
+    width: min(100% - 24px, 480px);
+    margin: 12px auto;
+  }
 }

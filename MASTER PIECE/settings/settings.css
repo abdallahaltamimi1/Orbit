@@ -17,32 +17,32 @@
   src: url('../student-dashboard/assets/Inter.ttf');
 }
 body.unified-settings {
-  background: #eef8fb;
-  --orbit-accent: #0d9488;
-  --orbit-action: #0d9488;
+  background: var(--orbit-green-50);
+  --orbit-accent: var(--orbit-green-800);
+  --orbit-action: var(--orbit-green-800);
   --orbit-on-action: #fff;
-  --orbit-ink: #102c50;
-  --orbit-muted: #526f8c;
+  --orbit-ink: var(--orbit-green-900);
+  --orbit-muted: var(--orbit-green-600);
   --orbit-surface: #fff;
-  --orbit-border: #dcebf1;
-  --orbit-soft: #dff7f5;
-  color: #102c50;
+  --orbit-border: var(--orbit-green-100);
+  --orbit-soft: var(--orbit-green-100);
+  color: var(--orbit-green-900);
 }
 body.unified-settings[data-theme="dark"] {
-  background: #0c1c2d;
-  --orbit-ink: #e6f3fc;
-  --orbit-muted: #adc5d9;
-  --orbit-surface: #162b40;
-  --orbit-border: #30485e;
-  --orbit-soft: #174448;
+  background: var(--orbit-green-925);
+  --orbit-ink: var(--orbit-green-50);
+  --orbit-muted: var(--orbit-green-300);
+  --orbit-surface: var(--orbit-green-900);
+  --orbit-border: var(--orbit-green-800);
+  --orbit-soft: var(--orbit-green-900);
   color: var(--orbit-ink);
 }
 body.unified-settings #orbit-page[data-orbit-page="settings"] {
   font-family: SettingsArabic,SettingsEnglish,sans-serif;
-  --orbit-accent: #0d9488;
-  --orbit-action: #0d9488;
+  --orbit-accent: var(--orbit-green-800);
+  --orbit-action: var(--orbit-green-800);
   --orbit-on-action: #fff;
-  --orbit-soft: #dff7f5;
+  --orbit-soft: var(--orbit-green-100);
 }
 body.unified-settings #orbit-page :is(button, input, select, a, p, strong, summary, label) {
   font-family: SettingsArabic,SettingsEnglish,sans-serif;
@@ -56,12 +56,12 @@ body.unified-settings #orbit-page .eyebrow {
   display: none;
 }
 body.unified-settings :focus-visible {
-  outline: 3px solid #0d9488;
+  outline: 3px solid var(--orbit-green-800);
   outline-offset: 4px;
 }
 body.unified-settings ::selection {
-  background: #ccfbf1;
-  color: #102c50;
+  background: var(--orbit-green-100);
+  color: var(--orbit-green-900);
 }
 body.unified-settings #orbit-page .settings-world {
   position: relative;
@@ -70,7 +70,7 @@ body.unified-settings #orbit-page .settings-world {
   padding: 0 24px 24px;
   background: var(--orbit-surface);
   border-radius: 30px;
-  box-shadow: 0 20px 60px #0f789411;
+  box-shadow: 0 20px 60px color-mix(in srgb, var(--orbit-green-800) 6.67%, transparent);
   isolation: isolate;
 }
 body.unified-settings #orbit-page .settings-welcome {
@@ -105,8 +105,8 @@ body.unified-settings #orbit-page .setting-icon {
   width: 70px;
   height: 70px;
   border-radius: 25px;
-  background: #dff8f7;
-  color: #009eaa;
+  background: var(--orbit-green-100);
+  color: var(--orbit-accent);
   flex-shrink: 0;
 }
 body.unified-settings #orbit-page .setting-icon svg {
@@ -125,7 +125,7 @@ body.unified-settings #orbit-page .settings-mascot {
   height: 290px;
   object-fit: contain;
   pointer-events: none;
-  filter: drop-shadow(0 12px 18px #109a9a18);
+  filter: drop-shadow(0 12px 18px color-mix(in srgb, var(--orbit-green-700) 9.41%, transparent));
   animation: settings-arrive .6s cubic-bezier(.16,1,.3,1) both;
 }
 body.unified-settings #orbit-page .settings-sheet {
@@ -133,7 +133,7 @@ body.unified-settings #orbit-page .settings-sheet {
   background: var(--orbit-surface);
   padding: 32px 34px 22px;
   border-radius: 24px;
-  box-shadow: 0 8px 28px #0f789407;
+  box-shadow: 0 8px 28px color-mix(in srgb, var(--orbit-green-800) 2.75%, transparent);
 }
 body.unified-settings #settings-form fieldset {
   border: 0;
@@ -191,10 +191,10 @@ body.unified-settings #settings-form .setting-choice {
 }
 body.unified-settings #settings-form .setting-choice:has(input:checked) {
   background: var(--orbit-soft);
-  border-color: #00a7aa;
+  border-color: var(--orbit-green-700);
 }
 body.unified-settings #settings-form .setting-choice:has(input:focus-visible) {
-  outline: 3px solid #0d9488;
+  outline: 3px solid var(--orbit-green-800);
   outline-offset: 4px;
 }
 body.unified-settings #settings-form .setting-choice input {
@@ -206,7 +206,7 @@ body.unified-settings #settings-form .setting-choice input {
 body.unified-settings #orbit-page .choice-art {
   display: grid;
   place-items: center;
-  color: #0a9ba8;
+  color: var(--orbit-accent);
   flex-shrink: 0;
 }
 body.unified-settings #orbit-page .choice-art svg {
@@ -224,21 +224,21 @@ body.unified-settings #orbit-page .choice-indicator {
   margin-inline-start: auto;
   width: 20px;
   height: 20px;
-  border: 2px solid #7896ac;
+  border: 2px solid var(--orbit-green-500);
   border-radius: 50%;
   flex-shrink: 0;
   box-sizing: border-box;
 }
 body.unified-settings #orbit-page input:checked ~ .choice-indicator {
-  border-color: #00a7aa;
-  background: #00a7aa;
+  border-color: var(--orbit-green-700);
+  background: var(--orbit-green-700);
   box-shadow: inset 0 0 0 3px var(--orbit-surface);
 }
 body.unified-settings #orbit-page .language-mark {
   font-size: 20px;
   font-weight: 600;
-  color: #0d9488;
-  background: #dff8f7;
+  color: var(--identity-deep);
+  background: var(--orbit-green-100);
   border-radius: 50%;
   width: 40px;
   height: 40px;
@@ -280,7 +280,7 @@ body.unified-settings #orbit-page .settings-save {
   flex-wrap: wrap;
 }
 body.unified-settings #orbit-page[data-orbit-page="settings"] .btn {
-  background: #0d9488;
+  background: var(--orbit-green-800);
   color: white;
   border: 0;
   min-height: 44px;
@@ -307,21 +307,21 @@ body.unified-settings #status {
   font-size: 14px;
 }
 body.unified-settings[data-theme="dark"] #orbit-page[data-orbit-page="settings"] {
-  --orbit-soft: #174448;
+  --orbit-soft: var(--orbit-green-900);
 }
 body.unified-settings #orbit-page .settings-world[data-preview="dark"] {
-  --orbit-surface: #162b40;
-  --orbit-ink: #e6f3fc;
-  --orbit-muted: #adc5d9;
-  --orbit-border: #30485e;
-  --orbit-soft: #174448;
+  --orbit-surface: #0C3027;
+  --orbit-ink: var(--orbit-green-50);
+  --orbit-muted: #BBD9CD;
+  --orbit-border: #386658;
+  --orbit-soft: #123D30;
 }
 body.unified-settings #orbit-page .settings-world[data-preview="light"] {
   --orbit-surface: #fff;
-  --orbit-ink: #102c50;
-  --orbit-muted: #526f8c;
-  --orbit-border: #dcebf1;
-  --orbit-soft: #dff7f5;
+  --orbit-ink: var(--orbit-green-900);
+  --orbit-muted: #376556;
+  --orbit-border: #B5D9CA;
+  --orbit-soft: #ECFDF5;
 }
 @keyframes settings-arrive {
   from {
@@ -455,13 +455,13 @@ body.unified-settings #orbit-page[data-orbit-page="settings"] #settings-form leg
   height: 70px;
   font-size: inherit;
   border-radius: 25px;
-  background: #dff8f7;
-  color: #009eaa;
+  background: var(--orbit-green-100);
+  color: var(--orbit-accent);
 }
 body.unified-settings #orbit-rail {
-  --orbit-accent: #0d9488;
-  --orbit-action: #0d9488;
-  --orbit-soft: #dff7f5;
+  --orbit-accent: var(--orbit-green-800);
+  --orbit-action: var(--orbit-green-800);
+  --orbit-soft: var(--orbit-green-100);
 }
 body.unified-settings #orbit-page[data-orbit-page="settings"] .settings-title h2 {
   font-family: SettingsHeading,SettingsEnglish,sans-serif;

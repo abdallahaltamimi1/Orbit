@@ -30,17 +30,22 @@
   function owner(post) {
     return canonical(channel(post)?.teacher);
   }
-  function enrolled(post, id = user().email) {
+  function enrolled(post, id = user().email, write = false) {
+    const c = channel(post);
+    if (OrbitAuth.managedChannel(c)) return OrbitAuth.schoolChannelStudent(c, id, post, write);
     return (
       !!channel(post) &&
+      OrbitAuth.schoolStudentAccess(channel(post), id) !== false &&
       (OrbitAuth.get("orbit.memberships.v3", {})[id] || []).includes(post.channel)
     );
   }
   function mayRead(post) {
     const active = user();
+    // Owners retain review access; moderation and deletion block every student read path.
     return (
-      (active.role === "teacher" && active.email === owner(post)) ||
-      (active.role === "student" && enrolled(post))
+      (active.role === "teacher" && active.email === owner(post) && (!OrbitAuth.managedChannel(channel(post)) || OrbitAuth.schoolChannelTeacher(channel(post), active.email, true))) ||
+      (active.role === "student" && post.moderationStatus !== "hidden" &&
+        !OrbitAuth.get("orbit.deleted.posts", []).includes(post.id) && enrolled(post))
     );
   }
   const visible = () => published().filter(mayRead);
@@ -56,6 +61,8 @@
     return data().submissions.filter(
       (item) =>
         item.assignmentId === id &&
+        (!OrbitAuth.managedChannel(channel(post)) || item.channelId === post.channel && item.schoolId === post.schoolId &&
+          item.academicYearId === post.academicYearId && post.sectionIds?.includes(item.sectionId)) &&
         ((active.role === "teacher" && active.email === owner(post)) ||
           item.studentId === active.email),
     );
@@ -85,7 +92,7 @@
   async function submit(id, values, expectedRevision = 0) {
     const active = user(),
       post = find(id);
-    if (active.role !== "student" || !enrolled(post))
+    if (active.role !== "student" || !enrolled(post, active.email, true))
       fail("Only enrolled students can submit.", "الطلاب المسجلون في القناة فقط يستطيعون التسليم.");
     const answer = String(values.answer || "").trim(),
       files = [...(values.files || [])],
@@ -129,7 +136,7 @@
       if (
         user().email !== active.email ||
         user().role !== "student" ||
-        !enrolled(currentPost) ||
+        !enrolled(currentPost, active.email, true) ||
         (old?.revision || 0) !== expectedRevision
       )
         fail(
@@ -137,10 +144,13 @@
           "تغيّر الحساب أو العضوية أو التسليم. أعد فتح الواجب.",
         );
       const submittedAt = new Date().toISOString();
+      const c = channel(currentPost);
+      const placement = OrbitAuth.schoolChannelPlacement(c, active.email, currentPost);
       const record = {
         id: old?.id || crypto.randomUUID(),
         assignmentId: id,
         channelId: currentPost.channel,
+        ...(placement ? { schoolId: c.schoolId, academicYearId: c.academicYearId, sectionId: placement.sectionId } : {}),
         studentId: active.email,
         answer,
         attachments: [...retained, ...added],
@@ -154,6 +164,7 @@
             ? [
                 {
                   answer: old.answer,
+                  ...(old.sectionId ? { sectionId: old.sectionId } : {}),
                   attachments: old.attachments,
                   submittedAt: old.submittedAt,
                   review: old.review,
@@ -183,7 +194,7 @@
   function review(id, studentId, values, expectedRevision) {
     const active = user(),
       post = find(id);
-    if (active.role !== "teacher" || owner(post) !== active.email)
+    if (active.role !== "teacher" || owner(post) !== active.email || (OrbitAuth.managedChannel(channel(post)) && !OrbitAuth.schoolChannelTeacher(channel(post), active.email)))
       fail("Only the channel owner can review.", "مالك القناة فقط يستطيع مراجعة الإجابات.");
     const db = data(),
       record = db.submissions.find(
@@ -236,8 +247,12 @@
       fail("Submission unavailable.", "التسليم غير متاح.");
     return blob;
   }
-  const notifications = () =>
-    data().notifications.filter((item) => item.recipient === user().email);
+  const notifications = () => {
+    const active = user();
+    const accessible = active.role === "student" ? new Set(visible().map((post) => post.id)) : null;
+    return data().notifications.filter((item) => item.recipient === active.email &&
+      (!accessible || accessible.has(item.assignmentId)));
+  };
   function markRead(id) {
     const db = data(),
       note = db.notifications.find((item) => item.id === id && item.recipient === user().email);
@@ -255,6 +270,8 @@
     review,
     attachment,
     notifications,
+    canWrite(post) { const c = channel(post), actor = user();
+      return !OrbitAuth.managedChannel(c) || (actor.role === "teacher" ? OrbitAuth.schoolChannelTeacher(c, actor.email) : OrbitAuth.schoolChannelStudent(c, actor.email, post, true)); },
     markRead,
     state,
     owner,

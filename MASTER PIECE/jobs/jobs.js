@@ -84,6 +84,32 @@ const errorText = (e) =>
 function report(e, element) {
   (element || document.getElementById("recruit-errors")).textContent = errorText(e);
 }
+function safePublishedOpportunityId(value) {
+  const id = String(value || "");
+  return /^[A-Za-z0-9_-]{1,128}$/.test(id) && R.listJobs().some((job) => job.id === id) ? id : "";
+}
+function reportApplicationError(e, element, profile) {
+  if (e?.message !== "PROFILE_INCOMPLETE") {
+    report(e, element);
+    return;
+  }
+  const missing = [];
+  if (!String(profile?.name || "").trim()) missing.push(t("your name", "اسمك"));
+  if (!String(profile?.qualification || "").trim())
+    missing.push(t("your qualifications", "مؤهلاتك"));
+  element.textContent = missing.length
+    ? t(
+        `Add ${missing.join(" and ")} to your professional profile before applying.`,
+        `أضف ${missing.join(" و")} إلى ملفك المهني قبل التقديم.`,
+      )
+    : errorText(e);
+  element.parentElement?.querySelector(".profile-completion-action")?.remove();
+  const action = document.createElement("a");
+  action.className = "btn soft profile-completion-action";
+  action.href = "../account-profile/account-profile.html";
+  action.textContent = t("Complete Your Profile", "أكمل ملفك المهني");
+  element.after(action);
+}
 function hint() {
   return `<p class="role-banner">${t("Local browser prototype · profile credentials are self-reported. Notifications and matching are local; there is no server or identity verification.", "نموذج محلي في المتصفح · المؤهلات معلنة ذاتيًا. الإشعارات والمطابقة محلية؛ لا يوجد خادم أو توثيق هوية.")}</p><p id="recruit-errors" role="status"></p>`;
 }
@@ -132,8 +158,9 @@ function employment(value) {
 }
 function jobCard(j, admin = false) {
   const school = R.publicSchool(j.schoolId),
-    m = O.user.role === "teacher" ? R.match(j, R.teacher()) : null;
-  return `<article class="card job-card"><div class="job-card-heading"><span class="job-symbol" aria-hidden="true">↗</span><span class="pill ${j.status}">${state(j.status)}</span></div><h2>${esc(j.title)}</h2><p>${esc(school?.name || "")} · ${esc(j.location)}</p><div class="job-meta"><span>${subject(j.subject)}</span><span>${j.experience} ${t("years required", "سنوات مطلوبة")}</span><span>${esc(employment(j.employment))}</span><span>${esc(j.grades.join("، "))}</span></div>${m ? `<p class="match-score">${m.score}% <small>${t("profile match", "مطابقة البيانات")}</small></p>` : ""}<p>${esc(j.description.slice(0, 150))}</p><a class="btn soft" href="../jobs/jobs.html?id=${j.id}">${t("View full job", "تفاصيل الوظيفة")}</a>${admin ? `<div class="actions"><button class="btn soft" data-edit-job="${j.id}">${t("Edit", "تعديل")}</button><button class="btn soft" data-job-status="${j.id}" data-next="${j.status === "published" ? "closed" : "published"}">${j.status === "published" ? t("Close", "إغلاق") : t("Publish / reopen", "نشر / إعادة فتح")}</button><button class="btn soft" data-applicants="${j.id}">${t("Applicants", "المتقدمون")} (${R.applications(j.id).length})</button></div>` : ""}</article>`;
+    m = O.user.role === "teacher" ? R.match(j, R.teacher()) : null,
+    application = O.user.role === "teacher" ? R.applications(j.id)[0] : null;
+  return `<article class="card job-card"><div class="job-card-heading"><span class="job-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8.5h16v11H4zM8 8.5V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2.5M4 12h16M10 12v1.5h4V12"/></svg></span><span class="pill ${j.status}">${state(j.status)}</span></div><h2>${esc(j.title)}</h2><p class="job-card-school"><span>${esc(school?.name || "")}</span><span>${esc(j.location)}</span></p><p class="job-card-description">${esc(j.description.slice(0, 180))}</p><div class="job-meta"><span><b>${t("Subject", "التخصص")}</b>${subject(j.subject)}</span><span><b>${t("Experience", "الخبرة")}</b>${j.experience} ${t("years", "سنوات")}</span><span><b>${t("Employment", "نوع التوظيف")}</b>${esc(employment(j.employment))}</span>${j.grades.length ? `<span><b>${t("Grades", "الصفوف")}</b>${esc(j.grades.join("، "))}</span>` : ""}</div>${application ? `<p class="job-application-status"><span>${t("Your application", "طلبك")}</span><span class="pill ${application.status}">${state(application.status)}</span></p>` : ""}${m ? `<p class="match-score">${m.score}% <small>${t("profile match", "مطابقة البيانات")}</small></p>` : ""}<div class="job-card-actions"><a class="btn soft" href="../jobs/jobs.html?id=${encodeURIComponent(j.id)}">${t("View full job", "تفاصيل الوظيفة")}</a>${admin ? `<div class="actions"><button class="btn soft" data-edit-job="${j.id}">${t("Edit", "تعديل")}</button><button class="btn soft" data-job-status="${j.id}" data-next="${j.status === "published" ? "closed" : "published"}">${j.status === "published" ? t("Close", "إغلاق") : t("Publish / reopen", "نشر / إعادة فتح")}</button><button class="btn soft" data-applicants="${j.id}">${t("Applicants", "المتقدمون")} (${R.applications(j.id).length})</button></div>` : ""}</div></article>`;
 }
 function filterJobs(j) {
   return (
@@ -148,7 +175,7 @@ function filterJobs(j) {
   );
 }
 function jobFilters() {
-  return `<div class="filters"><label>${t("Job / school search", "بحث بالوظيفة / المدرسة")}<input id="search-jobs" type="search" value="${esc(search)}"></label><label>${t("Subject", "التخصص")}<select id="subject-filter">${options(subjectFilter, true)}</select></label><label>${t("Location", "الموقع")}<input id="location-filter" value="${esc(locationFilter)}"></label><label>${t("Grade", "الصف")}<input id="grade-filter" value="${esc(gradeFilter)}"></label><label>${t("Max. required experience", "أقصى خبرة مطلوبة")}<input id="experience-filter" type="number" min="0" max="60" value="${esc(experienceFilter)}"></label></div>`;
+  return `<div class="filters"><label><span>${t("Job / school search", "بحث بالوظيفة / المدرسة")}</span><input id="search-jobs" type="search" value="${esc(search)}" placeholder="${t("Search jobs or schools", "ابحث عن وظيفة أو مدرسة")}"></label><label><span>${t("Subject", "التخصص")}</span><select id="subject-filter">${options(subjectFilter, true)}</select></label><label><span>${t("Location", "الموقع")}</span><input id="location-filter" value="${esc(locationFilter)}" placeholder="${t("City or area", "المدينة أو المنطقة")}"></label><label><span>${t("Grade", "الصف")}</span><input id="grade-filter" value="${esc(gradeFilter)}"></label><label><span>${t("Max. required experience", "أقصى خبرة مطلوبة")}</span><input id="experience-filter" type="number" min="0" max="60" value="${esc(experienceFilter)}" placeholder="${t("Any", "الكل")}"></label></div>`;
 }
 function bindJobFilters(renderResults) {
   for (const [id, key] of [
@@ -349,7 +376,7 @@ function browseJobs() {
   }
   O.shell(
     t("Teaching opportunities", "فرص التدريس"),
-    `<div class="jobs-page-tools"><span>${t("YOUR NEXT TEACHING CHAPTER", "فصلك التعليمي القادم")}</span><button class="btn soft" id="jobs-language">${t("العربية", "English")}</button></div><section class="hero jobs-hero"><h2>${t("Let your teaching open a new opportunity.", "خلّي تعليمك يفتح فرصة جديدة.")}</h2><p>${t("Discover schools looking for your skills.", "اكتشف المدارس التي تبحث عن مهاراتك.")}</p></section>${hint()}<section class="jobs-filters-panel"><div class="jobs-filters-heading"><h2>${t("Find your next opportunity", "دَوّر على فرصتك الجاية")}</h2><button class="btn soft" id="jobs-reset">${t("Clear filters", "مسح الفلاتر")}</button></div>${jobFilters()}</section><div class="toolbar jobs-results-tools"><span id="jobs-count" role="status"></span><button class="btn soft" id="matching-only">${matchesOnly ? t("Show all jobs", "عرض كل الوظائف") : t("Show matching opportunities", "عرض الفرص المطابقة")}</button><a class="btn soft" href="../applications/applications.html">${t("My applications", "طلباتي")}</a></div><div class="grid" id="job-results"></div>`,
+    `<section class="hero jobs-hero" aria-labelledby="jobs-hero-title"><div class="jobs-hero-copy"><span class="jobs-hero-kicker">${t("A thoughtful next step", "خطوتك التعليمية القادمة")}</span><h2 id="jobs-hero-title">${t("Your next teaching opportunity starts here.", "فرصتك التعليمية تبدأ هنا")}</h2><p>${t("Explore teaching roles that fit your subject and experience, and apply directly to schools.", "اكتشف فرص التدريس المناسبة لتخصصك وخبرتك، وتقدّم مباشرة إلى المدارس.")}</p></div><span class="jobs-hero-mark" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17h34v23H7zM15 17v-5a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v5M7 26h34M20 26v3h8v-3"/><path d="M14 40V29m20 11V29"/></svg></span></section>${hint()}<section class="jobs-filters-panel" aria-labelledby="jobs-filter-title"><div class="jobs-filters-heading"><div><span class="jobs-section-kicker">${t("Browse open roles", "تصفّح الفرص المتاحة")}</span><h2 id="jobs-filter-title">${t("Find your next opportunity", "ابحث عن فرصتك القادمة")}</h2></div><button class="btn soft" id="jobs-reset" type="button">${t("Clear filters", "مسح الفلاتر")}</button></div>${jobFilters()}</section><div class="toolbar jobs-results-tools"><span id="jobs-count" role="status"></span>${O.user.role === "teacher" ? `<button class="btn soft" id="matching-only" type="button">${matchesOnly ? t("Show all jobs", "عرض كل الوظائف") : t("Show matching opportunities", "عرض الفرص المطابقة")}</button><a class="btn soft" href="../applications/applications.html">${t("My applications", "طلباتي")}</a>` : ""}</div><div class="grid" id="job-results"></div>`,
   );
   const results = () => {
     const jobs = R.listJobs().filter(filterJobs);
@@ -361,24 +388,23 @@ function browseJobs() {
   };
   results();
   bindJobFilters(results);
-  document.getElementById("jobs-language").onclick = () => {
-    const prefs = O.get("orbit.student.v1", {});
-    prefs.lang = document.documentElement.lang === "ar" ? "en" : "ar";
-    O.set("orbit.student.v1", prefs);
-    location.reload();
-  };
   document.getElementById("jobs-reset").onclick = () => {
     search = subjectFilter = locationFilter = experienceFilter = gradeFilter = "";
     matchesOnly = false;
     browseJobs();
   };
-  document.getElementById("matching-only").onclick = () => {
+  document.getElementById("matching-only")?.addEventListener("click", () => {
     matchesOnly = !matchesOnly;
     browseJobs();
-  };
+  });
 }
 function jobDetail(id) {
-  const j = R.getJob(id);
+  const opportunityId = String(id || ""),
+    isTeacher = O.user.role === "teacher",
+    isSchoolOwner =
+      O.user.role === "school" && R.ownJobs().some((job) => job.id === opportunityId),
+    isPubliclyListed = R.listJobs().some((job) => job.id === opportunityId),
+    j = isTeacher || isSchoolOwner || isPubliclyListed ? R.getJob(opportunityId) : null;
   if (!j) {
     O.shell(
       t("Job unavailable", "الوظيفة غير متاحة"),
@@ -386,13 +412,18 @@ function jobDetail(id) {
     );
     return;
   }
-  const m = R.match(j, R.teacher()),
-    existing = O.user.role === "teacher" ? R.applications(id)[0] : null;
+  const m = isTeacher ? R.match(j, R.teacher()) : null,
+    existing = isTeacher ? R.applications(opportunityId)[0] : null;
   O.shell(
     esc(j.title),
-    `<a class="btn soft" href="./jobs.html">← ${t("All opportunities", "كل الفرص")}</a><section class="hero recruit-hero"><div><h2>${esc(j.title)}</h2><p>${esc(j.school?.name || "")} · ${esc(j.location)}</p><span class="pill ${j.status}">${state(j.status)}</span></div>${j.school?.logo ? `<img data-asset="${esc(j.school.logo)}" alt="${t("School logo", "شعار المدرسة")}">` : ""}</section>${hint()}<div class="review-grid"><section class="card"><h2>${t("Responsibilities and requirements", "المهام والمتطلبات")}</h2><p class="job-description">${esc(j.description)}</p><p>${t("Subject", "التخصص")}: ${subject(j.subject)}</p><p>${t("Grade levels", "الصفوف")}: ${esc(j.grades.join("، ") || t("Not specified", "غير محددة"))}</p><p>${t("Experience", "الخبرة")}: ${j.experience} ${t("years minimum", "سنوات على الأقل")}</p><p>${t("Qualifications", "المؤهلات")}: ${esc(j.qualifications || t("Not specified", "غير محددة"))}</p><p>${t("Skills", "المهارات")}: ${esc(j.skills.join("، ") || t("Not specified", "غير محددة"))}</p><p>${t("Employment", "التوظيف")}: ${esc(employment(j.employment))} · ${j.remote ? t("Remote", "عن بعد") : t("On site", "في المدرسة")}</p><h2>${t("About the school", "عن المدرسة")}</h2><p>${esc(j.school?.description || "")}</p><p>${esc(j.school?.contact || "")}</p>${j.school?.website && /^https:\/\//.test(j.school.website) ? `<a href="${esc(j.school.website)}" target="_blank" rel="noopener noreferrer">${t("School website", "موقع المدرسة")} ↗</a>` : ""}${O.user.role === "teacher" ? (existing ? `<p class="pill ${existing.status}">${t("Your application", "طلبك")}: ${state(existing.status)}</p><a href="../applications/applications.html" class="btn soft">${t("Track application", "تابع الطلب")}</a>` : `<button class="btn" id="apply" ${j.status !== "published" ? "disabled" : ""}>${t("Apply using my Orbit profile", "قدّم بملفي المهني في ORBIT")}</button>`) : ""}</section><section class="card">${O.user.role === "teacher" ? `<h2>${t("Why this opportunity may match", "لماذا قد تناسبك الفرصة")}</h2>${reasons(m)}` : `<h2>${t("School opportunity", "فرصة المدرسة")}</h2><p>${t("Teacher applicants use their Orbit professional profile.", "المعلم يقدم باستخدام ملفه المهني في ORBIT.")}</p>`}</section></div>`,
+    `<a class="btn soft" href="./jobs.html">← ${t("All opportunities", "كل الفرص")}</a><section class="hero recruit-hero opportunity-heading"><div><h2>${esc(j.school?.name || "")}</h2><p>${esc(j.location)} · ${esc(employment(j.employment))}</p><span class="pill ${j.status}">${state(j.status)}</span></div>${j.school?.logo ? `<img data-asset="${esc(j.school.logo)}" alt="${t("School logo", "شعار المدرسة")}">` : ""}</section>${hint()}<div class="review-grid opportunity-layout"><section class="card opportunity-content"><h2>${t("Responsibilities", "المهام")}</h2><p class="job-description">${esc(j.description)}</p><h2>${t("Requirements", "المتطلبات")}</h2><p>${t("Subject", "التخصص")}: ${subject(j.subject)}</p><p>${t("Grade levels", "الصفوف")}: ${esc(j.grades.join("، ") || t("Not specified", "غير محددة"))}</p><p>${t("Experience", "الخبرة")}: ${j.experience} ${t("years minimum", "سنوات على الأقل")}</p><p>${t("Qualifications", "المؤهلات")}: ${esc(j.qualifications || t("Not specified", "غير محددة"))}</p><p>${t("Skills", "المهارات")}: ${esc(j.skills.join("، ") || t("Not specified", "غير محددة"))}</p><p>${t("Employment", "التوظيف")}: ${esc(employment(j.employment))} · ${j.remote ? t("Remote", "عن بعد") : t("On site", "في المدرسة")}</p><h2>${t("About the school", "عن المدرسة")}</h2><p>${esc(j.school?.description || "")}</p><p>${esc(j.school?.contact || "")}</p>${j.school?.website && /^https:\/\//.test(j.school.website) ? `<a href="${esc(j.school.website)}" target="_blank" rel="noopener noreferrer">${t("School website", "موقع المدرسة")} ↗</a>` : ""}</section><section class="card opportunity-apply"><h2>${t("Your next step", "خطوتك القادمة")}</h2>${isTeacher ? (existing ? `<p class="pill ${existing.status}">${t("Your application", "طلبك")}: ${state(existing.status)}</p><a href="../applications/applications.html" class="btn soft">${t("Track application", "تابع الطلب")}</a>` : `<button class="btn" id="apply" ${j.status !== "published" ? "disabled" : ""}>${t("Apply using my Orbit profile", "قدّم بملفي المهني في ORBIT")}</button>`) : `<button class="btn" id="apply" ${j.status !== "published" ? "disabled" : ""}>${t("Apply Now", "قدّم الآن")}</button>`}<p id="opportunity-eligibility" role="status"></p>${isTeacher ? `<h2>${t("Why this opportunity may match", "لماذا قد تناسبك الفرصة")}</h2>${reasons(m)}` : `<h2>${t("School opportunity", "فرصة المدرسة")}</h2><p>${t("Teacher applicants use their Orbit professional profile.", "المعلم يقدم باستخدام ملفه المهني في ORBIT.")}</p>`}</section></div>`,
   );
   document.getElementById("apply")?.addEventListener("click", () => {
+    if (!isTeacher) {
+      if (!O.user.email) openGuestApplyDialog(opportunityId);
+      else document.getElementById("opportunity-eligibility").textContent = t("This account cannot submit Teacher applications. You can continue exploring opportunities.", "لا يمكن لهذا الحساب تقديم طلبات المعلمين. يمكنك متابعة استكشاف الفرص.");
+      return;
+    }
     const p = R.teacher(),
       d = O.dialog(
         `<h2>${t("Apply to ", "التقديم إلى ")}${esc(j.school.name)}</h2><p>${esc(p.name)} · ${subject(p.subject)}</p><p>${esc(p.qualification || t("Complete your qualifications first", "أكمل مؤهلاتك أولًا"))}</p><form id="apply-form">${text("message", t("Optional cover letter", "رسالة تقديم اختيارية"))}<label><input name="consent" type="checkbox" required> ${t("I consent to share my teaching profile, selected CV and public teaching work with this school for this application.", "أوافق على مشاركة ملفي التعليمي والسيرة المختارة وأعمالي العامة مع هذه المدرسة لهذا الطلب.")}</label><p class="recruit-hint">${t("Account passwords and private classroom content are not shared. Your profile is captured at application time.", "لا تُشارك كلمات المرور أو محتويات الصفوف الخاصة. يُحفظ الملف كما كان وقت التقديم.")}</p><p class="error" role="status"></p><button class="btn">${t("Submit application", "إرسال الطلب")}</button></form>`,
@@ -401,14 +432,30 @@ function jobDetail(id) {
       e.preventDefault();
       try {
         const f = new FormData(e.target);
-        R.apply(id, f.get("message"), f.has("consent"));
+        R.apply(opportunityId, f.get("message"), f.has("consent"));
         d.close();
-        jobDetail(id);
+        jobDetail(opportunityId);
       } catch (ex) {
-        report(ex, d.querySelector(".error"));
+        reportApplicationError(ex, d.querySelector(".error"), p);
       }
     };
   });
+}
+function openGuestApplyDialog(jobId) {
+  const opportunityId = safePublishedOpportunityId(jobId);
+  if (!opportunityId) return;
+  const signupQuery = new URLSearchParams({ role: "teacher", opportunity: opportunityId }),
+    loginQuery = new URLSearchParams({ opportunity: opportunityId }),
+    d = O.dialog(
+      `<h2>${t("Would you like to apply for this opportunity?", "تريد التقديم لهذه الفرصة؟")}</h2><p id="opportunity-auth-description">${t("Create a Teacher account or sign in to apply for this opportunity, or keep exploring available opportunities.", "أنشئ حساب معلم أو سجّل دخولك للتقديم على هذه الفرصة، أو تابع استكشاف الفرص المتاحة.")}</p><div class="opportunity-auth-actions"><a class="btn" data-signup href="../registration/registration.html?${esc(signupQuery.toString())}">${t("Create account", "إنشاء حساب")}</a><a class="btn soft" href="../login/login.html?${esc(loginQuery.toString())}">${t("Log in", "تسجيل الدخول")}</a><button class="btn soft" type="button" data-continue>${t("Continue exploring", "متابعة الاستكشاف")}</button></div>`,
+    );
+  d.classList.add("opportunity-auth-dialog");
+  d.setAttribute("aria-describedby", "opportunity-auth-description");
+  d.addEventListener("click", (event) => {
+    if (event.target === d) d.close();
+  });
+  d.querySelector("[data-continue]").addEventListener("click", () => d.close());
+  d.querySelector("[data-signup]").focus();
 }
 function teacherApplications() {
   const apps = R.applications().filter((a) => !statusFilter || a.status === statusFilter);

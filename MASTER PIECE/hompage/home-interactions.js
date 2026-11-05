@@ -4,6 +4,102 @@
   const $ = (s) => document.querySelector(s),
     S = OrbitSubscriptions,
     reduced = matchMedia("(prefers-reduced-motion: reduce)");
+  const themeToggle = $("#orbit-theme-toggle"),
+    systemAppearance = matchMedia("(prefers-color-scheme: dark)");
+  const themePreference = (() => {
+    const valid = (value) => ["light", "dark", "auto"].includes(value),
+      readLegacy = (key) => {
+        try {
+          return localStorage.getItem(key);
+        } catch {
+          return null;
+        }
+      },
+      read = (key, fallback) => {
+        try {
+          return OrbitAuth.get(key, fallback);
+        } catch {
+          return fallback;
+        }
+      },
+      storedAppearance = read("orbit.settings.appearance", null),
+      prefs = read("orbit.student.v1", {}),
+      appearance = valid(storedAppearance)
+        ? storedAppearance
+        : valid(prefs.theme)
+          ? prefs.theme
+          : readLegacy("orbitTheme") || readLegacy("theme") || "light";
+    let selected = valid(appearance) ? appearance : "light";
+
+    function resolve() {
+      return selected === "auto" ? (systemAppearance.matches ? "dark" : "light") : selected;
+    }
+    function saveResolved(mode) {
+      try {
+        const current = OrbitAuth.get("orbit.student.v1", {}),
+          legacy = OrbitAuth.get("orbit.preferences", {});
+        OrbitAuth.set("orbit.student.v1", { ...current, theme: mode });
+        OrbitAuth.set("orbit.preferences", { ...legacy, theme: mode });
+        localStorage.setItem("orbitTheme", mode);
+      } catch {
+        // Keep the active page usable when browser storage is unavailable.
+      }
+    }
+    function apply() {
+      const mode = resolve();
+      document.body.dataset.theme = mode;
+      document.documentElement.dataset.theme = mode;
+      document.documentElement.dataset.orbitAppearance = selected;
+      if (selected === "auto") saveResolved(mode);
+      return mode;
+    }
+    function choose(mode) {
+      selected = mode;
+      try {
+        const current = OrbitAuth.get("orbit.student.v1", {}),
+          legacy = OrbitAuth.get("orbit.preferences", {});
+        OrbitAuth.set("orbit.settings.appearance", mode);
+        OrbitAuth.set("orbit.student.v1", { ...current, theme: mode });
+        OrbitAuth.set("orbit.preferences", { ...legacy, theme: mode });
+        localStorage.setItem("orbitTheme", mode);
+      } catch {
+        // The visual change still applies if browser storage is unavailable.
+      }
+      return apply();
+    }
+    const onSystemChange = () => {
+      if (selected === "auto") apply();
+    };
+    if (systemAppearance.addEventListener)
+      systemAppearance.addEventListener("change", onSystemChange);
+    else systemAppearance.addListener(onSystemChange);
+    addEventListener(
+      "pagehide",
+      () => {
+        if (systemAppearance.removeEventListener)
+          systemAppearance.removeEventListener("change", onSystemChange);
+        else systemAppearance.removeListener(onSystemChange);
+      },
+      { once: true },
+    );
+    return { apply, choose, resolve, get appearance() { return selected; } };
+  })();
+  function renderThemeToggle() {
+    if (!themeToggle) return;
+    const dark = themePreference.apply() === "dark",
+      label = t(dark ? "Switch to light mode" : "Switch to dark mode");
+    themeToggle.setAttribute("aria-pressed", String(dark));
+    themeToggle.setAttribute("aria-label", label);
+    themeToggle.title = label;
+    themeToggle.querySelector("svg").innerHTML = dark
+      ? '<circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l2 2m10 10 2 2M5 19l2-2m12-12-2 2"/>'
+      : '<path d="M21 13A9 9 0 0 1 11 3a9 9 0 1 0 10 10Z"/>';
+  }
+  renderThemeToggle();
+  themeToggle?.addEventListener("click", () => {
+    themePreference.choose(themePreference.resolve() === "dark" ? "light" : "dark");
+    renderThemeToggle();
+  });
   const signup = $(".m-nav__cta");
   if (signup) {
     signup.href = "../registration/registration.html";
@@ -47,17 +143,13 @@
       }
     });
   }
-  const routes = ["lesson-planner", "channels", "lab", "lessons", "exchange", "lessons"];
-  document.querySelectorAll("#features .m-card").forEach((card, i) => {
+  document.querySelectorAll("#features .m-card").forEach((card) => {
     const title = card.querySelector("h3")?.textContent.trim() || t("Explore feature"),
-      route = routes[i];
-    if (!route) return;
+      destination = card.dataset.featureHref;
+    if (!destination) return;
     const anchor = document.createElement("a");
     anchor.className = card.className + " orbit-feature-link";
-    anchor.href =
-      i === 5
-        ? "../lesson/lesson.html?topic=forces#ai-assistant"
-        : "../" + route + "/" + route + ".html";
+    anchor.href = destination;
     anchor.setAttribute("aria-label", title);
     anchor.innerHTML = card.innerHTML;
     anchor.querySelectorAll("a").forEach((link) => {
@@ -69,11 +161,10 @@
     card.replaceWith(anchor);
   });
   const start = $(".u-cta .u-primary"),
-    journey = $(".u-cta .u-second"),
     features = $("#features"),
     focus = $("#focus"),
     panel = $("#panel");
-  if (start)
+  if (start?.tagName === "BUTTON")
     start.onclick = () => {
       features?.scrollIntoView({
         behavior: reduced.matches ? "instant" : "smooth",
@@ -95,6 +186,7 @@
   ];
   function open(i) {
     stage = i;
+    focus?.setAttribute("aria-hidden", "false");
     if (window.OrbitJourney) OrbitJourney.open(i);
     else {
       focus?.classList.add("on");
@@ -123,7 +215,6 @@
     controls.append(b);
   });
   focus?.querySelector(".u-qbig")?.append(controls);
-  if (journey) journey.onclick = () => open(0);
   $("#q-next")?.addEventListener(
     "click",
     (e) => {
@@ -144,7 +235,8 @@
       panel?.classList.remove("hide");
       $("#back")?.classList.remove("on");
     }
-    journey?.focus({ preventScroll: true });
+    focus?.setAttribute("aria-hidden", "true");
+    start?.focus({ preventScroll: true });
   }
   $("#back")?.addEventListener("click", close);
   document.addEventListener("keydown", (e) => {
@@ -165,14 +257,4 @@
       } else location.href = "../registration/registration.html?role=" + role;
     }),
   );
-  document.querySelectorAll("[data-service]").forEach((card) => {
-    const key = card.dataset.service;
-    if (!card.querySelector("a")) {
-      const a = document.createElement("a");
-      a.href = key.includes("school") ? "../pricing/pricing.html" : "../lessons/lessons.html";
-      a.className = "m-link";
-      a.textContent = t("Explore →");
-      card.append(a);
-    }
-  });
 })();

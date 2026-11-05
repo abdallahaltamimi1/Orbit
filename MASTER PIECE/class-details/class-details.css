@@ -65,13 +65,13 @@ body {
 #orbit-page .logo {
   width: 34px;
   height: 34px;
-  background: linear-gradient(135deg,var(--purple),#4675ff);
+  background: linear-gradient(135deg,var(--purple),var(--orbit-green-400));
   border-radius: 10px;
   color: white;
   font-size: 22px;
 }
 #orbit-page .level {
-  background: linear-gradient(125deg,var(--orbit-accent),#347cf9);
+  background: linear-gradient(125deg,var(--orbit-accent),var(--orbit-green-400));
   padding: 13px;
   border-radius: 13px;
   color: white;
@@ -150,8 +150,8 @@ body {
   color: #e93482;
 }
 #orbit-page .green {
-  background: #ddf8ee;
-  color: #00a875;
+  background: var(--orbit-green-100);
+  color: var(--orbit-accent);
 }
 #orbit-page .violet {
   background: var(--soft);
@@ -172,7 +172,7 @@ body {
 }
 #orbit-page .streak small {
   display: block;
-  color: #8490a5;
+  color: var(--orbit-accent);
   font-size: 10px;
 }
 #orbit-page .settings {
@@ -244,7 +244,7 @@ body {
   isolation: isolate;
   overflow: hidden;
   min-height: 156px;
-  background: linear-gradient(115deg,var(--orbit-accent),#386ff1);
+  background: linear-gradient(115deg,var(--orbit-accent),var(--orbit-green-500));
   border-radius: 15px;
   color: white;
   padding: 24px;
@@ -343,7 +343,7 @@ body {
 #orbit-page .ring small {
   font-size: 10px;
   margin-top: 4px;
-  color: #d6ddff;
+  color: var(--orbit-green-100);
 }
 #orbit-page .stats {
   display: grid;
@@ -378,16 +378,16 @@ body {
   color: #f4a000;
 }
 #orbit-page .icon.mint {
-  background: #e0f7ee;
-  color: #00ba85;
+  background: var(--orbit-green-100);
+  color: var(--orbit-accent);
 }
 #orbit-page .icon.rose {
   background: #ffe8f1;
   color: #f04088;
 }
 #orbit-page .icon.blue {
-  background: #e7f0ff;
-  color: #3d76ff;
+  background: var(--orbit-green-50);
+  color: var(--orbit-accent);
 }
 #orbit-page .stat strong {
   display: block;
@@ -424,7 +424,7 @@ body {
   margin: 0 0 4px;
 }
 #orbit-page .link {
-  color: #215af8;
+  color: var(--orbit-accent);
   font-size: 10px;
   font-weight: 600;
   background: none;
@@ -481,7 +481,7 @@ body {
   height: 6px;
 }
 #orbit-page .lesson-tile .bar span {
-  background: #347dff;
+  background: var(--orbit-green-400);
 }
 #orbit-page .lesson-tile:nth-child(2) .bar span {
   background: var(--purple);
@@ -500,16 +500,16 @@ body {
   align-items: center;
   gap: 11px;
   margin-top: 12px;
-  background: #e1f8f0;
+  background: var(--orbit-green-100);
   padding: 12px;
   border-radius: 10px;
 }
 #orbit-page .lab-banner .icon {
-  background: #08bc88;
+  background: var(--orbit-green-700);
   color: white;
 }
 #orbit-page .lab-banner .task-text {
-  color: #203749;
+  color: var(--orbit-green-900);
 }
 #orbit-page .rank {
   display: flex;
@@ -532,7 +532,7 @@ body {
   font-weight: 700;
 }
 #orbit-page .rank:nth-of-type(3) .place {
-  background: #b8c3d5;
+  background: var(--orbit-green-200);
 }
 #orbit-page .rank:nth-of-type(4) .place {
   background: #dc9b55;
@@ -540,10 +540,10 @@ body {
 #orbit-page .rank .avatar {
   width: 25px;
   height: 25px;
-  background: #397eff;
+  background: var(--orbit-green-400);
 }
 #orbit-page .rank:nth-of-type(3) .avatar {
-  background: #13ba84;
+  background: var(--orbit-green-700);
 }
 #orbit-page .rank.you .avatar {
   background: #ef4289;
@@ -602,24 +602,24 @@ body {
   text-align: center;
 }
 body[data-theme="dark"] {
-  --bg: #151b2c;
-  --panel: #1d263a;
+  --bg: var(--orbit-green-925);
+  --panel: var(--orbit-green-900);
   --side: var(--orbit-space);
-  --text: #ebeffa;
-  --muted: #a6b1c9;
-  --line: #323d54;
+  --text: var(--orbit-green-50);
+  --muted: var(--orbit-green-300);
+  --line: var(--orbit-green-800);
   --soft: var(--orbit-accent);
-  --tile: #252f45;
-  background: #101522;
+  --tile: var(--orbit-green-900);
+  background: var(--orbit-green-925);
 }
 body[data-theme="dark"] #orbit-page .task.late {
   background: var(--orbit-space);
 }
 body[data-theme="dark"] #orbit-page .lab-banner {
-  background: #1d423e;
+  background: var(--orbit-green-900);
 }
 body[data-theme="dark"] #orbit-page .lab-banner .task-text {
-  color: #e1fff4;
+  color: var(--orbit-green-50);
 }
 body[data-mood="fun"] #orbit-page .logo {
   animation: float 4s ease-in-out infinite;
@@ -634,7 +634,7 @@ body[data-mood="fun"] #orbit-page .logo {
   bottom: 25px;
   left: 50%;
   transform: translateX(-50%);
-  background: #252c43;
+  background: var(--orbit-green-900);
   color: white;
   padding: 12px 20px;
   border-radius: 12px;
@@ -701,7 +701,7 @@ body[data-mood="fun"] #orbit-page .logo {
   width: 90%;
 }
 #orbit-page dialog::backdrop {
-  background: #11182780;
+  background: color-mix(in srgb, var(--orbit-green-925) 50.20%, transparent);
 }
 #orbit-page .setting-row {
   display: flex;
@@ -922,8 +922,8 @@ body[data-mood="fun"] #orbit-page .logo {
 }
 :root {
   --purple: var(--orbit-accent);
-  --blue: #4278ed;
-  --line: #e9edf5;
+  --blue: var(--orbit-green-400);
+  --line: var(--orbit-green-50);
   --side: var(--orbit-soft);
   --bg: var(--orbit-canvas);
 }
@@ -1010,7 +1010,7 @@ body {
   justify-content: space-between;
   align-items: center;
   overflow: hidden;
-  background: linear-gradient(115deg,var(--orbit-accent),var(--orbit-accent) 55%,#397cec);
+  background: linear-gradient(115deg,var(--orbit-accent),var(--orbit-accent) 55%,var(--orbit-green-500));
   border-radius: 22px;
   min-height: 268px;
   color: white;
@@ -1176,8 +1176,8 @@ body {
   color: #f2a41d;
 }
 #orbit-page .mint {
-  background: #dff8ef;
-  color: #14af81;
+  background: var(--orbit-green-100);
+  color: var(--orbit-accent);
 }
 #orbit-page .pink {
   background: #ffe8f2;
@@ -1234,8 +1234,8 @@ body {
   color: var(--orbit-accent);
 }
 #orbit-page .blue {
-  background: #e6efff;
-  color: #365887;
+  background: var(--orbit-green-50);
+  color: var(--orbit-accent);
 }
 #orbit-page .peach {
   background: #fff0e4;
@@ -1356,7 +1356,7 @@ body {
   padding: 25px 18px;
   border-radius: 13px;
   min-height: 125px;
-  background: linear-gradient(120deg,var(--orbit-soft),#e7efff);
+  background: linear-gradient(120deg,var(--orbit-soft),var(--orbit-green-50));
   color: var(--orbit-accent);
 }
 #orbit-page .play-circle {
@@ -1425,7 +1425,7 @@ body {
   display: inline-block;
   width: 6px;
   height: 6px;
-  background: #18c798;
+  background: var(--orbit-green-600);
   border-radius: 50%;
   margin-inline-end: 5px;
 }
@@ -1454,7 +1454,7 @@ body {
   height: 7px;
 }
 #orbit-page .mission-progress .bar span {
-  background: linear-gradient(90deg,var(--orbit-accent),#5e85f4);
+  background: linear-gradient(90deg,var(--orbit-accent),var(--orbit-green-400));
 }
 #orbit-page .mission-card .btn {
   width: 100%;
@@ -1465,8 +1465,8 @@ body {
   margin-top: 13px;
 }
 #orbit-page .exchange-teaser {
-  background: #e0f6ed;
-  color: #338e72;
+  background: var(--orbit-green-100);
+  color: var(--orbit-accent);
   padding: 19px;
   border-radius: 15px;
   font-size: 13px;
@@ -1822,8 +1822,8 @@ body[data-theme="dark"] #orbit-page .purple {
   color: var(--orbit-soft);
 }
 body[data-theme="dark"] #orbit-page .blue {
-  background: #243652;
-  color: #cbdfff;
+  background: var(--orbit-green-800);
+  color: var(--orbit-green-100);
 }
 body[data-theme="dark"] #orbit-page .peach {
   background: #47332c;
@@ -1837,12 +1837,12 @@ body[data-theme="dark"] #orbit-page .channel-top .pill {
   background: #ffffff12;
 }
 body[data-theme="dark"] #orbit-page .lesson-preview {
-  background: linear-gradient(120deg,var(--orbit-space),#253754);
+  background: linear-gradient(120deg,var(--orbit-space),var(--orbit-green-800));
   color: var(--orbit-soft);
 }
 body[data-theme="dark"] #orbit-page .exchange-teaser {
-  background: #1b423a;
-  color: #b8ebd7;
+  background: var(--orbit-green-900);
+  color: var(--orbit-green-200);
 }
 #orbit-page .celebration {
   position: fixed;

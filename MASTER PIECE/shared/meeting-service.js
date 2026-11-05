@@ -23,10 +23,14 @@
   };
   function data() {
     const value = read(KEY, {});
+    const meetings=Array.isArray(value.meetings)?value.meetings:[],recruitment=window.OrbitRecruitment?.data();
+    for(const old of recruitment?.interviews||[]){if(meetings.some(m=>m.id===old.id))continue;const app=recruitment.applications.find(a=>a.id===old.applicationId&&a.teacherId===old.teacherId&&a.schoolId===old.schoolId&&a.jobId===old.jobId);if(!app)continue;meetings.push({...old,kind:'recruitment-interview',revision:old.revision||1,title:old.title||'Interview',channelName:recruitment.jobs.find(j=>j.id===old.jobId)?.title||'',teacherName:old.teacherName||app.profile?.name||app.teacherId,type:old.url?'interview-online':'interview-in-person',externalUrl:old.url||'',description:old.notes||'',recipientIds:[old.teacherId],resources:[],audience:{mode:'individual',studentIds:[]},timezone:old.timeZone||Intl.DateTimeFormat().resolvedOptions().timeZone,history:old.history||[],rescheduleRequests:old.rescheduleRequests||[],legacySource:true});}
+    const applications=new Set(meetings.filter(m=>m.kind==='recruitment-interview').map(m=>m.applicationId));
+    for(const appId of applications){const rows=meetings.filter(m=>m.kind==='recruitment-interview'&&m.applicationId===appId).sort((a,b)=>(Date.parse(a.createdAt)||0)-(Date.parse(b.createdAt)||0)||a.id.localeCompare(b.id)),used=new Set(),reserved=new Set(rows.map(m=>m.interviewNumber).filter(n=>Number.isSafeInteger(n)&&n>0));for(const m of rows){let n=m.interviewNumber;if(!Number.isSafeInteger(n)||n<1||used.has(n)){n=1;while(used.has(n)||reserved.has(n))n++;}m.interviewNumber=n;used.add(n);}}
     return {
       ...value,
       schema: 1,
-      meetings: Array.isArray(value.meetings) ? value.meetings : [],
+      meetings,
       groups: Array.isArray(value.groups) ? value.groups : [],
       notifications: Array.isArray(value.notifications) ? value.notifications : [],
     };
@@ -49,9 +53,12 @@
   }
   const ownChannels = () =>
     user().role === "teacher"
-      ? channels().filter((channel) => canonical(channel.teacher) === canonical(user().email))
+      ? channels().filter((channel) => OrbitAuth.managedChannel(channel) ? OrbitAuth.schoolChannelTeacher(channel, user().email) : canonical(channel.teacher) === canonical(user().email))
       : [];
   function members(channelId) {
+    const channel = channels().find(row => row.id === channelId);
+    if (OrbitAuth.managedChannel(channel)) return [...new Set([...(read("orbit.recruitment.v1", {}).accounts || []).map(row => row.email), "student@orbit.com"])]
+      .filter(id => OrbitAuth.schoolChannelStudent(channel, id, null, true)).map(id => ({ id, name: window.OrbitProfiles?.read(id, "student")?.name || id }));
     return Object.entries(read("orbit.memberships.v3", {}))
       .filter(([id, list]) => id !== "guest" && Array.isArray(list) && list.includes(channelId))
       .map(([id]) => ({ id, name: window.OrbitProfiles?.read(id, "student")?.name || id }));
@@ -60,7 +67,7 @@
     const channel = channels().find(
       (item) => item.id === channelId && canonical(item.teacher) === canonical(teacherId),
     );
-    if (!channel) fail("Choose one of your own channels.", "اختر إحدى قنواتك.");
+    if (!channel || OrbitAuth.managedChannel(channel) && !OrbitAuth.schoolChannelTeacher(channel, teacherId)) fail("Choose one of your own channels.", "اختر إحدى قنواتك.");
     return channel;
   }
   function schoolFor(channel, teacherId) {
@@ -258,7 +265,7 @@
     );
     const db = data();
     const old = meetingId ? db.meetings.find((meeting) => meeting.id === meetingId) : null;
-    if (meetingId && (!old || old.teacherId !== active.email))
+    if (meetingId && (!old || old.teacherId !== active.email || old.kind === "recruitment-interview"))
       fail("Only the owner can edit this meeting.", "مالك الاجتماع فقط يستطيع تعديله.");
     if (old && old.revision !== expectedRevision)
       fail(
@@ -312,12 +319,174 @@
     persist(db);
     return meeting;
   }
-  function cancel(id) {
-    const active = requireRole("teacher"),
+  function interviewApplication(applicationId, schoolId = user().email) {
+    if (user().role !== "school" || !schoolId || user().email !== schoolId)
+      fail("This interview is not available to your account.", "هذه المقابلة غير متاحة لحسابك.");
+    const recruitment = window.OrbitRecruitment,
+      application = recruitment?.applications().find((item) => item.id === applicationId),
+      job = application && recruitment.getJob(application.jobId);
+    if (!application || !job || application.schoolId !== schoolId)
+      fail("Choose an application belonging to your school.", "اختر طلبًا تابعًا لمدرستك.");
+    return { application, job };
+  }
+  function interviewForApplication(applicationId) {
+    requireRole("school");
+    return (
+      data().meetings.find(
+        (meeting) =>
+          meeting.kind === "recruitment-interview" &&
+          meeting.applicationId === applicationId &&
+          meeting.schoolId === user().email &&
+          meeting.status === "scheduled",
+      ) || null
+    );
+  }
+  function putInterview(values, applicationId, meetingId = null, expectedRevision = null) {
+    const school = requireRole("school"),
+      recruitment = window.OrbitRecruitment,
+      { application, job } = interviewApplication(applicationId, school.email),
+      original = data(),
+      before = data(),
+      old = meetingId
+        ? before.meetings.find(
+            (meeting) =>
+              meeting.id === meetingId &&
+              meeting.kind === "recruitment-interview" &&
+              meeting.applicationId === applicationId &&
+              meeting.schoolId === school.email,
+          )
+        : null;
+    if (meetingId && !old) fail("This interview is not available.", "هذه المقابلة غير متاحة.");
+    if (old && old.revision !== expectedRevision)
+      fail("This meeting changed. Reload it before editing.", "تغيّر الاجتماع. أعد فتحه قبل التعديل.");
+    if (old && old.status !== "scheduled")
+      fail("A cancelled interview cannot be rescheduled.", "لا يمكن إعادة جدولة مقابلة ملغاة.");
+    if (
+      !["pending", "review", "shortlisted", "interview_scheduled"].includes(application.status)
+    )
+      fail("This application is no longer eligible for an interview.", "لم يعد هذا الطلب مؤهلًا للمقابلة.");
+    const duplicate = before.meetings.find(
+      (meeting) =>
+        meeting.kind === "recruitment-interview" &&
+        meeting.applicationId === applicationId &&
+        meeting.status === "scheduled" &&
+        meeting.id !== old?.id,
+    );
+    if (duplicate && !old)
+      fail("An interview is already scheduled for this application.", "تمت جدولة مقابلة لهذا الطلب بالفعل.");
+    const start = Date.parse(values.startAt),
+      end = Date.parse(values.endAt),
+      type = values.type,
+      location = String(values.location || "").trim().slice(0, 500),
+      externalUrl = String(values.externalUrl || "").trim();
+    if (
+      before.meetings.some(
+        (meeting) =>
+          meeting.kind === "recruitment-interview" &&
+          meeting.status === "scheduled" &&
+          meeting.id !== old?.id &&
+          (meeting.schoolId === school.email || meeting.teacherId === application.teacherId) &&
+          Date.parse(meeting.startAt) < end &&
+          Date.parse(meeting.endAt) > start,
+      )
+    )
+      fail("This time overlaps another interview for the school or teacher.", "يتعارض الموعد مع مقابلة أخرى للمدرسة أو المعلم.");
+    if (!String(values.title || "").trim() || values.title.length > 150 || !String(values.description || "").trim())
+      fail("Complete the interview title and details.", "أكمل عنوان المقابلة وتفاصيلها.");
+    if (!Number.isFinite(start) || !Number.isFinite(end) || start <= Date.now() || end <= start || end - start < 15 * 60000 || end - start > 180 * 60000)
+      fail("Choose a future interview between 15 and 180 minutes.", "اختر موعدًا مستقبليًا مدته بين 15 و180 دقيقة.");
+    if (!["interview-online", "interview-in-person"].includes(type))
+      fail("Choose online or in-person interview.", "اختر مقابلة عن بُعد أو حضورية.");
+    if (type === "interview-in-person" && !location)
+      fail("Enter the in-person interview location.", "أدخل موقع المقابلة الحضورية.");
+    if (type === "interview-online" && !externalUrl) fail("Enter an HTTPS meeting link.", "أدخل رابط اجتماع HTTPS.");
+    if (externalUrl) {
+      let parsed;
+      try {
+        parsed = new URL(externalUrl);
+      } catch {
+        fail("Use a valid HTTPS meeting link.", "استخدم رابط اجتماع HTTPS صحيحًا.");
+      }
+      if (parsed.protocol !== "https:" || parsed.username || parsed.password || externalUrl.length > 2000)
+        fail("Use a valid HTTPS meeting link.", "استخدم رابط اجتماع HTTPS صحيحًا.");
+    }
+    if (type === "interview-in-person" && externalUrl)
+      fail("In-person interviews do not use an online meeting link.", "المقابلة الحضورية لا تستخدم رابطًا إلكترونيًا.");
+    const id = old?.id || crypto.randomUUID(),
+      teacher = recruitment.teacher(application.teacherId),
+      record = {
+        ...(old || {}),
+        id,
+        kind: "recruitment-interview",
+        applicationId,
+        interviewNumber: old?.interviewNumber || Math.max(0,...before.meetings.filter(m=>m.kind==='recruitment-interview'&&m.applicationId===applicationId).map(m=>m.interviewNumber||0))+1,
+        jobId: application.jobId,
+        schoolId: school.email,
+        teacherId: application.teacherId,
+        teacherName: teacher.name,
+        title: String(values.title).trim().slice(0, 150),
+        subject: String(values.subject || job.subject).trim().slice(0, 100),
+        description: String(values.description).trim().slice(0, 3000),
+        channelId: null,
+        channelName: job.title,
+        audience: { mode: "individual", studentIds: [] },
+        recipientIds: [application.teacherId],
+        type,
+        location: type === "interview-in-person" ? location : "",
+        externalUrl: type === "interview-online" ? externalUrl : "",
+        roomName: old?.roomName || "LearningOrbit" + id.replaceAll("-", ""),
+        resources: [],
+        startAt: new Date(start).toISOString(),
+        endAt: new Date(end).toISOString(),
+        timezone: String(values.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone),
+        status: "scheduled",
+        revision: old ? old.revision + 1 : 1,
+        createdAt: old?.createdAt || new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        history: [...(old?.history || []), {at:new Date().toISOString(),actorId:school.email,action:old?'rescheduled':'scheduled',startAt:old?.startAt||new Date(start).toISOString(),endAt:old?.endAt||new Date(end).toISOString()}],
+        rescheduleRequests: old?.rescheduleRequests || [],
+      };
+    if (old) before.meetings = before.meetings.map((meeting) => (meeting.id === id ? record : meeting));
+    else before.meetings.unshift(record);
+    const when = new Intl.DateTimeFormat("en-GB", { dateStyle: "medium", timeStyle: "short", timeZone: record.timezone }).format(new Date(start));
+    notify(
+      before,
+      [application.teacherId],
+      record,
+      `${old ? "changed" : "created"}:${record.id}:${record.revision}`,
+      `${old ? "Interview rescheduled: " : "Interview scheduled: "}${when}`,
+      `${old ? "تم تغيير موعد المقابلة: " : "تمت جدولة مقابلة: "}${new Intl.DateTimeFormat("ar-JO", { dateStyle: "medium", timeStyle: "short", timeZone: record.timezone }).format(new Date(start))}`,
+    );
+    persist(before);
+    try {
+      recruitment.linkInterviewMeeting(applicationId, id);
+    } catch (error) {
+      persist(original);
+      throw error;
+    }
+    return record;
+  }
+  function cancel(id, expectedRevision = null) {
+    const active = user(),
       db = data(),
-      meeting = db.meetings.find((item) => item.id === id && item.teacherId === active.email);
+      meeting = db.meetings.find((item) => item.id === id);
+    const interview = meeting?.kind === "recruitment-interview";
+    if (interview) {
+      if (active.role !== "school" || meeting.schoolId !== active.email)
+        fail("Only the organizing school can cancel this interview.", "المدرسة المنظمة فقط يمكنها إلغاء هذه المقابلة.");
+    } else {
+      requireRole("teacher");
+      if (!meeting || meeting.teacherId !== active.email)
+        fail("Meeting not found or not owned by you.", "الاجتماع غير موجود أو ليس ملكك.");
+      const channel = channels().find(item => item.id === meeting.channelId);
+      if (OrbitAuth.managedChannel(channel)) ownedChannel(channel.id, active.email);
+    }
     if (!meeting) fail("Meeting not found or not owned by you.", "الاجتماع غير موجود أو ليس ملكك.");
     if (meeting.status === "cancelled") return;
+    if(interview&&expectedRevision!==null&&meeting.revision!==expectedRevision)fail("Interview changed. Reopen it.","تغيرت المقابلة. أعد فتحها.");
+    const before = data();
+    if(interview&&meeting.status==='completed')fail("Completed interviews remain in history.","تبقى المقابلات المكتملة في السجل.");
+    if(interview){meeting.history=[...(meeting.history||[]),{at:new Date().toISOString(),actorId:active.email,action:"cancelled",startAt:meeting.startAt,endAt:meeting.endAt}];for(const r of meeting.rescheduleRequests||[])if(r.status==='pending')Object.assign(r,{status:"cancelled",decidedAt:new Date().toISOString(),decidedBy:active.email});}
     meeting.status = "cancelled";
     meeting.revision++;
     meeting.updatedAt = new Date().toISOString();
@@ -326,16 +495,24 @@
       meeting.recipientIds,
       meeting,
       "cancelled:" + id + ":" + meeting.revision,
-      "A meeting was cancelled: " + meeting.title,
-      "تم إلغاء اجتماع: " + meeting.title,
+      interview ? "An interview was cancelled: " + meeting.title : "A meeting was cancelled: " + meeting.title,
+      interview ? "تم إلغاء مقابلة: " + meeting.title : "تم إلغاء اجتماع: " + meeting.title,
     );
     persist(db);
+    if (interview) {
+      try {
+        window.OrbitRecruitment.clearInterviewMeeting(meeting.applicationId, meeting.id);
+      } catch (error) {
+        persist(before);
+        throw error;
+      }
+    }
   }
   function remove(id) {
     const active = requireRole("teacher"),
       db = data(),
       meeting = db.meetings.find((item) => item.id === id && item.teacherId === active.email);
-    if (!meeting) fail("Meeting not found or not owned by you.", "الاجتماع غير موجود أو ليس ملكك.");
+    if (!meeting || meeting.kind === "recruitment-interview") fail("Meeting not found or not owned by you.", "الاجتماع غير موجود أو ليس ملكك.");
     notify(
       db,
       meeting.recipientIds,
@@ -348,39 +525,76 @@
     persist(db);
   }
   function status(meeting, now = Date.now()) {
-    if (meeting.status === "cancelled") return "cancelled";
+    if (["cancelled","completed"].includes(meeting.status)) return meeting.status;
+    // Interview completion requires the organizing school, even after the appointment ends.
+    if (meeting.kind === "recruitment-interview" && now >= Date.parse(meeting.endAt)) return "scheduled";
     if (now < Date.parse(meeting.startAt)) return "upcoming";
     return now < Date.parse(meeting.endAt) ? "live" : "completed";
   }
   function canView(meeting, active = user()) {
     if (!active.email) return false;
+    if (meeting.kind === "recruitment-interview") {
+      const application = window.OrbitRecruitment?.data().applications.find(
+        (item) => item.id === meeting.applicationId,
+      );
+      if (
+        !application ||
+        application.jobId !== meeting.jobId ||
+        application.teacherId !== meeting.teacherId ||
+        application.schoolId !== meeting.schoolId ||
+        !meeting.recipientIds.includes(meeting.teacherId)
+      )
+        return false;
+      const channel = channels().find(c => c.id === meeting.channelId);
+    if (OrbitAuth.managedChannel(channel)) return active.role === "teacher" ? meeting.teacherId === active.email && OrbitAuth.schoolChannelTeacher(channel, active.email) :
+      active.role === "student" && meeting.recipientIds.includes(active.email) && OrbitAuth.schoolChannelStudent(channel, active.email, null, true);
+    if (active.role === "teacher") return meeting.teacherId === active.email;
+      if (active.role === "school") return meeting.schoolId === active.email;
+      return false;
+    }
     if (active.role === "teacher") return meeting.teacherId === active.email;
     if (active.role === "student")
       return (
+        !!channels().find(c=>c.id===meeting.channelId) &&
+        OrbitAuth.schoolStudentAccess(channels().find(c=>c.id===meeting.channelId),active.email) !== false &&
         meeting.recipientIds.includes(active.email) &&
         (read("orbit.memberships.v3", {})[active.email] || []).includes(meeting.channelId)
       );
-    if (active.role === "school") {
-      const channel = channels().find((item) => item.id === meeting.channelId);
-      return (
-        !!channel &&
-        meeting.schoolId === active.email &&
-        schoolFor(channel, meeting.teacherId) === active.email
-      );
-    }
+    // The existing non-interview meeting model is teacher-to-student and
+    // channel-scoped. School-channel association alone must not expose lessons.
+    if (active.role === "school") return false;
     return false;
   }
   const visible = () =>
     data()
       .meetings.filter((meeting) => canView(meeting))
       .sort((a, b) => Date.parse(a.startAt) - Date.parse(b.startAt));
+  const recruitmentInterviews = () =>
+    visible().filter((meeting) => meeting.kind === "recruitment-interview");
   function get(id) {
     const meeting = data().meetings.find((item) => item.id === id);
     return meeting && canView(meeting) ? meeting : null;
   }
+  function updateInterview(values, meetingId, expectedRevision) {
+    const meeting = get(meetingId);
+    if (!meeting || meeting.kind !== "recruitment-interview" || user().role !== "school")
+      fail("This interview is not available.", "هذه المقابلة غير متاحة.");
+    return putInterview(values, meeting.applicationId, meetingId, expectedRevision);
+  }
+
+  function interviewRecord(db,id){const m=db.meetings.find(m=>m.id===id&&m.kind==='recruitment-interview');if(!m||!canView(m))fail('Interview unavailable.','المقابلة غير متاحة.');return m;}
+  function futureInterview(m){const app=window.OrbitRecruitment.data().applications.find(a=>a.id===m.applicationId);if(m.status!=='scheduled'||Date.parse(m.startAt)<=Date.now()||!app||['accepted','rejected','withdrawn'].includes(app.status))fail('This interview can no longer be rescheduled.','لم يعد تغيير موعد هذه المقابلة متاحًا.');}
+  function rescheduleSlot(db,m,startAt){const start=Date.parse(startAt),duration=Date.parse(m.endAt)-Date.parse(m.startAt),end=start+duration;if(!Number.isFinite(start)||start<=Date.now()||!Number.isFinite(duration)||duration<=0||start===Date.parse(m.startAt))fail('Choose a different future date and time.','اختر تاريخًا ووقتًا مختلفين في المستقبل.');if(db.meetings.some(x=>x.id!==m.id&&x.kind==='recruitment-interview'&&x.status==='scheduled'&&(x.schoolId===m.schoolId||x.teacherId===m.teacherId)&&Date.parse(x.startAt)<end&&Date.parse(x.endAt)>start))fail('This time overlaps another interview.','يتعارض الموعد مع مقابلة أخرى.');return {startAt:new Date(start).toISOString(),endAt:new Date(end).toISOString()};}
+  function requestInterviewReschedule(id,startAt,reason,revision){const actor=requireRole('teacher'),db=data(),m=interviewRecord(db,id);futureInterview(m);if(m.teacherId!==actor.email||m.revision!==revision)fail('Interview changed. Reopen it.','تغيرت المقابلة. أعد فتحها.');if(!String(reason||'').trim()||String(reason).length>1500)fail('Provide a reason, up to 1500 characters.','أدخل سببًا لا يتجاوز 1500 حرف.');m.rescheduleRequests ||= [];if(m.rescheduleRequests.some(r=>r.status==='pending'))fail('A request is already pending.','يوجد طلب قيد المراجعة بالفعل.');const slot=rescheduleSlot(db,m,startAt),r={id:crypto.randomUUID(),interviewId:id,applicationId:m.applicationId,teacherId:actor.email,originalStartAt:m.startAt,originalEndAt:m.endAt,...slot,baseRevision:m.revision,reason:reason.trim(),status:'pending',createdAt:new Date().toISOString()};m.rescheduleRequests.push(r);notify(db,[m.schoolId,m.teacherId],m,'reschedule-request:'+r.id,'Interview reschedule requested','طلب تغيير موعد مقابلة');persist(db);return r;}
+  function decideInterviewReschedule(id,requestId,approve,response='',revision){const actor=requireRole('school'),db=data(),m=interviewRecord(db,id),r=m.rescheduleRequests?.find(r=>r.id===requestId&&r.status==='pending');if(m.schoolId!==actor.email||!r||m.revision!==revision||typeof approve!=='boolean'||String(response).length>1500)fail('Request changed. Reopen it.','تغير الطلب. أعد فتحه.');if(approve){futureInterview(m);if(r.baseRevision!==m.revision||r.originalStartAt!==m.startAt||r.originalEndAt!==m.endAt)fail('The original appointment changed. Reject this request and ask for a new one.','تغير الموعد الأصلي. ارفض الطلب واطلب طلبًا جديدًا.');const slot=rescheduleSlot(db,m,r.startAt);m.history=[...(m.history||[]),{at:new Date().toISOString(),actorId:actor.email,action:'reschedule-approved',startAt:m.startAt,endAt:m.endAt,requestId:r.id}];Object.assign(m,slot);m.revision++;m.updatedAt=new Date().toISOString();}Object.assign(r,{status:approve?'approved':'rejected',decidedAt:new Date().toISOString(),decidedBy:actor.email,response:String(response).trim()});notify(db,[m.teacherId,m.schoolId],m,'reschedule-decision:'+r.id,approve?'Interview reschedule approved':'Interview reschedule rejected',approve?'تمت الموافقة على تغيير موعد المقابلة':'رُفض طلب تغيير موعد المقابلة');persist(db);return r;}
+  function completeInterview(id,revision){const actor=requireRole('school'),original=data(),db=data(),m=interviewRecord(db,id);if(m.schoolId!==actor.email||m.revision!==revision||m.status!=='scheduled'||!Number.isFinite(Date.parse(m.startAt))||!Number.isFinite(Date.parse(m.endAt))||Date.parse(m.endAt)<=Date.parse(m.startAt)||Date.parse(m.endAt)>Date.now())fail('Only a finished scheduled interview can be completed.','يمكن إكمال المقابلة المجدولة بعد انتهاء موعدها فقط.');m.status='completed';m.revision++;m.updatedAt=new Date().toISOString();m.history=[...(m.history||[]),{at:m.updatedAt,actorId:actor.email,action:'completed',startAt:m.startAt,endAt:m.endAt}];for(const r of m.rescheduleRequests||[])if(r.status==='pending')Object.assign(r,{status:'expired',decidedAt:m.updatedAt,decidedBy:actor.email});notify(db,[m.teacherId],m,'completed:'+id,'Interview completed','اكتملت المقابلة');persist(db);try{window.OrbitRecruitment.clearInterviewMeeting(m.applicationId,m.id,true);}catch(error){persist(original);throw error;}return m;}
   function entry(id) {
     const meeting = get(id);
-    if (!meeting || !["teacher", "student"].includes(user().role))
+    const active = user();
+    // get() has already checked the interview/application relationship and ownership.
+    const organizingSchool = active.role === "school" &&
+      meeting?.kind === "recruitment-interview" && meeting.schoolId === active.email;
+    if (!meeting || (!["teacher", "student"].includes(active.role) && !organizingSchool))
       fail("This meeting is not available to your account.", "هذا الاجتماع غير متاح لحسابك.");
     if (status(meeting) !== "live")
       fail(
@@ -414,12 +628,7 @@
   const notifications = () =>
     data().notifications.filter((item) => item.recipient === user().email);
   function markRead(id) {
-    const db = data(),
-      item = db.notifications.find((item) => item.id === id && item.recipient === user().email);
-    if (item && !item.read) {
-      item.read = true;
-      persist(db);
-    }
+    const db=data(),items=db.notifications.filter(item=>item.recipient===user().email&&(Array.isArray(id)?id.includes(item.id):item.id===id)&&!item.read);if(items.length){items.forEach(item=>item.read=true);persist(db);}
   }
   async function initializeDemo() {
     requireRole("teacher");
@@ -575,10 +784,15 @@
     groups,
     putGroup,
     put,
+    putInterview,
+    requestInterviewReschedule,decideInterviewReschedule,completeInterview,
+    interviewForApplication,
+    updateInterview,
     cancel,
     remove,
     status,
     visible,
+    recruitmentInterviews,
     get,
     entry,
     reminders,

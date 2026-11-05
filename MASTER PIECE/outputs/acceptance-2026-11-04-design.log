@@ -1,0 +1,72 @@
+
+0 anti-patterns found.
+
+── Advisory (not counted as failures) ──
+
+C:\Users\user\Desktop\MasterPiece\MASTER PIECE\school-management\school-management.css
+  line 7: [design-system-font-size] font-size: clamp(1.7rem, 3vw, 2.2rem) has fluid endpoints 1.7rem and 2.2rem off the DESIGN.md type ramp
+    → A literal font-size is off the type ramp documented in DESIGN.md typography. Use a documented size step or update the design system if the new step is intentional.
+  line 8: [design-system-font-size] font-size: 1.4rem is off the DESIGN.md type ramp
+    → A literal font-size is off the type ramp documented in DESIGN.md typography. Use a documented size step or update the design system if the new step is intentional.
+  line 9: [design-system-font-size] font-size: 1.1rem is off the DESIGN.md type ramp
+    → A literal font-size is off the type ramp documented in DESIGN.md typography. Use a documented size step or update the design system if the new step is intentional.
+  line 12: [design-system-radius] border-radius: 8px is outside the DESIGN.md rounded scale
+    → A border-radius value is outside the DESIGN.md rounded scale. Use a documented radius token or update the design system if the new shape is intentional.
+  line 21: [design-system-font-size] font-size: 2rem is off the DESIGN.md type ramp
+    → A literal font-size is off the type ramp documented in DESIGN.md typography. Use a documented size step or update the design system if the new step is intentional.
+  line 66: [design-system-font-size] font-size: 1.4rem is off the DESIGN.md type ramp
+    → A literal font-size is off the type ramp documented in DESIGN.md typography. Use a documented size step or update the design system if the new step is intentional.
+  line 73: [design-system-font-size] font-size: 1.4rem is off the DESIGN.md type ramp
+    → A literal font-size is off the type ramp documented in DESIGN.md typography. Use a documented size step or update the design system if the new step is intentional.
+  line 99: [design-system-font-size] font-size: 1.1rem is off the DESIGN.md type ramp
+    → A literal font-size is off the type ramp documented in DESIGN.md typography. Use a documented size step or update the design system if the new step is intentional.
+  line 105: [design-system-font-size] font-size: 1.25rem is off the DESIGN.md type ramp
+    → A literal font-size is off the type ramp documented in DESIGN.md typography. Use a documented size step or update the design system if the new step is intentional.
+  line 108: [design-system-font-size] font-size: 16px is off the DESIGN.md type ramp
+    → A literal font-size is off the type ramp documented in DESIGN.md typography. Use a documented size step or update the design system if the new step is intentional.
+  line 154: [design-system-radius] border-radius: 8px is outside the DESIGN.md rounded scale
+    → A border-radius value is outside the DESIGN.md rounded scale. Use a documented radius token or update the design system if the new shape is intentional.
+  line 216: [design-system-font-size] font-size: 16px is off the DESIGN.md type ramp
+    → A literal font-size is off the type ramp documented in DESIGN.md typography. Use a documented size step or update the design system if the new step is intentional.
+  line 223: [design-system-radius] border-radius: 8px is outside the DESIGN.md rounded scale
+    → A border-radius value is outside the DESIGN.md rounded scale. Use a documented radius token or update the design system if the new shape is intentional.
+  line 224: [design-system-font-size] font-size: 1.05rem is off the DESIGN.md type ramp
+    → A literal font-size is off the type ramp documented in DESIGN.md typography. Use a documented size step or update the design system if the new step is intentional.
+  line 327: [design-system-radius] border-radius: 6px is outside the DESIGN.md rounded scale
+    → A border-radius value is outside the DESIGN.md rounded scale. Use a documented radius token or update the design system if the new shape is intentional.
+  line 358: [design-system-font-size] font-size: 1.2rem is off the DESIGN.md type ramp
+    → A literal font-size is off the type ramp documented in DESIGN.md typography. Use a documented size step or update the design system if the new step is intentional.
+  line 359: [design-system-font-size] font-size: 1rem is off the DESIGN.md type ramp
+    → A literal font-size is off the type ramp documented in DESIGN.md typography. Use a documented size step or update the design system if the new step is intentional.
+  line 363: [design-system-font-size] font-size: 1.65rem is off the DESIGN.md type ramp
+    → A literal font-size is off the type ramp documented in DESIGN.md typography. Use a documented size step or update the design system if the new step is intentional.
+  line 376: [design-system-font-size] font-size: 16px is off the DESIGN.md type ramp
+    → A literal font-size is off the type ramp documented in DESIGN.md typography. Use a documented size step or update the design system if the new step is intentional.
+  line 399: [design-system-font-size] font-size: 16px is off the DESIGN.md type ramp
+    → A literal font-size is off the type ramp documented in DESIGN.md typography. Use a documented size step or update the design system if the new step is intentional.
+  line 414: [design-system-font-size] font-size: 16px is off the DESIGN.md type ramp
+    → A literal font-size is off the type ramp documented in DESIGN.md typography. Use a documented size step or update the design system if the new step is intentional.
+  line 429: [design-system-font-size] font-size: 16px is off the DESIGN.md type ramp
+    → A literal font-size is off the type ramp documented in DESIGN.md typography. Use a documented size step or update the design system if the new step is intentional.
+  line 444: [design-system-font-size] font-size: 1rem is off the DESIGN.md type ramp
+    → A literal font-size is off the type ramp documented in DESIGN.md typography. Use a documented size step or update the design system if the new step is intentional.
+  line 457: [design-system-font-size] font-size: 16px is off the DESIGN.md type ramp
+    → A literal font-size is off the type ramp documented in DESIGN.md typography. Use a documented size step or update the design system if the new step is intentional.
+  line 464: [design-system-font-size] font-size: 1.1rem is off the DESIGN.md type ramp
+    → A literal font-size is off the type ramp documented in DESIGN.md typography. Use a documented size step or update the design system if the new step is intentional.
+  line 479: [design-system-font-size] font-size: 18px is off the DESIGN.md type ramp
+    → A literal font-size is off the type ramp documented in DESIGN.md typography. Use a documented size step or update the design system if the new step is intentional.
+  line 494: [design-system-font-size] font-size: .75rem is off the DESIGN.md type ramp
+    → A literal font-size is off the type ramp documented in DESIGN.md typography. Use a documented size step or update the design system if the new step is intentional.
+  line 502: [design-system-font-size] font-size: 16px is off the DESIGN.md type ramp
+    → A literal font-size is off the type ramp documented in DESIGN.md typography. Use a documented size step or update the design system if the new step is intentional.
+  line 505: [design-system-font-size] font-size: 1rem is off the DESIGN.md type ramp
+    → A literal font-size is off the type ramp documented in DESIGN.md typography. Use a documented size step or update the design system if the new step is intentional.
+  line 516: [design-system-font-size] font-size: 1rem is off the DESIGN.md type ramp
+    → A literal font-size is off the type ramp documented in DESIGN.md typography. Use a documented size step or update the design system if the new step is intentional.
+  line 521: [design-system-font-size] font-size: 16px is off the DESIGN.md type ramp
+    → A literal font-size is off the type ramp documented in DESIGN.md typography. Use a documented size step or update the design system if the new step is intentional.
+
+31 advisory notes. Suppress with --no-advisory.
+
+Note: ai-color-palette's purple/violet check is off: C:\Users\user\Desktop\MasterPiece\MASTER PIECE\DESIGN.md declares sidecar.action.tonalRamp[0] (#120065).

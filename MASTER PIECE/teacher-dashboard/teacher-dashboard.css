@@ -1,10 +1,10 @@
 :root {
-  --bg: #f9fbff;
+  --bg: var(--orbit-green-50);
   --panel: #fff;
   --side: var(--orbit-canvas);
-  --text: #243047;
-  --muted: #7f8aa1;
-  --line: #e5ebf5;
+  --text: var(--orbit-green-900);
+  --muted: var(--orbit-green-500);
+  --line: var(--orbit-green-100);
   --purple: var(--orbit-accent);
   --soft: var(--orbit-soft);
   color-scheme: light;
@@ -76,7 +76,7 @@ body {
   width: 36px;
   height: 36px;
   border-radius: 11px;
-  background: linear-gradient(135deg,var(--orbit-accent),#4777f5);
+  background: linear-gradient(135deg,var(--orbit-accent),var(--orbit-green-400));
   color: white;
 }
 #orbit-page .brand .icon {
@@ -142,7 +142,7 @@ body {
   align-items: center;
   gap: 11px;
   padding: 12px 11px;
-  color: #7b849c;
+  color: var(--orbit-accent);
   border-radius: 9px;
   font-size: 13px;
   transition: background .2s;
@@ -259,7 +259,7 @@ body {
   font-size: 12px;
 }
 #orbit-page .hero {
-  background: linear-gradient(115deg,var(--orbit-accent),var(--orbit-accent) 55%,#347cf1);
+  background: linear-gradient(115deg,var(--orbit-accent),var(--orbit-accent) 55%,var(--orbit-green-500));
   border-radius: 20px;
   color: white;
   padding: 29px 30px;
@@ -448,12 +448,12 @@ body {
   flex-shrink: 0;
 }
 #orbit-page .metrics > div:nth-child(2) .metric-icon {
-  background: #e7efff;
-  color: #397cf4;
+  background: var(--orbit-green-50);
+  color: var(--orbit-accent);
 }
 #orbit-page .metrics > div:nth-child(3) .metric-icon {
-  background: #e1f8ee;
-  color: #0ab888;
+  background: var(--orbit-green-100);
+  color: var(--orbit-accent);
 }
 #orbit-page .metrics > div:nth-child(4) .metric-icon {
   background: #fff4d8;
@@ -472,7 +472,7 @@ body {
 }
 #orbit-page .metrics > div > div > span {
   font-size: 9px;
-  color: #a1a9b9;
+  color: var(--orbit-accent);
   display: block;
   line-height: 1.6;
 }
@@ -504,7 +504,7 @@ body {
   align-items: center;
   gap: 4px;
   padding: 4px;
-  background: #f0f2f9;
+  background: var(--orbit-green-50);
   border-radius: 9px;
   margin-bottom: 15px;
 }
@@ -535,9 +535,9 @@ body {
   overflow: hidden;
 }
 #orbit-page .channel-card.blue {
-  background: #eaf1ff;
-  border-color: #dee8fb;
-  color: #3c5d8b;
+  background: var(--orbit-green-50);
+  border-color: var(--orbit-green-100);
+  color: var(--orbit-accent);
 }
 #orbit-page .channel-top {
   display: flex;
@@ -700,8 +700,8 @@ body {
   flex-shrink: 0;
 }
 #orbit-page .post-type.video {
-  background: #e9efff;
-  color: #447fe2;
+  background: var(--orbit-green-50);
+  color: var(--orbit-accent);
 }
 #orbit-page .post-type.assignment {
   background: #fff2da;
@@ -848,7 +848,7 @@ body {
 #orbit-page .credential-note {
   display: block;
   font-size: 9px;
-  color: #a5a8b6;
+  color: var(--orbit-green-300);
   margin-top: 12px;
   line-height: 1.8;
 }
@@ -935,7 +935,7 @@ body {
   padding-top: 18px;
   margin-top: 30px;
   font-size: 10px;
-  color: #a1a7b6;
+  color: var(--orbit-muted);
   line-height: 1.8;
 }
 #orbit-page dialog {
@@ -983,7 +983,7 @@ body {
   margin-top: 8px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: #f8f9fc;
+  background: var(--orbit-green-50);
   color: var(--text);
   padding: 11px 12px;
   resize: vertical;
@@ -1021,8 +1021,8 @@ body {
   height: 43px;
   display: grid;
   place-items: center;
-  background: #e0f8ee;
-  color: #0cb585;
+  background: var(--orbit-green-100);
+  color: var(--orbit-accent);
   border-radius: 50%;
   margin-bottom: 16px;
 }
@@ -1148,12 +1148,12 @@ body[data-mood="calm"] #orbit-page * {
   scroll-behavior: auto !important;
 }
 body[data-theme="dark"] {
-  --bg: #171d2c;
-  --panel: #20283b;
+  --bg: var(--orbit-green-925);
+  --panel: var(--orbit-green-900);
   --side: var(--orbit-space);
-  --text: #e3e9f5;
-  --muted: #a1acc3;
-  --line: #333e54;
+  --text: var(--orbit-green-100);
+  --muted: var(--orbit-green-300);
+  --line: var(--orbit-green-800);
   --purple: var(--orbit-accent);
   --soft: var(--orbit-space);
   color-scheme: dark;
@@ -1179,7 +1179,7 @@ body[data-theme="dark"] #orbit-page .button.primary {
   color: white;
 }
 body[data-theme="dark"] #orbit-page .tabs {
-  background: #293148;
+  background: var(--orbit-green-900);
 }
 body[data-theme="dark"] #orbit-page .channel-card {
   background: var(--orbit-space);
@@ -1187,9 +1187,9 @@ body[data-theme="dark"] #orbit-page .channel-card {
   color: var(--orbit-soft);
 }
 body[data-theme="dark"] #orbit-page .channel-card.blue {
-  background: #293953;
-  border-color: #334c6f;
-  color: #c4d8f7;
+  background: var(--orbit-green-800);
+  border-color: var(--orbit-green-800);
+  color: var(--orbit-green-100);
 }
 body[data-theme="dark"] #orbit-page .channel-emblem,
 body[data-theme="dark"] #orbit-page .visibility,
@@ -1201,10 +1201,10 @@ body[data-theme="dark"] #orbit-page .metric-icon {
   background: var(--orbit-space);
 }
 body[data-theme="dark"] #orbit-page .metrics > div:nth-child(2) .metric-icon {
-  background: #263958;
+  background: var(--orbit-green-800);
 }
 body[data-theme="dark"] #orbit-page .metrics > div:nth-child(3) .metric-icon {
-  background: #23473b;
+  background: var(--orbit-green-900);
 }
 body[data-theme="dark"] #orbit-page .metrics > div:nth-child(4) .metric-icon {
   background: #493c25;
@@ -1216,7 +1216,7 @@ body[data-theme="dark"] #orbit-page .plus-panel {
 body[data-theme="dark"] #orbit-page .form-field input,
 body[data-theme="dark"] #orbit-page .form-field select,
 body[data-theme="dark"] #orbit-page .form-field textarea {
-  background: #262e43;
+  background: var(--orbit-green-900);
 }
 body[data-theme="dark"] #orbit-page .upload-zone {
   background: var(--orbit-space);

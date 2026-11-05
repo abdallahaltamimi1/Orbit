@@ -1,0 +1,12 @@
+
+Running 5 tests using 1 worker
+
+(node:10160) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 tests\school-acceptance.spec.js:12:1 › reviewed promotion and activation preserve work, revoke old writes and admit only the new section (9.6s)
+  ok 2 tests\school-acceptance.spec.js:87:1 › monitoring focus ring uses the accessible theme token in light and dark modes (3.0s)
+  ok 3 tests\school-acceptance.spec.js:107:1 › monitoring bulk selection follows visible editable records, resets with filters and preserves archive restrictions (9.2s)
+  ok 4 tests\school-annual-monitoring.spec.js:6:1 › annual monitoring scopes content and protects archived review actions (56ms)
+  ok 5 tests\school-annual-monitoring.spec.js:58:1 › connected monitoring shows coverage and completes a reopened correction (14.3s)
+
+  5 passed (37.9s)

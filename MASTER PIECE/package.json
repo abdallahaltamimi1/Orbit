@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
+    "test": "playwright test",
     "build": "vite build --configLoader runner && vite build --config registration/scene-build.config.js --configLoader runner && vite build --config school-tour/scene-build.config.js --configLoader runner"
   },
   "dependencies": {
