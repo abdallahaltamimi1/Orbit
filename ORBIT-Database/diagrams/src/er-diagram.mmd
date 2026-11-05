@@ -1,0 +1,577 @@
+%%{init: {"startOnLoad":false,"htmlLabels":false,"flowchart":{"htmlLabels":false},"theme":"base","securityLevel":"strict","maxTextSize":1000000,"maxEdges":2000,"fontFamily":"Arial, sans-serif","themeCSS":".edgeLabel rect.background{fill:#ffffff!important;stroke:none!important}.edgeLabel text,.edgeLabel tspan{fill:#111111!important}","themeVariables":{"fontFamily":"Arial, sans-serif","fontSize":"16px","primaryColor":"#ffffff","primaryTextColor":"#111111","primaryBorderColor":"#374151","lineColor":"#374151","secondaryColor":"#ffffff","tertiaryColor":"#ffffff","mainBkg":"#ffffff","textColor":"#111111","nodeBorder":"#374151","edgeLabelBackground":"#ffffff","attributeBackgroundColorOdd":"#ffffff","attributeBackgroundColorEven":"#f3f4f6"},"er":{"useMaxWidth":false,"diagramPadding":45,"entityPadding":12,"minEntityWidth":150,"minEntityHeight":55,"nodeSpacing":90,"rankSpacing":180,"fontSize":16,"layoutDirection":"LR"}}}%%
+erDiagram
+  direction LR
+  accTitle: ORBIT overall ER diagram — all 80 entities and 246 FK definitions
+  accDescr: White background. External entities are marked external. Business relationship labels and stable FK IDs map to ordered source and referenced columns in the accompanying Markdown.
+  AspNetUsers["AspNetUsers"]
+  AspNetRoles["AspNetRoles"]
+  AspNetUserRoles["AspNetUserRoles"]
+  AspNetUserClaims["AspNetUserClaims"]
+  AspNetRoleClaims["AspNetRoleClaims"]
+  AspNetUserLogins["AspNetUserLogins"]
+  AspNetUserTokens["AspNetUserTokens"]
+  UserProfiles["UserProfiles"]
+  Students["Students"]
+  Teachers["Teachers"]
+  SubjectCatalog["SubjectCatalog"]
+  TeacherSubjects["TeacherSubjects"]
+  TeacherGradeLevels["TeacherGradeLevels"]
+  TeacherFacets["TeacherFacets"]
+  Schools["Schools"]
+  SchoolLevels["SchoolLevels"]
+  SchoolSubjects["SchoolSubjects"]
+  SchoolRegistrationReviews["SchoolRegistrationReviews"]
+  SchoolMemberships["SchoolMemberships"]
+  MembershipPermissions["MembershipPermissions"]
+  SchoolStudents["SchoolStudents"]
+  SchoolTeachers["SchoolTeachers"]
+  AccountLinkRequests["AccountLinkRequests"]
+  AccountLinkHistory["AccountLinkHistory"]
+  AcademicYears["AcademicYears"]
+  Grades["Grades"]
+  Sections["Sections"]
+  StudentEnrollments["StudentEnrollments"]
+  EnrollmentPlacements["EnrollmentPlacements"]
+  PromotionBatches["PromotionBatches"]
+  PromotionItems["PromotionItems"]
+  PromotionItemHistory["PromotionItemHistory"]
+  TeachingAssignments["TeachingAssignments"]
+  TeachingAssignmentHistory["TeachingAssignmentHistory"]
+  WeeklySubjectRequirements["WeeklySubjectRequirements"]
+  TeacherUnavailableSlots["TeacherUnavailableSlots"]
+  Timetables["Timetables"]
+  TimetableRevisions["TimetableRevisions"]
+  TimetableCells["TimetableCells"]
+  PublishedTimetableOccupancy["PublishedTimetableOccupancy"]
+  TimetableChangeRequests["TimetableChangeRequests"]
+  Channels["Channels"]
+  ChannelSections["ChannelSections"]
+  ChannelMemberships["ChannelMemberships"]
+  ChannelInvitations["ChannelInvitations"]
+  ChannelOwnershipHistory["ChannelOwnershipHistory"]
+  Posts["Posts"]
+  PostSections["PostSections"]
+  Files["Files"]
+  PostAttachments["PostAttachments"]
+  Assignments["Assignments"]
+  Submissions["Submissions"]
+  SubmissionVersions["SubmissionVersions"]
+  SubmissionAttachments["SubmissionAttachments"]
+  Evaluations["Evaluations"]
+  ContentCorrectionRequests["ContentCorrectionRequests"]
+  CorrectionResponses["CorrectionResponses"]
+  ModerationReports["ModerationReports"]
+  PostModerationActions["PostModerationActions"]
+  Opportunities["Opportunities"]
+  OpportunityGradeLevels["OpportunityGradeLevels"]
+  OpportunitySkills["OpportunitySkills"]
+  OpportunityStatusHistory["OpportunityStatusHistory"]
+  Applications["Applications"]
+  ApplicationFiles["ApplicationFiles"]
+  ApplicationStatusHistory["ApplicationStatusHistory"]
+  Interviews["Interviews"]
+  InterviewRescheduleRequests["InterviewRescheduleRequests"]
+  InterviewHistory["InterviewHistory"]
+  SchoolEvents["SchoolEvents"]
+  SchoolEventSections["SchoolEventSections"]
+  LearningMeetings["LearningMeetings"]
+  MeetingGroups["MeetingGroups"]
+  MeetingGroupMembers["MeetingGroupMembers"]
+  MeetingRecipients["MeetingRecipients"]
+  MeetingResources["MeetingResources"]
+  Notifications["Notifications"]
+  AuditEvents["AuditEvents"]
+  OperationReceipts["OperationReceipts"]
+  OutboxMessages["OutboxMessages"]
+  %% FK001 FK_AspNetUsers_AspNetUsers_1: AspNetUsers (ProvisionedById) -> AspNetUsers (Id)
+  AspNetUsers |o..o{ AspNetUsers : "provisions [FK001]"
+  %% FK002 FK_AspNetUsers_Schools_2: AspNetUsers (ProvisionedSchoolId) -> Schools (Id)
+  Schools |o..o{ AspNetUsers : "provisions account [FK002]"
+  %% FK003 FK_AspNetUserRoles_AspNetUsers_1: AspNetUserRoles (UserId) -> AspNetUsers (Id)
+  AspNetUsers ||--o{ AspNetUserRoles : "identifies [FK003]"
+  %% FK004 FK_AspNetUserRoles_AspNetRoles_2: AspNetUserRoles (RoleId) -> AspNetRoles (Id)
+  AspNetRoles ||--o{ AspNetUserRoles : "grants role [FK004]"
+  %% FK005 FK_AspNetUserClaims_AspNetUsers_1: AspNetUserClaims (UserId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ AspNetUserClaims : "identifies [FK005]"
+  %% FK006 FK_AspNetRoleClaims_AspNetRoles_1: AspNetRoleClaims (RoleId) -> AspNetRoles (Id)
+  AspNetRoles ||..o{ AspNetRoleClaims : "grants role [FK006]"
+  %% FK007 FK_AspNetUserLogins_AspNetUsers_1: AspNetUserLogins (UserId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ AspNetUserLogins : "identifies [FK007]"
+  %% FK008 FK_AspNetUserTokens_AspNetUsers_1: AspNetUserTokens (UserId) -> AspNetUsers (Id)
+  AspNetUsers ||--o{ AspNetUserTokens : "identifies [FK008]"
+  %% FK009 FK_UserProfiles_AspNetUsers_1: UserProfiles (UserId) -> AspNetUsers (Id)
+  AspNetUsers ||--o| UserProfiles : "identifies [FK009]"
+  %% FK010 FK_UserProfiles_Files_2: UserProfiles (PhotoFileId) -> Files (Id)
+  Files |o..o{ UserProfiles : "attaches file [FK010]"
+  %% FK011 FK_Students_AspNetUsers_1: Students (UserId) -> AspNetUsers (Id)
+  AspNetUsers |o..o| Students : "identifies [FK011]"
+  %% FK012 FK_Teachers_AspNetUsers_1: Teachers (UserId) -> AspNetUsers (Id)
+  AspNetUsers |o..o| Teachers : "identifies [FK012]"
+  %% FK013 FK_Teachers_SubjectCatalog_2: Teachers (PrimarySubjectId) -> SubjectCatalog (Id)
+  SubjectCatalog |o..o{ Teachers : "classifies subject [FK013]"
+  %% FK014 FK_Teachers_Files_3: Teachers (CvFileId) -> Files (Id)
+  Files |o..o{ Teachers : "attaches file [FK014]"
+  %% FK015 FK_TeacherSubjects_Teachers_1: TeacherSubjects (TeacherId) -> Teachers (Id)
+  Teachers ||--o{ TeacherSubjects : "describes teacher [FK015]"
+  %% FK016 FK_TeacherSubjects_SubjectCatalog_2: TeacherSubjects (SubjectCatalogId) -> SubjectCatalog (Id)
+  SubjectCatalog ||--o{ TeacherSubjects : "classifies subject [FK016]"
+  %% FK017 FK_TeacherGradeLevels_Teachers_1: TeacherGradeLevels (TeacherId) -> Teachers (Id)
+  Teachers ||--o{ TeacherGradeLevels : "describes teacher [FK017]"
+  %% FK018 FK_TeacherFacets_Teachers_1: TeacherFacets (TeacherId) -> Teachers (Id)
+  Teachers ||..o{ TeacherFacets : "describes teacher [FK018]"
+  %% FK019 FK_TeacherFacets_Files_2: TeacherFacets (FileId) -> Files (Id)
+  Files |o..o{ TeacherFacets : "attaches file [FK019]"
+  %% FK020 FK_Schools_Files_1: Schools (LogoFileId) -> Files (Id)
+  Files |o..o{ Schools : "attaches file [FK020]"
+  %% FK021 FK_SchoolLevels_Schools_1: SchoolLevels (SchoolId) -> Schools (Id)
+  Schools ||--o{ SchoolLevels : "owns [FK021]"
+  %% FK022 FK_SchoolSubjects_Schools_1: SchoolSubjects (SchoolId) -> Schools (Id)
+  Schools ||..o{ SchoolSubjects : "offers subjects [FK022]"
+  %% FK023 FK_SchoolSubjects_SubjectCatalog_2: SchoolSubjects (CatalogSubjectId) -> SubjectCatalog (Id)
+  SubjectCatalog |o..o{ SchoolSubjects : "classifies subject [FK023]"
+  %% FK024 FK_SchoolRegistrationReviews_Schools_1: SchoolRegistrationReviews (SchoolId) -> Schools (Id)
+  Schools ||..o{ SchoolRegistrationReviews : "owns [FK024]"
+  %% FK025 FK_SchoolRegistrationReviews_AspNetUsers_2: SchoolRegistrationReviews (RequestedById) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ SchoolRegistrationReviews : "requests [FK025]"
+  %% FK026 FK_SchoolRegistrationReviews_AspNetUsers_3: SchoolRegistrationReviews (DecidedById) -> AspNetUsers (Id)
+  AspNetUsers |o..o{ SchoolRegistrationReviews : "decides [FK026]"
+  %% FK027 FK_SchoolMemberships_Schools_1: SchoolMemberships (SchoolId) -> Schools (Id)
+  Schools ||..o{ SchoolMemberships : "has members [FK027]"
+  %% FK028 FK_SchoolMemberships_AspNetUsers_2: SchoolMemberships (UserId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ SchoolMemberships : "identifies [FK028]"
+  %% FK029 FK_MembershipPermissions_Schools_1: MembershipPermissions (SchoolId) -> Schools (Id)
+  Schools ||--o{ MembershipPermissions : "owns [FK029]"
+  %% FK030 FK_MembershipPermissions_AspNetUsers_2: MembershipPermissions (GrantedById) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ MembershipPermissions : "grants [FK030]"
+  %% FK031 FK_MembershipPermissions_SchoolMemberships_3: MembershipPermissions (SchoolId, MembershipId) -> SchoolMemberships (SchoolId, Id)
+  SchoolMemberships ||--o{ MembershipPermissions : "grants permission [FK031] (2 cols)"
+  %% FK032 FK_SchoolStudents_Schools_1: SchoolStudents (SchoolId) -> Schools (Id)
+  Schools ||..o{ SchoolStudents : "registers students [FK032]"
+  %% FK033 FK_SchoolStudents_Students_2: SchoolStudents (StudentId) -> Students (Id)
+  Students ||..o{ SchoolStudents : "identifies student [FK033]"
+  %% FK034 FK_SchoolTeachers_Schools_1: SchoolTeachers (SchoolId) -> Schools (Id)
+  Schools ||..o{ SchoolTeachers : "lists teachers [FK034]"
+  %% FK035 FK_SchoolTeachers_Teachers_2: SchoolTeachers (TeacherId) -> Teachers (Id)
+  Teachers ||..o{ SchoolTeachers : "describes teacher [FK035]"
+  %% FK036 FK_AccountLinkRequests_Schools_1: AccountLinkRequests (SchoolId) -> Schools (Id)
+  Schools ||..o{ AccountLinkRequests : "requests linking [FK036]"
+  %% FK037 FK_AccountLinkRequests_AspNetUsers_2: AccountLinkRequests (TargetUserId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ AccountLinkRequests : "invited account [FK037]"
+  %% FK038 FK_AccountLinkRequests_AspNetUsers_3: AccountLinkRequests (RequestedById) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ AccountLinkRequests : "requests [FK038]"
+  %% FK039 FK_AccountLinkRequests_AspNetUsers_4: AccountLinkRequests (VerifiedById) -> AspNetUsers (Id)
+  AspNetUsers |o..o{ AccountLinkRequests : "verifies [FK039]"
+  %% FK040 FK_AccountLinkRequests_AspNetUsers_5: AccountLinkRequests (SchoolApprovedById) -> AspNetUsers (Id)
+  AspNetUsers |o..o{ AccountLinkRequests : "approves link [FK040]"
+  %% FK041 FK_AccountLinkRequests_SchoolStudents_6: AccountLinkRequests (SchoolId, SchoolStudentId) -> SchoolStudents (SchoolId, Id)
+  SchoolStudents |o..o{ AccountLinkRequests : "enrolls student [FK041] (2 cols)"
+  %% FK042 FK_AccountLinkRequests_SchoolTeachers_7: AccountLinkRequests (SchoolId, SchoolTeacherId) -> SchoolTeachers (SchoolId, Id)
+  SchoolTeachers |o..o{ AccountLinkRequests : "assigns teacher [FK042] (2 cols)"
+  %% FK043 FK_AccountLinkHistory_Schools_1: AccountLinkHistory (SchoolId) -> Schools (Id)
+  Schools ||..o{ AccountLinkHistory : "owns [FK043]"
+  %% FK044 FK_AccountLinkHistory_AspNetUsers_2: AccountLinkHistory (FromUserId) -> AspNetUsers (Id)
+  AspNetUsers |o..o{ AccountLinkHistory : "previous account [FK044]"
+  %% FK045 FK_AccountLinkHistory_AspNetUsers_3: AccountLinkHistory (ToUserId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ AccountLinkHistory : "linked account [FK045]"
+  %% FK046 FK_AccountLinkHistory_AspNetUsers_4: AccountLinkHistory (ActorId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ AccountLinkHistory : "performs [FK046]"
+  %% FK047 FK_AccountLinkHistory_SchoolStudents_5: AccountLinkHistory (SchoolId, SchoolStudentId) -> SchoolStudents (SchoolId, Id)
+  SchoolStudents |o..o{ AccountLinkHistory : "enrolls student [FK047] (2 cols)"
+  %% FK048 FK_AccountLinkHistory_SchoolTeachers_6: AccountLinkHistory (SchoolId, SchoolTeacherId) -> SchoolTeachers (SchoolId, Id)
+  SchoolTeachers |o..o{ AccountLinkHistory : "assigns teacher [FK048] (2 cols)"
+  %% FK049 FK_AccountLinkHistory_AccountLinkRequests_7: AccountLinkHistory (SchoolId, RequestId) -> AccountLinkRequests (SchoolId, Id)
+  AccountLinkRequests |o..o{ AccountLinkHistory : "records link [FK049] (2 cols)"
+  %% FK050 FK_AcademicYears_Schools_1: AcademicYears (SchoolId) -> Schools (Id)
+  Schools ||..o{ AcademicYears : "defines years [FK050]"
+  %% FK051 FK_Grades_Schools_1: Grades (SchoolId) -> Schools (Id)
+  Schools ||..o{ Grades : "offers grades [FK051]"
+  %% FK052 FK_Sections_Schools_1: Sections (SchoolId) -> Schools (Id)
+  Schools ||..o{ Sections : "owns [FK052]"
+  %% FK053 FK_Sections_AcademicYears_2: Sections (SchoolId, AcademicYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears ||..o{ Sections : "scopes year [FK053] (2 cols)"
+  %% FK054 FK_Sections_Grades_3: Sections (SchoolId, GradeId) -> Grades (SchoolId, Id)
+  Grades ||..o{ Sections : "groups grade [FK054] (2 cols)"
+  %% FK055 FK_StudentEnrollments_Schools_1: StudentEnrollments (SchoolId) -> Schools (Id)
+  Schools ||..o{ StudentEnrollments : "owns [FK055]"
+  %% FK056 FK_StudentEnrollments_AcademicYears_2: StudentEnrollments (SchoolId, AcademicYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears ||..o{ StudentEnrollments : "scopes year [FK056] (2 cols)"
+  %% FK057 FK_StudentEnrollments_SchoolStudents_3: StudentEnrollments (SchoolId, SchoolStudentId, StudentId) -> SchoolStudents (SchoolId, Id, StudentId)
+  SchoolStudents ||..o{ StudentEnrollments : "enrolls student [FK057] (3 cols)"
+  %% FK058 FK_EnrollmentPlacements_Schools_1: EnrollmentPlacements (SchoolId) -> Schools (Id)
+  Schools ||..o{ EnrollmentPlacements : "owns [FK058]"
+  %% FK059 FK_EnrollmentPlacements_AcademicYears_2: EnrollmentPlacements (SchoolId, AcademicYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears ||..o{ EnrollmentPlacements : "scopes year [FK059] (2 cols)"
+  %% FK060 FK_EnrollmentPlacements_AspNetUsers_3: EnrollmentPlacements (ActorId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ EnrollmentPlacements : "performs [FK060]"
+  %% FK061 FK_EnrollmentPlacements_StudentEnrollments_4: EnrollmentPlacements (SchoolId, AcademicYearId, EnrollmentId) -> StudentEnrollments (SchoolId, AcademicYearId, Id)
+  StudentEnrollments ||..o{ EnrollmentPlacements : "has placements [FK061] (3 cols)"
+  %% FK062 FK_EnrollmentPlacements_Sections_5: EnrollmentPlacements (SchoolId, AcademicYearId, SectionId) -> Sections (SchoolId, AcademicYearId, Id)
+  Sections ||..o{ EnrollmentPlacements : "places students [FK062] (3 cols)"
+  %% FK063 FK_EnrollmentPlacements_EnrollmentPlacements_6: EnrollmentPlacements (SchoolId, AcademicYearId, EnrollmentId, PreviousPlacementId) -> EnrollmentPlacements (SchoolId, AcademicYearId, EnrollmentId, Id)
+  EnrollmentPlacements |o..o{ EnrollmentPlacements : "precedes placement [FK063] (4 cols)"
+  %% FK064 FK_PromotionBatches_Schools_1: PromotionBatches (SchoolId) -> Schools (Id)
+  Schools ||..o{ PromotionBatches : "owns [FK064]"
+  %% FK065 FK_PromotionBatches_AspNetUsers_2: PromotionBatches (ConfirmedById) -> AspNetUsers (Id)
+  AspNetUsers |o..o{ PromotionBatches : "confirms [FK065]"
+  %% FK066 FK_PromotionBatches_AcademicYears_3: PromotionBatches (SchoolId, SourceYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears ||..o{ PromotionBatches : "source year [FK066] (2 cols)"
+  %% FK067 FK_PromotionBatches_AcademicYears_4: PromotionBatches (SchoolId, TargetYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears ||..o{ PromotionBatches : "target year [FK067] (2 cols)"
+  %% FK068 FK_PromotionItems_Schools_1: PromotionItems (SchoolId) -> Schools (Id)
+  Schools ||..o{ PromotionItems : "owns [FK068]"
+  %% FK069 FK_PromotionItems_AspNetUsers_2: PromotionItems (ReviewedById) -> AspNetUsers (Id)
+  AspNetUsers |o..o{ PromotionItems : "reviews [FK069]"
+  %% FK070 FK_PromotionItems_AcademicYears_3: PromotionItems (SchoolId, SourceYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears ||..o{ PromotionItems : "source year [FK070] (2 cols)"
+  %% FK071 FK_PromotionItems_AcademicYears_4: PromotionItems (SchoolId, TargetYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears ||..o{ PromotionItems : "target year [FK071] (2 cols)"
+  %% FK072 FK_PromotionItems_PromotionBatches_5: PromotionItems (SchoolId, BatchId, SourceYearId, TargetYearId) -> PromotionBatches (SchoolId, Id, SourceYearId, TargetYearId)
+  PromotionBatches ||..o{ PromotionItems : "reviews promotion [FK072] (4 cols)"
+  %% FK073 FK_PromotionItems_StudentEnrollments_6: PromotionItems (SchoolId, SourceYearId, SourceEnrollmentId, SchoolStudentId) -> StudentEnrollments (SchoolId, AcademicYearId, Id, SchoolStudentId)
+  StudentEnrollments ||..o{ PromotionItems : "source enrollment [FK073] (4 cols)"
+  %% FK074 FK_PromotionItems_Sections_7: PromotionItems (SchoolId, TargetYearId, DestinationSectionId) -> Sections (SchoolId, AcademicYearId, Id)
+  Sections |o..o{ PromotionItems : "target section [FK074] (3 cols)"
+  %% FK075 FK_PromotionItems_StudentEnrollments_8: PromotionItems (SchoolId, TargetYearId, DestinationEnrollmentId, SchoolStudentId) -> StudentEnrollments (SchoolId, AcademicYearId, Id, SchoolStudentId)
+  StudentEnrollments |o..o{ PromotionItems : "result enrollment [FK075] (4 cols)"
+  %% FK076 FK_PromotionItemHistory_Schools_1: PromotionItemHistory (SchoolId) -> Schools (Id)
+  Schools ||..o{ PromotionItemHistory : "owns [FK076]"
+  %% FK077 FK_PromotionItemHistory_AspNetUsers_2: PromotionItemHistory (ActorId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ PromotionItemHistory : "performs [FK077]"
+  %% FK078 FK_PromotionItemHistory_PromotionItems_3: PromotionItemHistory (SchoolId, PromotionItemId, TargetYearId) -> PromotionItems (SchoolId, Id, TargetYearId)
+  PromotionItems ||..o{ PromotionItemHistory : "records review [FK078] (3 cols)"
+  %% FK079 FK_PromotionItemHistory_Sections_4: PromotionItemHistory (SchoolId, TargetYearId, DestinationSectionId) -> Sections (SchoolId, AcademicYearId, Id)
+  Sections |o..o{ PromotionItemHistory : "target section [FK079] (3 cols)"
+  %% FK080 FK_TeachingAssignments_Schools_1: TeachingAssignments (SchoolId) -> Schools (Id)
+  Schools ||..o{ TeachingAssignments : "owns [FK080]"
+  %% FK081 FK_TeachingAssignments_AcademicYears_2: TeachingAssignments (SchoolId, AcademicYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears ||..o{ TeachingAssignments : "scopes year [FK081] (2 cols)"
+  %% FK082 FK_TeachingAssignments_Sections_3: TeachingAssignments (SchoolId, AcademicYearId, SectionId) -> Sections (SchoolId, AcademicYearId, Id)
+  Sections ||..o{ TeachingAssignments : "groups section [FK082] (3 cols)"
+  %% FK083 FK_TeachingAssignments_SchoolSubjects_4: TeachingAssignments (SchoolId, SubjectId) -> SchoolSubjects (SchoolId, Id)
+  SchoolSubjects ||..o{ TeachingAssignments : "teaches subject [FK083] (2 cols)"
+  %% FK084 FK_TeachingAssignments_SchoolTeachers_5: TeachingAssignments (SchoolId, SchoolTeacherId) -> SchoolTeachers (SchoolId, Id)
+  SchoolTeachers ||..o{ TeachingAssignments : "assigns teacher [FK084] (2 cols)"
+  %% FK085 FK_TeachingAssignmentHistory_Schools_1: TeachingAssignmentHistory (SchoolId) -> Schools (Id)
+  Schools ||..o{ TeachingAssignmentHistory : "owns [FK085]"
+  %% FK086 FK_TeachingAssignmentHistory_AcademicYears_2: TeachingAssignmentHistory (SchoolId, AcademicYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears ||..o{ TeachingAssignmentHistory : "scopes year [FK086] (2 cols)"
+  %% FK087 FK_TeachingAssignmentHistory_AspNetUsers_3: TeachingAssignmentHistory (ActorId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ TeachingAssignmentHistory : "performs [FK087]"
+  %% FK088 FK_TeachingAssignmentHistory_TeachingAssignments_4: TeachingAssignmentHistory (SchoolId, AcademicYearId, AssignmentId) -> TeachingAssignments (SchoolId, AcademicYearId, Id)
+  TeachingAssignments ||..o{ TeachingAssignmentHistory : "records allocation [FK088] (3 cols)"
+  %% FK089 FK_TeachingAssignmentHistory_TeachingAssignments_5: TeachingAssignmentHistory (SchoolId, AcademicYearId, ReplacesAssignmentId) -> TeachingAssignments (SchoolId, AcademicYearId, Id)
+  TeachingAssignments |o..o{ TeachingAssignmentHistory : "replaces allocation [FK089] (3 cols)"
+  %% FK090 FK_WeeklySubjectRequirements_Schools_1: WeeklySubjectRequirements (SchoolId) -> Schools (Id)
+  Schools ||--o{ WeeklySubjectRequirements : "owns [FK090]"
+  %% FK091 FK_WeeklySubjectRequirements_AcademicYears_2: WeeklySubjectRequirements (SchoolId, AcademicYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears ||--o{ WeeklySubjectRequirements : "scopes year [FK091] (2 cols)"
+  %% FK092 FK_WeeklySubjectRequirements_AspNetUsers_3: WeeklySubjectRequirements (UpdatedById) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ WeeklySubjectRequirements : "updates [FK092]"
+  %% FK093 FK_WeeklySubjectRequirements_Grades_4: WeeklySubjectRequirements (SchoolId, GradeId) -> Grades (SchoolId, Id)
+  Grades ||--o{ WeeklySubjectRequirements : "groups grade [FK093] (2 cols)"
+  %% FK094 FK_WeeklySubjectRequirements_SchoolSubjects_5: WeeklySubjectRequirements (SchoolId, SubjectId) -> SchoolSubjects (SchoolId, Id)
+  SchoolSubjects ||--o{ WeeklySubjectRequirements : "teaches subject [FK094] (2 cols)"
+  %% FK095 FK_TeacherUnavailableSlots_Schools_1: TeacherUnavailableSlots (SchoolId) -> Schools (Id)
+  Schools ||--o{ TeacherUnavailableSlots : "owns [FK095]"
+  %% FK096 FK_TeacherUnavailableSlots_AcademicYears_2: TeacherUnavailableSlots (SchoolId, AcademicYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears ||--o{ TeacherUnavailableSlots : "scopes year [FK096] (2 cols)"
+  %% FK097 FK_TeacherUnavailableSlots_AspNetUsers_3: TeacherUnavailableSlots (UpdatedById) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ TeacherUnavailableSlots : "updates [FK097]"
+  %% FK098 FK_TeacherUnavailableSlots_SchoolTeachers_4: TeacherUnavailableSlots (SchoolId, SchoolTeacherId) -> SchoolTeachers (SchoolId, Id)
+  SchoolTeachers ||--o{ TeacherUnavailableSlots : "assigns teacher [FK098] (2 cols)"
+  %% FK099 FK_Timetables_Schools_1: Timetables (SchoolId) -> Schools (Id)
+  Schools ||..o{ Timetables : "owns [FK099]"
+  %% FK100 FK_Timetables_AcademicYears_2: Timetables (SchoolId, AcademicYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears ||..o{ Timetables : "scopes year [FK100] (2 cols)"
+  %% FK101 FK_Timetables_Sections_3: Timetables (SchoolId, AcademicYearId, SectionId) -> Sections (SchoolId, AcademicYearId, Id)
+  Sections ||..o| Timetables : "groups section [FK101] (3 cols)"
+  %% FK102 FK_Timetables_TimetableRevisions_4: Timetables (SchoolId, AcademicYearId, Id, SectionId, CurrentDraftRevisionId) -> TimetableRevisions (SchoolId, AcademicYearId, TimetableId, SectionId, Id)
+  TimetableRevisions |o..o| Timetables : "current draft [FK102] (5 cols)"
+  %% FK103 FK_Timetables_TimetableRevisions_5: Timetables (SchoolId, AcademicYearId, Id, SectionId, PublishedRevisionId) -> TimetableRevisions (SchoolId, AcademicYearId, TimetableId, SectionId, Id)
+  TimetableRevisions |o..o| Timetables : "published version [FK103] (5 cols)"
+  %% FK104 FK_TimetableRevisions_Schools_1: TimetableRevisions (SchoolId) -> Schools (Id)
+  Schools ||..o{ TimetableRevisions : "owns [FK104]"
+  %% FK105 FK_TimetableRevisions_AcademicYears_2: TimetableRevisions (SchoolId, AcademicYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears ||..o{ TimetableRevisions : "scopes year [FK105] (2 cols)"
+  %% FK106 FK_TimetableRevisions_AspNetUsers_3: TimetableRevisions (SavedById) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ TimetableRevisions : "saves revision [FK106]"
+  %% FK107 FK_TimetableRevisions_AspNetUsers_4: TimetableRevisions (PublishedById) -> AspNetUsers (Id)
+  AspNetUsers |o..o{ TimetableRevisions : "publishes [FK107]"
+  %% FK108 FK_TimetableRevisions_Timetables_5: TimetableRevisions (SchoolId, AcademicYearId, TimetableId, SectionId) -> Timetables (SchoolId, AcademicYearId, Id, SectionId)
+  Timetables ||..o{ TimetableRevisions : "has revisions [FK108] (4 cols)"
+  %% FK109 FK_TimetableCells_Schools_1: TimetableCells (SchoolId) -> Schools (Id)
+  Schools ||..o{ TimetableCells : "owns [FK109]"
+  %% FK110 FK_TimetableCells_AcademicYears_2: TimetableCells (SchoolId, AcademicYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears ||..o{ TimetableCells : "scopes year [FK110] (2 cols)"
+  %% FK111 FK_TimetableCells_TimetableRevisions_3: TimetableCells (SchoolId, AcademicYearId, RevisionId, SectionId) -> TimetableRevisions (SchoolId, AcademicYearId, Id, SectionId)
+  TimetableRevisions ||..o{ TimetableCells : "contains cells [FK111] (4 cols)"
+  %% FK112 FK_TimetableCells_TeachingAssignments_4: TimetableCells (SchoolId, AcademicYearId, AssignmentId, SectionId, SubjectId, SchoolTeacherId) -> TeachingAssignments (SchoolId, AcademicYearId, Id, SectionId, SubjectId, SchoolTeacherId)
+  TeachingAssignments ||..o{ TimetableCells : "schedules lesson [FK112] (6 cols)"
+  %% FK113 FK_TimetableCells_ChannelSections_5: TimetableCells (SchoolId, AcademicYearId, ChannelId, SectionId, SubjectId) -> ChannelSections (SchoolId, AcademicYearId, ChannelId, SectionId, SubjectId)
+  ChannelSections |o..o{ TimetableCells : "targets section [FK113] (5 cols)"
+  %% FK114 FK_PublishedTimetableOccupancy_Schools_1: PublishedTimetableOccupancy (SchoolId) -> Schools (Id)
+  Schools ||--o{ PublishedTimetableOccupancy : "owns [FK114]"
+  %% FK115 FK_PublishedTimetableOccupancy_AcademicYears_2: PublishedTimetableOccupancy (SchoolId, AcademicYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears ||--o{ PublishedTimetableOccupancy : "scopes year [FK115] (2 cols)"
+  %% FK116 FK_PublishedTimetableOccupancy_Sections_3: PublishedTimetableOccupancy (SchoolId, AcademicYearId, SectionId) -> Sections (SchoolId, AcademicYearId, Id)
+  Sections ||--o{ PublishedTimetableOccupancy : "groups section [FK116] (3 cols)"
+  %% FK117 FK_PublishedTimetableOccupancy_TimetableCells_4: PublishedTimetableOccupancy (SchoolId, AcademicYearId, CellId, SectionId, SchoolTeacherId, DayNumber, PeriodNumber) -> TimetableCells (SchoolId, AcademicYearId, Id, SectionId, SchoolTeacherId, DayNumber, PeriodNumber)
+  TimetableCells ||..o| PublishedTimetableOccupancy : "reserves slot [FK117] (7 cols)"
+  %% FK118 FK_TimetableChangeRequests_Schools_1: TimetableChangeRequests (SchoolId) -> Schools (Id)
+  Schools ||..o{ TimetableChangeRequests : "owns [FK118]"
+  %% FK119 FK_TimetableChangeRequests_AcademicYears_2: TimetableChangeRequests (SchoolId, AcademicYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears ||..o{ TimetableChangeRequests : "scopes year [FK119] (2 cols)"
+  %% FK120 FK_TimetableChangeRequests_AspNetUsers_3: TimetableChangeRequests (RequestedById) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ TimetableChangeRequests : "requests [FK120]"
+  %% FK121 FK_TimetableChangeRequests_AspNetUsers_4: TimetableChangeRequests (DecidedById) -> AspNetUsers (Id)
+  AspNetUsers |o..o{ TimetableChangeRequests : "decides [FK121]"
+  %% FK122 FK_TimetableChangeRequests_TimetableCells_5: TimetableChangeRequests (SchoolId, AcademicYearId, BaseCellId) -> TimetableCells (SchoolId, AcademicYearId, Id)
+  TimetableCells ||..o{ TimetableChangeRequests : "requests move [FK122] (3 cols)"
+  %% FK123 FK_TimetableChangeRequests_TimetableRevisions_6: TimetableChangeRequests (SchoolId, AcademicYearId, ResultRevisionId) -> TimetableRevisions (SchoolId, AcademicYearId, Id)
+  TimetableRevisions |o..o{ TimetableChangeRequests : "approved revision [FK123] (3 cols)"
+  %% FK124 FK_Channels_Schools_1: Channels (SchoolId) -> Schools (Id)
+  Schools |o..o{ Channels : "owns [FK124]"
+  %% FK125 FK_Channels_AcademicYears_2: Channels (SchoolId, AcademicYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears |o..o{ Channels : "scopes year [FK125] (2 cols)"
+  %% FK126 FK_Channels_AspNetUsers_3: Channels (OwnerUserId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ Channels : "owns [FK126]"
+  %% FK127 FK_Channels_SchoolSubjects_4: Channels (SchoolId, SubjectId) -> SchoolSubjects (SchoolId, Id)
+  SchoolSubjects |o..o{ Channels : "teaches subject [FK127] (2 cols)"
+  %% FK128 FK_Channels_SubjectCatalog_5: Channels (StandaloneSubjectId) -> SubjectCatalog (Id)
+  SubjectCatalog |o..o{ Channels : "classifies subject [FK128]"
+  %% FK129 FK_Channels_Files_6: Channels (CoverFileId) -> Files (Id)
+  Files |o..o{ Channels : "attaches file [FK129]"
+  %% FK130 FK_ChannelSections_Schools_1: ChannelSections (SchoolId) -> Schools (Id)
+  Schools ||--o{ ChannelSections : "owns [FK130]"
+  %% FK131 FK_ChannelSections_AcademicYears_2: ChannelSections (SchoolId, AcademicYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears ||--o{ ChannelSections : "scopes year [FK131] (2 cols)"
+  %% FK132 FK_ChannelSections_Channels_3: ChannelSections (SchoolId, AcademicYearId, ChannelId, SubjectId) -> Channels (SchoolId, AcademicYearId, Id, SubjectId)
+  Channels ||..o{ ChannelSections : "contains activity [FK132] (4 cols)"
+  %% FK133 FK_ChannelSections_Sections_4: ChannelSections (SchoolId, AcademicYearId, SectionId) -> Sections (SchoolId, AcademicYearId, Id)
+  Sections ||--o{ ChannelSections : "groups section [FK133] (3 cols)"
+  %% FK134 FK_ChannelMemberships_AspNetUsers_1: ChannelMemberships (UserId) -> AspNetUsers (Id)
+  AspNetUsers ||--o{ ChannelMemberships : "identifies [FK134]"
+  %% FK135 FK_ChannelMemberships_Channels_2: ChannelMemberships (ChannelId) -> Channels (Id)
+  Channels ||--o{ ChannelMemberships : "contains activity [FK135]"
+  %% FK136 FK_ChannelInvitations_AspNetUsers_1: ChannelInvitations (CreatedById) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ ChannelInvitations : "creates [FK136]"
+  %% FK137 FK_ChannelInvitations_Channels_2: ChannelInvitations (ChannelId) -> Channels (Id)
+  Channels ||..o{ ChannelInvitations : "contains activity [FK137]"
+  %% FK138 FK_ChannelOwnershipHistory_AspNetUsers_1: ChannelOwnershipHistory (FromUserId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ ChannelOwnershipHistory : "previous account [FK138]"
+  %% FK139 FK_ChannelOwnershipHistory_AspNetUsers_2: ChannelOwnershipHistory (ToUserId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ ChannelOwnershipHistory : "linked account [FK139]"
+  %% FK140 FK_ChannelOwnershipHistory_AspNetUsers_3: ChannelOwnershipHistory (ActorId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ ChannelOwnershipHistory : "performs [FK140]"
+  %% FK141 FK_ChannelOwnershipHistory_Channels_4: ChannelOwnershipHistory (ChannelId) -> Channels (Id)
+  Channels ||..o{ ChannelOwnershipHistory : "contains activity [FK141]"
+  %% FK142 FK_Posts_AspNetUsers_1: Posts (AuthorId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ Posts : "authors [FK142]"
+  %% FK143 FK_Posts_AspNetUsers_2: Posts (DeletedById) -> AspNetUsers (Id)
+  AspNetUsers |o..o{ Posts : "removes access [FK143]"
+  %% FK144 FK_Posts_Channels_3: Posts (ChannelId) -> Channels (Id)
+  Channels ||..o{ Posts : "contains activity [FK144]"
+  %% FK145 FK_Posts_Files_4: Posts (VideoFileId) -> Files (Id)
+  Files |o..o{ Posts : "attaches file [FK145]"
+  %% FK146 FK_PostSections_Schools_1: PostSections (SchoolId) -> Schools (Id)
+  Schools ||..o{ PostSections : "owns [FK146]"
+  %% FK147 FK_PostSections_AcademicYears_2: PostSections (SchoolId, AcademicYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears ||..o{ PostSections : "scopes year [FK147] (2 cols)"
+  %% FK148 FK_PostSections_Posts_3: PostSections (ChannelId, PostId) -> Posts (ChannelId, Id)
+  Posts ||..o{ PostSections : "targets content [FK148] (2 cols)"
+  %% FK149 FK_PostSections_ChannelSections_4: PostSections (SchoolId, AcademicYearId, ChannelId, SectionId, SubjectId) -> ChannelSections (SchoolId, AcademicYearId, ChannelId, SectionId, SubjectId)
+  ChannelSections ||..o{ PostSections : "targets section [FK149] (5 cols)"
+  %% FK150 FK_Files_AspNetUsers_1: Files (UploadedById) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ Files : "uploads [FK150]"
+  %% FK151 FK_PostAttachments_Posts_1: PostAttachments (PostId) -> Posts (Id)
+  Posts ||--o{ PostAttachments : "targets content [FK151]"
+  %% FK152 FK_PostAttachments_Files_2: PostAttachments (FileId) -> Files (Id)
+  Files ||--o{ PostAttachments : "attaches file [FK152]"
+  %% FK153 FK_Assignments_Posts_1: Assignments (PostId) -> Posts (Id)
+  Posts ||--o| Assignments : "defines assignment [FK153]"
+  %% FK154 FK_Submissions_Assignments_1: Submissions (AssignmentPostId) -> Assignments (PostId)
+  Assignments ||..o{ Submissions : "receives submissions [FK154]"
+  %% FK155 FK_Submissions_Students_2: Submissions (StudentId) -> Students (Id)
+  Students ||..o{ Submissions : "identifies student [FK155]"
+  %% FK156 FK_SubmissionVersions_Schools_1: SubmissionVersions (SchoolId) -> Schools (Id)
+  Schools |o..o{ SubmissionVersions : "owns [FK156]"
+  %% FK157 FK_SubmissionVersions_AcademicYears_2: SubmissionVersions (SchoolId, AcademicYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears |o..o{ SubmissionVersions : "scopes year [FK157] (2 cols)"
+  %% FK158 FK_SubmissionVersions_AspNetUsers_3: SubmissionVersions (SubmittedById) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ SubmissionVersions : "submits [FK158]"
+  %% FK159 FK_SubmissionVersions_Submissions_4: SubmissionVersions (SubmissionId, AssignmentPostId) -> Submissions (Id, AssignmentPostId)
+  Submissions ||..o{ SubmissionVersions : "has versions [FK159] (2 cols)"
+  %% FK160 FK_SubmissionVersions_EnrollmentPlacements_5: SubmissionVersions (SchoolId, AcademicYearId, EnrollmentId, PlacementId) -> EnrollmentPlacements (SchoolId, AcademicYearId, EnrollmentId, Id)
+  EnrollmentPlacements |o..o{ SubmissionVersions : "records placement [FK160] (4 cols)"
+  %% FK161 FK_SubmissionVersions_EnrollmentPlacements_6: SubmissionVersions (SchoolId, AcademicYearId, PlacementId, SectionId) -> EnrollmentPlacements (SchoolId, AcademicYearId, Id, SectionId)
+  EnrollmentPlacements |o..o{ SubmissionVersions : "records placement [FK161] (4 cols)"
+  %% FK162 FK_SubmissionVersions_PostSections_7: SubmissionVersions (SchoolId, AcademicYearId, AssignmentPostId, SectionId) -> PostSections (SchoolId, AcademicYearId, PostId, SectionId)
+  PostSections |o..o{ SubmissionVersions : "targets submission [FK162] (4 cols)"
+  %% FK163 FK_SubmissionAttachments_SubmissionVersions_1: SubmissionAttachments (SubmissionVersionId) -> SubmissionVersions (Id)
+  SubmissionVersions ||--o{ SubmissionAttachments : "records answer [FK163]"
+  %% FK164 FK_SubmissionAttachments_Files_2: SubmissionAttachments (FileId) -> Files (Id)
+  Files ||--o{ SubmissionAttachments : "attaches file [FK164]"
+  %% FK165 FK_Evaluations_AspNetUsers_1: Evaluations (EvaluatorId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ Evaluations : "evaluates [FK165]"
+  %% FK166 FK_Evaluations_SubmissionVersions_2: Evaluations (SubmissionVersionId) -> SubmissionVersions (Id)
+  SubmissionVersions ||..o{ Evaluations : "records answer [FK166]"
+  %% FK167 FK_ContentCorrectionRequests_Schools_1: ContentCorrectionRequests (SchoolId) -> Schools (Id)
+  Schools ||..o{ ContentCorrectionRequests : "owns [FK167]"
+  %% FK168 FK_ContentCorrectionRequests_AcademicYears_2: ContentCorrectionRequests (SchoolId, AcademicYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears ||..o{ ContentCorrectionRequests : "scopes year [FK168] (2 cols)"
+  %% FK169 FK_ContentCorrectionRequests_AspNetUsers_3: ContentCorrectionRequests (AssignedTeacherUserId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ ContentCorrectionRequests : "corrects content [FK169]"
+  %% FK170 FK_ContentCorrectionRequests_AspNetUsers_4: ContentCorrectionRequests (RequestedById) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ ContentCorrectionRequests : "requests [FK170]"
+  %% FK171 FK_ContentCorrectionRequests_Channels_5: ContentCorrectionRequests (SchoolId, AcademicYearId, ChannelId) -> Channels (SchoolId, AcademicYearId, Id)
+  Channels ||..o{ ContentCorrectionRequests : "contains activity [FK171] (3 cols)"
+  %% FK172 FK_ContentCorrectionRequests_Posts_6: ContentCorrectionRequests (ChannelId, PostId) -> Posts (ChannelId, Id)
+  Posts ||..o{ ContentCorrectionRequests : "targets content [FK172] (2 cols)"
+  %% FK173 FK_CorrectionResponses_Schools_1: CorrectionResponses (SchoolId) -> Schools (Id)
+  Schools ||..o{ CorrectionResponses : "owns [FK173]"
+  %% FK174 FK_CorrectionResponses_AcademicYears_2: CorrectionResponses (SchoolId, AcademicYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears ||..o{ CorrectionResponses : "scopes year [FK174] (2 cols)"
+  %% FK175 FK_CorrectionResponses_AspNetUsers_3: CorrectionResponses (ActorId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ CorrectionResponses : "performs [FK175]"
+  %% FK176 FK_CorrectionResponses_ContentCorrectionRequests_4: CorrectionResponses (SchoolId, AcademicYearId, RequestId) -> ContentCorrectionRequests (SchoolId, AcademicYearId, Id)
+  ContentCorrectionRequests ||..o{ CorrectionResponses : "has responses [FK176] (3 cols)"
+  %% FK177 FK_ModerationReports_AspNetUsers_1: ModerationReports (ReporterId) -> AspNetUsers (Id)
+  AspNetUsers |o..o{ ModerationReports : "reports [FK177]"
+  %% FK178 FK_ModerationReports_AspNetUsers_2: ModerationReports (ReportedUserId) -> AspNetUsers (Id)
+  AspNetUsers |o..o{ ModerationReports : "is reported [FK178]"
+  %% FK179 FK_ModerationReports_AspNetUsers_3: ModerationReports (ResolvedById) -> AspNetUsers (Id)
+  AspNetUsers |o..o{ ModerationReports : "resolves [FK179]"
+  %% FK180 FK_ModerationReports_Posts_4: ModerationReports (PostId) -> Posts (Id)
+  Posts |o..o{ ModerationReports : "targets content [FK180]"
+  %% FK181 FK_PostModerationActions_Schools_1: PostModerationActions (SchoolId) -> Schools (Id)
+  Schools |o..o{ PostModerationActions : "owns [FK181]"
+  %% FK182 FK_PostModerationActions_AcademicYears_2: PostModerationActions (SchoolId, AcademicYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears |o..o{ PostModerationActions : "scopes year [FK182] (2 cols)"
+  %% FK183 FK_PostModerationActions_AspNetUsers_3: PostModerationActions (ActorId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ PostModerationActions : "performs [FK183]"
+  %% FK184 FK_PostModerationActions_Posts_4: PostModerationActions (PostId) -> Posts (Id)
+  Posts ||..o{ PostModerationActions : "targets content [FK184]"
+  %% FK185 FK_PostModerationActions_ModerationReports_5: PostModerationActions (ReportId) -> ModerationReports (Id)
+  ModerationReports |o..o{ PostModerationActions : "records moderation [FK185]"
+  %% FK186 FK_Opportunities_Schools_1: Opportunities (SchoolId) -> Schools (Id)
+  Schools ||..o{ Opportunities : "advertises [FK186]"
+  %% FK187 FK_Opportunities_AspNetUsers_2: Opportunities (CreatedById) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ Opportunities : "creates [FK187]"
+  %% FK188 FK_Opportunities_SubjectCatalog_3: Opportunities (SubjectCatalogId) -> SubjectCatalog (Id)
+  SubjectCatalog ||..o{ Opportunities : "classifies subject [FK188]"
+  %% FK189 FK_OpportunityGradeLevels_Schools_1: OpportunityGradeLevels (SchoolId) -> Schools (Id)
+  Schools ||--o{ OpportunityGradeLevels : "owns [FK189]"
+  %% FK190 FK_OpportunityGradeLevels_Opportunities_2: OpportunityGradeLevels (SchoolId, OpportunityId) -> Opportunities (SchoolId, Id)
+  Opportunities ||--o{ OpportunityGradeLevels : "receives applications [FK190] (2 cols)"
+  %% FK191 FK_OpportunitySkills_Schools_1: OpportunitySkills (SchoolId) -> Schools (Id)
+  Schools ||--o{ OpportunitySkills : "owns [FK191]"
+  %% FK192 FK_OpportunitySkills_Opportunities_2: OpportunitySkills (SchoolId, OpportunityId) -> Opportunities (SchoolId, Id)
+  Opportunities ||--o{ OpportunitySkills : "receives applications [FK192] (2 cols)"
+  %% FK193 FK_OpportunityStatusHistory_Schools_1: OpportunityStatusHistory (SchoolId) -> Schools (Id)
+  Schools ||..o{ OpportunityStatusHistory : "owns [FK193]"
+  %% FK194 FK_OpportunityStatusHistory_AspNetUsers_2: OpportunityStatusHistory (ActorId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ OpportunityStatusHistory : "performs [FK194]"
+  %% FK195 FK_OpportunityStatusHistory_Opportunities_3: OpportunityStatusHistory (SchoolId, OpportunityId) -> Opportunities (SchoolId, Id)
+  Opportunities ||..o{ OpportunityStatusHistory : "receives applications [FK195] (2 cols)"
+  %% FK196 FK_Applications_Schools_1: Applications (SchoolId) -> Schools (Id)
+  Schools ||..o{ Applications : "owns [FK196]"
+  %% FK197 FK_Applications_AspNetUsers_2: Applications (ConsentedById) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ Applications : "consents [FK197]"
+  %% FK198 FK_Applications_Opportunities_3: Applications (SchoolId, OpportunityId) -> Opportunities (SchoolId, Id)
+  Opportunities ||..o{ Applications : "receives applications [FK198] (2 cols)"
+  %% FK199 FK_Applications_Teachers_4: Applications (TeacherId) -> Teachers (Id)
+  Teachers ||..o{ Applications : "applies [FK199]"
+  %% FK200 FK_ApplicationFiles_Schools_1: ApplicationFiles (SchoolId) -> Schools (Id)
+  Schools ||--o{ ApplicationFiles : "owns [FK200]"
+  %% FK201 FK_ApplicationFiles_Applications_2: ApplicationFiles (SchoolId, ApplicationId) -> Applications (SchoolId, Id)
+  Applications ||--o{ ApplicationFiles : "records application [FK201] (2 cols)"
+  %% FK202 FK_ApplicationFiles_Files_3: ApplicationFiles (FileId) -> Files (Id)
+  Files ||--o{ ApplicationFiles : "attaches file [FK202]"
+  %% FK203 FK_ApplicationStatusHistory_Schools_1: ApplicationStatusHistory (SchoolId) -> Schools (Id)
+  Schools ||..o{ ApplicationStatusHistory : "owns [FK203]"
+  %% FK204 FK_ApplicationStatusHistory_AspNetUsers_2: ApplicationStatusHistory (ActorId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ ApplicationStatusHistory : "performs [FK204]"
+  %% FK205 FK_ApplicationStatusHistory_Applications_3: ApplicationStatusHistory (SchoolId, ApplicationId) -> Applications (SchoolId, Id)
+  Applications ||..o{ ApplicationStatusHistory : "records application [FK205] (2 cols)"
+  %% FK206 FK_ApplicationStatusHistory_Interviews_4: ApplicationStatusHistory (SchoolId, ApplicationId, InterviewId) -> Interviews (SchoolId, ApplicationId, Id)
+  Interviews |o..o{ ApplicationStatusHistory : "supports decision [FK206] (3 cols)"
+  %% FK207 FK_Interviews_Schools_1: Interviews (SchoolId) -> Schools (Id)
+  Schools ||..o{ Interviews : "owns [FK207]"
+  %% FK208 FK_Interviews_AspNetUsers_2: Interviews (CompletedById) -> AspNetUsers (Id)
+  AspNetUsers |o..o{ Interviews : "completes [FK208]"
+  %% FK209 FK_Interviews_AspNetUsers_3: Interviews (CancelledById) -> AspNetUsers (Id)
+  AspNetUsers |o..o{ Interviews : "cancels [FK209]"
+  %% FK210 FK_Interviews_AspNetUsers_4: Interviews (CreatedById) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ Interviews : "creates [FK210]"
+  %% FK211 FK_Interviews_Applications_5: Interviews (SchoolId, ApplicationId, TeacherId) -> Applications (SchoolId, Id, TeacherId)
+  Applications ||..o{ Interviews : "schedules attempts [FK211] (3 cols)"
+  %% FK212 FK_InterviewRescheduleRequests_Schools_1: InterviewRescheduleRequests (SchoolId) -> Schools (Id)
+  Schools ||..o{ InterviewRescheduleRequests : "owns [FK212]"
+  %% FK213 FK_InterviewRescheduleRequests_AspNetUsers_2: InterviewRescheduleRequests (RequestedById) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ InterviewRescheduleRequests : "requests [FK213]"
+  %% FK214 FK_InterviewRescheduleRequests_AspNetUsers_3: InterviewRescheduleRequests (DecidedById) -> AspNetUsers (Id)
+  AspNetUsers |o..o{ InterviewRescheduleRequests : "decides [FK214]"
+  %% FK215 FK_InterviewRescheduleRequests_Interviews_4: InterviewRescheduleRequests (SchoolId, InterviewId) -> Interviews (SchoolId, Id)
+  Interviews ||..o{ InterviewRescheduleRequests : "receives proposals [FK215] (2 cols)"
+  %% FK216 FK_InterviewHistory_Schools_1: InterviewHistory (SchoolId) -> Schools (Id)
+  Schools ||..o{ InterviewHistory : "owns [FK216]"
+  %% FK217 FK_InterviewHistory_AspNetUsers_2: InterviewHistory (ActorId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ InterviewHistory : "performs [FK217]"
+  %% FK218 FK_InterviewHistory_Interviews_3: InterviewHistory (SchoolId, InterviewId) -> Interviews (SchoolId, Id)
+  Interviews ||..o{ InterviewHistory : "records events [FK218] (2 cols)"
+  %% FK219 FK_InterviewHistory_InterviewRescheduleRequests_4: InterviewHistory (SchoolId, InterviewId, RequestId) -> InterviewRescheduleRequests (SchoolId, InterviewId, Id)
+  InterviewRescheduleRequests |o..o{ InterviewHistory : "records proposal [FK219] (3 cols)"
+  %% FK220 FK_SchoolEvents_Schools_1: SchoolEvents (SchoolId) -> Schools (Id)
+  Schools ||..o{ SchoolEvents : "hosts [FK220]"
+  %% FK221 FK_SchoolEvents_AcademicYears_2: SchoolEvents (SchoolId, AcademicYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears |o..o{ SchoolEvents : "scopes year [FK221] (2 cols)"
+  %% FK222 FK_SchoolEvents_AspNetUsers_3: SchoolEvents (CreatedById) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ SchoolEvents : "creates [FK222]"
+  %% FK223 FK_SchoolEventSections_Schools_1: SchoolEventSections (SchoolId) -> Schools (Id)
+  Schools ||--o{ SchoolEventSections : "owns [FK223]"
+  %% FK224 FK_SchoolEventSections_AcademicYears_2: SchoolEventSections (SchoolId, AcademicYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears ||--o{ SchoolEventSections : "scopes year [FK224] (2 cols)"
+  %% FK225 FK_SchoolEventSections_SchoolEvents_3: SchoolEventSections (SchoolId, AcademicYearId, EventId) -> SchoolEvents (SchoolId, AcademicYearId, Id)
+  SchoolEvents ||--o{ SchoolEventSections : "targets audience [FK225] (3 cols)"
+  %% FK226 FK_SchoolEventSections_Sections_4: SchoolEventSections (SchoolId, AcademicYearId, SectionId) -> Sections (SchoolId, AcademicYearId, Id)
+  Sections ||--o{ SchoolEventSections : "groups section [FK226] (3 cols)"
+  %% FK227 FK_LearningMeetings_AspNetUsers_1: LearningMeetings (OrganizerId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ LearningMeetings : "organizes [FK227]"
+  %% FK228 FK_LearningMeetings_Channels_2: LearningMeetings (ChannelId) -> Channels (Id)
+  Channels ||..o{ LearningMeetings : "contains activity [FK228]"
+  %% FK229 FK_LearningMeetings_MeetingGroups_3: LearningMeetings (ChannelId, GroupId) -> MeetingGroups (ChannelId, Id)
+  MeetingGroups |o..o{ LearningMeetings : "selects audience [FK229] (2 cols)"
+  %% FK230 FK_MeetingGroups_AspNetUsers_1: MeetingGroups (OwnerUserId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ MeetingGroups : "owns [FK230]"
+  %% FK231 FK_MeetingGroups_Channels_2: MeetingGroups (ChannelId) -> Channels (Id)
+  Channels ||..o{ MeetingGroups : "contains activity [FK231]"
+  %% FK232 FK_MeetingGroupMembers_AspNetUsers_1: MeetingGroupMembers (UserId) -> AspNetUsers (Id)
+  AspNetUsers ||--o{ MeetingGroupMembers : "identifies [FK232]"
+  %% FK233 FK_MeetingGroupMembers_MeetingGroups_2: MeetingGroupMembers (GroupId) -> MeetingGroups (Id)
+  MeetingGroups ||--o{ MeetingGroupMembers : "selects audience [FK233]"
+  %% FK234 FK_MeetingRecipients_AspNetUsers_1: MeetingRecipients (UserId) -> AspNetUsers (Id)
+  AspNetUsers ||--o{ MeetingRecipients : "identifies [FK234]"
+  %% FK235 FK_MeetingRecipients_LearningMeetings_2: MeetingRecipients (MeetingId) -> LearningMeetings (Id)
+  LearningMeetings ||--o{ MeetingRecipients : "invites audience [FK235]"
+  %% FK236 FK_MeetingResources_LearningMeetings_1: MeetingResources (MeetingId) -> LearningMeetings (Id)
+  LearningMeetings ||--o{ MeetingResources : "invites audience [FK236]"
+  %% FK237 FK_Notifications_Schools_1: Notifications (SchoolId) -> Schools (Id)
+  Schools |o..o{ Notifications : "owns [FK237]"
+  %% FK238 FK_Notifications_AspNetUsers_2: Notifications (RecipientId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ Notifications : "receives [FK238]"
+  %% FK239 FK_Notifications_Posts_3: Notifications (PostId) -> Posts (Id)
+  Posts |o..o{ Notifications : "targets content [FK239]"
+  %% FK240 FK_Notifications_LearningMeetings_4: Notifications (LearningMeetingId) -> LearningMeetings (Id)
+  LearningMeetings |o..o{ Notifications : "invites audience [FK240]"
+  %% FK241 FK_Notifications_Applications_5: Notifications (SchoolId, ApplicationId) -> Applications (SchoolId, Id)
+  Applications |o..o{ Notifications : "records application [FK241] (2 cols)"
+  %% FK242 FK_Notifications_Interviews_6: Notifications (SchoolId, InterviewId) -> Interviews (SchoolId, Id)
+  Interviews |o..o{ Notifications : "receives proposals [FK242] (2 cols)"
+  %% FK243 FK_Notifications_SchoolEvents_7: Notifications (SchoolId, SchoolEventId) -> SchoolEvents (SchoolId, Id)
+  SchoolEvents |o..o{ Notifications : "targets audience [FK243] (2 cols)"
+  %% FK244 FK_AuditEvents_Schools_1: AuditEvents (SchoolId) -> Schools (Id)
+  Schools |o..o{ AuditEvents : "owns [FK244]"
+  %% FK245 FK_AuditEvents_AspNetUsers_2: AuditEvents (ActorId) -> AspNetUsers (Id)
+  AspNetUsers |o..o{ AuditEvents : "performs [FK245]"
+  %% FK246 FK_OperationReceipts_AspNetUsers_1: OperationReceipts (ActorId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ OperationReceipts : "performs [FK246]"

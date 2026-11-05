@@ -1,0 +1,102 @@
+%%{init: {"startOnLoad":false,"htmlLabels":false,"flowchart":{"htmlLabels":false},"theme":"base","securityLevel":"strict","maxTextSize":1000000,"maxEdges":2000,"fontFamily":"Arial, sans-serif","themeCSS":".edgeLabel rect.background{fill:#ffffff!important;stroke:none!important}.edgeLabel text,.edgeLabel tspan{fill:#111111!important}","themeVariables":{"fontFamily":"Arial, sans-serif","fontSize":"16px","primaryColor":"#ffffff","primaryTextColor":"#111111","primaryBorderColor":"#374151","lineColor":"#374151","secondaryColor":"#ffffff","tertiaryColor":"#ffffff","mainBkg":"#ffffff","textColor":"#111111","nodeBorder":"#374151","edgeLabelBackground":"#ffffff","attributeBackgroundColorOdd":"#ffffff","attributeBackgroundColorEven":"#f3f4f6"},"er":{"useMaxWidth":false,"diagramPadding":45,"entityPadding":12,"minEntityWidth":150,"minEntityHeight":55,"nodeSpacing":90,"rankSpacing":180,"fontSize":16,"layoutDirection":"LR"}}}%%
+erDiagram
+  direction LR
+  accTitle: ORBIT schema — Channels & learning — part 1
+  accDescr: White background. External entities are marked external. Business relationship labels and stable FK IDs map to ordered source and referenced columns in the accompanying Markdown.
+  Channels["Channels"] {
+    uniqueidentifier Id PK, UK "NOT NULL; default NEWSEQUENTIALID()"
+    uniqueidentifier SchoolId FK, UK "NULL"
+    uniqueidentifier AcademicYearId FK, UK "NULL"
+    uniqueidentifier SubjectId FK, UK "NULL"
+    uniqueidentifier OwnerUserId FK "NOT NULL"
+    varchar(12) Kind "NOT NULL"
+    nvarchar(160) NameEn "NOT NULL"
+    nvarchar(160) NameAr "NULL"
+    nvarchar(4000) DescriptionEn "NULL"
+    nvarchar(4000) DescriptionAr "NULL"
+    uniqueidentifier StandaloneSubjectId FK "NULL"
+    bit IsPrivate "NOT NULL; default 0"
+    varchar(12) Status "NOT NULL; default 'Active'"
+    uniqueidentifier CoverFileId FK "NULL"
+    datetime2(3) CreatedAt "NOT NULL; default SYSUTCDATETIME()"
+    datetime2(3) UpdatedAt "NOT NULL; default SYSUTCDATETIME()"
+    rowversion Version "NOT NULL"
+  }
+  ChannelSections["ChannelSections"] {
+    uniqueidentifier SchoolId PK, FK, UK "NOT NULL"
+    uniqueidentifier AcademicYearId PK, FK, UK "NOT NULL"
+    uniqueidentifier ChannelId PK, FK, UK "NOT NULL"
+    uniqueidentifier SectionId PK, FK, UK "NOT NULL"
+    uniqueidentifier SubjectId FK, UK "NOT NULL"
+  }
+  ChannelMemberships["ChannelMemberships"] {
+    uniqueidentifier ChannelId PK, FK, UK "NOT NULL"
+    uniqueidentifier UserId PK, FK "NOT NULL"
+    varchar(12) Status "NOT NULL; default 'Active'"
+    datetime2(3) JoinedAt "NOT NULL; default SYSUTCDATETIME()"
+    datetime2(3) LeftAt "NULL"
+    smallint SeatNumber UK "NULL"
+    rowversion Version "NOT NULL"
+  }
+  ChannelInvitations["ChannelInvitations"] {
+    uniqueidentifier Id PK "NOT NULL; default NEWSEQUENTIALID()"
+    uniqueidentifier ChannelId FK "NOT NULL"
+    varbinary(32) TokenHash UK "NOT NULL"
+    datetime2(3) ExpiresAt "NULL"
+    datetime2(3) RevokedAt "NULL"
+    uniqueidentifier CreatedById FK "NOT NULL"
+    datetime2(3) CreatedAt "NOT NULL; default SYSUTCDATETIME()"
+  }
+  Schools["Schools (external)"] {
+    uniqueidentifier Id PK "NOT NULL; default NEWSEQUENTIALID(); referenced key columns only"
+  }
+  AcademicYears["AcademicYears (external)"] {
+    uniqueidentifier Id PK, UK "NOT NULL; default NEWSEQUENTIALID(); referenced key columns only"
+    uniqueidentifier SchoolId FK, UK "NOT NULL; referenced key columns only"
+  }
+  AspNetUsers["AspNetUsers (external)"] {
+    uniqueidentifier Id PK "NOT NULL; referenced key columns only"
+  }
+  SchoolSubjects["SchoolSubjects (external)"] {
+    uniqueidentifier Id PK, UK "NOT NULL; default NEWSEQUENTIALID(); referenced key columns only"
+    uniqueidentifier SchoolId FK, UK "NOT NULL; referenced key columns only"
+  }
+  SubjectCatalog["SubjectCatalog (external)"] {
+    uniqueidentifier Id PK "NOT NULL; default NEWSEQUENTIALID(); referenced key columns only"
+  }
+  Files["Files (external)"] {
+    uniqueidentifier Id PK "NOT NULL; default NEWSEQUENTIALID(); referenced key columns only"
+  }
+  Sections["Sections (external)"] {
+    uniqueidentifier Id PK, UK "NOT NULL; default NEWSEQUENTIALID(); referenced key columns only"
+    uniqueidentifier SchoolId FK, UK "NOT NULL; referenced key columns only"
+    uniqueidentifier AcademicYearId FK, UK "NOT NULL; referenced key columns only"
+  }
+  %% FK124 FK_Channels_Schools_1: Channels (SchoolId) -> Schools (Id)
+  Schools |o..o{ Channels : "owns [FK124]"
+  %% FK125 FK_Channels_AcademicYears_2: Channels (SchoolId, AcademicYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears |o..o{ Channels : "scopes year [FK125] (2 cols)"
+  %% FK126 FK_Channels_AspNetUsers_3: Channels (OwnerUserId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ Channels : "owns [FK126]"
+  %% FK127 FK_Channels_SchoolSubjects_4: Channels (SchoolId, SubjectId) -> SchoolSubjects (SchoolId, Id)
+  SchoolSubjects |o..o{ Channels : "teaches subject [FK127] (2 cols)"
+  %% FK128 FK_Channels_SubjectCatalog_5: Channels (StandaloneSubjectId) -> SubjectCatalog (Id)
+  SubjectCatalog |o..o{ Channels : "classifies subject [FK128]"
+  %% FK129 FK_Channels_Files_6: Channels (CoverFileId) -> Files (Id)
+  Files |o..o{ Channels : "attaches file [FK129]"
+  %% FK130 FK_ChannelSections_Schools_1: ChannelSections (SchoolId) -> Schools (Id)
+  Schools ||--o{ ChannelSections : "owns [FK130]"
+  %% FK131 FK_ChannelSections_AcademicYears_2: ChannelSections (SchoolId, AcademicYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears ||--o{ ChannelSections : "scopes year [FK131] (2 cols)"
+  %% FK132 FK_ChannelSections_Channels_3: ChannelSections (SchoolId, AcademicYearId, ChannelId, SubjectId) -> Channels (SchoolId, AcademicYearId, Id, SubjectId)
+  Channels ||..o{ ChannelSections : "contains activity [FK132] (4 cols)"
+  %% FK133 FK_ChannelSections_Sections_4: ChannelSections (SchoolId, AcademicYearId, SectionId) -> Sections (SchoolId, AcademicYearId, Id)
+  Sections ||--o{ ChannelSections : "groups section [FK133] (3 cols)"
+  %% FK134 FK_ChannelMemberships_AspNetUsers_1: ChannelMemberships (UserId) -> AspNetUsers (Id)
+  AspNetUsers ||--o{ ChannelMemberships : "identifies [FK134]"
+  %% FK135 FK_ChannelMemberships_Channels_2: ChannelMemberships (ChannelId) -> Channels (Id)
+  Channels ||--o{ ChannelMemberships : "contains activity [FK135]"
+  %% FK136 FK_ChannelInvitations_AspNetUsers_1: ChannelInvitations (CreatedById) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ ChannelInvitations : "creates [FK136]"
+  %% FK137 FK_ChannelInvitations_Channels_2: ChannelInvitations (ChannelId) -> Channels (Id)
+  Channels ||..o{ ChannelInvitations : "contains activity [FK137]"

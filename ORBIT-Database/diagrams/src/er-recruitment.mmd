@@ -1,0 +1,88 @@
+%%{init: {"startOnLoad":false,"htmlLabels":false,"flowchart":{"htmlLabels":false},"theme":"base","securityLevel":"strict","maxTextSize":1000000,"maxEdges":2000,"fontFamily":"Arial, sans-serif","themeCSS":".edgeLabel rect.background{fill:#ffffff!important;stroke:none!important}.edgeLabel text,.edgeLabel tspan{fill:#111111!important}","themeVariables":{"fontFamily":"Arial, sans-serif","fontSize":"16px","primaryColor":"#ffffff","primaryTextColor":"#111111","primaryBorderColor":"#374151","lineColor":"#374151","secondaryColor":"#ffffff","tertiaryColor":"#ffffff","mainBkg":"#ffffff","textColor":"#111111","nodeBorder":"#374151","edgeLabelBackground":"#ffffff","attributeBackgroundColorOdd":"#ffffff","attributeBackgroundColorEven":"#f3f4f6"},"er":{"useMaxWidth":false,"diagramPadding":45,"entityPadding":12,"minEntityWidth":150,"minEntityHeight":55,"nodeSpacing":90,"rankSpacing":180,"fontSize":16,"layoutDirection":"LR"}}}%%
+erDiagram
+  direction LR
+  accTitle: ORBIT ER — Recruitment
+  accDescr: White background. External entities are marked external. Business relationship labels and stable FK IDs map to ordered source and referenced columns in the accompanying Markdown.
+  Opportunities["Opportunities"]
+  OpportunityGradeLevels["OpportunityGradeLevels"]
+  OpportunitySkills["OpportunitySkills"]
+  OpportunityStatusHistory["OpportunityStatusHistory"]
+  Applications["Applications"]
+  ApplicationFiles["ApplicationFiles"]
+  ApplicationStatusHistory["ApplicationStatusHistory"]
+  Interviews["Interviews"]
+  InterviewRescheduleRequests["InterviewRescheduleRequests"]
+  InterviewHistory["InterviewHistory"]
+  Schools["Schools (external)"]
+  AspNetUsers["AspNetUsers (external)"]
+  SubjectCatalog["SubjectCatalog (external)"]
+  Teachers["Teachers (external)"]
+  Files["Files (external)"]
+  %% FK186 FK_Opportunities_Schools_1: Opportunities (SchoolId) -> Schools (Id)
+  Schools ||..o{ Opportunities : "advertises [FK186]"
+  %% FK187 FK_Opportunities_AspNetUsers_2: Opportunities (CreatedById) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ Opportunities : "creates [FK187]"
+  %% FK188 FK_Opportunities_SubjectCatalog_3: Opportunities (SubjectCatalogId) -> SubjectCatalog (Id)
+  SubjectCatalog ||..o{ Opportunities : "classifies subject [FK188]"
+  %% FK189 FK_OpportunityGradeLevels_Schools_1: OpportunityGradeLevels (SchoolId) -> Schools (Id)
+  Schools ||--o{ OpportunityGradeLevels : "owns [FK189]"
+  %% FK190 FK_OpportunityGradeLevels_Opportunities_2: OpportunityGradeLevels (SchoolId, OpportunityId) -> Opportunities (SchoolId, Id)
+  Opportunities ||--o{ OpportunityGradeLevels : "receives applications [FK190] (2 cols)"
+  %% FK191 FK_OpportunitySkills_Schools_1: OpportunitySkills (SchoolId) -> Schools (Id)
+  Schools ||--o{ OpportunitySkills : "owns [FK191]"
+  %% FK192 FK_OpportunitySkills_Opportunities_2: OpportunitySkills (SchoolId, OpportunityId) -> Opportunities (SchoolId, Id)
+  Opportunities ||--o{ OpportunitySkills : "receives applications [FK192] (2 cols)"
+  %% FK193 FK_OpportunityStatusHistory_Schools_1: OpportunityStatusHistory (SchoolId) -> Schools (Id)
+  Schools ||..o{ OpportunityStatusHistory : "owns [FK193]"
+  %% FK194 FK_OpportunityStatusHistory_AspNetUsers_2: OpportunityStatusHistory (ActorId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ OpportunityStatusHistory : "performs [FK194]"
+  %% FK195 FK_OpportunityStatusHistory_Opportunities_3: OpportunityStatusHistory (SchoolId, OpportunityId) -> Opportunities (SchoolId, Id)
+  Opportunities ||..o{ OpportunityStatusHistory : "receives applications [FK195] (2 cols)"
+  %% FK196 FK_Applications_Schools_1: Applications (SchoolId) -> Schools (Id)
+  Schools ||..o{ Applications : "owns [FK196]"
+  %% FK197 FK_Applications_AspNetUsers_2: Applications (ConsentedById) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ Applications : "consents [FK197]"
+  %% FK198 FK_Applications_Opportunities_3: Applications (SchoolId, OpportunityId) -> Opportunities (SchoolId, Id)
+  Opportunities ||..o{ Applications : "receives applications [FK198] (2 cols)"
+  %% FK199 FK_Applications_Teachers_4: Applications (TeacherId) -> Teachers (Id)
+  Teachers ||..o{ Applications : "applies [FK199]"
+  %% FK200 FK_ApplicationFiles_Schools_1: ApplicationFiles (SchoolId) -> Schools (Id)
+  Schools ||--o{ ApplicationFiles : "owns [FK200]"
+  %% FK201 FK_ApplicationFiles_Applications_2: ApplicationFiles (SchoolId, ApplicationId) -> Applications (SchoolId, Id)
+  Applications ||--o{ ApplicationFiles : "records application [FK201] (2 cols)"
+  %% FK202 FK_ApplicationFiles_Files_3: ApplicationFiles (FileId) -> Files (Id)
+  Files ||--o{ ApplicationFiles : "attaches file [FK202]"
+  %% FK203 FK_ApplicationStatusHistory_Schools_1: ApplicationStatusHistory (SchoolId) -> Schools (Id)
+  Schools ||..o{ ApplicationStatusHistory : "owns [FK203]"
+  %% FK204 FK_ApplicationStatusHistory_AspNetUsers_2: ApplicationStatusHistory (ActorId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ ApplicationStatusHistory : "performs [FK204]"
+  %% FK205 FK_ApplicationStatusHistory_Applications_3: ApplicationStatusHistory (SchoolId, ApplicationId) -> Applications (SchoolId, Id)
+  Applications ||..o{ ApplicationStatusHistory : "records application [FK205] (2 cols)"
+  %% FK206 FK_ApplicationStatusHistory_Interviews_4: ApplicationStatusHistory (SchoolId, ApplicationId, InterviewId) -> Interviews (SchoolId, ApplicationId, Id)
+  Interviews |o..o{ ApplicationStatusHistory : "supports decision [FK206] (3 cols)"
+  %% FK207 FK_Interviews_Schools_1: Interviews (SchoolId) -> Schools (Id)
+  Schools ||..o{ Interviews : "owns [FK207]"
+  %% FK208 FK_Interviews_AspNetUsers_2: Interviews (CompletedById) -> AspNetUsers (Id)
+  AspNetUsers |o..o{ Interviews : "completes [FK208]"
+  %% FK209 FK_Interviews_AspNetUsers_3: Interviews (CancelledById) -> AspNetUsers (Id)
+  AspNetUsers |o..o{ Interviews : "cancels [FK209]"
+  %% FK210 FK_Interviews_AspNetUsers_4: Interviews (CreatedById) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ Interviews : "creates [FK210]"
+  %% FK211 FK_Interviews_Applications_5: Interviews (SchoolId, ApplicationId, TeacherId) -> Applications (SchoolId, Id, TeacherId)
+  Applications ||..o{ Interviews : "schedules attempts [FK211] (3 cols)"
+  %% FK212 FK_InterviewRescheduleRequests_Schools_1: InterviewRescheduleRequests (SchoolId) -> Schools (Id)
+  Schools ||..o{ InterviewRescheduleRequests : "owns [FK212]"
+  %% FK213 FK_InterviewRescheduleRequests_AspNetUsers_2: InterviewRescheduleRequests (RequestedById) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ InterviewRescheduleRequests : "requests [FK213]"
+  %% FK214 FK_InterviewRescheduleRequests_AspNetUsers_3: InterviewRescheduleRequests (DecidedById) -> AspNetUsers (Id)
+  AspNetUsers |o..o{ InterviewRescheduleRequests : "decides [FK214]"
+  %% FK215 FK_InterviewRescheduleRequests_Interviews_4: InterviewRescheduleRequests (SchoolId, InterviewId) -> Interviews (SchoolId, Id)
+  Interviews ||..o{ InterviewRescheduleRequests : "receives proposals [FK215] (2 cols)"
+  %% FK216 FK_InterviewHistory_Schools_1: InterviewHistory (SchoolId) -> Schools (Id)
+  Schools ||..o{ InterviewHistory : "owns [FK216]"
+  %% FK217 FK_InterviewHistory_AspNetUsers_2: InterviewHistory (ActorId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ InterviewHistory : "performs [FK217]"
+  %% FK218 FK_InterviewHistory_Interviews_3: InterviewHistory (SchoolId, InterviewId) -> Interviews (SchoolId, Id)
+  Interviews ||..o{ InterviewHistory : "records events [FK218] (2 cols)"
+  %% FK219 FK_InterviewHistory_InterviewRescheduleRequests_4: InterviewHistory (SchoolId, InterviewId, RequestId) -> InterviewRescheduleRequests (SchoolId, InterviewId, Id)
+  InterviewRescheduleRequests |o..o{ InterviewHistory : "records proposal [FK219] (3 cols)"

@@ -1,0 +1,64 @@
+%%{init: {"startOnLoad":false,"htmlLabels":false,"flowchart":{"htmlLabels":false},"theme":"base","securityLevel":"strict","maxTextSize":1000000,"maxEdges":2000,"fontFamily":"Arial, sans-serif","themeCSS":".edgeLabel rect.background{fill:#ffffff!important;stroke:none!important}.edgeLabel text,.edgeLabel tspan{fill:#111111!important}","themeVariables":{"fontFamily":"Arial, sans-serif","fontSize":"16px","primaryColor":"#ffffff","primaryTextColor":"#111111","primaryBorderColor":"#374151","lineColor":"#374151","secondaryColor":"#ffffff","tertiaryColor":"#ffffff","mainBkg":"#ffffff","textColor":"#111111","nodeBorder":"#374151","edgeLabelBackground":"#ffffff","attributeBackgroundColorOdd":"#ffffff","attributeBackgroundColorEven":"#f3f4f6"},"er":{"useMaxWidth":false,"diagramPadding":45,"entityPadding":12,"minEntityWidth":150,"minEntityHeight":55,"nodeSpacing":90,"rankSpacing":180,"fontSize":16,"layoutDirection":"LR"}}}%%
+erDiagram
+  direction LR
+  accTitle: ORBIT schema — Recruitment — part 3
+  accDescr: White background. External entities are marked external. Business relationship labels and stable FK IDs map to ordered source and referenced columns in the accompanying Markdown.
+  InterviewRescheduleRequests["InterviewRescheduleRequests"] {
+    uniqueidentifier Id PK, UK "NOT NULL; default NEWSEQUENTIALID()"
+    uniqueidentifier SchoolId FK, UK "NOT NULL"
+    uniqueidentifier InterviewId FK, UK "NOT NULL"
+    uniqueidentifier RequestedById FK "NOT NULL"
+    datetime2(3) OriginalStartAt "NOT NULL"
+    datetime2(3) OriginalEndAt "NOT NULL"
+    datetime2(3) ProposedStartAt "NOT NULL"
+    datetime2(3) ProposedEndAt "NOT NULL"
+    binary(8) BaseInterviewVersion "NOT NULL"
+    nvarchar(1500) Reason "NOT NULL"
+    varchar(12) Status "NOT NULL; default 'Pending'"
+    uniqueidentifier DecidedById FK "NULL"
+    datetime2(3) DecidedAt "NULL"
+    nvarchar(1500) Response "NULL"
+    datetime2(3) CreatedAt "NOT NULL; default SYSUTCDATETIME()"
+    rowversion Version "NOT NULL"
+  }
+  InterviewHistory["InterviewHistory"] {
+    uniqueidentifier Id PK, UK "NOT NULL; default NEWSEQUENTIALID()"
+    uniqueidentifier SchoolId FK, UK "NOT NULL"
+    uniqueidentifier InterviewId FK, UK "NOT NULL"
+    int Sequence UK "NOT NULL"
+    varchar(24) Action "NOT NULL"
+    uniqueidentifier RequestId FK "NULL"
+    datetime2(3) OldStartAt "NULL"
+    datetime2(3) OldEndAt "NULL"
+    datetime2(3) NewStartAt "NULL"
+    datetime2(3) NewEndAt "NULL"
+    nvarchar(1500) Reason "NULL"
+    uniqueidentifier ActorId FK "NOT NULL"
+    datetime2(3) CreatedAt "NOT NULL; default SYSUTCDATETIME()"
+  }
+  Schools["Schools (external)"] {
+    uniqueidentifier Id PK "NOT NULL; default NEWSEQUENTIALID(); referenced key columns only"
+  }
+  AspNetUsers["AspNetUsers (external)"] {
+    uniqueidentifier Id PK "NOT NULL; referenced key columns only"
+  }
+  Interviews["Interviews (external)"] {
+    uniqueidentifier Id PK, UK "NOT NULL; default NEWSEQUENTIALID(); referenced key columns only"
+    uniqueidentifier SchoolId FK, UK "NOT NULL; referenced key columns only"
+  }
+  %% FK212 FK_InterviewRescheduleRequests_Schools_1: InterviewRescheduleRequests (SchoolId) -> Schools (Id)
+  Schools ||..o{ InterviewRescheduleRequests : "owns [FK212]"
+  %% FK213 FK_InterviewRescheduleRequests_AspNetUsers_2: InterviewRescheduleRequests (RequestedById) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ InterviewRescheduleRequests : "requests [FK213]"
+  %% FK214 FK_InterviewRescheduleRequests_AspNetUsers_3: InterviewRescheduleRequests (DecidedById) -> AspNetUsers (Id)
+  AspNetUsers |o..o{ InterviewRescheduleRequests : "decides [FK214]"
+  %% FK215 FK_InterviewRescheduleRequests_Interviews_4: InterviewRescheduleRequests (SchoolId, InterviewId) -> Interviews (SchoolId, Id)
+  Interviews ||..o{ InterviewRescheduleRequests : "receives proposals [FK215] (2 cols)"
+  %% FK216 FK_InterviewHistory_Schools_1: InterviewHistory (SchoolId) -> Schools (Id)
+  Schools ||..o{ InterviewHistory : "owns [FK216]"
+  %% FK217 FK_InterviewHistory_AspNetUsers_2: InterviewHistory (ActorId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ InterviewHistory : "performs [FK217]"
+  %% FK218 FK_InterviewHistory_Interviews_3: InterviewHistory (SchoolId, InterviewId) -> Interviews (SchoolId, Id)
+  Interviews ||..o{ InterviewHistory : "records events [FK218] (2 cols)"
+  %% FK219 FK_InterviewHistory_InterviewRescheduleRequests_4: InterviewHistory (SchoolId, InterviewId, RequestId) -> InterviewRescheduleRequests (SchoolId, InterviewId, Id)
+  InterviewRescheduleRequests |o..o{ InterviewHistory : "records proposal [FK219] (3 cols)"

@@ -1,0 +1,110 @@
+%%{init: {"startOnLoad":false,"htmlLabels":false,"flowchart":{"htmlLabels":false},"theme":"base","securityLevel":"strict","maxTextSize":1000000,"maxEdges":2000,"fontFamily":"Arial, sans-serif","themeCSS":".edgeLabel rect.background{fill:#ffffff!important;stroke:none!important}.edgeLabel text,.edgeLabel tspan{fill:#111111!important}","themeVariables":{"fontFamily":"Arial, sans-serif","fontSize":"16px","primaryColor":"#ffffff","primaryTextColor":"#111111","primaryBorderColor":"#374151","lineColor":"#374151","secondaryColor":"#ffffff","tertiaryColor":"#ffffff","mainBkg":"#ffffff","textColor":"#111111","nodeBorder":"#374151","edgeLabelBackground":"#ffffff","attributeBackgroundColorOdd":"#ffffff","attributeBackgroundColorEven":"#f3f4f6"},"er":{"useMaxWidth":false,"diagramPadding":45,"entityPadding":12,"minEntityWidth":150,"minEntityHeight":55,"nodeSpacing":90,"rankSpacing":180,"fontSize":16,"layoutDirection":"LR"}}}%%
+erDiagram
+  direction LR
+  accTitle: ORBIT ER — Teaching & timetables
+  accDescr: White background. External entities are marked external. Business relationship labels and stable FK IDs map to ordered source and referenced columns in the accompanying Markdown.
+  TeachingAssignments["TeachingAssignments"]
+  TeachingAssignmentHistory["TeachingAssignmentHistory"]
+  WeeklySubjectRequirements["WeeklySubjectRequirements"]
+  TeacherUnavailableSlots["TeacherUnavailableSlots"]
+  Timetables["Timetables"]
+  TimetableRevisions["TimetableRevisions"]
+  TimetableCells["TimetableCells"]
+  PublishedTimetableOccupancy["PublishedTimetableOccupancy"]
+  TimetableChangeRequests["TimetableChangeRequests"]
+  Schools["Schools (external)"]
+  AcademicYears["AcademicYears (external)"]
+  Sections["Sections (external)"]
+  SchoolSubjects["SchoolSubjects (external)"]
+  SchoolTeachers["SchoolTeachers (external)"]
+  AspNetUsers["AspNetUsers (external)"]
+  Grades["Grades (external)"]
+  ChannelSections["ChannelSections (external)"]
+  %% FK080 FK_TeachingAssignments_Schools_1: TeachingAssignments (SchoolId) -> Schools (Id)
+  Schools ||..o{ TeachingAssignments : "owns [FK080]"
+  %% FK081 FK_TeachingAssignments_AcademicYears_2: TeachingAssignments (SchoolId, AcademicYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears ||..o{ TeachingAssignments : "scopes year [FK081] (2 cols)"
+  %% FK082 FK_TeachingAssignments_Sections_3: TeachingAssignments (SchoolId, AcademicYearId, SectionId) -> Sections (SchoolId, AcademicYearId, Id)
+  Sections ||..o{ TeachingAssignments : "groups section [FK082] (3 cols)"
+  %% FK083 FK_TeachingAssignments_SchoolSubjects_4: TeachingAssignments (SchoolId, SubjectId) -> SchoolSubjects (SchoolId, Id)
+  SchoolSubjects ||..o{ TeachingAssignments : "teaches subject [FK083] (2 cols)"
+  %% FK084 FK_TeachingAssignments_SchoolTeachers_5: TeachingAssignments (SchoolId, SchoolTeacherId) -> SchoolTeachers (SchoolId, Id)
+  SchoolTeachers ||..o{ TeachingAssignments : "assigns teacher [FK084] (2 cols)"
+  %% FK085 FK_TeachingAssignmentHistory_Schools_1: TeachingAssignmentHistory (SchoolId) -> Schools (Id)
+  Schools ||..o{ TeachingAssignmentHistory : "owns [FK085]"
+  %% FK086 FK_TeachingAssignmentHistory_AcademicYears_2: TeachingAssignmentHistory (SchoolId, AcademicYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears ||..o{ TeachingAssignmentHistory : "scopes year [FK086] (2 cols)"
+  %% FK087 FK_TeachingAssignmentHistory_AspNetUsers_3: TeachingAssignmentHistory (ActorId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ TeachingAssignmentHistory : "performs [FK087]"
+  %% FK088 FK_TeachingAssignmentHistory_TeachingAssignments_4: TeachingAssignmentHistory (SchoolId, AcademicYearId, AssignmentId) -> TeachingAssignments (SchoolId, AcademicYearId, Id)
+  TeachingAssignments ||..o{ TeachingAssignmentHistory : "records allocation [FK088] (3 cols)"
+  %% FK089 FK_TeachingAssignmentHistory_TeachingAssignments_5: TeachingAssignmentHistory (SchoolId, AcademicYearId, ReplacesAssignmentId) -> TeachingAssignments (SchoolId, AcademicYearId, Id)
+  TeachingAssignments |o..o{ TeachingAssignmentHistory : "replaces allocation [FK089] (3 cols)"
+  %% FK090 FK_WeeklySubjectRequirements_Schools_1: WeeklySubjectRequirements (SchoolId) -> Schools (Id)
+  Schools ||--o{ WeeklySubjectRequirements : "owns [FK090]"
+  %% FK091 FK_WeeklySubjectRequirements_AcademicYears_2: WeeklySubjectRequirements (SchoolId, AcademicYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears ||--o{ WeeklySubjectRequirements : "scopes year [FK091] (2 cols)"
+  %% FK092 FK_WeeklySubjectRequirements_AspNetUsers_3: WeeklySubjectRequirements (UpdatedById) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ WeeklySubjectRequirements : "updates [FK092]"
+  %% FK093 FK_WeeklySubjectRequirements_Grades_4: WeeklySubjectRequirements (SchoolId, GradeId) -> Grades (SchoolId, Id)
+  Grades ||--o{ WeeklySubjectRequirements : "groups grade [FK093] (2 cols)"
+  %% FK094 FK_WeeklySubjectRequirements_SchoolSubjects_5: WeeklySubjectRequirements (SchoolId, SubjectId) -> SchoolSubjects (SchoolId, Id)
+  SchoolSubjects ||--o{ WeeklySubjectRequirements : "teaches subject [FK094] (2 cols)"
+  %% FK095 FK_TeacherUnavailableSlots_Schools_1: TeacherUnavailableSlots (SchoolId) -> Schools (Id)
+  Schools ||--o{ TeacherUnavailableSlots : "owns [FK095]"
+  %% FK096 FK_TeacherUnavailableSlots_AcademicYears_2: TeacherUnavailableSlots (SchoolId, AcademicYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears ||--o{ TeacherUnavailableSlots : "scopes year [FK096] (2 cols)"
+  %% FK097 FK_TeacherUnavailableSlots_AspNetUsers_3: TeacherUnavailableSlots (UpdatedById) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ TeacherUnavailableSlots : "updates [FK097]"
+  %% FK098 FK_TeacherUnavailableSlots_SchoolTeachers_4: TeacherUnavailableSlots (SchoolId, SchoolTeacherId) -> SchoolTeachers (SchoolId, Id)
+  SchoolTeachers ||--o{ TeacherUnavailableSlots : "assigns teacher [FK098] (2 cols)"
+  %% FK099 FK_Timetables_Schools_1: Timetables (SchoolId) -> Schools (Id)
+  Schools ||..o{ Timetables : "owns [FK099]"
+  %% FK100 FK_Timetables_AcademicYears_2: Timetables (SchoolId, AcademicYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears ||..o{ Timetables : "scopes year [FK100] (2 cols)"
+  %% FK101 FK_Timetables_Sections_3: Timetables (SchoolId, AcademicYearId, SectionId) -> Sections (SchoolId, AcademicYearId, Id)
+  Sections ||..o| Timetables : "groups section [FK101] (3 cols)"
+  %% FK102 FK_Timetables_TimetableRevisions_4: Timetables (SchoolId, AcademicYearId, Id, SectionId, CurrentDraftRevisionId) -> TimetableRevisions (SchoolId, AcademicYearId, TimetableId, SectionId, Id)
+  TimetableRevisions |o..o| Timetables : "current draft [FK102] (5 cols)"
+  %% FK103 FK_Timetables_TimetableRevisions_5: Timetables (SchoolId, AcademicYearId, Id, SectionId, PublishedRevisionId) -> TimetableRevisions (SchoolId, AcademicYearId, TimetableId, SectionId, Id)
+  TimetableRevisions |o..o| Timetables : "published version [FK103] (5 cols)"
+  %% FK104 FK_TimetableRevisions_Schools_1: TimetableRevisions (SchoolId) -> Schools (Id)
+  Schools ||..o{ TimetableRevisions : "owns [FK104]"
+  %% FK105 FK_TimetableRevisions_AcademicYears_2: TimetableRevisions (SchoolId, AcademicYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears ||..o{ TimetableRevisions : "scopes year [FK105] (2 cols)"
+  %% FK106 FK_TimetableRevisions_AspNetUsers_3: TimetableRevisions (SavedById) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ TimetableRevisions : "saves revision [FK106]"
+  %% FK107 FK_TimetableRevisions_AspNetUsers_4: TimetableRevisions (PublishedById) -> AspNetUsers (Id)
+  AspNetUsers |o..o{ TimetableRevisions : "publishes [FK107]"
+  %% FK108 FK_TimetableRevisions_Timetables_5: TimetableRevisions (SchoolId, AcademicYearId, TimetableId, SectionId) -> Timetables (SchoolId, AcademicYearId, Id, SectionId)
+  Timetables ||..o{ TimetableRevisions : "has revisions [FK108] (4 cols)"
+  %% FK109 FK_TimetableCells_Schools_1: TimetableCells (SchoolId) -> Schools (Id)
+  Schools ||..o{ TimetableCells : "owns [FK109]"
+  %% FK110 FK_TimetableCells_AcademicYears_2: TimetableCells (SchoolId, AcademicYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears ||..o{ TimetableCells : "scopes year [FK110] (2 cols)"
+  %% FK111 FK_TimetableCells_TimetableRevisions_3: TimetableCells (SchoolId, AcademicYearId, RevisionId, SectionId) -> TimetableRevisions (SchoolId, AcademicYearId, Id, SectionId)
+  TimetableRevisions ||..o{ TimetableCells : "contains cells [FK111] (4 cols)"
+  %% FK112 FK_TimetableCells_TeachingAssignments_4: TimetableCells (SchoolId, AcademicYearId, AssignmentId, SectionId, SubjectId, SchoolTeacherId) -> TeachingAssignments (SchoolId, AcademicYearId, Id, SectionId, SubjectId, SchoolTeacherId)
+  TeachingAssignments ||..o{ TimetableCells : "schedules lesson [FK112] (6 cols)"
+  %% FK113 FK_TimetableCells_ChannelSections_5: TimetableCells (SchoolId, AcademicYearId, ChannelId, SectionId, SubjectId) -> ChannelSections (SchoolId, AcademicYearId, ChannelId, SectionId, SubjectId)
+  ChannelSections |o..o{ TimetableCells : "targets section [FK113] (5 cols)"
+  %% FK114 FK_PublishedTimetableOccupancy_Schools_1: PublishedTimetableOccupancy (SchoolId) -> Schools (Id)
+  Schools ||--o{ PublishedTimetableOccupancy : "owns [FK114]"
+  %% FK115 FK_PublishedTimetableOccupancy_AcademicYears_2: PublishedTimetableOccupancy (SchoolId, AcademicYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears ||--o{ PublishedTimetableOccupancy : "scopes year [FK115] (2 cols)"
+  %% FK116 FK_PublishedTimetableOccupancy_Sections_3: PublishedTimetableOccupancy (SchoolId, AcademicYearId, SectionId) -> Sections (SchoolId, AcademicYearId, Id)
+  Sections ||--o{ PublishedTimetableOccupancy : "groups section [FK116] (3 cols)"
+  %% FK117 FK_PublishedTimetableOccupancy_TimetableCells_4: PublishedTimetableOccupancy (SchoolId, AcademicYearId, CellId, SectionId, SchoolTeacherId, DayNumber, PeriodNumber) -> TimetableCells (SchoolId, AcademicYearId, Id, SectionId, SchoolTeacherId, DayNumber, PeriodNumber)
+  TimetableCells ||..o| PublishedTimetableOccupancy : "reserves slot [FK117] (7 cols)"
+  %% FK118 FK_TimetableChangeRequests_Schools_1: TimetableChangeRequests (SchoolId) -> Schools (Id)
+  Schools ||..o{ TimetableChangeRequests : "owns [FK118]"
+  %% FK119 FK_TimetableChangeRequests_AcademicYears_2: TimetableChangeRequests (SchoolId, AcademicYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears ||..o{ TimetableChangeRequests : "scopes year [FK119] (2 cols)"
+  %% FK120 FK_TimetableChangeRequests_AspNetUsers_3: TimetableChangeRequests (RequestedById) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ TimetableChangeRequests : "requests [FK120]"
+  %% FK121 FK_TimetableChangeRequests_AspNetUsers_4: TimetableChangeRequests (DecidedById) -> AspNetUsers (Id)
+  AspNetUsers |o..o{ TimetableChangeRequests : "decides [FK121]"
+  %% FK122 FK_TimetableChangeRequests_TimetableCells_5: TimetableChangeRequests (SchoolId, AcademicYearId, BaseCellId) -> TimetableCells (SchoolId, AcademicYearId, Id)
+  TimetableCells ||..o{ TimetableChangeRequests : "requests move [FK122] (3 cols)"
+  %% FK123 FK_TimetableChangeRequests_TimetableRevisions_6: TimetableChangeRequests (SchoolId, AcademicYearId, ResultRevisionId) -> TimetableRevisions (SchoolId, AcademicYearId, Id)
+  TimetableRevisions |o..o{ TimetableChangeRequests : "approved revision [FK123] (3 cols)"

@@ -1,0 +1,88 @@
+%%{init: {"startOnLoad":false,"htmlLabels":false,"flowchart":{"htmlLabels":false},"theme":"base","securityLevel":"strict","maxTextSize":1000000,"maxEdges":2000,"fontFamily":"Arial, sans-serif","themeCSS":".edgeLabel rect.background{fill:#ffffff!important;stroke:none!important}.edgeLabel text,.edgeLabel tspan{fill:#111111!important}","themeVariables":{"fontFamily":"Arial, sans-serif","fontSize":"16px","primaryColor":"#ffffff","primaryTextColor":"#111111","primaryBorderColor":"#374151","lineColor":"#374151","secondaryColor":"#ffffff","tertiaryColor":"#ffffff","mainBkg":"#ffffff","textColor":"#111111","nodeBorder":"#374151","edgeLabelBackground":"#ffffff","attributeBackgroundColorOdd":"#ffffff","attributeBackgroundColorEven":"#f3f4f6"},"er":{"useMaxWidth":false,"diagramPadding":45,"entityPadding":12,"minEntityWidth":150,"minEntityHeight":55,"nodeSpacing":90,"rankSpacing":180,"fontSize":16,"layoutDirection":"LR"}}}%%
+erDiagram
+  direction LR
+  accTitle: ORBIT schema — Events & delivery — part 2
+  accDescr: White background. External entities are marked external. Business relationship labels and stable FK IDs map to ordered source and referenced columns in the accompanying Markdown.
+  MeetingGroupMembers["MeetingGroupMembers"] {
+    uniqueidentifier GroupId PK, FK "NOT NULL"
+    uniqueidentifier UserId PK, FK "NOT NULL"
+  }
+  MeetingRecipients["MeetingRecipients"] {
+    uniqueidentifier MeetingId PK, FK "NOT NULL"
+    uniqueidentifier UserId PK, FK "NOT NULL"
+    datetime2(3) CapturedAt "NOT NULL; default SYSUTCDATETIME()"
+  }
+  MeetingResources["MeetingResources"] {
+    uniqueidentifier MeetingId PK, FK "NOT NULL"
+    tinyint SortOrder PK "NOT NULL"
+    nvarchar(150) Name "NOT NULL"
+    nvarchar(2000) Url "NOT NULL"
+  }
+  Notifications["Notifications"] {
+    uniqueidentifier Id PK, UK "NOT NULL; default NEWSEQUENTIALID()"
+    uniqueidentifier RecipientId FK, UK "NOT NULL"
+    uniqueidentifier SchoolId FK, UK "NULL"
+    nvarchar(200) EventKey UK "NOT NULL"
+    varchar(40) Type "NOT NULL"
+    nvarchar(2000) TextEn "NOT NULL"
+    nvarchar(2000) TextAr "NULL"
+    nvarchar(500) Route "NOT NULL"
+    uniqueidentifier PostId FK "NULL"
+    uniqueidentifier ApplicationId FK "NULL"
+    uniqueidentifier InterviewId FK "NULL"
+    uniqueidentifier LearningMeetingId FK "NULL"
+    uniqueidentifier SchoolEventId FK "NULL"
+    datetime2(3) ReadAt "NULL"
+    datetime2(3) CreatedAt UK "NOT NULL; default SYSUTCDATETIME()"
+  }
+  AspNetUsers["AspNetUsers (external)"] {
+    uniqueidentifier Id PK "NOT NULL; referenced key columns only"
+  }
+  MeetingGroups["MeetingGroups (external)"] {
+    uniqueidentifier Id PK, UK "NOT NULL; default NEWSEQUENTIALID(); referenced key columns only"
+  }
+  LearningMeetings["LearningMeetings (external)"] {
+    uniqueidentifier Id PK "NOT NULL; default NEWSEQUENTIALID(); referenced key columns only"
+  }
+  Schools["Schools (external)"] {
+    uniqueidentifier Id PK "NOT NULL; default NEWSEQUENTIALID(); referenced key columns only"
+  }
+  Posts["Posts (external)"] {
+    uniqueidentifier Id PK, UK "NOT NULL; default NEWSEQUENTIALID(); referenced key columns only"
+  }
+  Applications["Applications (external)"] {
+    uniqueidentifier Id PK, UK "NOT NULL; default NEWSEQUENTIALID(); referenced key columns only"
+    uniqueidentifier SchoolId FK, UK "NOT NULL; referenced key columns only"
+  }
+  Interviews["Interviews (external)"] {
+    uniqueidentifier Id PK, UK "NOT NULL; default NEWSEQUENTIALID(); referenced key columns only"
+    uniqueidentifier SchoolId FK, UK "NOT NULL; referenced key columns only"
+  }
+  SchoolEvents["SchoolEvents (external)"] {
+    uniqueidentifier Id PK, UK "NOT NULL; default NEWSEQUENTIALID(); referenced key columns only"
+    uniqueidentifier SchoolId FK, UK "NOT NULL; referenced key columns only"
+  }
+  %% FK232 FK_MeetingGroupMembers_AspNetUsers_1: MeetingGroupMembers (UserId) -> AspNetUsers (Id)
+  AspNetUsers ||--o{ MeetingGroupMembers : "identifies [FK232]"
+  %% FK233 FK_MeetingGroupMembers_MeetingGroups_2: MeetingGroupMembers (GroupId) -> MeetingGroups (Id)
+  MeetingGroups ||--o{ MeetingGroupMembers : "selects audience [FK233]"
+  %% FK234 FK_MeetingRecipients_AspNetUsers_1: MeetingRecipients (UserId) -> AspNetUsers (Id)
+  AspNetUsers ||--o{ MeetingRecipients : "identifies [FK234]"
+  %% FK235 FK_MeetingRecipients_LearningMeetings_2: MeetingRecipients (MeetingId) -> LearningMeetings (Id)
+  LearningMeetings ||--o{ MeetingRecipients : "invites audience [FK235]"
+  %% FK236 FK_MeetingResources_LearningMeetings_1: MeetingResources (MeetingId) -> LearningMeetings (Id)
+  LearningMeetings ||--o{ MeetingResources : "invites audience [FK236]"
+  %% FK237 FK_Notifications_Schools_1: Notifications (SchoolId) -> Schools (Id)
+  Schools |o..o{ Notifications : "owns [FK237]"
+  %% FK238 FK_Notifications_AspNetUsers_2: Notifications (RecipientId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ Notifications : "receives [FK238]"
+  %% FK239 FK_Notifications_Posts_3: Notifications (PostId) -> Posts (Id)
+  Posts |o..o{ Notifications : "targets content [FK239]"
+  %% FK240 FK_Notifications_LearningMeetings_4: Notifications (LearningMeetingId) -> LearningMeetings (Id)
+  LearningMeetings |o..o{ Notifications : "invites audience [FK240]"
+  %% FK241 FK_Notifications_Applications_5: Notifications (SchoolId, ApplicationId) -> Applications (SchoolId, Id)
+  Applications |o..o{ Notifications : "records application [FK241] (2 cols)"
+  %% FK242 FK_Notifications_Interviews_6: Notifications (SchoolId, InterviewId) -> Interviews (SchoolId, Id)
+  Interviews |o..o{ Notifications : "receives proposals [FK242] (2 cols)"
+  %% FK243 FK_Notifications_SchoolEvents_7: Notifications (SchoolId, SchoolEventId) -> SchoolEvents (SchoolId, Id)
+  SchoolEvents |o..o{ Notifications : "targets audience [FK243] (2 cols)"

@@ -1,0 +1,52 @@
+%%{init: {"startOnLoad":false,"htmlLabels":false,"flowchart":{"htmlLabels":false},"theme":"base","securityLevel":"strict","maxTextSize":1000000,"maxEdges":2000,"fontFamily":"Arial, sans-serif","themeCSS":".edgeLabel rect.background{fill:#ffffff!important;stroke:none!important}.edgeLabel text,.edgeLabel tspan{fill:#111111!important}","themeVariables":{"fontFamily":"Arial, sans-serif","fontSize":"16px","primaryColor":"#ffffff","primaryTextColor":"#111111","primaryBorderColor":"#374151","lineColor":"#374151","secondaryColor":"#ffffff","tertiaryColor":"#ffffff","mainBkg":"#ffffff","textColor":"#111111","nodeBorder":"#374151","edgeLabelBackground":"#ffffff","attributeBackgroundColorOdd":"#ffffff","attributeBackgroundColorEven":"#f3f4f6"},"er":{"useMaxWidth":false,"diagramPadding":45,"entityPadding":12,"minEntityWidth":150,"minEntityHeight":55,"nodeSpacing":90,"rankSpacing":180,"fontSize":16,"layoutDirection":"LR"}}}%%
+erDiagram
+  direction LR
+  accTitle: ORBIT ER — Monitoring & moderation
+  accDescr: White background. External entities are marked external. Business relationship labels and stable FK IDs map to ordered source and referenced columns in the accompanying Markdown.
+  ContentCorrectionRequests["ContentCorrectionRequests"]
+  CorrectionResponses["CorrectionResponses"]
+  ModerationReports["ModerationReports"]
+  PostModerationActions["PostModerationActions"]
+  Schools["Schools (external)"]
+  AcademicYears["AcademicYears (external)"]
+  AspNetUsers["AspNetUsers (external)"]
+  Channels["Channels (external)"]
+  Posts["Posts (external)"]
+  %% FK167 FK_ContentCorrectionRequests_Schools_1: ContentCorrectionRequests (SchoolId) -> Schools (Id)
+  Schools ||..o{ ContentCorrectionRequests : "owns [FK167]"
+  %% FK168 FK_ContentCorrectionRequests_AcademicYears_2: ContentCorrectionRequests (SchoolId, AcademicYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears ||..o{ ContentCorrectionRequests : "scopes year [FK168] (2 cols)"
+  %% FK169 FK_ContentCorrectionRequests_AspNetUsers_3: ContentCorrectionRequests (AssignedTeacherUserId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ ContentCorrectionRequests : "corrects content [FK169]"
+  %% FK170 FK_ContentCorrectionRequests_AspNetUsers_4: ContentCorrectionRequests (RequestedById) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ ContentCorrectionRequests : "requests [FK170]"
+  %% FK171 FK_ContentCorrectionRequests_Channels_5: ContentCorrectionRequests (SchoolId, AcademicYearId, ChannelId) -> Channels (SchoolId, AcademicYearId, Id)
+  Channels ||..o{ ContentCorrectionRequests : "contains activity [FK171] (3 cols)"
+  %% FK172 FK_ContentCorrectionRequests_Posts_6: ContentCorrectionRequests (ChannelId, PostId) -> Posts (ChannelId, Id)
+  Posts ||..o{ ContentCorrectionRequests : "targets content [FK172] (2 cols)"
+  %% FK173 FK_CorrectionResponses_Schools_1: CorrectionResponses (SchoolId) -> Schools (Id)
+  Schools ||..o{ CorrectionResponses : "owns [FK173]"
+  %% FK174 FK_CorrectionResponses_AcademicYears_2: CorrectionResponses (SchoolId, AcademicYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears ||..o{ CorrectionResponses : "scopes year [FK174] (2 cols)"
+  %% FK175 FK_CorrectionResponses_AspNetUsers_3: CorrectionResponses (ActorId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ CorrectionResponses : "performs [FK175]"
+  %% FK176 FK_CorrectionResponses_ContentCorrectionRequests_4: CorrectionResponses (SchoolId, AcademicYearId, RequestId) -> ContentCorrectionRequests (SchoolId, AcademicYearId, Id)
+  ContentCorrectionRequests ||..o{ CorrectionResponses : "has responses [FK176] (3 cols)"
+  %% FK177 FK_ModerationReports_AspNetUsers_1: ModerationReports (ReporterId) -> AspNetUsers (Id)
+  AspNetUsers |o..o{ ModerationReports : "reports [FK177]"
+  %% FK178 FK_ModerationReports_AspNetUsers_2: ModerationReports (ReportedUserId) -> AspNetUsers (Id)
+  AspNetUsers |o..o{ ModerationReports : "is reported [FK178]"
+  %% FK179 FK_ModerationReports_AspNetUsers_3: ModerationReports (ResolvedById) -> AspNetUsers (Id)
+  AspNetUsers |o..o{ ModerationReports : "resolves [FK179]"
+  %% FK180 FK_ModerationReports_Posts_4: ModerationReports (PostId) -> Posts (Id)
+  Posts |o..o{ ModerationReports : "targets content [FK180]"
+  %% FK181 FK_PostModerationActions_Schools_1: PostModerationActions (SchoolId) -> Schools (Id)
+  Schools |o..o{ PostModerationActions : "owns [FK181]"
+  %% FK182 FK_PostModerationActions_AcademicYears_2: PostModerationActions (SchoolId, AcademicYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears |o..o{ PostModerationActions : "scopes year [FK182] (2 cols)"
+  %% FK183 FK_PostModerationActions_AspNetUsers_3: PostModerationActions (ActorId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ PostModerationActions : "performs [FK183]"
+  %% FK184 FK_PostModerationActions_Posts_4: PostModerationActions (PostId) -> Posts (Id)
+  Posts ||..o{ PostModerationActions : "targets content [FK184]"
+  %% FK185 FK_PostModerationActions_ModerationReports_5: PostModerationActions (ReportId) -> ModerationReports (Id)
+  ModerationReports |o..o{ PostModerationActions : "records moderation [FK185]"

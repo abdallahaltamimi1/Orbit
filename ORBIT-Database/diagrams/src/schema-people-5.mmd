@@ -1,0 +1,50 @@
+%%{init: {"startOnLoad":false,"htmlLabels":false,"flowchart":{"htmlLabels":false},"theme":"base","securityLevel":"strict","maxTextSize":1000000,"maxEdges":2000,"fontFamily":"Arial, sans-serif","themeCSS":".edgeLabel rect.background{fill:#ffffff!important;stroke:none!important}.edgeLabel text,.edgeLabel tspan{fill:#111111!important}","themeVariables":{"fontFamily":"Arial, sans-serif","fontSize":"16px","primaryColor":"#ffffff","primaryTextColor":"#111111","primaryBorderColor":"#374151","lineColor":"#374151","secondaryColor":"#ffffff","tertiaryColor":"#ffffff","mainBkg":"#ffffff","textColor":"#111111","nodeBorder":"#374151","edgeLabelBackground":"#ffffff","attributeBackgroundColorOdd":"#ffffff","attributeBackgroundColorEven":"#f3f4f6"},"er":{"useMaxWidth":false,"diagramPadding":45,"entityPadding":12,"minEntityWidth":150,"minEntityHeight":55,"nodeSpacing":90,"rankSpacing":180,"fontSize":16,"layoutDirection":"LR"}}}%%
+erDiagram
+  direction LR
+  accTitle: ORBIT schema — People & schools — part 5
+  accDescr: White background. External entities are marked external. Business relationship labels and stable FK IDs map to ordered source and referenced columns in the accompanying Markdown.
+  AccountLinkHistory["AccountLinkHistory"] {
+    uniqueidentifier Id PK, UK "NOT NULL; default NEWSEQUENTIALID()"
+    uniqueidentifier SchoolId FK, UK "NOT NULL"
+    uniqueidentifier SchoolStudentId FK "NULL"
+    uniqueidentifier SchoolTeacherId FK "NULL"
+    uniqueidentifier RequestId FK "NULL"
+    uniqueidentifier FromUserId FK "NULL"
+    uniqueidentifier ToUserId FK "NOT NULL"
+    varchar(24) LinkSource "NOT NULL"
+    nvarchar(500) Reason "NULL"
+    uniqueidentifier ActorId FK "NOT NULL"
+    datetime2(3) CreatedAt "NOT NULL; default SYSUTCDATETIME()"
+  }
+  Schools["Schools (external)"] {
+    uniqueidentifier Id PK "NOT NULL; default NEWSEQUENTIALID(); referenced key columns only"
+  }
+  AspNetUsers["AspNetUsers (external)"] {
+    uniqueidentifier Id PK "NOT NULL; referenced key columns only"
+  }
+  SchoolStudents["SchoolStudents (external)"] {
+    uniqueidentifier Id PK, UK "NOT NULL; default NEWSEQUENTIALID(); referenced key columns only"
+    uniqueidentifier SchoolId FK, UK "NOT NULL; referenced key columns only"
+  }
+  SchoolTeachers["SchoolTeachers (external)"] {
+    uniqueidentifier Id PK, UK "NOT NULL; default NEWSEQUENTIALID(); referenced key columns only"
+    uniqueidentifier SchoolId FK, UK "NOT NULL; referenced key columns only"
+  }
+  AccountLinkRequests["AccountLinkRequests (external)"] {
+    uniqueidentifier Id PK, UK "NOT NULL; default NEWSEQUENTIALID(); referenced key columns only"
+    uniqueidentifier SchoolId FK, UK "NOT NULL; referenced key columns only"
+  }
+  %% FK043 FK_AccountLinkHistory_Schools_1: AccountLinkHistory (SchoolId) -> Schools (Id)
+  Schools ||..o{ AccountLinkHistory : "owns [FK043]"
+  %% FK044 FK_AccountLinkHistory_AspNetUsers_2: AccountLinkHistory (FromUserId) -> AspNetUsers (Id)
+  AspNetUsers |o..o{ AccountLinkHistory : "previous account [FK044]"
+  %% FK045 FK_AccountLinkHistory_AspNetUsers_3: AccountLinkHistory (ToUserId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ AccountLinkHistory : "linked account [FK045]"
+  %% FK046 FK_AccountLinkHistory_AspNetUsers_4: AccountLinkHistory (ActorId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ AccountLinkHistory : "performs [FK046]"
+  %% FK047 FK_AccountLinkHistory_SchoolStudents_5: AccountLinkHistory (SchoolId, SchoolStudentId) -> SchoolStudents (SchoolId, Id)
+  SchoolStudents |o..o{ AccountLinkHistory : "enrolls student [FK047] (2 cols)"
+  %% FK048 FK_AccountLinkHistory_SchoolTeachers_6: AccountLinkHistory (SchoolId, SchoolTeacherId) -> SchoolTeachers (SchoolId, Id)
+  SchoolTeachers |o..o{ AccountLinkHistory : "assigns teacher [FK048] (2 cols)"
+  %% FK049 FK_AccountLinkHistory_AccountLinkRequests_7: AccountLinkHistory (SchoolId, RequestId) -> AccountLinkRequests (SchoolId, Id)
+  AccountLinkRequests |o..o{ AccountLinkHistory : "records link [FK049] (2 cols)"

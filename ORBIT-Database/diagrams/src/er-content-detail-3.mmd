@@ -1,0 +1,41 @@
+%%{init: {"startOnLoad":false,"htmlLabels":false,"flowchart":{"htmlLabels":false},"theme":"base","securityLevel":"strict","maxTextSize":1000000,"maxEdges":2000,"fontFamily":"Arial, sans-serif","themeCSS":".edgeLabel rect.background{fill:#ffffff!important;stroke:none!important}.edgeLabel text,.edgeLabel tspan{fill:#111111!important}","themeVariables":{"fontFamily":"Arial, sans-serif","fontSize":"16px","primaryColor":"#ffffff","primaryTextColor":"#111111","primaryBorderColor":"#374151","lineColor":"#374151","secondaryColor":"#ffffff","tertiaryColor":"#ffffff","mainBkg":"#ffffff","textColor":"#111111","nodeBorder":"#374151","edgeLabelBackground":"#ffffff","attributeBackgroundColorOdd":"#ffffff","attributeBackgroundColorEven":"#f3f4f6"},"er":{"useMaxWidth":false,"diagramPadding":45,"entityPadding":12,"minEntityWidth":150,"minEntityHeight":55,"nodeSpacing":90,"rankSpacing":180,"fontSize":16,"layoutDirection":"LR"}}}%%
+erDiagram
+  direction LR
+  accTitle: ORBIT ER — Channels & learning — detail 3
+  accDescr: White background. External entities are marked external. Business relationship labels and stable FK IDs map to ordered source and referenced columns in the accompanying Markdown.
+  PostAttachments["PostAttachments"]
+  Assignments["Assignments"]
+  Submissions["Submissions"]
+  SubmissionVersions["SubmissionVersions"]
+  Posts["Posts (external)"]
+  Files["Files (external)"]
+  Students["Students (external)"]
+  Schools["Schools (external)"]
+  AcademicYears["AcademicYears (external)"]
+  AspNetUsers["AspNetUsers (external)"]
+  EnrollmentPlacements["EnrollmentPlacements (external)"]
+  PostSections["PostSections (external)"]
+  %% FK151 FK_PostAttachments_Posts_1: PostAttachments (PostId) -> Posts (Id)
+  Posts ||--o{ PostAttachments : "targets content [FK151]"
+  %% FK152 FK_PostAttachments_Files_2: PostAttachments (FileId) -> Files (Id)
+  Files ||--o{ PostAttachments : "attaches file [FK152]"
+  %% FK153 FK_Assignments_Posts_1: Assignments (PostId) -> Posts (Id)
+  Posts ||--o| Assignments : "defines assignment [FK153]"
+  %% FK154 FK_Submissions_Assignments_1: Submissions (AssignmentPostId) -> Assignments (PostId)
+  Assignments ||..o{ Submissions : "receives submissions [FK154]"
+  %% FK155 FK_Submissions_Students_2: Submissions (StudentId) -> Students (Id)
+  Students ||..o{ Submissions : "identifies student [FK155]"
+  %% FK156 FK_SubmissionVersions_Schools_1: SubmissionVersions (SchoolId) -> Schools (Id)
+  Schools |o..o{ SubmissionVersions : "owns [FK156]"
+  %% FK157 FK_SubmissionVersions_AcademicYears_2: SubmissionVersions (SchoolId, AcademicYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears |o..o{ SubmissionVersions : "scopes year [FK157] (2 cols)"
+  %% FK158 FK_SubmissionVersions_AspNetUsers_3: SubmissionVersions (SubmittedById) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ SubmissionVersions : "submits [FK158]"
+  %% FK159 FK_SubmissionVersions_Submissions_4: SubmissionVersions (SubmissionId, AssignmentPostId) -> Submissions (Id, AssignmentPostId)
+  Submissions ||..o{ SubmissionVersions : "has versions [FK159] (2 cols)"
+  %% FK160 FK_SubmissionVersions_EnrollmentPlacements_5: SubmissionVersions (SchoolId, AcademicYearId, EnrollmentId, PlacementId) -> EnrollmentPlacements (SchoolId, AcademicYearId, EnrollmentId, Id)
+  EnrollmentPlacements |o..o{ SubmissionVersions : "records placement [FK160] (4 cols)"
+  %% FK161 FK_SubmissionVersions_EnrollmentPlacements_6: SubmissionVersions (SchoolId, AcademicYearId, PlacementId, SectionId) -> EnrollmentPlacements (SchoolId, AcademicYearId, Id, SectionId)
+  EnrollmentPlacements |o..o{ SubmissionVersions : "records placement [FK161] (4 cols)"
+  %% FK162 FK_SubmissionVersions_PostSections_7: SubmissionVersions (SchoolId, AcademicYearId, AssignmentPostId, SectionId) -> PostSections (SchoolId, AcademicYearId, PostId, SectionId)
+  PostSections |o..o{ SubmissionVersions : "targets submission [FK162] (4 cols)"

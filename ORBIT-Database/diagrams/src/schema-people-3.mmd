@@ -1,0 +1,68 @@
+%%{init: {"startOnLoad":false,"htmlLabels":false,"flowchart":{"htmlLabels":false},"theme":"base","securityLevel":"strict","maxTextSize":1000000,"maxEdges":2000,"fontFamily":"Arial, sans-serif","themeCSS":".edgeLabel rect.background{fill:#ffffff!important;stroke:none!important}.edgeLabel text,.edgeLabel tspan{fill:#111111!important}","themeVariables":{"fontFamily":"Arial, sans-serif","fontSize":"16px","primaryColor":"#ffffff","primaryTextColor":"#111111","primaryBorderColor":"#374151","lineColor":"#374151","secondaryColor":"#ffffff","tertiaryColor":"#ffffff","mainBkg":"#ffffff","textColor":"#111111","nodeBorder":"#374151","edgeLabelBackground":"#ffffff","attributeBackgroundColorOdd":"#ffffff","attributeBackgroundColorEven":"#f3f4f6"},"er":{"useMaxWidth":false,"diagramPadding":45,"entityPadding":12,"minEntityWidth":150,"minEntityHeight":55,"nodeSpacing":90,"rankSpacing":180,"fontSize":16,"layoutDirection":"LR"}}}%%
+erDiagram
+  direction LR
+  accTitle: ORBIT schema — People & schools — part 3
+  accDescr: White background. External entities are marked external. Business relationship labels and stable FK IDs map to ordered source and referenced columns in the accompanying Markdown.
+  SchoolLevels["SchoolLevels"] {
+    uniqueidentifier SchoolId PK, FK "NOT NULL"
+    nvarchar(40) LevelCode PK "NOT NULL"
+  }
+  SchoolSubjects["SchoolSubjects"] {
+    uniqueidentifier Id PK, UK "NOT NULL; default NEWSEQUENTIALID()"
+    uniqueidentifier SchoolId FK, UK "NOT NULL"
+    uniqueidentifier CatalogSubjectId FK, UK "NULL"
+    nvarchar(160) Name "NOT NULL"
+    nvarchar(160) NormalizedName UK "NOT NULL"
+    varchar(12) Status "NOT NULL; default 'Active'"
+    datetime2(3) CreatedAt "NOT NULL; default SYSUTCDATETIME()"
+    datetime2(3) UpdatedAt "NOT NULL; default SYSUTCDATETIME()"
+    rowversion Version "NOT NULL"
+  }
+  SchoolRegistrationReviews["SchoolRegistrationReviews"] {
+    uniqueidentifier Id PK, UK "NOT NULL; default NEWSEQUENTIALID()"
+    uniqueidentifier SchoolId FK, UK "NOT NULL"
+    uniqueidentifier RequestedById FK "NOT NULL"
+    varchar(12) Status "NOT NULL; default 'Pending'"
+    nvarchar(1000) Reason "NULL"
+    uniqueidentifier DecidedById FK "NULL"
+    datetime2(3) DecidedAt "NULL"
+    datetime2(3) CreatedAt "NOT NULL; default SYSUTCDATETIME()"
+    rowversion Version "NOT NULL"
+  }
+  SchoolMemberships["SchoolMemberships"] {
+    uniqueidentifier Id PK, UK "NOT NULL; default NEWSEQUENTIALID()"
+    uniqueidentifier SchoolId FK, UK "NOT NULL"
+    uniqueidentifier UserId FK, UK "NOT NULL"
+    varchar(16) MembershipRole UK "NOT NULL"
+    varchar(12) Status "NOT NULL; default 'Pending'"
+    datetime2(3) JoinedAt "NULL"
+    datetime2(3) EndedAt "NULL"
+    datetime2(3) CreatedAt "NOT NULL; default SYSUTCDATETIME()"
+    datetime2(3) UpdatedAt "NOT NULL; default SYSUTCDATETIME()"
+    rowversion Version "NOT NULL"
+  }
+  Schools["Schools (external)"] {
+    uniqueidentifier Id PK "NOT NULL; default NEWSEQUENTIALID(); referenced key columns only"
+  }
+  SubjectCatalog["SubjectCatalog (external)"] {
+    uniqueidentifier Id PK "NOT NULL; default NEWSEQUENTIALID(); referenced key columns only"
+  }
+  AspNetUsers["AspNetUsers (external)"] {
+    uniqueidentifier Id PK "NOT NULL; referenced key columns only"
+  }
+  %% FK021 FK_SchoolLevels_Schools_1: SchoolLevels (SchoolId) -> Schools (Id)
+  Schools ||--o{ SchoolLevels : "owns [FK021]"
+  %% FK022 FK_SchoolSubjects_Schools_1: SchoolSubjects (SchoolId) -> Schools (Id)
+  Schools ||..o{ SchoolSubjects : "offers subjects [FK022]"
+  %% FK023 FK_SchoolSubjects_SubjectCatalog_2: SchoolSubjects (CatalogSubjectId) -> SubjectCatalog (Id)
+  SubjectCatalog |o..o{ SchoolSubjects : "classifies subject [FK023]"
+  %% FK024 FK_SchoolRegistrationReviews_Schools_1: SchoolRegistrationReviews (SchoolId) -> Schools (Id)
+  Schools ||..o{ SchoolRegistrationReviews : "owns [FK024]"
+  %% FK025 FK_SchoolRegistrationReviews_AspNetUsers_2: SchoolRegistrationReviews (RequestedById) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ SchoolRegistrationReviews : "requests [FK025]"
+  %% FK026 FK_SchoolRegistrationReviews_AspNetUsers_3: SchoolRegistrationReviews (DecidedById) -> AspNetUsers (Id)
+  AspNetUsers |o..o{ SchoolRegistrationReviews : "decides [FK026]"
+  %% FK027 FK_SchoolMemberships_Schools_1: SchoolMemberships (SchoolId) -> Schools (Id)
+  Schools ||..o{ SchoolMemberships : "has members [FK027]"
+  %% FK028 FK_SchoolMemberships_AspNetUsers_2: SchoolMemberships (UserId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ SchoolMemberships : "identifies [FK028]"

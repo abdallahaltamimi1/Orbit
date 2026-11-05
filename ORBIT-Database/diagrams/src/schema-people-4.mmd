@@ -1,0 +1,96 @@
+%%{init: {"startOnLoad":false,"htmlLabels":false,"flowchart":{"htmlLabels":false},"theme":"base","securityLevel":"strict","maxTextSize":1000000,"maxEdges":2000,"fontFamily":"Arial, sans-serif","themeCSS":".edgeLabel rect.background{fill:#ffffff!important;stroke:none!important}.edgeLabel text,.edgeLabel tspan{fill:#111111!important}","themeVariables":{"fontFamily":"Arial, sans-serif","fontSize":"16px","primaryColor":"#ffffff","primaryTextColor":"#111111","primaryBorderColor":"#374151","lineColor":"#374151","secondaryColor":"#ffffff","tertiaryColor":"#ffffff","mainBkg":"#ffffff","textColor":"#111111","nodeBorder":"#374151","edgeLabelBackground":"#ffffff","attributeBackgroundColorOdd":"#ffffff","attributeBackgroundColorEven":"#f3f4f6"},"er":{"useMaxWidth":false,"diagramPadding":45,"entityPadding":12,"minEntityWidth":150,"minEntityHeight":55,"nodeSpacing":90,"rankSpacing":180,"fontSize":16,"layoutDirection":"LR"}}}%%
+erDiagram
+  direction LR
+  accTitle: ORBIT schema — People & schools — part 4
+  accDescr: White background. External entities are marked external. Business relationship labels and stable FK IDs map to ordered source and referenced columns in the accompanying Markdown.
+  MembershipPermissions["MembershipPermissions"] {
+    uniqueidentifier SchoolId PK, FK "NOT NULL"
+    uniqueidentifier MembershipId PK, FK "NOT NULL"
+    varchar(16) PermissionCode PK "NOT NULL"
+    uniqueidentifier GrantedById FK "NOT NULL"
+    datetime2(3) CreatedAt "NOT NULL; default SYSUTCDATETIME()"
+  }
+  SchoolStudents["SchoolStudents"] {
+    uniqueidentifier Id PK, UK "NOT NULL; default NEWSEQUENTIALID()"
+    uniqueidentifier SchoolId FK, UK "NOT NULL"
+    uniqueidentifier StudentId FK, UK "NOT NULL"
+    nvarchar(40) StudentCode "NOT NULL"
+    nvarchar(40) NormalizedCode UK "NOT NULL"
+    varchar(16) Status "NOT NULL; default 'Enrolled'"
+    datetime2(3) CreatedAt "NOT NULL; default SYSUTCDATETIME()"
+    datetime2(3) UpdatedAt "NOT NULL; default SYSUTCDATETIME()"
+    rowversion Version "NOT NULL"
+  }
+  SchoolTeachers["SchoolTeachers"] {
+    uniqueidentifier Id PK, UK "NOT NULL; default NEWSEQUENTIALID()"
+    uniqueidentifier SchoolId FK, UK "NOT NULL"
+    uniqueidentifier TeacherId FK, UK "NOT NULL"
+    varchar(12) Status "NOT NULL; default 'Active'"
+    datetime2(3) CreatedAt "NOT NULL; default SYSUTCDATETIME()"
+    datetime2(3) UpdatedAt "NOT NULL; default SYSUTCDATETIME()"
+    rowversion Version "NOT NULL"
+  }
+  AccountLinkRequests["AccountLinkRequests"] {
+    uniqueidentifier Id PK, UK "NOT NULL; default NEWSEQUENTIALID()"
+    uniqueidentifier SchoolId FK, UK "NOT NULL"
+    uniqueidentifier SchoolStudentId FK, UK "NULL"
+    uniqueidentifier SchoolTeacherId FK, UK "NULL"
+    uniqueidentifier TargetUserId FK, UK "NOT NULL"
+    uniqueidentifier RequestedById FK "NOT NULL"
+    varchar(16) Status "NOT NULL; default 'Pending'"
+    varbinary(32) ProofHash "NULL"
+    datetime2(3) ExpiresAt "NOT NULL"
+    datetime2(3) OwnershipVerifiedAt "NULL"
+    uniqueidentifier VerifiedById FK "NULL"
+    datetime2(3) SchoolApprovedAt "NULL"
+    uniqueidentifier SchoolApprovedById FK "NULL"
+    datetime2(3) DecidedAt "NULL"
+    nvarchar(500) Reason "NULL"
+    datetime2(3) CreatedAt "NOT NULL; default SYSUTCDATETIME()"
+    datetime2(3) UpdatedAt "NOT NULL; default SYSUTCDATETIME()"
+    rowversion Version "NOT NULL"
+  }
+  Schools["Schools (external)"] {
+    uniqueidentifier Id PK "NOT NULL; default NEWSEQUENTIALID(); referenced key columns only"
+  }
+  AspNetUsers["AspNetUsers (external)"] {
+    uniqueidentifier Id PK "NOT NULL; referenced key columns only"
+  }
+  SchoolMemberships["SchoolMemberships (external)"] {
+    uniqueidentifier Id PK, UK "NOT NULL; default NEWSEQUENTIALID(); referenced key columns only"
+    uniqueidentifier SchoolId FK, UK "NOT NULL; referenced key columns only"
+  }
+  Students["Students (external)"] {
+    uniqueidentifier Id PK "NOT NULL; default NEWSEQUENTIALID(); referenced key columns only"
+  }
+  Teachers["Teachers (external)"] {
+    uniqueidentifier Id PK "NOT NULL; default NEWSEQUENTIALID(); referenced key columns only"
+  }
+  %% FK029 FK_MembershipPermissions_Schools_1: MembershipPermissions (SchoolId) -> Schools (Id)
+  Schools ||--o{ MembershipPermissions : "owns [FK029]"
+  %% FK030 FK_MembershipPermissions_AspNetUsers_2: MembershipPermissions (GrantedById) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ MembershipPermissions : "grants [FK030]"
+  %% FK031 FK_MembershipPermissions_SchoolMemberships_3: MembershipPermissions (SchoolId, MembershipId) -> SchoolMemberships (SchoolId, Id)
+  SchoolMemberships ||--o{ MembershipPermissions : "grants permission [FK031] (2 cols)"
+  %% FK032 FK_SchoolStudents_Schools_1: SchoolStudents (SchoolId) -> Schools (Id)
+  Schools ||..o{ SchoolStudents : "registers students [FK032]"
+  %% FK033 FK_SchoolStudents_Students_2: SchoolStudents (StudentId) -> Students (Id)
+  Students ||..o{ SchoolStudents : "identifies student [FK033]"
+  %% FK034 FK_SchoolTeachers_Schools_1: SchoolTeachers (SchoolId) -> Schools (Id)
+  Schools ||..o{ SchoolTeachers : "lists teachers [FK034]"
+  %% FK035 FK_SchoolTeachers_Teachers_2: SchoolTeachers (TeacherId) -> Teachers (Id)
+  Teachers ||..o{ SchoolTeachers : "describes teacher [FK035]"
+  %% FK036 FK_AccountLinkRequests_Schools_1: AccountLinkRequests (SchoolId) -> Schools (Id)
+  Schools ||..o{ AccountLinkRequests : "requests linking [FK036]"
+  %% FK037 FK_AccountLinkRequests_AspNetUsers_2: AccountLinkRequests (TargetUserId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ AccountLinkRequests : "invited account [FK037]"
+  %% FK038 FK_AccountLinkRequests_AspNetUsers_3: AccountLinkRequests (RequestedById) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ AccountLinkRequests : "requests [FK038]"
+  %% FK039 FK_AccountLinkRequests_AspNetUsers_4: AccountLinkRequests (VerifiedById) -> AspNetUsers (Id)
+  AspNetUsers |o..o{ AccountLinkRequests : "verifies [FK039]"
+  %% FK040 FK_AccountLinkRequests_AspNetUsers_5: AccountLinkRequests (SchoolApprovedById) -> AspNetUsers (Id)
+  AspNetUsers |o..o{ AccountLinkRequests : "approves link [FK040]"
+  %% FK041 FK_AccountLinkRequests_SchoolStudents_6: AccountLinkRequests (SchoolId, SchoolStudentId) -> SchoolStudents (SchoolId, Id)
+  SchoolStudents |o..o{ AccountLinkRequests : "enrolls student [FK041] (2 cols)"
+  %% FK042 FK_AccountLinkRequests_SchoolTeachers_7: AccountLinkRequests (SchoolId, SchoolTeacherId) -> SchoolTeachers (SchoolId, Id)
+  SchoolTeachers |o..o{ AccountLinkRequests : "assigns teacher [FK042] (2 cols)"

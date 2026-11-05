@@ -1,0 +1,62 @@
+%%{init: {"startOnLoad":false,"htmlLabels":false,"flowchart":{"htmlLabels":false},"theme":"base","securityLevel":"strict","maxTextSize":1000000,"maxEdges":2000,"fontFamily":"Arial, sans-serif","themeCSS":".edgeLabel rect.background{fill:#ffffff!important;stroke:none!important}.edgeLabel text,.edgeLabel tspan{fill:#111111!important}","themeVariables":{"fontFamily":"Arial, sans-serif","fontSize":"16px","primaryColor":"#ffffff","primaryTextColor":"#111111","primaryBorderColor":"#374151","lineColor":"#374151","secondaryColor":"#ffffff","tertiaryColor":"#ffffff","mainBkg":"#ffffff","textColor":"#111111","nodeBorder":"#374151","edgeLabelBackground":"#ffffff","attributeBackgroundColorOdd":"#ffffff","attributeBackgroundColorEven":"#f3f4f6"},"er":{"useMaxWidth":false,"diagramPadding":45,"entityPadding":12,"minEntityWidth":150,"minEntityHeight":55,"nodeSpacing":90,"rankSpacing":180,"fontSize":16,"layoutDirection":"LR"}}}%%
+erDiagram
+  direction LR
+  accTitle: ORBIT schema — People & schools — part 2
+  accDescr: White background. External entities are marked external. Business relationship labels and stable FK IDs map to ordered source and referenced columns in the accompanying Markdown.
+  TeacherSubjects["TeacherSubjects"] {
+    uniqueidentifier TeacherId PK, FK "NOT NULL"
+    uniqueidentifier SubjectCatalogId PK, FK "NOT NULL"
+  }
+  TeacherGradeLevels["TeacherGradeLevels"] {
+    uniqueidentifier TeacherId PK, FK "NOT NULL"
+    nvarchar(40) GradeCode PK "NOT NULL"
+  }
+  TeacherFacets["TeacherFacets"] {
+    uniqueidentifier Id PK "NOT NULL; default NEWSEQUENTIALID()"
+    uniqueidentifier TeacherId FK, UK "NOT NULL"
+    varchar(16) Kind UK "NOT NULL"
+    nvarchar(200) Label "NOT NULL"
+    nvarchar(200) NormalizedLabel UK "NOT NULL"
+    uniqueidentifier FileId FK "NULL"
+    nvarchar(2000) Url "NULL"
+    smallint SortOrder "NOT NULL; default 0"
+  }
+  Schools["Schools"] {
+    uniqueidentifier Id PK "NOT NULL; default NEWSEQUENTIALID()"
+    nvarchar(160) Name "NOT NULL"
+    nvarchar(160) NormalizedName "NOT NULL"
+    varchar(16) Type "NOT NULL"
+    nvarchar(200) Location "NOT NULL"
+    nvarchar(300) Address "NULL"
+    nvarchar(40) Phone "NULL"
+    nvarchar(200) Contact "NOT NULL"
+    nvarchar(2000) Website "NULL"
+    nvarchar(4000) Description "NULL"
+    uniqueidentifier LogoFileId FK "NULL"
+    varchar(16) Status "NOT NULL; default 'Pending'"
+    nvarchar(100) TimeZoneId "NOT NULL; default 'Asia/Amman'"
+    datetime2(3) CreatedAt "NOT NULL; default SYSUTCDATETIME()"
+    datetime2(3) UpdatedAt "NOT NULL; default SYSUTCDATETIME()"
+    rowversion Version "NOT NULL"
+  }
+  Teachers["Teachers (external)"] {
+    uniqueidentifier Id PK "NOT NULL; default NEWSEQUENTIALID(); referenced key columns only"
+  }
+  SubjectCatalog["SubjectCatalog (external)"] {
+    uniqueidentifier Id PK "NOT NULL; default NEWSEQUENTIALID(); referenced key columns only"
+  }
+  Files["Files (external)"] {
+    uniqueidentifier Id PK "NOT NULL; default NEWSEQUENTIALID(); referenced key columns only"
+  }
+  %% FK015 FK_TeacherSubjects_Teachers_1: TeacherSubjects (TeacherId) -> Teachers (Id)
+  Teachers ||--o{ TeacherSubjects : "describes teacher [FK015]"
+  %% FK016 FK_TeacherSubjects_SubjectCatalog_2: TeacherSubjects (SubjectCatalogId) -> SubjectCatalog (Id)
+  SubjectCatalog ||--o{ TeacherSubjects : "classifies subject [FK016]"
+  %% FK017 FK_TeacherGradeLevels_Teachers_1: TeacherGradeLevels (TeacherId) -> Teachers (Id)
+  Teachers ||--o{ TeacherGradeLevels : "describes teacher [FK017]"
+  %% FK018 FK_TeacherFacets_Teachers_1: TeacherFacets (TeacherId) -> Teachers (Id)
+  Teachers ||..o{ TeacherFacets : "describes teacher [FK018]"
+  %% FK019 FK_TeacherFacets_Files_2: TeacherFacets (FileId) -> Files (Id)
+  Files |o..o{ TeacherFacets : "attaches file [FK019]"
+  %% FK020 FK_Schools_Files_1: Schools (LogoFileId) -> Files (Id)
+  Files |o..o{ Schools : "attaches file [FK020]"

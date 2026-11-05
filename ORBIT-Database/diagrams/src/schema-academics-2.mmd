@@ -1,0 +1,132 @@
+%%{init: {"startOnLoad":false,"htmlLabels":false,"flowchart":{"htmlLabels":false},"theme":"base","securityLevel":"strict","maxTextSize":1000000,"maxEdges":2000,"fontFamily":"Arial, sans-serif","themeCSS":".edgeLabel rect.background{fill:#ffffff!important;stroke:none!important}.edgeLabel text,.edgeLabel tspan{fill:#111111!important}","themeVariables":{"fontFamily":"Arial, sans-serif","fontSize":"16px","primaryColor":"#ffffff","primaryTextColor":"#111111","primaryBorderColor":"#374151","lineColor":"#374151","secondaryColor":"#ffffff","tertiaryColor":"#ffffff","mainBkg":"#ffffff","textColor":"#111111","nodeBorder":"#374151","edgeLabelBackground":"#ffffff","attributeBackgroundColorOdd":"#ffffff","attributeBackgroundColorEven":"#f3f4f6"},"er":{"useMaxWidth":false,"diagramPadding":45,"entityPadding":12,"minEntityWidth":150,"minEntityHeight":55,"nodeSpacing":90,"rankSpacing":180,"fontSize":16,"layoutDirection":"LR"}}}%%
+erDiagram
+  direction LR
+  accTitle: ORBIT schema — Annual academics — part 2
+  accDescr: White background. External entities are marked external. Business relationship labels and stable FK IDs map to ordered source and referenced columns in the accompanying Markdown.
+  EnrollmentPlacements["EnrollmentPlacements"] {
+    uniqueidentifier Id PK, UK "NOT NULL; default NEWSEQUENTIALID()"
+    uniqueidentifier SchoolId FK, UK "NOT NULL"
+    uniqueidentifier AcademicYearId FK, UK "NOT NULL"
+    uniqueidentifier EnrollmentId FK, UK "NOT NULL"
+    uniqueidentifier SectionId FK, UK "NOT NULL"
+    datetime2(3) EffectiveFrom UK "NOT NULL"
+    datetime2(3) EffectiveTo "NULL"
+    uniqueidentifier PreviousPlacementId FK "NULL"
+    nvarchar(40) GradeNameSnapshot "NOT NULL"
+    nvarchar(40) SectionNameSnapshot "NOT NULL"
+    nvarchar(500) Reason "NULL"
+    uniqueidentifier ActorId FK "NOT NULL"
+    datetime2(3) CreatedAt "NOT NULL; default SYSUTCDATETIME()"
+  }
+  PromotionBatches["PromotionBatches"] {
+    uniqueidentifier Id PK, UK "NOT NULL; default NEWSEQUENTIALID()"
+    uniqueidentifier SchoolId FK, UK "NOT NULL"
+    uniqueidentifier SourceYearId FK, UK "NOT NULL"
+    uniqueidentifier TargetYearId FK, UK "NOT NULL"
+    varchar(12) Status "NOT NULL; default 'Draft'"
+    binary(32) SourceFingerprint "NOT NULL"
+    datetime2(3) ConfirmedAt "NULL"
+    uniqueidentifier ConfirmedById FK "NULL"
+    datetime2(3) ExecutedAt "NULL"
+    uniqueidentifier OperationId UK "NULL"
+    datetime2(3) CreatedAt "NOT NULL; default SYSUTCDATETIME()"
+    datetime2(3) UpdatedAt "NOT NULL; default SYSUTCDATETIME()"
+    rowversion Version "NOT NULL"
+  }
+  PromotionItems["PromotionItems"] {
+    uniqueidentifier Id PK, UK "NOT NULL; default NEWSEQUENTIALID()"
+    uniqueidentifier SchoolId FK, UK "NOT NULL"
+    uniqueidentifier BatchId FK, UK "NOT NULL"
+    uniqueidentifier SourceYearId FK "NOT NULL"
+    uniqueidentifier TargetYearId FK, UK "NOT NULL"
+    uniqueidentifier SchoolStudentId FK, UK "NOT NULL"
+    uniqueidentifier SourceEnrollmentId FK "NOT NULL"
+    uniqueidentifier DestinationSectionId FK "NULL"
+    uniqueidentifier DestinationEnrollmentId FK "NULL"
+    varchar(16) Action "NOT NULL; default 'ManualReview'"
+    varchar(12) ReviewStatus "NOT NULL; default 'NeedsReview'"
+    nvarchar(500) Reason "NULL"
+    uniqueidentifier ReviewedById FK "NULL"
+    datetime2(3) ReviewedAt "NULL"
+    datetime2(3) CreatedAt "NOT NULL; default SYSUTCDATETIME()"
+    datetime2(3) UpdatedAt "NOT NULL; default SYSUTCDATETIME()"
+    rowversion Version "NOT NULL"
+  }
+  PromotionItemHistory["PromotionItemHistory"] {
+    uniqueidentifier Id PK, UK "NOT NULL; default NEWSEQUENTIALID()"
+    uniqueidentifier SchoolId FK, UK "NOT NULL"
+    uniqueidentifier PromotionItemId FK, UK "NOT NULL"
+    int Sequence UK "NOT NULL"
+    varchar(16) Action "NOT NULL"
+    varchar(12) ReviewStatus "NOT NULL"
+    uniqueidentifier DestinationSectionId FK "NULL"
+    uniqueidentifier TargetYearId FK "NOT NULL"
+    nvarchar(500) Reason "NULL"
+    uniqueidentifier ActorId FK "NOT NULL"
+    datetime2(3) CreatedAt "NOT NULL; default SYSUTCDATETIME()"
+  }
+  Schools["Schools (external)"] {
+    uniqueidentifier Id PK "NOT NULL; default NEWSEQUENTIALID(); referenced key columns only"
+  }
+  AcademicYears["AcademicYears (external)"] {
+    uniqueidentifier Id PK, UK "NOT NULL; default NEWSEQUENTIALID(); referenced key columns only"
+    uniqueidentifier SchoolId FK, UK "NOT NULL; referenced key columns only"
+  }
+  AspNetUsers["AspNetUsers (external)"] {
+    uniqueidentifier Id PK "NOT NULL; referenced key columns only"
+  }
+  StudentEnrollments["StudentEnrollments (external)"] {
+    uniqueidentifier Id PK, UK "NOT NULL; default NEWSEQUENTIALID(); referenced key columns only"
+    uniqueidentifier SchoolId FK, UK "NOT NULL; referenced key columns only"
+    uniqueidentifier AcademicYearId FK, UK "NOT NULL; referenced key columns only"
+    uniqueidentifier SchoolStudentId FK, UK "NOT NULL; referenced key columns only"
+  }
+  Sections["Sections (external)"] {
+    uniqueidentifier Id PK, UK "NOT NULL; default NEWSEQUENTIALID(); referenced key columns only"
+    uniqueidentifier SchoolId FK, UK "NOT NULL; referenced key columns only"
+    uniqueidentifier AcademicYearId FK, UK "NOT NULL; referenced key columns only"
+  }
+  %% FK058 FK_EnrollmentPlacements_Schools_1: EnrollmentPlacements (SchoolId) -> Schools (Id)
+  Schools ||..o{ EnrollmentPlacements : "owns [FK058]"
+  %% FK059 FK_EnrollmentPlacements_AcademicYears_2: EnrollmentPlacements (SchoolId, AcademicYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears ||..o{ EnrollmentPlacements : "scopes year [FK059] (2 cols)"
+  %% FK060 FK_EnrollmentPlacements_AspNetUsers_3: EnrollmentPlacements (ActorId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ EnrollmentPlacements : "performs [FK060]"
+  %% FK061 FK_EnrollmentPlacements_StudentEnrollments_4: EnrollmentPlacements (SchoolId, AcademicYearId, EnrollmentId) -> StudentEnrollments (SchoolId, AcademicYearId, Id)
+  StudentEnrollments ||..o{ EnrollmentPlacements : "has placements [FK061] (3 cols)"
+  %% FK062 FK_EnrollmentPlacements_Sections_5: EnrollmentPlacements (SchoolId, AcademicYearId, SectionId) -> Sections (SchoolId, AcademicYearId, Id)
+  Sections ||..o{ EnrollmentPlacements : "places students [FK062] (3 cols)"
+  %% FK063 FK_EnrollmentPlacements_EnrollmentPlacements_6: EnrollmentPlacements (SchoolId, AcademicYearId, EnrollmentId, PreviousPlacementId) -> EnrollmentPlacements (SchoolId, AcademicYearId, EnrollmentId, Id)
+  EnrollmentPlacements |o..o{ EnrollmentPlacements : "precedes placement [FK063] (4 cols)"
+  %% FK064 FK_PromotionBatches_Schools_1: PromotionBatches (SchoolId) -> Schools (Id)
+  Schools ||..o{ PromotionBatches : "owns [FK064]"
+  %% FK065 FK_PromotionBatches_AspNetUsers_2: PromotionBatches (ConfirmedById) -> AspNetUsers (Id)
+  AspNetUsers |o..o{ PromotionBatches : "confirms [FK065]"
+  %% FK066 FK_PromotionBatches_AcademicYears_3: PromotionBatches (SchoolId, SourceYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears ||..o{ PromotionBatches : "source year [FK066] (2 cols)"
+  %% FK067 FK_PromotionBatches_AcademicYears_4: PromotionBatches (SchoolId, TargetYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears ||..o{ PromotionBatches : "target year [FK067] (2 cols)"
+  %% FK068 FK_PromotionItems_Schools_1: PromotionItems (SchoolId) -> Schools (Id)
+  Schools ||..o{ PromotionItems : "owns [FK068]"
+  %% FK069 FK_PromotionItems_AspNetUsers_2: PromotionItems (ReviewedById) -> AspNetUsers (Id)
+  AspNetUsers |o..o{ PromotionItems : "reviews [FK069]"
+  %% FK070 FK_PromotionItems_AcademicYears_3: PromotionItems (SchoolId, SourceYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears ||..o{ PromotionItems : "source year [FK070] (2 cols)"
+  %% FK071 FK_PromotionItems_AcademicYears_4: PromotionItems (SchoolId, TargetYearId) -> AcademicYears (SchoolId, Id)
+  AcademicYears ||..o{ PromotionItems : "target year [FK071] (2 cols)"
+  %% FK072 FK_PromotionItems_PromotionBatches_5: PromotionItems (SchoolId, BatchId, SourceYearId, TargetYearId) -> PromotionBatches (SchoolId, Id, SourceYearId, TargetYearId)
+  PromotionBatches ||..o{ PromotionItems : "reviews promotion [FK072] (4 cols)"
+  %% FK073 FK_PromotionItems_StudentEnrollments_6: PromotionItems (SchoolId, SourceYearId, SourceEnrollmentId, SchoolStudentId) -> StudentEnrollments (SchoolId, AcademicYearId, Id, SchoolStudentId)
+  StudentEnrollments ||..o{ PromotionItems : "source enrollment [FK073] (4 cols)"
+  %% FK074 FK_PromotionItems_Sections_7: PromotionItems (SchoolId, TargetYearId, DestinationSectionId) -> Sections (SchoolId, AcademicYearId, Id)
+  Sections |o..o{ PromotionItems : "target section [FK074] (3 cols)"
+  %% FK075 FK_PromotionItems_StudentEnrollments_8: PromotionItems (SchoolId, TargetYearId, DestinationEnrollmentId, SchoolStudentId) -> StudentEnrollments (SchoolId, AcademicYearId, Id, SchoolStudentId)
+  StudentEnrollments |o..o{ PromotionItems : "result enrollment [FK075] (4 cols)"
+  %% FK076 FK_PromotionItemHistory_Schools_1: PromotionItemHistory (SchoolId) -> Schools (Id)
+  Schools ||..o{ PromotionItemHistory : "owns [FK076]"
+  %% FK077 FK_PromotionItemHistory_AspNetUsers_2: PromotionItemHistory (ActorId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ PromotionItemHistory : "performs [FK077]"
+  %% FK078 FK_PromotionItemHistory_PromotionItems_3: PromotionItemHistory (SchoolId, PromotionItemId, TargetYearId) -> PromotionItems (SchoolId, Id, TargetYearId)
+  PromotionItems ||..o{ PromotionItemHistory : "records review [FK078] (3 cols)"
+  %% FK079 FK_PromotionItemHistory_Sections_4: PromotionItemHistory (SchoolId, TargetYearId, DestinationSectionId) -> Sections (SchoolId, AcademicYearId, Id)
+  Sections |o..o{ PromotionItemHistory : "target section [FK079] (3 cols)"

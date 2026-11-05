@@ -1,0 +1,60 @@
+%%{init: {"startOnLoad":false,"htmlLabels":false,"flowchart":{"htmlLabels":false},"theme":"base","securityLevel":"strict","maxTextSize":1000000,"maxEdges":2000,"fontFamily":"Arial, sans-serif","themeCSS":".edgeLabel rect.background{fill:#ffffff!important;stroke:none!important}.edgeLabel text,.edgeLabel tspan{fill:#111111!important}","themeVariables":{"fontFamily":"Arial, sans-serif","fontSize":"16px","primaryColor":"#ffffff","primaryTextColor":"#111111","primaryBorderColor":"#374151","lineColor":"#374151","secondaryColor":"#ffffff","tertiaryColor":"#ffffff","mainBkg":"#ffffff","textColor":"#111111","nodeBorder":"#374151","edgeLabelBackground":"#ffffff","attributeBackgroundColorOdd":"#ffffff","attributeBackgroundColorEven":"#f3f4f6"},"er":{"useMaxWidth":false,"diagramPadding":45,"entityPadding":12,"minEntityWidth":150,"minEntityHeight":55,"nodeSpacing":90,"rankSpacing":180,"fontSize":16,"layoutDirection":"LR"}}}%%
+erDiagram
+  direction LR
+  accTitle: ORBIT schema — Identity — part 1
+  accDescr: White background. External entities are marked external. Business relationship labels and stable FK IDs map to ordered source and referenced columns in the accompanying Markdown.
+  AspNetUsers["AspNetUsers"] {
+    uniqueidentifier Id PK "NOT NULL"
+    nvarchar(256) UserName "NULL"
+    nvarchar(256) NormalizedUserName UK "NULL"
+    nvarchar(256) Email "NULL"
+    nvarchar(256) NormalizedEmail UK "NULL"
+    bit EmailConfirmed "NOT NULL; default 0"
+    nvarchar(max) PasswordHash "NULL"
+    nvarchar(max) SecurityStamp "NULL"
+    nvarchar(max) ConcurrencyStamp "NULL"
+    nvarchar(max) PhoneNumber "NULL"
+    bit PhoneNumberConfirmed "NOT NULL; default 0"
+    bit TwoFactorEnabled "NOT NULL; default 0"
+    datetimeoffset(7) LockoutEnd "NULL"
+    bit LockoutEnabled "NOT NULL; default 1"
+    int AccessFailedCount "NOT NULL; default 0"
+    nvarchar(160) DisplayName "NOT NULL"
+    varchar(16) AccountStatus "NOT NULL; default 'Active'"
+    bit MustChangePassword "NOT NULL; default 0"
+    datetime2(3) PasswordChangedAt "NULL"
+    uniqueidentifier ProvisionedById FK "NULL"
+    uniqueidentifier ProvisionedSchoolId FK "NULL"
+    datetime2(3) CreatedAt "NOT NULL; default SYSUTCDATETIME()"
+    datetime2(3) UpdatedAt "NOT NULL; default SYSUTCDATETIME()"
+    rowversion Version "NOT NULL"
+  }
+  AspNetRoles["AspNetRoles"] {
+    uniqueidentifier Id PK "NOT NULL"
+    nvarchar(256) Name "NULL"
+    nvarchar(256) NormalizedName UK "NULL"
+    nvarchar(max) ConcurrencyStamp "NULL"
+  }
+  AspNetUserRoles["AspNetUserRoles"] {
+    uniqueidentifier UserId PK, FK "NOT NULL"
+    uniqueidentifier RoleId PK, FK "NOT NULL"
+  }
+  AspNetUserClaims["AspNetUserClaims"] {
+    int Id PK "NOT NULL; IDENTITY(1,1)"
+    uniqueidentifier UserId FK "NOT NULL"
+    nvarchar(max) ClaimType "NULL"
+    nvarchar(max) ClaimValue "NULL"
+  }
+  Schools["Schools (external)"] {
+    uniqueidentifier Id PK "NOT NULL; default NEWSEQUENTIALID(); referenced key columns only"
+  }
+  %% FK001 FK_AspNetUsers_AspNetUsers_1: AspNetUsers (ProvisionedById) -> AspNetUsers (Id)
+  AspNetUsers |o..o{ AspNetUsers : "provisions [FK001]"
+  %% FK002 FK_AspNetUsers_Schools_2: AspNetUsers (ProvisionedSchoolId) -> Schools (Id)
+  Schools |o..o{ AspNetUsers : "provisions account [FK002]"
+  %% FK003 FK_AspNetUserRoles_AspNetUsers_1: AspNetUserRoles (UserId) -> AspNetUsers (Id)
+  AspNetUsers ||--o{ AspNetUserRoles : "identifies [FK003]"
+  %% FK004 FK_AspNetUserRoles_AspNetRoles_2: AspNetUserRoles (RoleId) -> AspNetRoles (Id)
+  AspNetRoles ||--o{ AspNetUserRoles : "grants role [FK004]"
+  %% FK005 FK_AspNetUserClaims_AspNetUsers_1: AspNetUserClaims (UserId) -> AspNetUsers (Id)
+  AspNetUsers ||..o{ AspNetUserClaims : "identifies [FK005]"
